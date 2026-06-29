@@ -37,6 +37,7 @@ The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canon
 | `implementation/10-traceability-matrix.md` | Canonical | Legacy file coverage and canonical destinations. |
 | `implementation/11-skill-contracts.md` | Canonical | Canonical method-skill contracts. |
 | `implementation/13-codex-runtime-architecture.md` | Canonical | Codex-native runtime architecture, `AGENTS.md`, repo skills, custom subagents, and workflow runbook conventions. |
+| `implementation/14-language-and-style.md` | Canonical | User-facing language selection, Russian language policy, and investment-analytical presentation style. |
 
 ## Implementation governance records
 
@@ -278,6 +279,7 @@ Use this routing table before answering implementation-rule questions:
 | Legacy coverage / remaining gaps | `implementation/10-traceability-matrix.md` |
 | Method-skill contracts | `implementation/11-skill-contracts.md` |
 | Codex-native runtime structure, `AGENTS.md`, repo skills, custom subagents, workflow runbooks | `implementation/13-codex-runtime-architecture.md` |
+| User-facing language selection, Russian language policy, and investment-analytical presentation style | `implementation/14-language-and-style.md` |
 
 `TASKS.md` controls the active work queue. `IMPLEMENTATION_BACKLOG.md` controls phase meaning and scope when the two documents differ.
 

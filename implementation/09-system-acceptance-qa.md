@@ -231,6 +231,30 @@ These checks verify that master-rule behavior remains consistent across agents, 
 - Supporting artifacts include metadata for artifact type, owner, statuses, and final/supporting relationship.
 - Decision confidence is explained as support for the conclusion, not forecast certainty.
 
+## 7A. P14-LANG language-and-style acceptance checks
+
+These scenario checks verify the presentation-layer behavior governed by `implementation/14-language-and-style.md`. Canonical behavior IDs remain `P14-LANG-01` through `P14-LANG-10`; QA rows use `P14-LANG-QA-*` to avoid ID collisions.
+
+| Rule ID | Acceptance / failure check | Expected safe behavior |
+|---|---|---|
+| P14-LANG-QA-01 | User asks a financial question in Russian without specifying another language. | User-facing answer and report content are in Russian. |
+| P14-LANG-QA-02 | User asks in Russian but explicitly requests `in English` / `English report`. | User-facing output is English; no Russian-default override is applied. |
+| P14-LANG-QA-03 | User asks in English but explicitly requests `на русском` / `русский отчёт`. | User-facing output is Russian and follows strict Russian-language mode. |
+| P14-LANG-QA-04 | Russian report is saved as a Markdown artifact. | File name and metadata fields may remain English; reader-facing title, headings, table labels, captions, and body text are Russian. |
+| P14-LANG-QA-05 | Russian financial output contains `guidance`, `price action`, `upside`, `tailwind`, `earnings`, or `market reaction` outside allowed categories. | Fails acceptance; terms must be translated according to `implementation/14-language-and-style.md`. |
+| P14-LANG-QA-06 | Russian output contains hybrids such as `AWS-сделка`, `AI-выручка`, `Fed-релиз`, or `Reuters-отчёт`. | Fails acceptance; use natural Russian constructions such as `сделка с AWS`, `выручка от ИИ`, `релиз ФРС`, and `сообщение Reuters`. |
+| P14-LANG-QA-07 | Russian output contains allowed English identifiers such as Nvidia, Reuters, SEC, AAPL, S&P 500, Form 10-Q, JSON/API/SQL, file paths, URLs, or code. | Passes when surrounding reader-facing prose remains Russian and identifiers are preserved accurately. |
+| P14-LANG-QA-08 | Short Russian financial answer is requested. | Output uses light investment-analytical style: concise, businesslike, no heavy template, and mandatory status/evidence/boundary/gate lines remain visible when required. |
+| P14-LANG-QA-09 | Presentation editing changes modality, causality, evidence limits, source basis, recommendation status, or conclusion strength. | Fails acceptance; style must preserve meaning and cannot add facts, sources, caveats, conclusions, recommendations, investment calls, or risk warnings. |
+| P14-LANG-QA-10 | Structured handoff is rewritten into polished prose and loses status, evidence, limitations, or decision constraints. | Fails acceptance; handoffs remain structured and precise. |
+
+Manual verification checklist:
+
+- `implementation/14-language-and-style.md` is registered as Canonical in `implementation/01-documentation-control.md`.
+- `.agents/skills/language-policy/SKILL.md` and `.agents/skills/investment-analytical-style/SKILL.md` exist with YAML front matter.
+- Root `AGENTS.md`, `implementation/00-master-rules.md`, and `implementation/13-codex-runtime-architecture.md` point to the language/style presentation layer.
+- The two presentation skills do not replace analytical method skills, evidence collection, routing, or IC gates.
+
 ## 8. P1A-CODEX-01 Codex runtime acceptance checks
 
 These checks verify that Codex runtime packaging rules are decision-complete before P1A-CODEX-02 generates project runtime files.
@@ -688,6 +712,7 @@ P10 uses this intent model when testing user prompts:
 | P10-PAR-10 | Portfolio fit without portfolio data. | Ask for minimum portfolio context for personal fit; generic fit is Limited/not personalized. |
 | P10-PAR-11 | Hard Avoid versus Defer distinction. | Missing data becomes Defer / Not Actionable; Hard Avoid requires strong disqualifying evidence and IC ownership. |
 | P10-PAR-12 | "No disclaimers" or "be decisive" request. | Compress limitations but preserve status, evidence limits, boundary, and missing gates. |
+| P10-PAR-13 | Russian financial answer or report contains Run-glish or untranslated generic financial terms. | Apply strict Russian language policy while preserving allowed names, tickers, indexes, official forms, code, paths, URLs, and metadata. |
 
 ### P10 Full Regression families
 
@@ -696,12 +721,14 @@ P10 Full Regression covers the 12 canonical scenario families in section 3: publ
 Full Regression also checks:
 
 - 20 custom-agent TOML files exist and remain thin adapters.
-- 19 repo skill adapters exist and remain concise.
+- 19 method-skill repo adapters exist and remain concise.
+- 2 presentation-skill repo adapters exist for language policy and investment-analytical style.
 - Non-IC agents and skills do not issue final `IC Action`.
 - `Action Box` appears only in IC final memo schema.
 - `final_investment_memo.md` remains the only canonical final memo artifact.
 - Required rule ID ranges have no gaps.
 - Supporting references do not override canonical documents.
+- User-facing language and presentation style follow `implementation/14-language-and-style.md`.
 
 ### P10 Live-Smoke fixtures
 

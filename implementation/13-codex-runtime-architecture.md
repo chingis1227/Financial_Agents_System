@@ -64,19 +64,20 @@ Required content:
 - evidence-before-synthesis rule;
 - Investment Committee final synthesis boundary;
 - skill and subagent usage rules;
-- language policy: project Markdown in English unless explicitly requested otherwise; Russian is acceptable for user chat.
+- language policy: internal project Markdown in English unless explicitly requested otherwise; user-facing answers and report content follow the user's requested language under `implementation/14-language-and-style.md`.
 
 Project authority order:
 
 ```text
 1. implementation/00-master-rules.md for statuses, gates, output standards, confidence, source display, style, and artifact naming
 2. implementation/01-documentation-control.md for registry, source precedence, archive behavior, and source issues
-3. IMPLEMENTATION_BACKLOG.md for phase meaning and implementation scope
-4. TASKS.md for active work status
-5. Other canonical implementation documents for their specific domains
-6. Supporting References only when they do not conflict with canonical documents
-7. Needs Merge / Draft Source documents only as source material
-8. Archive documents never as active source of truth
+3. implementation/14-language-and-style.md for user-facing language selection, Russian language policy, and investment-analytical presentation style
+4. IMPLEMENTATION_BACKLOG.md for phase meaning and implementation scope
+5. TASKS.md for active work status
+6. Other canonical implementation documents for their specific domains
+7. Supporting References only when they do not conflict with canonical documents
+8. Needs Merge / Draft Source documents only as source material
+9. Archive documents never as active source of truth
 ```
 
 Runtime reading order:
@@ -88,8 +89,10 @@ Runtime reading order:
 4. IMPLEMENTATION_BACKLOG.md when phase meaning or scope matters
 5. TASKS.md when active work status matters
 6. The specific canonical implementation document for the task domain
-7. implementation/10-traceability-matrix.md before using legacy detail
-8. Supporting legacy files only after registry / traceability routing
+7. implementation/13-codex-runtime-architecture.md when Codex runtime packaging, custom agents, repo skills, or edge-case runtime rules matter
+8. implementation/14-language-and-style.md when user-facing language, Russian output, translation cleanup, or investment-analytical presentation style matters
+9. implementation/10-traceability-matrix.md before using legacy detail
+10. Supporting legacy files only after registry / traceability routing
 ```
 
 `AGENTS.md` is first in runtime reading order because Codex loads it first. It is not higher than canonical implementation documents in project authority.
@@ -233,7 +236,7 @@ Do not include full legacy PRD content, large frameworks, or long methodology li
 
 Create repo skills from canonical skill contracts in `implementation/11-skill-contracts.md`.
 
-Initial planned skills:
+Initial planned method skills:
 
 | Canonical skill contract | Skill folder |
 |---|---|
@@ -256,6 +259,15 @@ Initial planned skills:
 | Driver Dominance Analysis Skill | `.agents/skills/driver-dominance-analysis/` |
 | Market Sense Hypothesis Engine Skill | `.agents/skills/market-sense-hypothesis-engine/` |
 | Market Intelligence Briefing Skill | `.agents/skills/market-intelligence-briefing/` |
+
+Presentation-layer repo skills are governed by `implementation/14-language-and-style.md`, not by the method-skill contracts in `implementation/11-skill-contracts.md`:
+
+| Presentation behavior | Skill folder |
+|---|---|
+| Russian language policy, translation cleanup, and Russian-target normalization | `.agents/skills/language-policy/` |
+| Concise investment-analytical user-facing writing style | `.agents/skills/investment-analytical-style/` |
+
+Presentation skills are runtime adapters for final user-facing text. They must not collect evidence, decide routing, issue `IC Action`, use `Action Box`, add facts, add sources, add caveats, add conclusions, add recommendations, add investment calls, add risk warnings, or replace analytical method skills.
 
 ## 7. Skill authoring standard
 
@@ -297,7 +309,7 @@ Recommended sequence:
 5. Create root `AGENTS.md`.
 6. Create root `README.md`.
 7. Create `.codex/agents/*.toml` from the 20 planned contracts.
-8. Create `.agents/skills/*/SKILL.md` from canonical skill contracts.
+8. Create method `.agents/skills/*/SKILL.md` from canonical skill contracts and presentation skills from `implementation/14-language-and-style.md`.
 9. Create or split workflow runbooks if `implementation/05-routing-and-workflows.md` becomes too large.
 10. Run acceptance checks from `implementation/09-system-acceptance-qa.md`.
 
@@ -384,6 +396,7 @@ When P10-QA executes runtime acceptance checks, Codex runtime behavior follows t
 - compress caveats when requested, but never remove status, evidence limits, missing gates, or boundaries;
 - treat missing data as Defer / Not Actionable rather than Hard Avoid; Hard Avoid requires strong disqualifying evidence and IC ownership;
 - verify runtime agents remain thin and skills remain concise adapters to canonical contracts.
+- verify user-facing language and presentation style follow `implementation/14-language-and-style.md`, including strict Russian mode for Russian output and investment-analytical style for financial user-facing text.
 
 ## 11. Acceptance criteria
 
@@ -421,7 +434,7 @@ The generated Codex runtime package is ready when:
 - root `AGENTS.md` exists and provides concise project guidance;
 - root `README.md` exists and orients human maintainers;
 - `.codex/agents/` contains the 20 planned custom-agent TOML files;
-- `.agents/skills/` contains repo skills mapped to canonical skill contracts;
+- `.agents/skills/` contains method skills mapped to canonical skill contracts and presentation skills mapped to `implementation/14-language-and-style.md`;
 - custom agents are narrow adapters and do not copy full PRDs;
 - skills are focused reusable workflows and do not silently override canonical contracts;
 - legacy PRDs are accessed only through the registry and traceability matrix;

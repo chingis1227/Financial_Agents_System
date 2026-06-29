@@ -454,6 +454,17 @@ If the prior memo is unavailable, request it or perform fresh analysis with a cl
 
 Project outputs should be concise, businesslike, investment-oriented, and analytically dense. Avoid generic, emotional, or conversational filler. Each paragraph should carry decision-relevant information. User-facing reports should integrate conclusions rather than expose internal agent transcripts.
 
+### Language and style presentation layer
+
+User-facing language selection, Russian language policy, and investment-analytical presentation-style activation are governed by `implementation/14-language-and-style.md`.
+
+Default behavior:
+- internal project documents and runtime-control files are written in English unless explicitly requested otherwise;
+- user-facing answers and generated report content follow the user's requested language, with Russian output for Russian requests unless the user explicitly asks otherwise;
+- Russian user-facing output uses strict Russian-language mode and should not contain unnecessary English or Run-glish;
+- financial, market, investment, macro, company, sector, asset, and report-style user-facing outputs use concise investment-analytical style;
+- presentation-style rules must not add facts, sources, caveats, conclusions, recommendations, investment calls, risk warnings, or override statuses, evidence limits, IC gates, or boundaries.
+
 ### Layered report rule
 
 Even a full detailed memo must be layered:

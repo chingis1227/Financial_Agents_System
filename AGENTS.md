@@ -10,12 +10,13 @@ Start Codex from the project root: `Financial Agent System/`. If Codex is launch
 
 1. `implementation/00-master-rules.md` for statuses, gates, output standards, confidence, source display, style, and artifact naming.
 2. `implementation/01-documentation-control.md` for registry, source precedence, archive behavior, and source issues.
-3. `IMPLEMENTATION_BACKLOG.md` for phase meaning and implementation scope.
-4. `TASKS.md` for active work status.
-5. Other canonical implementation documents for their specific domains.
-6. Supporting References only when they do not conflict with canonical documents.
-7. Needs Merge / Draft Source documents only as source material.
-8. Archive documents never as active source of truth.
+3. `implementation/14-language-and-style.md` for user-facing language selection, Russian language policy, and investment-analytical presentation style.
+4. `IMPLEMENTATION_BACKLOG.md` for phase meaning and implementation scope.
+5. `TASKS.md` for active work status.
+6. Other canonical implementation documents for their specific domains.
+7. Supporting References only when they do not conflict with canonical documents.
+8. Needs Merge / Draft Source documents only as source material.
+9. Archive documents never as active source of truth.
 
 ## Runtime reading order
 
@@ -26,8 +27,9 @@ Start Codex from the project root: `Financial Agent System/`. If Codex is launch
 5. Read `TASKS.md` when active work status matters.
 6. Read the specific canonical implementation document for the task domain.
 7. Read `implementation/13-codex-runtime-architecture.md` when Codex runtime packaging, custom agents, repo skills, or edge-case runtime rules matter.
-8. Read `implementation/10-traceability-matrix.md` before using legacy detail.
-9. Use supporting legacy files only after registry and traceability routing.
+8. Read `implementation/14-language-and-style.md` when user-facing language, Russian output, translation cleanup, or investment-analytical presentation style matters.
+9. Read `implementation/10-traceability-matrix.md` before using legacy detail.
+10. Use supporting legacy files only after registry and traceability routing.
 
 ## Core operating rules
 
@@ -69,4 +71,8 @@ Apply the relevant gate before strong positive conclusions:
 
 ## Language policy
 
-Project Markdown files should be written in English unless explicitly requested otherwise. Russian is acceptable for user chat.
+Internal project Markdown files should be written in English unless explicitly requested otherwise. User-facing chat answers and generated report content follow the user's requested language under `implementation/14-language-and-style.md`.
+
+For Russian user-facing output, apply the repo `language-policy` presentation skill: write natural Russian, avoid unnecessary English/Run-glish, translate reader-facing headings and financial terms, and preserve allowed names, tickers, indexes, official forms, code, paths, URLs, and technical identifiers.
+
+For financial, market, investment, macro, company, sector, asset, or report-style user-facing output, apply the repo `investment-analytical-style` presentation skill: concise, businesslike, analytically dense writing without adding facts, sources, conclusions, caveats, recommendations, investment calls, risk warnings, or overriding evidence/status/IC gates. Do not announce these presentation skills in ordinary answers.

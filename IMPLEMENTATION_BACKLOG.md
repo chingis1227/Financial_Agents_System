@@ -2,7 +2,7 @@
 
 Status: Canonical implementation-control document  
 Target: Agents-first system, not a backend/UI product  
-Language policy: project Markdown documents in English; user-facing chat may remain Russian
+Language policy: internal project Markdown documents are English by default; user-facing answers and reports follow the user's requested language under `implementation/14-language-and-style.md`
 
 ## 1. Objective
 
@@ -27,6 +27,7 @@ The legacy PRD corpus is source material. The canonical build layer is this file
 10. `implementation/10-traceability-matrix.md` - legacy-file coverage and canonical destinations.
 11. `implementation/11-skill-contracts.md` - canonical method-skill contracts.
 12. `implementation/13-codex-runtime-architecture.md` - OpenAI Codex-native project structure, `AGENTS.md`, repo skills, custom subagents, and workflow runbook conventions.
+13. `implementation/14-language-and-style.md` - user-facing language selection, Russian language policy, and investment-analytical presentation style.
 
 Supporting / operational records:
 
@@ -227,5 +228,5 @@ Acceptance criteria:
 - No MVP framing.
 - Agents-first implementation, not backend/UI.
 - Canonical docs should be created before editing all legacy PRDs.
-- Project Markdown documents should be in English unless explicitly requested otherwise.
-- Russian remains acceptable for user chat.
+- Internal project Markdown documents should be in English unless explicitly requested otherwise.
+- User-facing answers and generated report content follow the user's requested language under `implementation/14-language-and-style.md`.

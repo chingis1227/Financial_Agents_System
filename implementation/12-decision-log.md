@@ -250,3 +250,13 @@ P1-ARCH-01 traceability note: the grouped decisions below for fast decision supp
 - Runtime location: `implementation/13-codex-runtime-architecture.md` and root `AGENTS.md` navigator synchronized to the P10 policy.
 - Completion note: P10-QA-01 passed with 0 blocking issues and 0 safety failures; remaining note is an Info-level pre-existing uncommitted-work record.
 - Scope note: This log is a supporting record only and does not override canonical implementation documents.
+
+### 2026-06-29 - P14-LANG language-and-style presentation layer
+
+- Decision source: user-approved implementation plan for Language Policy + Investment Analytical Style.
+- Rule: User-facing language selection, strict Russian output cleanup, and investment-analytical presentation style are canonicalized in `implementation/14-language-and-style.md` with stable IDs `P14-LANG-01` through `P14-LANG-10`.
+- Rationale: Separates internal project documentation language from user-facing report language, makes Russian user-facing output clean and non-Run-glish, and applies investment-analytical style only as a presentation layer without replacing evidence, routing, analytical methods, or IC gates.
+- Canonical location: `implementation/14-language-and-style.md`.
+- QA location: `implementation/09-system-acceptance-qa.md`.
+- Runtime location: `.agents/skills/language-policy/SKILL.md`, `.agents/skills/investment-analytical-style/SKILL.md`, root `AGENTS.md`, and `implementation/13-codex-runtime-architecture.md`.
+- Scope note: This log is a supporting record only and does not override canonical implementation documents.

@@ -39,6 +39,7 @@ The Financial Agent System is an agents-first financial analysis project. It pac
 | Skill contracts | `implementation/11-skill-contracts.md` |
 | Decision history | `implementation/12-decision-log.md` |
 | Codex runtime architecture | `implementation/13-codex-runtime-architecture.md` |
+| User-facing language and presentation style | `implementation/14-language-and-style.md` |
 
 ## Runtime surfaces
 
@@ -46,6 +47,7 @@ Workflow runbooks currently live in `implementation/05-routing-and-workflows.md`
 
 - Custom agents are narrow adapters that point to canonical contracts and return status, key findings, limitations, handoffs, and next required steps.
 - Repo skills are focused reusable workflows with triggers, inputs, steps, outputs, guardrails, Limited/Blocked behavior, and quality checks.
+- Presentation skills under `.agents/skills/language-policy/` and `.agents/skills/investment-analytical-style/` control user-facing language cleanup and investment-analytical style; they do not replace analytical method skills or IC gates.
 - Legacy PRDs and frameworks are source material only when routed through the documentation registry and traceability matrix.
 
 ## How to add or change runtime assets
