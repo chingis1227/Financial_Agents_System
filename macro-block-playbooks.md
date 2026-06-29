@@ -1,5 +1,25 @@
 # Macro Block Playbooks
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Macro Agent  
+Contributors: Market Sense; Evidence Collector; asset-class agents  
+Used by: Macro Agent; macro-analysis skill  
+Primary reference for: macro block playbooks  
+Supporting reference for: asset-class macro context and driver analysis  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when macro framework, source cadence, or major policy/market-structure assumptions change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This document defines the Macro Agent's internal analytical playbooks. These are not separate top-level agents. They are specialist lenses invoked by the Macro Agent according to mode, event, and materiality.

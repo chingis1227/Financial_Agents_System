@@ -1,17 +1,30 @@
 # News & Catalysts Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: News & Catalysts  
+Contributors: Market Intelligence; Evidence Collector; asset-class agents  
+Used by: News & Catalysts Agent; news-catalysts skill  
+Primary reference for: catalyst taxonomy and news interpretation examples  
+Supporting reference for: market-intelligence and asset-class catalyst context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: High  
+Last reviewed: 2026-06-28  
+Review trigger: Review quarterly or when catalyst taxonomy, source availability, or news-verification practices change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
-This framework is the detailed reference layer for the News & Catalysts Agent and the News & Catalysts Method Skill.
+This framework is the detailed supporting reference layer for News & Catalysts analysis. Active agent and skill behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`.
 
-It supports:
-
-```text
-news-catalysts-agent-prd.md
-news-catalysts-method-skill-prd.md
-```
-
-The framework defines event taxonomy, materiality tiers, catalyst types, source rules, freshness rules, domain overlays, output templates, handoff templates, and common traps.
+It provides advisory event taxonomy, materiality tiers, catalyst types, source overlays, freshness nuances, domain overlays, output examples, handoff examples, and common traps. `implementation/04-evidence-layer.md` governs evidence readiness and source authority.
 
 The primary supported report artifact is:
 
@@ -253,7 +266,7 @@ Required prep:
 Post-event follow-up:
 ```
 
-## 12. Source Hierarchy
+## 12. Advisory Source Overlay
 
 ### Tier 1A — Primary / Official Sources
 

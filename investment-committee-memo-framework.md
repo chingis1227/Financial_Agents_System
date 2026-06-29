@@ -1,5 +1,25 @@
 # Investment Committee Memo Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Investment Committee  
+Contributors: Evidence Collector; asset-class agents; specialist agents  
+Used by: Investment Committee; investment-committee-synthesis skill  
+Primary reference for: IC memo wording examples and decision-support presentation references  
+Supporting reference for: report-writing examples only; canonical report schemas govern final outputs  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when IC report schemas, Action Box rules, or decision-label rules change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This framework defines the default structure and section-level requirements for the final Investment Committee memo.

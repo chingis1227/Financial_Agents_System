@@ -1,5 +1,25 @@
 # Commodity Analysis Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Commodity Agent  
+Contributors: Macro Agent; Market Sense; Valuation/Expectations; Risk Red Team  
+Used by: Commodity Agent; commodity-analysis skill  
+Primary reference for: commodity analysis framework examples and domain structure  
+Supporting reference for: IC commodity context; macro/driver handoffs  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when commodity skill contract, family playbooks, or commodity market structure changes.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This framework defines the standard outputs for the Commodity Agent.

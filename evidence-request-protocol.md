@@ -1,5 +1,25 @@
 # Evidence Request Protocol
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Evidence Collector  
+Contributors: Router Layer; Investment Committee; asset-class agents  
+Used by: Evidence Collector; routers; agent handoff workflows  
+Primary reference for: evidence request and missing-data protocol examples  
+Supporting reference for: handoff requests and gap checklists  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when evidence workflow, routing, or handoff contracts change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
 This protocol defines how downstream agents request additional evidence, challenge readiness, and register specialist-discovered evidence.

@@ -1,5 +1,25 @@
 # Portfolio Fit Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Portfolio Fit  
+Contributors: Investment Committee; Risk Red Team; asset-class agents  
+Used by: Portfolio Fit Agent; portfolio-fit skill; IC synthesis  
+Primary reference for: portfolio-fit questionnaire and scenario examples  
+Supporting reference for: personalization, privacy-preserving fit, and implementation context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when portfolio-fit skill, sizing rules, privacy rules, or suitability examples change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
 The Portfolio Fit Framework defines how the Financial Agent System assesses the role of an asset, instrument, or exposure inside a portfolio.

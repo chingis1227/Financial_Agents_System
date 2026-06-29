@@ -156,11 +156,97 @@ P1-ARCH-01 traceability note: the grouped decisions below for fast decision supp
 - Rationale: Separates asset quality from investment attractiveness and keeps decision outputs practical.
 - Canonical location: `implementation/00-master-rules.md`, `implementation/02-canonical-architecture.md`, `implementation/05-routing-and-workflows.md`.
 
-### 2026-06-28 ? P1-RULE-01 Top-30 edge-case decisions
+### 2026-06-28 - P1-RULE-01 Top-30 edge-case decisions
 
 - Decision source: user edge-case review for P1-RULE-01.
-- Rule: The 30 approved edge cases for statuses, gates, confidence, Action Box, evidence display, style, artifact naming, user-context behavior, specialist boundaries, risk gate failure, sizing, discovery ranking, private data, and source-of-truth handling are canonicalized in the master rules.
+- Rule: The 30 approved edge cases for statuses, gates, confidence, Action Box, evidence display, style, artifact naming, user-context behavior, specialist boundaries, risk gate failure, sizing, discovery ranking, private data, and source-of-truth handling are canonicalized in the master rules with stable IDs `P1-RULE-01-01` through `P1-RULE-01-30`.
 - Rationale: Converts chat-only product decisions into durable implementation behavior and prevents agents, workflows, skills, and reports from applying inconsistent output rules.
 - Canonical location: `implementation/00-master-rules.md`.
 - Scope note: This log is a supporting record only and does not override the canonical master rules.
 
+### 2026-06-28 - P1A-CODEX-01 Top-35 runtime edge-case decisions
+
+- Decision source: user edge-case review for P1A-CODEX-01.
+- Rule: The 35 approved Codex runtime edge cases for project-root discovery, source-of-truth routing, runtime generation gates, custom-agent and skill boundaries, evidence/freshness controls, user-context UX, reporting gates, monitoring, asset complexity, sparse data, and ambiguity handling are canonicalized with stable IDs `P1A-CODEX-01-01` through `P1A-CODEX-01-35`.
+- Rationale: Converts chat-only Codex runtime decisions into durable architecture behavior and prevents premature runtime generation, hidden source-of-truth drift, and unsupported final investment outputs.
+- Canonical location: `implementation/13-codex-runtime-architecture.md`.
+- Scope note: This log is a supporting record only and does not override the canonical Codex runtime architecture.
+
+### 2026-06-28 - P2-TPL-01 Top-35 template edge-case decisions
+
+- Decision source: user edge-case review for P2-TPL-01.
+- Rule: The 35 approved template edge cases for practical gap handling, compact runtime contracts, metadata headers, UX blocks, agent/skill separation, category-specific add-ons, evidence failure states, direct specialist boundaries, Quick Takes, gate-aware artifacts, ambiguity, freshness, source restrictions, conflicts, user files, scoped workflows, structured handoffs, decision-label permissions, discovery boundaries, complex products, asset-specific gates, and scenario-based QA are canonicalized with stable IDs `P2-TPL-01-01` through `P2-TPL-01-35`.
+- Rationale: Converts chat-only product decisions into durable template behavior so later P5 agent normalization, P5-SKL skill normalization, and report/workflow work do not require implementers to invent missing fields or hidden behavior.
+- Canonical location: `implementation/03-contract-templates.md`.
+- QA location: `implementation/09-system-acceptance-qa.md`.
+- Scope note: This log is a supporting record only and does not override the canonical Standard Contract Templates.
+
+### 2026-06-28 - P3-EVD-01 Top-25 evidence-layer edge-case decisions
+
+- Decision source: user edge-case review for P3-EVD-01.
+- Rule: The 25 approved evidence-layer edge cases for incomplete evidence, source conflicts, freshness, paywalls, user-provided files, proxy evidence, conclusion strength, early red flags, materiality mapping, IC evidence requests, source scope, event refreshes, comparison parity, evidence snapshots, domain overlays, concise answers, specialist evidence limits, layered evidence display, exact-claim support, negative evidence, rumors/social, user shortcuts, model outputs, instrument identity, and numeric normalization are canonicalized with stable IDs `P3-EVD-01-01` through `P3-EVD-01-25`.
+- Rationale: Converts chat-only product decisions into durable evidence behavior so downstream agents, workflows, skills, and IC synthesis cannot overstate unsupported claims or bypass evidence readiness.
+- Canonical location: `implementation/04-evidence-layer.md`.
+- QA location: `implementation/09-system-acceptance-qa.md`.
+- Scope note: This log is a supporting record only and does not override the canonical Evidence Layer Contract.
+
+### 2026-06-28 - P4-RTE-01 Top-20 routing edge-case decisions
+
+- Decision source: user edge-case review for P4-RTE-01.
+- Rule: The 20 approved routing edge cases for Quick Takes, personal context, ambiguous instruments, theme discovery, comparisons, direct specialists, market updates, freshness, source conflicts, sizing, update workflows, premature final memos, run-all-agents requests, complex products, missing horizons, source restrictions, risk gate failures, quality-versus-valuation separation, valuation equivalents, and multi-workflow requests are canonicalized with stable IDs `P4-RTE-01-01` through `P4-RTE-01-20`.
+- Rationale: Converts chat-only product routing decisions into durable workflow behavior so routers choose deterministic routes, safe fallbacks, status limits, and escalation paths without issuing final investment actions.
+- Canonical location: `implementation/05-routing-and-workflows.md`.
+- QA location: `implementation/09-system-acceptance-qa.md`.
+- Scope note: This log is a supporting record only and does not override the canonical Routing and Workflow Contracts.
+
+### 2026-06-28 - P5-AGT-01 Top-20 agent-contract edge-case decisions
+
+- Decision source: user edge-case review for P5-AGT-01.
+- Rule: The 20 approved agent-contract edge cases for Quick Takes, instrument ambiguity, freshness, specialist boundaries, missing upstream inputs, discovery boundaries, evidence conflicts, sizing, complex products, source restrictions, value traps, growth expectations, agent/skill separation, hybrid ownership, run-all-agents routing, dual statuses, structured handoffs, prior memo updates, premature final reports, and multi-workflow requests are canonicalized with stable IDs `P5-AGT-01-01` through `P5-AGT-01-20`.
+- Rationale: Converts chat-only product decisions into durable agent-contract behavior so runtime agents stay useful while preserving evidence, workflow, and IC boundaries.
+- Canonical location: `implementation/06-agent-contracts.md`.
+- QA location: `implementation/09-system-acceptance-qa.md`.
+- Runtime location: `.codex/agents/*.toml` thin adapters synchronized to the canonical contracts.
+- Scope note: This log is a supporting record only and does not override the canonical agent contracts.
+
+
+### 2026-06-28 - P5-SKL-01 Top-29 skill-contract edge-case decisions
+
+- Decision source: user edge-case review for P5-SKL-01.
+- Rule: The 29 approved skill-contract edge cases for skill visibility, missing data, compact runtime adapters, direct skill calls, buy/sell boundaries, freshness, user files, discovery ranking, hybrid instruments, evidence conflicts, output shape, known gaps, workflow depth, sizing, complex products, ownership separation, premature final reports, source restrictions, scoped Complete status, P8 schema separation, canonical authority, legacy treatment, Method Confidence, value/growth traps, rumors, portfolio privacy, run-all-agents behavior, and ambiguous instruments are canonicalized with stable IDs `P5-SKL-01-01` through `P5-SKL-01-29`.
+- Rationale: Converts chat-only product decisions into durable method-skill behavior so runtime skills remain useful and concise while preserving evidence, workflow, agent, and IC boundaries.
+- Canonical location: `implementation/11-skill-contracts.md`.
+- QA location: `implementation/09-system-acceptance-qa.md`.
+- Runtime location: `.agents/skills/*/SKILL.md` concise adapters synchronized to the canonical skill contracts.
+- Scope note: This log is a supporting record only and does not override the canonical skill contracts.
+
+### 2026-06-28 - P8-IC-01 Top-20 IC report-schema edge-case decisions
+
+- Decision source: user edge-case review for P8-IC-01.
+- Rule: The 20 approved IC report-schema edge cases for premature final memos, Decision-Prep Box, Quick Takes, freshness, conflicts, unspecified decision mode, missing portfolio context, layered memos, scoped workflows, early negative disqualifiers, sizing limits, specialist boundaries, materiality-based modules, as-of/freshness display, controlled IC Action labels, Watchlist/Defer/Hold distinctions, Decision Confidence meaning, view-change triggers, prior memo updates, and detail depth are canonicalized with stable IDs `P8-IC-01-01` through `P8-IC-01-20`.
+- Rationale: Converts chat-only product decisions into durable report-schema behavior so IC outputs remain useful and practical without masking Preliminary, Limited, or scoped outputs as final IC Actions.
+- Canonical location: `implementation/07-investment-committee-and-report-schemas.md`.
+- QA location: `implementation/09-system-acceptance-qa.md`.
+- Scope note: This log is a supporting record only and does not override the canonical IC report schemas or master rules.
+
+
+### 2026-06-28 - P9-REF-01 Top-20 reference-governance edge-case decisions
+
+- Decision source: user edge-case review for P9-REF-01.
+- Rule: The 20 approved reference-governance edge cases for reference authority, hybrid split/index behavior, primary owner plus contributors, Evidence Layer source authority, operational-ambiguity split criteria, canonical pointers, user-facing limitations, freshness tiers, analytical labels, primary/supporting reference selection, pragmatic done criteria, metadata plus central index, selective `Needs Merge` harvesting, header/index conflict handling, `Needs Split` advisory use, new unregistered references, targeted cleanup, provisional ownership, checklist plus keyword scan QA, and readiness-based status updates are implemented as P9 reference-library governance.
+- Rationale: Converts chat-only product decisions into durable reference behavior so references enrich analysis without becoming hidden PRDs, hidden agents, source-of-truth policy, or IC decision layers.
+- Canonical location: `implementation/08-reference-library-cleanup.md`.
+- Operational index: `implementation/reference-library-index.md`.
+- Runtime reference split: `market-pattern-library.md` plus `market-patterns/*.md`.
+- Scope note: This log is a supporting record only and does not override canonical implementation documents or the documentation registry.
+
+### 2026-06-28 - P10-QA-01 acceptance execution and closure
+
+- Decision source: user-approved P10 QA implementation plan and execution results.
+- Rule: P10-QA uses synthetic fixtures for stable pass/fail, live-smoke checks only for freshness behavior, separate Safety and UX results, ask-first behavior for personal/final action with missing context, Preliminary/Limited behavior for market-action prompts, IC-boundary severity, Limited/Blocked next-step blocks, compressed-but-not-removed limitations, gate-aware non-final artifacts, Hard Avoid only with strong disqualifying evidence, missing data as Defer / Not Actionable, and layered response depth.
+- Rationale: Converts the final QA pass from a loose checklist into a repeatable acceptance model that tests system safety and product usefulness without relying on unstable market conclusions.
+- Canonical location: `implementation/09-system-acceptance-qa.md`.
+- Supporting execution record: `implementation/p10-qa-execution-report.md`.
+- Runtime location: `implementation/13-codex-runtime-architecture.md` and root `AGENTS.md` navigator synchronized to the P10 policy.
+- Completion note: P10-QA-01 passed with 0 blocking issues and 0 safety failures; remaining note is an Info-level pre-existing uncommitted-work record.
+- Scope note: This log is a supporting record only and does not override canonical implementation documents.

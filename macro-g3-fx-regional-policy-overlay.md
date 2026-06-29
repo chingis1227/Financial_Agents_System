@@ -1,5 +1,25 @@
 # G3 FX & Regional Policy Overlay
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Macro Agent  
+Contributors: Market Sense; Fixed Income Agent; Commodity Agent  
+Used by: Macro Agent; macro-analysis skill  
+Primary reference for: G3, FX, and regional policy overlays  
+Supporting reference for: rates, FX, commodities, and cross-asset regime interpretation  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: High  
+Last reviewed: 2026-06-28  
+Review trigger: Review quarterly or when major central-bank, FX, fiscal, or regional policy regimes change materially.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 The G3 FX & Regional Policy Overlay gives the Macro Agent a disciplined, Pareto-style way to analyze USD, EUR, JPY, ECB policy, BoJ policy, Europe macro, Japan macro, and policy divergence without turning every macro run into a full global macro report.

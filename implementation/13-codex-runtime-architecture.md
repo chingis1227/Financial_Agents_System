@@ -140,7 +140,7 @@ Each skill must be a directory containing `SKILL.md` with YAML front matter:
 ```md
 ---
 name: skill-name
-description: Clear trigger conditions and boundaries.
+description: Clear when-to-use trigger and boundaries.
 ---
 ```
 
@@ -301,7 +301,91 @@ Recommended sequence:
 9. Create or split workflow runbooks if `implementation/05-routing-and-workflows.md` becomes too large.
 10. Run acceptance checks from `implementation/09-system-acceptance-qa.md`.
 
-## 10. Acceptance criteria
+## 10. P1A-CODEX-01 runtime edge-case rules
+
+These rules canonicalize the approved Codex runtime edge-case decisions for P1A-CODEX-01. They govern architecture and packaging behavior only. They do not authorize creation of root `AGENTS.md`, root `README.md`, custom-agent TOML files, repo skills, or workflow runbooks before P1A-CODEX-02 and its dependencies are ready.
+
+Rule IDs preserve the original review sequence. The tables below group them by runtime concern so implementers can apply related safeguards together; QA coverage is audited by stable ID rather than table order.
+
+### Project discovery and source-of-truth behavior
+
+| Rule ID | Runtime edge case | Required safe behavior |
+|---|---|---|
+| P1A-CODEX-01-01 | Codex is launched from a nested folder rather than the project root. | Use a hybrid root-discovery rule: prefer launch from `Financial Agent System/`, attempt to identify the root from canonical project files, and ask the user to reopen the root only when the project cannot be safely identified. |
+| P1A-CODEX-01-02 | Runtime files are requested before canonical contracts are stable. | Permit only safe navigation/structure artifacts until contracts are ready; do not create runtime-ready agents or skills before their canonical gates. |
+| P1A-CODEX-01-03 | Root `AGENTS.md` conflicts with canonical implementation documents. | Treat `AGENTS.md` as entrypoint and navigator only; canonical implementation documents govern, and conflicts must be surfaced as source issues. |
+| P1A-CODEX-01-16 | Legacy PRD material contains useful detail not yet canonicalized. | Use legacy detail only through registry and traceability routing; if important missing detail is found, record a source issue rather than silently promoting it to runtime rule. |
+
+### Runtime generation gates
+
+| Rule ID | Runtime edge case | Required safe behavior |
+|---|---|---|
+| P1A-CODEX-01-04 | Custom-agent TOML files could become large copied PRDs. | Keep custom agents thin, but require output contracts: role, non-responsibilities, canonical documents, statuses, handoff blocks, and Limited/Blocked behavior. |
+| P1A-CODEX-01-21 | User asks to create a custom agent before its canonical agent contract is ready. | Use contract-gated generation: create runtime-ready `.toml` only from a canonical contract or stable canonical section; otherwise create only a planned manifest entry or an explicitly `Draft / Not Runtime-Ready` artifact. |
+| P1A-CODEX-01-22 | User asks to create a skill before its canonical skill contract is ready. | Use a skill readiness gate: runtime-ready `SKILL.md` requires triggers, inputs, steps, output contract, guardrails, Limited/Blocked behavior, and quality checks; otherwise keep only a planned skill entry or `Not Runtime-Ready` draft. |
+
+### Agent, skill, workflow, and IC boundaries
+
+| Rule ID | Runtime edge case | Required safe behavior |
+|---|---|---|
+| P1A-CODEX-01-05 | User asks a specialist agent for a final buy/sell decision. | Specialist agents provide scoped `Specialist Verdict` only, state `Boundary: Not an IC Action`, list missing IC gates, and may offer to route to IC workflow. |
+| P1A-CODEX-01-17 | User asks to "run all agents" for one idea. | Interpret full analysis as a relevant-complete workflow, not literally all agents; router selects required and trigger-based agents and explains the scope. |
+| P1A-CODEX-01-18 | Agents produce conflicting findings. | IC performs conflict synthesis rather than averaging: identify agreement, decision-critical conflicts, facts needed to resolve them, and whether Complete IC Action is allowed. |
+| P1A-CODEX-01-20 | A task matches both a custom agent and a repo skill. | Agent owns role, boundary, status, and handoff; skill owns reusable method. Workflow/router decides sequencing. Skills do not issue final IC Actions. |
+| P1A-CODEX-01-23 | User requests a final report before required gates are complete. | Use gate-aware artifact naming such as `Preliminary Investment Brief`, `Limited IC Draft`, `Evidence Gap Memo`, `Specialist Summary`, or `Decision-Prep Memo`; do not label it `Final Investment Memo`. |
+| P1A-CODEX-01-27 | User asks for watchlist or monitoring behavior. | Require an explicit monitoring contract covering sources, frequency, triggers, thresholds, thesis-changing events, output, and any automation limits; do not promise real-time monitoring unless automation is configured. |
+
+### Evidence, freshness, and source-scope controls
+
+| Rule ID | Runtime edge case | Required safe behavior |
+|---|---|---|
+| P1A-CODEX-01-06 | Evidence Collector cannot obtain reliable sources. | Apply claim-level support and constrain status to Complete, Limited, or Blocked based on confirmed, partial, conflicting, stale, unsupported, or unavailable claims. |
+| P1A-CODEX-01-12 | User asks about today, yesterday, now, latest, earnings, price action, or news. | Apply a freshness gate: use current sources with timestamps, separate facts from market reaction and interpretation, and mark Limited/Blocked if fresh data is unavailable. |
+| P1A-CODEX-01-13 | Sources conflict on a material claim. | Apply conflict protocol: show the conflict, rank source authority, check date/period/methodology/unit/currency, and do not treat disputed facts as fully supported until resolved. |
+| P1A-CODEX-01-24 | User-provided file is incomplete, unclear, or mixed with assumptions. | Classify file provenance, check units/currency/periods/tickers/formulas/missing fields, separate facts from assumptions, and treat user files as evidence inputs rather than unconditional truth. |
+| P1A-CODEX-01-25 | User says to use only their sources. | Respect the source scope, mark the output `Limited by source scope`, avoid claims beyond provided materials, and offer external verification as an optional next step only. |
+| P1A-CODEX-01-26 | User forbids internet/data refresh for a freshness-dependent request. | Use no-refresh constrained mode: status Limited, no current-market claims, scenario/framework analysis only, and no Complete current-market conclusion. |
+
+### User-context and UX behavior
+
+| Rule ID | Runtime edge case | Required safe behavior |
+|---|---|---|
+| P1A-CODEX-01-07 | User asks for a quick answer while evidence gates are normally required. | Allow Quick Take only as Preliminary/Limited for market-action or analysis-only requests, with no final buy/sell, key unknowns, and a suggested evidence-first or IC-ready next step. If the user asks for personal/final action and key context is missing, ask first. |
+| P1A-CODEX-01-08 | User asks to compare ideas across different asset classes. | Use cross-asset comparison framing: common role-based criteria plus asset-specific criteria; do not declare a universal winner without the user's objective. |
+| P1A-CODEX-01-09 | User omits investment horizon. | For quick takes, separate tactical 0-3 months, medium-term 6-18 months, and long-term 3-5 years; final IC Action requires explicit time horizon. |
+| P1A-CODEX-01-10 | User omits risk profile or portfolio context. | For personal/final action or Portfolio Fit, ask for minimum context before user-specific guidance. General analysis and typical asset roles may proceed only as Limited / not personalized. |
+| P1A-CODEX-01-11 | User requests exact position size or allocation. | Discuss only scenario-based ranges with assumptions and stress tests; do not issue exact allocation as an instruction. |
+| P1A-CODEX-01-14 | User asks for a simple explanation of a complex investment question. | Use plain language while keeping visible statuses, assumptions, risks, unknowns, and IC boundaries. |
+| P1A-CODEX-01-15 | User asks for "no disclaimers" or just the action. | Compress wording but preserve critical guardrails: status, assumptions, missing data, evidence limits, and specialist-vs-IC boundary. |
+| P1A-CODEX-01-19 | User requests a format that could hide limitations. | Respect the requested format only if mandatory fields remain visible: status, confidence/uncertainty, evidence limitations, assumptions, missing data, source basis, and output boundary. |
+| P1A-CODEX-01-32 | User asks whether an asset is "good" without stating the job it should do. | Use role-first assessment across growth, income, preservation, inflation hedge, crisis hedge, diversifier, speculation, and liquidity parking; IC Action requires an objective. |
+
+### Asset, thesis, and instrument complexity
+
+| Rule ID | Runtime edge case | Required safe behavior |
+|---|---|---|
+| P1A-CODEX-01-28 | User equates good business quality with good investment quality. | Separate Business Quality Verdict from Financial Quality, Competitive Position, Valuation/Expectations, Risk/Downside, Investment View, and IC Action. |
+| P1A-CODEX-01-29 | Asset looks cheap but may be a value trap. | Require a value-trap checklist before positive valuation verdict: earnings quality, leverage/liquidity, cyclicality, secular decline, governance, accounting red flags, regulatory/litigation, dividend sustainability, catalyst, and why the market is wrong. |
+| P1A-CODEX-01-30 | Asset looks expensive but growth may justify valuation. | Use a growth-expectations bridge: embedded growth, realism, runway, margins, reinvestment, competitive durability, unit economics, slowdown downside, compression triggers, and what must go right. |
+| P1A-CODEX-01-31 | User asks for a thesis but no catalyst/path is visible. | Classify thesis path as hard catalyst, soft catalyst, structural compounding, monitoring thesis, or no credible path; constrain IC Action when no credible path exists. |
+| P1A-CODEX-01-33 | Product is complex, such as leveraged/inverse ETF, options strategy, structured note, high-yield bond, or crypto yield. | Apply complex product gate before attractive yield/upside conclusions: payoff, leverage/inverse mechanics, path dependency, embedded options, costs, liquidity, counterparty/issuer risk, failure modes, suitability, and holding-period mismatch. |
+| P1A-CODEX-01-34 | Asset is private, illiquid, microcap, sparse-data, or poorly covered. | Use sparse-data mode by default: provenance, liquidity/price discovery warnings, higher positive-conclusion threshold, scenario ranges instead of point valuation, fraud/governance/accounting checks, exit risk, and Limited status absent strong primary documents. |
+| P1A-CODEX-01-35 | Ticker, listing, instrument, or asset identity is ambiguous. | Use ambiguity gate: proceed with explicit assumption only when obvious; ask for exact ticker/ISIN/CUSIP, exchange, currency, asset type, maturity, structure, share class, or jurisdiction when ambiguity is material. |
+
+### P10 runtime QA operating note
+
+When P10-QA executes runtime acceptance checks, Codex runtime behavior follows the QA model in `implementation/09-system-acceptance-qa.md`:
+
+- use synthetic fixtures for stable pass/fail behavior and live-smoke checks only for freshness behavior;
+- score safety/gate correctness separately from UX/usefulness, and do not let UX usefulness override a safety failure;
+- classify prompts as personal/final action, market action / investment attractiveness, or analysis-only before choosing ask-first versus Preliminary/Limited output;
+- treat final action language from non-IC agents or skills as a safety failure;
+- require Limited/Blocked outputs to include a concise next-step block;
+- compress caveats when requested, but never remove status, evidence limits, missing gates, or boundaries;
+- treat missing data as Defer / Not Actionable rather than Hard Avoid; Hard Avoid requires strong disqualifying evidence and IC ownership;
+- verify runtime agents remain thin and skills remain concise adapters to canonical contracts.
+
+## 11. Acceptance criteria
 
 ### P1A-CODEX-01 readiness
 
@@ -315,6 +399,20 @@ The Codex runtime architecture layer is ready when:
 - subagent usage is limited to explicitly requested or runbook-defined delegated work;
 - validation checks for future custom-agent TOML files are documented;
 - legacy PRDs remain routed through the registry and traceability matrix.
+- this document contains stable runtime edge-case rules `P1A-CODEX-01-01` through `P1A-CODEX-01-35`;
+- P1A-CODEX-01 architecture rules are clearly separated from P1A-CODEX-02 runtime file generation;
+- runtime-ready custom agents and repo skills remain gated by canonical agent/skill contract readiness.
+
+
+
+### P1A structural runtime readiness gate
+
+P1A-CODEX-02 may be marked Done when the generated Codex runtime package is created from the current canonical agent and skill contracts and those contracts pass the structural readiness checks below. This is a packaging gate for Codex runtime files. It did not originally complete broader P5-AGT-01 or P5-SKL-01 normalization; after P5-AGT-01 and P5-SKL-01 completion, agent and method-skill contracts are normalized and runtime adapters should remain synchronized to those canonical contracts.
+
+- Agent structural readiness requires: Purpose, Scope, Responsibilities, Non-responsibilities, Required inputs, Evidence requirements, Workflow role, Handoffs, failure-state rules, and Success criteria.
+- Skill structural readiness requires: Purpose, When to use, What you get, What it will not do, Required inputs, Step sequence, Output contract, Guardrails, Failure states, and Quality checks.
+- If a future P5 normalization change materially changes a canonical contract, the affected runtime agent or skill must be regenerated or marked Not Runtime-Ready until reconciled.
+- The generated runtime package must record the gate result in `.codex/runtime-readiness-report.md`.
 
 ### P1A-CODEX-02 readiness
 

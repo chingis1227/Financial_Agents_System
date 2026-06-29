@@ -1,5 +1,25 @@
 # Evidence Pack Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Evidence Collector  
+Contributors: Investment Committee; asset-class agents; specialist agents  
+Used by: Evidence Collector; evidence-collection skill; IC synthesis  
+Primary reference for: evidence-pack examples and source-display patterns  
+Supporting reference for: claim-support presentation and report appendices  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when Evidence Layer, report schemas, or source-display rules change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
 `evidence_pack.md` is the shared claim-support evidence artifact for a workflow. It is not a source dump.

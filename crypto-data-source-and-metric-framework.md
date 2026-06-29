@@ -1,12 +1,32 @@
 # Crypto Data Source and Metric Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Evidence Collector  
+Contributors: Crypto Agent; Risk Red Team; Market Intelligence  
+Used by: Evidence Collector; Crypto Agent; crypto-analysis skill  
+Primary reference for: crypto source and metric overlays  
+Supporting reference for: crypto evidence packs and source-quality checks  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: High  
+Last reviewed: 2026-06-28  
+Review trigger: Review quarterly or when crypto data providers, regulatory sources, chain metrics, custody/reserve standards, or ETF disclosure practices change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
-This framework defines source hierarchy, freshness rules, metric caveats, and fallback protocols for Crypto Agent analysis.
+This framework provides advisory crypto source overlays, freshness nuances, metric caveats, and fallback examples for Crypto Agent analysis. `implementation/04-evidence-layer.md` governs evidence readiness and source authority.
 
 Crypto data is useful but uneven. The agent must separate primary data, professional data, dashboards, aggregators, and market commentary.
 
-## Source Hierarchy
+## Advisory Source Overlay
 
 ### Tier 1 — Primary / Official
 

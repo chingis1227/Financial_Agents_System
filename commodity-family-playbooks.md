@@ -1,5 +1,25 @@
 # Commodity Family Playbooks
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Commodity Agent  
+Contributors: Macro Agent; Market Sense; News & Catalysts  
+Used by: Commodity Agent; commodity-analysis skill  
+Primary reference for: commodity-family playbooks  
+Supporting reference for: macro, catalyst, and supply/demand interpretation  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when commodity families, source availability, or supply/demand playbooks materially change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This file gives the Commodity Agent practical mini-playbooks for different commodity families.

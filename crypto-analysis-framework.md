@@ -1,5 +1,25 @@
 # Crypto Analysis Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Crypto Agent  
+Contributors: Evidence Collector; Risk Red Team; Market Sense; Valuation/Expectations  
+Used by: Crypto Agent; crypto-analysis skill  
+Primary reference for: crypto analysis framework examples and domain-specific modules  
+Supporting reference for: crypto risk, valuation-equivalent, liquidity, and adoption analysis  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: High  
+Last reviewed: 2026-06-28  
+Review trigger: Review quarterly or when crypto market structure, regulation, custody, ETF access, or data availability changes materially.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This framework defines the standard structure for Crypto Agent outputs.

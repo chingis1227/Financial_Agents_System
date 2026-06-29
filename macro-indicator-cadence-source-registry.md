@@ -1,8 +1,28 @@
 # Macro Indicator Cadence, Source, and Priority Registry
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Macro Agent  
+Contributors: Evidence Collector; Market Intelligence  
+Used by: Macro Agent; Evidence Collector; macro-analysis skill  
+Primary reference for: macro indicator cadence and source overlays  
+Supporting reference for: macro freshness treatment and evidence packs  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: High  
+Last reviewed: 2026-06-28  
+Review trigger: Review quarterly or when official data cadence, source availability, or macro release practices change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
-This registry defines the Macro Agent's source hierarchy, cadence rules, freshness expectations, indicator priority tiers, and dynamic escalation rules.
+This registry provides advisory macro source overlays, cadence references, freshness nuances, indicator priority examples, and escalation examples. `implementation/04-evidence-layer.md` governs evidence readiness and source authority.
 
 It exists to prevent two common failures:
 
@@ -23,7 +43,7 @@ news_context
 proxy
 ```
 
-## Source Hierarchy
+## Advisory Source Overlay
 
 ### Tier A — Primary / Official
 

@@ -1,5 +1,25 @@
 # Sector & Industry Analysis Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Sector & Industry Analysis  
+Contributors: Structural Winners Discovery; Equity Agent; Market Intelligence  
+Used by: Sector & Industry Analysis Agent; sector-industry-analysis skill  
+Primary reference for: sector and industry analysis framework examples  
+Supporting reference for: theme workflows, discovery candidates, and asset-level review context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when sector workflow, discovery taxonomy, or industry-analysis modules change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
 This framework defines the professional reference playbook for investment-oriented sector and industry analysis. It is the long-form reference behind the Sector & Industry Analysis Agent and the Sector & Industry Analysis Method.
@@ -83,7 +103,9 @@ Required categories:
 
 For each category, define preferred source types, freshness expectations, why the data matters, and whether proxy data is acceptable.
 
-### 5.2 Source Hierarchy
+### 5.2 Advisory Source Notes
+
+Canonical evidence authority: `implementation/04-evidence-layer.md` governs evidence readiness and source authority. This section provides advisory sector/industry source examples only.
 
 Priority sources:
 

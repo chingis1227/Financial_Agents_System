@@ -1,5 +1,25 @@
 # Macro Sensitivity Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Macro Agent  
+Contributors: asset-class agents; Valuation/Expectations; Risk Red Team  
+Used by: Macro Agent; macro-analysis skill; asset-class agents  
+Primary reference for: macro sensitivity mapping  
+Supporting reference for: asset-class risk, valuation, and scenario context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when sensitivity taxonomy or cross-asset transmission assumptions change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Objective
 
 This framework defines the embedded output `macro_sensitivity.md`. It is used when the Macro Agent analyzes how macro conditions affect a specific asset, security, sector, ETF, commodity, crypto asset, fixed income instrument, portfolio question, or investment thesis.

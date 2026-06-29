@@ -44,6 +44,9 @@ The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canon
 |---|---|---|
 | `TASKS.md` | Operational control register | Active work queue and task status tracker. It controls what is currently open or done; `IMPLEMENTATION_BACKLOG.md` governs phase meaning and scope when they differ. |
 | `implementation/12-decision-log.md` | Supporting decision record | Decision history and rationale. It explains why documentation-control rules were chosen, but it does not override canonical implementation documents. |
+| `.codex/runtime-readiness-report.md` | Supporting operational validation record | P1A-CODEX-02 generated-runtime readiness, structural gate, validation, and idempotency record. It does not override canonical implementation documents. |
+| `implementation/reference-library-index.md` | Supporting operational index | P9-REF-01 reference-library navigation, owner/used-by metadata, freshness tier, split/index state, and non-blocking review notes. It does not override the registry or canonical implementation documents. |
+| `implementation/p10-qa-execution-report.md` | Supporting operational validation record | P10-QA-01 Pareto Gate, Full Regression, Live-Smoke, structural validation, source issues, and final closure evidence. It does not override canonical implementation documents. |
 
 ## Legacy document registry
 
@@ -93,7 +96,7 @@ The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canon
 | `market-intelligence-briefing-skill-prd.md` | Needs Merge | Normalize into canonical agent/skill/workflow contract. |
 | `market-materiality-filter.md` | Supporting Reference | Reference/playbook/schema source; supports canonical contracts. |
 | `market-news-source-framework.md` | Supporting Reference | Reference/playbook/schema source; supports canonical contracts. |
-| `market-pattern-library.md` | Needs Split | Large reference library; keep as reference and split/index during cleanup. |
+| `market-pattern-library.md` | Supporting Reference | Reference index and usage guide for split market-pattern files; supports canonical contracts but does not override them. |
 | `market-positioning-agent-prd.md` | Needs Merge | Normalize into canonical agent/skill/workflow contract. |
 | `market-positioning-framework.md` | Supporting Reference | Reference/playbook/schema source; supports canonical contracts. |
 | `market-positioning-method-skill-prd.md` | Needs Merge | Normalize into canonical agent/skill/workflow contract. |
@@ -124,6 +127,22 @@ The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canon
 | `valuation-expectations-framework.md` | Supporting Reference | Reference/playbook/schema source; supports canonical contracts. |
 | `valuation-expectations-method-skill-prd.md` | Needs Merge | Normalize into canonical agent/skill/workflow contract. |
 
+
+## Reference split-file registry
+
+These files were created during P9-REF-01 to make `market-pattern-library.md` safe for retrieval. They are Supporting References and inherit the same advisory boundary: they do not govern final decisions, evidence readiness, routing, IC Action, or agent ownership.
+
+| Reference split file | Status | Implementation role |
+|---|---|---|
+| `market-patterns/event-reactions-and-earnings.md` | Supporting Reference | Detailed event-reaction and earnings pattern bodies. |
+| `market-patterns/expectations-and-narratives.md` | Supporting Reference | Detailed expectations, narrative, and valuation-reset pattern bodies. |
+| `market-patterns/positioning-and-flows.md` | Supporting Reference | Detailed positioning, crowding, squeeze, and flow pattern bodies. |
+| `market-patterns/macro-rates-liquidity.md` | Supporting Reference | Detailed macro, rates, and liquidity pattern bodies. |
+| `market-patterns/cross-asset-regimes.md` | Supporting Reference | Detailed cross-asset and regime pattern bodies. |
+| `market-patterns/stress-and-deleveraging.md` | Supporting Reference | Detailed stress and deleveraging pattern bodies. |
+| `market-patterns/commodities-and-geopolitics.md` | Supporting Reference | Detailed commodity and geopolitical pattern bodies. |
+| `market-patterns/examples-and-source-map.md` | Supporting Reference | Market-pattern examples, optional future patterns, and source-map references. |
+
 ## Broken or legacy references
 
 The following referenced names are not active files in the current corpus and must not be treated as implementation dependencies unless explicitly created later. These are current non-blocking source warnings unless a future task explicitly depends on one of them.
@@ -142,6 +161,35 @@ The following referenced names are not active files in the current corpus and mu
 - generic placeholders such as `agent-prd.md`, `framework.md`, and `method-skill-prd.md`
 
 Handling rule: if a legacy document points to one of these names, use the closest canonical implementation document instead. Routing references resolve to `implementation/05-routing-and-workflows.md`; architecture references resolve to `implementation/02-canonical-architecture.md`; evidence/source references resolve to `implementation/04-evidence-layer.md`.
+
+
+### P5-AGT-01 legacy agent PRD treatment
+
+After P5-AGT-01, the agent-contract portions of legacy `*-agent-prd.md` and router PRD files have been normalized into `implementation/06-agent-contracts.md`. Their registry status remains `Needs Merge` only for residual non-agent-contract material, such as method-skill detail, report-schema examples, workflow examples, reference/playbook detail, or source-policy overlays that belong to later P5-SKL-01, P8-IC-01, P9-REF-01, or related cleanup tasks.
+
+Do not treat the remaining `Needs Merge` status on those legacy files as evidence that P5-AGT-01 is incomplete. For active agent role, boundary, input/output, handoff, and status behavior, `implementation/06-agent-contracts.md` is canonical.
+
+### P5-SKL-01 legacy method-skill PRD treatment
+
+After P5-SKL-01, the method-contract portions of legacy `*-method-skill-prd.md` and `*-skill-prd.md` files have been normalized into `implementation/11-skill-contracts.md`. Their registry status remains `Needs Merge` only for residual non-method-contract material, such as report-schema examples, workflow examples, reference/playbook detail, source-policy overlays, or later P8-IC-01, P9-REF-01, P10-QA-01, or related cleanup tasks.
+
+Do not treat the remaining `Needs Merge` status on those legacy method-skill files as evidence that P5-SKL-01 is incomplete. For active method triggers, inputs, steps, output core, guardrails, failure states, quality checks, and runtime skill-adapter behavior, `implementation/11-skill-contracts.md` is canonical.
+
+
+### P8-IC-01 legacy report-schema treatment
+
+After P8-IC-01, the IC memo and report-schema portions of legacy report frameworks, agent PRDs, method-skill PRDs, and supporting analysis frameworks that route to `implementation/07-investment-committee-and-report-schemas.md` have been normalized into that canonical report-schema contract. Their registry status remains `Needs Merge` or `Supporting Reference` only for residual non-report-schema material, such as reference/playbook detail, source-policy overlays, workflow examples, future P9-REF-01 reference cleanup, P10-QA-01 execution, or later maintenance.
+
+Do not treat the remaining `Needs Merge` status on those legacy files as evidence that P8-IC-01 is incomplete. For active final IC memo structure, non-final IC artifacts, Action Box / Decision-Prep Box behavior, controlled IC Action labels, freshness/source display, report metadata, and report-schema edge cases, `implementation/07-investment-committee-and-report-schemas.md` is canonical.
+
+
+### P9-REF-01 reference-library treatment
+
+After P9-REF-01, registered Supporting References and the former `Needs Split` market pattern library have governance metadata headers, central index coverage in `implementation/reference-library-index.md`, and explicit advisory boundaries. The `market-pattern-library.md` parent file is now an index and usage guide, while detailed pattern bodies live under `market-patterns/`.
+
+Reference files remain subordinate to canonical implementation documents. They may provide examples, taxonomies, diagnostic questions, source overlays, and playbook detail, but they do not control evidence readiness, routing, agent ownership, report schemas, or IC Action.
+
+New unregistered reference files default to Draft Source / Advisory only until registered. If a reference header and the central reference index conflict, record a warning and apply the stricter interpretation until synchronized.
 
 ## Source-of-truth precedence
 

@@ -1,5 +1,25 @@
 # Fixed Income Instrument Playbooks
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Fixed Income Agent  
+Contributors: Macro Agent; Risk Red Team; Portfolio Fit  
+Used by: Fixed Income Agent; fixed-income-analysis skill  
+Primary reference for: fixed-income instrument playbooks  
+Supporting reference for: implementation-quality and risk review context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when instrument structures, market access, or credit/rate playbooks materially change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This file defines instrument-specific fixed income analysis playbooks.
@@ -484,4 +504,3 @@ T-bills, short-term Treasuries, CDs, money market funds, ultra-short bond funds,
 - liquidity restriction;
 - yield falling below alternatives;
 - loss of guarantee / insurance condition.
-

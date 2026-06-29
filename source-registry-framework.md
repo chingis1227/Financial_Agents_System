@@ -1,8 +1,28 @@
 # Source Registry Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Evidence Collector  
+Contributors: domain agents; Market Intelligence; Investment Committee  
+Used by: Evidence Collector; evidence-collection skill; all agent workflows  
+Primary reference for: source hierarchy overlays and source-quality examples  
+Supporting reference for: domain source selection and evidence pack construction  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: High  
+Last reviewed: 2026-06-28  
+Review trigger: Review quarterly or when central evidence policy, source access, or source reliability assumptions change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
-The source registry defines how the Financial Agent System admits, tiers, restricts, and retires sources. It is not merely a static source list. It is a quality-control framework for source reliability, claim strength, freshness, and evidence usability.
+This reference provides advisory source-tier examples, admission considerations, restriction examples, retirement examples, and source-quality vocabulary. `implementation/04-evidence-layer.md` governs evidence readiness and source authority.
 
 The source registry should help answer:
 
@@ -23,7 +43,7 @@ A source is more useful when it is:
 - consistent with other high-quality sources or clearly reconcilable;
 - accessible enough to preserve a repeatable evidence trail.
 
-## 3. Source Tiers
+## 3. Advisory Source Tier Examples
 
 ### 3.1 Tier 1 — Primary / Official Sources
 

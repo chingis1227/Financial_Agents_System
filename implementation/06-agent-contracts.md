@@ -1,256 +1,519 @@
 # Canonical Agent Contracts
 
 Status: Canonical agent-contract layer
+Version: P5-AGT-01 normalized contracts
 
 ## Contract rule
 
-Each contract below uses the standard fields from `implementation/03-contract-templates.md`. Detailed procedural steps live in `implementation/11-skill-contracts.md`; report structure lives in `implementation/07-investment-committee-and-report-schemas.md`; master statuses/gates live in `implementation/00-master-rules.md`.
+Each contract below follows the standard Agent Contract Template from `implementation/03-contract-templates.md`. Agent contracts own role, scope, boundaries, inputs, outputs, evidence requirements, workflow role, handoffs, status behavior, category add-ons, and success criteria. Detailed procedural steps live in `implementation/11-skill-contracts.md`; report schemas live in `implementation/07-investment-committee-and-report-schemas.md`; master statuses/gates live in `implementation/00-master-rules.md`; routing behavior lives in `implementation/05-routing-and-workflows.md`.
+
+Legacy PRDs and frameworks are supporting source material only when routed through `implementation/01-documentation-control.md` and `implementation/10-traceability-matrix.md`. If legacy detail conflicts with canonical documents, canonical rules govern and the conflict is a source issue.
+
+## Standard handoff requirement
+
+All agents must use structured handoff blocks rather than uncontrolled agent-to-agent chat.
+
+```markdown
+## Structured handoff
+- Subject:
+- Scope:
+- Producing agent/skill/workflow:
+- Output status:
+- Evidence status:
+- Key findings:
+- Limitations:
+- Required follow-up:
+- Decision constraints:
+- Downstream relevance:
+```
+
+Non-IC agents must include `Boundary: Not an IC Action` whenever their output could be mistaken for final decision support.
+
+## P5-AGT-01 approved edge-case behavior
+
+| Rule ID | Case | Canonical agent-contract behavior |
+|---|---|---|
+| P5-AGT-01-01 | Premature buy/sell request | Default to Preliminary/Limited Quick Take plus scenario matrix; final IC Action requires full gates. |
+| P5-AGT-01-02 | Ambiguous ticker or instrument | Use safe assumption when obvious; clarify or verify when ambiguity can materially change conclusion or final action. |
+| P5-AGT-01-03 | Freshness-dependent request | Attempt current sources with timestamps; without them, provide Limited structural view only. |
+| P5-AGT-01-04 | Specialist sounds like IC | Allow scoped verdict, require `Boundary: Not an IC Action`, list missing IC gates, and offer IC routing. |
+| P5-AGT-01-05 | Missing upstream input | Use Preliminary/Limited/Blocked based on criticality; propose missing upstream block rather than silently assuming it. |
+| P5-AGT-01-06 | Discovery becomes buy list | Use review-priority labels only and show missing asset-level gates. |
+| P5-AGT-01-07 | Evidence vs agent conflict | Evidence constraints cannot be ignored; use Evidence Challenge, visible conflict, and IC synthesis. |
+| P5-AGT-01-08 | Sizing/allocation request | Use generic or portfolio-fit ranges only; no exact allocation instruction; Risk gate for high-risk/concentrated cases. |
+| P5-AGT-01-09 | Complex product | Educational explainer or enhanced product gate; no final action without structure, liquidity, risk, and implementation checks. |
+| P5-AGT-01-10 | Source-restricted or user-file request | Respect source scope, apply provenance/sanity checks, and mark `Limited by source scope` when material. |
+| P5-AGT-01-11 | Cheap-looking asset | Require value-trap gate; cheapness is not a buy signal; without catalyst/path use Watchlist/Defer only as non-IC signal. |
+| P5-AGT-01-12 | Expensive growth asset | Require growth-expectations bridge and separate Quality Verdict from Valuation Support and IC Action Status. |
+| P5-AGT-01-13 | Agent duplicates skill/framework | Agent owns role/boundary/status/handoff; skills own method; frameworks stay supporting references. |
+| P5-AGT-01-14 | Hybrid instrument ownership | Owned instrument selects lead; underlying exposure uses contributor; IC synthesizes final action. |
+| P5-AGT-01-15 | Run all agents | Interpret as full relevant workflow, list included/excluded agents when useful, and exclude irrelevant agents. |
+| P5-AGT-01-16 | Specialist Complete confused with IC Complete | Use dual status where needed: Analysis Status and IC Action Status; non-IC outputs state boundary. |
+| P5-AGT-01-17 | Uncontrolled handoff chat | Use structured handoff blocks only; IC cannot produce Complete memo from unstructured inputs. |
+| P5-AGT-01-18 | Prior memo update | True delta-update requires prior memo/view; otherwise label as fresh analysis; stale evidence requires refresh. |
+| P5-AGT-01-19 | Premature final report | Use gate-aware artifacts such as Limited IC Draft or Decision-Prep Memo until gates close. |
+| P5-AGT-01-20 | Multiple workflows in one request | Choose primary intent, stage the work, and show prohibited conclusions at each stage. |
 
 ## Master Intake Router
 
-Status: Canonical  
-Category: Router  
-Owner of: Initial request classification and top-level route selection  
-Produces: Intake block; selected route; required/optional agent list; missing-context flags
+```yaml
+contract_type: Agent
+status: Canonical
+category: Router
+owner: Master Intake Router
+used_by:
+  - Financial Agent System workflows
+produces:
+  - intake_block
+  - selected_route
+  - required_optional_agent_list
+  - missing_context_flags
+consumes:
+  - raw_user_request
+  - user_context
+  - source_scope_constraints
+evidence_required: false
+decision_boundary: May classify and route requests; must not issue Specialist Verdict, Investment View, or IC Action.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Turn any user request into the correct workflow family without making investment conclusions.
+Initial request classification and top-level route selection.
+
+### When to use
+
+Use when the workflow requires initial request classification and top-level route selection within this agent's scope.
+
+### What you get
+
+intake_block, selected_route, required_optional_agent_list, missing_context_flags with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No thesis, valuation, risk verdict, evidence lock, or final action.
 
 ### Scope
 
-All new requests, including asset-first, theme/opportunity, direct specialist, comparison, market update, and ambiguous requests.
+All new requests across asset, theme, specialist, comparison, market update, and ambiguous cases.
 
 ### Responsibilities
 
-- Classify request family and user intent.
-- Identify subject, instrument, horizon, action intent, evidence profile, and missing context.
-- Route to Asset Intake, Theme Intake, direct specialist workflow, Market Intelligence, or Market Sense.
-- Preserve positive-action gates.
+- Classify request family and intent
+- identify subject, instrument, horizon, action intent, evidence profile, and missing context
+- choose safest route or minimum clarification.
 
 ### Non-responsibilities
 
-- Does not write investment thesis, valuation, risk verdict, or final IC action.
+- No thesis, valuation, risk verdict, evidence lock, or final action.
 
 ### Required inputs
 
-- Raw user request.
-- Any user-supplied context, constraints, portfolio notes, or prior analysis.
+- raw_user_request
+- user_context
+- source_scope_constraints
+
+### Outputs
+
+- intake_block
+- selected_route
+- required_optional_agent_list
+- missing_context_flags
 
 ### Evidence requirements
 
-['No evidence collection ownership; must assign evidence profile and required readiness level.']
+No direct evidence collection ownership; must assign evidence profile, freshness needs, source scope, and missing context to Evidence Collector when material.
 
 ### Workflow role
 
-Runs first in every workflow. Hands off to route-specific router or workflow owner.
+Runs first in every workflow; hands off to route-specific router, Evidence Collector, specialist workflow, Market Intelligence, Market Sense, or IC workflow.
 
 ### Handoffs
 
-- To Asset Intake Router for asset-first requests.
-- To Theme / Opportunity Intake Router for theme-first requests.
-- To specialist workflow for direct specialist calls.
-- To Evidence Collector with evidence profile and materiality.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To selected workflow owner: route, scope, assumptions, and missing context.
+- To Evidence Collector: evidence profile, freshness needs, and source-scope constraints.
+- To IC workflow: final-decision intent and missing gates when requested.
 
-- Limited when: If request intent is unclear but a safe bounded route is possible, proceed with stated assumptions.
-- Blocked when: If subject or requested action is too ambiguous to route safely.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Routing defaults, ambiguity handling, safe bounded defaults, minimum clarification, and proof that router does not issue investment decisions.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Route is deterministic, assumptions are visible, and missing context is captured.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Asset Intake Router
 
-Status: Canonical  
-Category: Router  
-Owner of: Asset-class route selection  
-Produces: Asset intake block; asset workflow plan
+```yaml
+contract_type: Agent
+status: Canonical
+category: Router
+owner: Asset Intake Router
+used_by:
+  - Financial Agent System workflows
+produces:
+  - asset_intake_block
+  - asset_workflow_plan
+  - lead_agent_selection
+  - required_gate_list
+consumes:
+  - master_intake_block
+  - asset_identifier
+  - user_intent
+  - horizon
+  - portfolio_context_when_available
+evidence_required: false
+decision_boundary: May classify and route requests; must not issue Specialist Verdict, Investment View, or IC Action.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Classify asset requests and select the correct lead asset agent or comparison workflow.
+Asset-class route selection.
+
+### When to use
+
+Use when the workflow requires asset-class route selection within this agent's scope.
+
+### What you get
+
+asset_intake_block, asset_workflow_plan, lead_agent_selection, required_gate_list with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No specialist verdict or final action.
 
 ### Scope
 
-Public equities, ETFs/funds, fixed income, commodities, crypto, hybrids, and asset comparisons.
+Public equities, ETFs/funds, fixed income, commodities, crypto, hybrids, and comparisons.
 
 ### Responsibilities
 
-- Classify asset class and wrapper.
-- Identify full vs focused workflow.
-- Route ambiguous instruments such as crypto ETFs, commodity ETFs, bond ETFs, producer equities, and multi-asset comparisons.
-- Identify when valuation, risk, portfolio fit, macro, news, or positioning are required.
+- Classify asset class and wrapper
+- choose lead asset agent
+- identify contributors and valuation, risk, implementation, portfolio, macro, news, or positioning gates.
 
 ### Non-responsibilities
 
-- Does not make specialist verdict or final action.
+- No specialist verdict or final action.
 
 ### Required inputs
 
-- Master intake block.
-- Asset name/ticker/identifier.
-- User intent and horizon.
-- Any portfolio or action context.
+- master_intake_block
+- asset_identifier
+- user_intent
+- horizon
+- portfolio_context_when_available
+
+### Outputs
+
+- asset_intake_block
+- asset_workflow_plan
+- lead_agent_selection
+- required_gate_list
 
 ### Evidence requirements
 
-['Defines evidence profile for asset workflow; does not collect evidence itself.']
+No direct evidence collection ownership; must assign evidence profile, freshness needs, source scope, and missing context to Evidence Collector when material.
 
 ### Workflow role
 
-Runs after Master Intake for asset-first requests.
+Runs after Master Intake for asset-first requests; hands off to Evidence Collector, lead asset agent, contributors, and IC when requested.
 
 ### Handoffs
 
-- To lead asset agent.
-- To Evidence Collector with asset-specific evidence needs.
-- To IC workflow if final decision is requested.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To selected workflow owner: route, scope, assumptions, and missing context.
+- To Evidence Collector: evidence profile, freshness needs, and source-scope constraints.
+- To IC workflow: final-decision intent and missing gates when requested.
 
-- Limited when: If asset identity is probable but not fully verified; require Evidence Collector verification.
-- Blocked when: If asset cannot be identified or route cannot be safely determined.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Routing defaults, ambiguity handling, safe bounded defaults, minimum clarification, and proof that router does not issue investment decisions.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Correct lead asset agent and required gates are selected.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Theme / Opportunity Intake Router
 
-Status: Canonical  
-Category: Router  
-Owner of: Theme-first route selection  
-Produces: Theme intake block; discovery workflow plan
+```yaml
+contract_type: Agent
+status: Canonical
+category: Router
+owner: Theme / Opportunity Intake Router
+used_by:
+  - Financial Agent System workflows
+produces:
+  - theme_intake_block
+  - discovery_workflow_plan
+  - candidate_handoff_requirements
+consumes:
+  - master_intake_block
+  - theme_or_sector_statement
+  - horizon
+  - universe_constraints
+evidence_required: false
+decision_boundary: May classify and route requests; must not issue Specialist Verdict, Investment View, or IC Action.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Route theme, sector, opportunity, and structural-winner requests to discovery workflows.
+Theme-first route selection.
+
+### When to use
+
+Use when the workflow requires theme-first route selection within this agent's scope.
+
+### What you get
+
+theme_intake_block, discovery_workflow_plan, candidate_handoff_requirements with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No asset-level underwriting, valuation, or IC action.
 
 ### Scope
 
-Themes, sectors, industries, cross-sector opportunities, candidate discovery, thematic monitoring, and theme-to-asset handoff.
+Themes, sectors, industries, cross-sector opportunities, candidate discovery, and monitoring.
 
 ### Responsibilities
 
-- Distinguish theme, sector, discovery, monitoring, and thesis-testing requests.
-- Route to Sector & Industry Analysis or Structural Winners Discovery.
-- Prevent discovery outputs from becoming final investment actions.
+- Scope theme and universe
+- route to Sector & Industry Analysis or Structural Winners Discovery
+- prevent discovery outputs from becoming buy lists.
 
 ### Non-responsibilities
 
-- Does not decide whether a candidate is buyable.
+- No asset-level underwriting, valuation, or IC action.
 
 ### Required inputs
 
-- Master intake block.
-- Theme/sector/opportunity statement.
-- User horizon and universe constraints if supplied.
+- master_intake_block
+- theme_or_sector_statement
+- horizon
+- universe_constraints
+
+### Outputs
+
+- theme_intake_block
+- discovery_workflow_plan
+- candidate_handoff_requirements
 
 ### Evidence requirements
 
-['Requires Discovery Evidence unless user asks for final asset decision.']
+No direct evidence collection ownership; must assign evidence profile, freshness needs, source scope, and missing context to Evidence Collector when material.
 
 ### Workflow role
 
-Runs after Master Intake for theme-first requests.
+Runs after Master Intake for theme-first requests; hands off to Evidence Collector and discovery agents.
 
 ### Handoffs
 
-- To Evidence Collector for discovery evidence.
-- To Sector & Industry Analysis.
-- To Structural Winners Discovery.
-- To Asset Intake when a candidate needs asset-level analysis.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To selected workflow owner: route, scope, assumptions, and missing context.
+- To Evidence Collector: evidence profile, freshness needs, and source-scope constraints.
+- To IC workflow: final-decision intent and missing gates when requested.
 
-- Limited when: If theme is broad but still analyzable with stated scope.
-- Blocked when: If theme is too vague to define a useful universe or sector boundary.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Routing defaults, ambiguity handling, safe bounded defaults, minimum clarification, and proof that router does not issue investment decisions.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Theme route produces maps, candidates, or monitoring outputs without hidden buy/sell recommendations.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Evidence Collector Agent
 
-Status: Canonical  
-Category: Evidence  
-Owner of: Evidence readiness, source discipline, evidence pack, pre-IC lock  
-Produces: evidence_pack.md; readiness matrix; evidence requests; pre-IC evidence lock
+```yaml
+contract_type: Agent
+status: Canonical
+category: Evidence
+owner: Evidence Collector Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - evidence_pack.md
+  - readiness_matrix
+  - evidence_requests
+  - pre_ic_evidence_lock
+consumes:
+  - intake_block
+  - workflow_plan
+  - evidence_profile
+  - agent_evidence_requests
+  - user_materials
+evidence_required: true
+decision_boundary: Owns evidence readiness and claim support; must not make valuation, risk, portfolio, specialist, discovery, or IC conclusions.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Control factual support, freshness, source quality, missing data, contradictions, proxy evidence, and downstream readiness.
+Evidence readiness, source discipline, and pre-IC evidence lock.
+
+### When to use
+
+Use when the workflow requires evidence readiness, source discipline, and pre-ic evidence lock within this agent's scope.
+
+### What you get
+
+evidence_pack.md, readiness_matrix, evidence_requests, pre_ic_evidence_lock with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No valuation, risk, portfolio, specialist, discovery, or IC conclusions.
 
 ### Scope
 
-All decision workflows and any specialist workflow that needs evidence discipline.
+All workflows requiring factual support, freshness, source quality, conflict control, or pre-IC lock.
 
 ### Responsibilities
 
-- Build evidence plan.
-- Collect and classify sources.
-- Map material claims to support status.
-- Track freshness, access, missing data, proxy evidence, and contradictions.
-- Produce readiness matrix and pre-IC evidence lock.
+- Plan evidence
+- classify sources
+- map material claims to support status
+- track freshness, missing data, proxy evidence, contradictions, and provenance.
 
 ### Non-responsibilities
 
-- Does not make valuation, risk, portfolio, specialist, or IC conclusions.
+- No valuation, risk, portfolio, specialist, discovery, or IC conclusions.
 
 ### Required inputs
 
-- Intake block.
-- Selected workflow.
-- Evidence profile.
-- Agent evidence requests.
-- User-provided documents/context where available.
+- intake_block
+- workflow_plan
+- evidence_profile
+- agent_evidence_requests
+- user_materials
+
+### Outputs
+
+- evidence_pack.md
+- readiness_matrix
+- evidence_requests
+- pre_ic_evidence_lock
 
 ### Evidence requirements
 
-['Owns evidence model and Source Registry application.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Runs early; updates readiness before downstream synthesis; performs pre-IC lock before final memo.
+Runs early, updates readiness before synthesis, and locks evidence before final IC memo.
 
 ### Handoffs
 
-- To all agents: evidence pack and limitations.
-- To IC: allowed output status and unsupported material claims.
-- To user/workflow: missing evidence requests.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: When evidence is partial, stale, paywalled, proxy-heavy, or contradiction-limited but bounded analysis remains possible.
-- Blocked when: When decision-critical evidence is unavailable or unreliable.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Source hierarchy, freshness, claim support, readiness, conflict handling, provenance checks, and pre-IC evidence lock behavior.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Downstream agents can see what is supported, missing, stale, contradictory, or decision-ready.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Equity Agent
 
-Status: Canonical  
-Category: Asset-Class Lead  
-Owner of: Company-quality analysis  
-Produces: equity_company_analysis.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Asset-Class Lead
+owner: Equity Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - equity_company_analysis.md
+  - equity_structured_handoff
+consumes:
+  - asset_intake_block
+  - evidence_pack.md
+  - financial_statement_output
+  - sector_context
+  - news_notes
+evidence_required: true
+decision_boundary: May produce scoped Asset-Class Lead output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Analyze business quality and thesis durability for a public company.
+Company-quality analysis.
+
+### When to use
+
+Use when the workflow requires company-quality analysis within this agent's scope.
+
+### What you get
+
+equity_company_analysis.md, equity_structured_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final investment action, exact price target, position sizing, or portfolio recommendation.
 
 ### Scope
 
-Public listed equities and company-level underwriting inside equity workflows.
+Public listed equities and company-level underwriting, including producer or crypto-linked equities when the owned instrument is stock.
 
 ### Responsibilities
 
-- Explain what the company does and how it makes money.
-- Analyze customer value, revenue/margin durability, competitive position, management quality, and thesis dependencies.
-- Consume financial, sector, news, and evidence context where available.
-- Produce monitoring triggers and handoff to valuation, risk, and IC.
+- Analyze business model, customer value, durability, competition, management, thesis dependencies, monitoring triggers, and handoffs.
 
 ### Non-responsibilities
 
@@ -258,55 +521,100 @@ Public listed equities and company-level underwriting inside equity workflows.
 
 ### Required inputs
 
-- Company/ticker identity.
-- Evidence pack.
-- Financial statement output where available.
-- Sector context and news/catalyst notes where material.
+- asset_intake_block
+- evidence_pack.md
+- financial_statement_output
+- sector_context
+- news_notes
+
+### Outputs
+
+- equity_company_analysis.md
+- equity_structured_handoff
 
 ### Evidence requirements
 
-['Requires company identity, business model support, financial filings/sources, and material claim support.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Lead asset agent for equity workflows; runs before Valuation, Risk, and IC.
+Lead asset agent for equity workflows; runs before valuation, risk, and IC.
 
 ### Handoffs
 
-- To Valuation: business drivers, assumptions, financial quality.
-- To Risk: thesis, dependencies, vulnerabilities.
-- To IC: company-quality summary and monitoring triggers.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If business/financial evidence is partial but core business can be analyzed.
-- Blocked when: If company identity or core business/financial evidence is insufficient.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Covered instruments, asset-specific gates, specialist verdict boundary, downstream handoff needs, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-IC and Valuation can understand business quality, key assumptions, and what would change the view.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## ETF Agent
 
-Status: Canonical  
-Category: Asset-Class Lead  
-Owner of: ETF vehicle and exposure analysis  
-Produces: etf_analysis.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Asset-Class Lead
+owner: ETF Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - etf_analysis.md
+  - vehicle_quality_handoff
+consumes:
+  - asset_intake_block
+  - evidence_pack.md
+  - issuer_data
+  - holdings
+  - methodology
+  - liquidity_cost_data
+evidence_required: true
+decision_boundary: May produce scoped Asset-Class Lead output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Analyze ETF/fund exposure quality, wrapper quality, holdings, methodology, costs, liquidity, overlap, and special risks.
+ETF/fund vehicle and exposure analysis.
+
+### When to use
+
+Use when the workflow requires etf/fund vehicle and exposure analysis within this agent's scope.
+
+### What you get
+
+etf_analysis.md, vehicle_quality_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final portfolio action, exact trade plan, tax/legal advice, or allocation.
 
 ### Scope
 
-ETFs, funds, ETC/ETN-like wrappers where applicable, and ETF comparisons.
+ETFs, funds, ETC/ETN-like wrappers, and ETF comparisons.
 
 ### Responsibilities
 
-- Verify fund identity and issuer data.
-- Analyze holdings, exposure, index/methodology or active process.
-- Analyze cost, AUM, liquidity, structure, yield, overlap, and wrapper risks.
-- Separate fund-level from share-class-level implementation issues.
+- Verify fund identity
+- analyze holdings, exposure purity, methodology, fees, AUM, liquidity, tracking, distributions, overlap, and structure.
 
 ### Non-responsibilities
 
@@ -314,54 +622,99 @@ ETFs, funds, ETC/ETN-like wrappers where applicable, and ETF comparisons.
 
 ### Required inputs
 
-- Ticker/fund identity.
-- Issuer fund page, holdings, fact sheet/prospectus where available.
-- Index/methodology documents.
-- Cost, AUM, liquidity, NAV/premium-discount, distribution data.
+- asset_intake_block
+- evidence_pack.md
+- issuer_data
+- holdings
+- methodology
+- liquidity_cost_data
+
+### Outputs
+
+- etf_analysis.md
+- vehicle_quality_handoff
 
 ### Evidence requirements
 
-['Issuer holdings and official documents are primary where available; fallback sources must be labeled.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Lead asset agent for ETF routes; may hand off to Sector, Fixed Income, Commodity, Crypto, Portfolio Fit, Risk, or IC.
+Lead asset agent for ETF/fund routes; may use underlying domain contributors.
 
 ### Handoffs
 
-- To Portfolio Fit: role, overlap, liquidity caveats.
-- To domain agents: look-through exposure issues.
-- To IC: Vehicle Quality Verdict and decision constraints.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If issuer data is stale/partial but exposure can be bounded.
-- Blocked when: If fund identity or holdings/methodology cannot be verified for requested conclusion.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Covered instruments, asset-specific gates, specialist verdict boundary, downstream handoff needs, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Vehicle quality, exposure purity, overlap, implementation caveats, and downstream handoffs are clear.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Fixed Income Agent
 
-Status: Canonical  
-Category: Asset-Class Lead  
-Owner of: Fixed-income compensation and instrument risk  
-Produces: fixed_income_analysis.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Asset-Class Lead
+owner: Fixed Income Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - fixed_income_analysis.md
+  - fixed_income_structured_handoff
+consumes:
+  - asset_intake_block
+  - evidence_pack.md
+  - instrument_terms
+  - market_data
+  - issuer_credit_evidence
+evidence_required: true
+decision_boundary: May produce scoped Asset-Class Lead output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Assess whether yield, spread, carry, and downside compensate for fixed-income risks.
+Fixed-income compensation and instrument risk.
+
+### When to use
+
+Use when the workflow requires fixed-income compensation and instrument risk within this agent's scope.
+
+### What you get
+
+fixed_income_analysis.md, fixed_income_structured_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final allocation, exact execution plan, or legal/tax advice.
 
 ### Scope
 
-Bonds, credit instruments, bond funds/ETFs by handoff, duration/rates exposure, structured/private reviews where bounded.
+Bonds, credit instruments, duration/rates exposure, and bond funds by handoff.
 
 ### Responsibilities
 
-- Analyze yield, spread, duration, curve, convexity, credit, liquidity, call/prepayment/extension, covenant/structure risk.
-- Assess downside and compensation.
-- Produce specialist verdict and monitoring triggers.
+- Analyze yield, spread, carry, duration, curve, convexity, credit, liquidity, structure, call/prepayment/extension, and downside compensation.
 
 ### Non-responsibilities
 
@@ -369,14 +722,20 @@ Bonds, credit instruments, bond funds/ETFs by handoff, duration/rates exposure, 
 
 ### Required inputs
 
-- Instrument identity and terms.
-- Yield/spread/duration and curve data.
-- Issuer/obligor credit evidence.
-- Liquidity and structural documents where available.
+- asset_intake_block
+- evidence_pack.md
+- instrument_terms
+- market_data
+- issuer_credit_evidence
+
+### Outputs
+
+- fixed_income_analysis.md
+- fixed_income_structured_handoff
 
 ### Evidence requirements
 
-['Requires current market data when compensation conclusion is current/action-sensitive.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
@@ -384,29 +743,69 @@ Lead asset agent for fixed-income routes; supports ETF and IC where fixed-income
 
 ### Handoffs
 
-- To Risk: credit/duration/liquidity vulnerabilities.
-- To Portfolio Fit: role, duration, liquidity, drawdown profile.
-- To IC: compensation verdict and constraints.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If market or credit data is partial but compensation can be bounded.
-- Blocked when: If terms, issuer identity, or core pricing/credit evidence are missing.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Covered instruments, asset-specific gates, specialist verdict boundary, downstream handoff needs, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Report shows whether yield/spread/carry compensates for relevant risks.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Commodity Agent
 
-Status: Canonical  
-Category: Asset-Class Lead  
-Owner of: Commodity balance, driver, and instrument-aware analysis  
-Produces: commodity_analysis.md or commodity_market_regime.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Asset-Class Lead
+owner: Commodity Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - commodity_analysis.md
+  - commodity_market_regime.md
+  - commodity_structured_handoff
+consumes:
+  - asset_intake_block
+  - evidence_pack.md
+  - commodity_market_data
+  - curve_inventory_supply_demand_context
+evidence_required: true
+decision_boundary: May produce scoped Asset-Class Lead output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Analyze commodity setups through physical balance, curve, macro, geopolitics, logistics, cost curve, and instrument context.
+Commodity balance, driver, and instrument-aware analysis.
+
+### When to use
+
+Use when the workflow requires commodity balance, driver, and instrument-aware analysis within this agent's scope.
+
+### What you get
+
+commodity_analysis.md, commodity_market_regime.md, commodity_structured_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No precise price target, final buy/sell/hold, producer-equity underwriting, or execution plan.
 
 ### Scope
 
@@ -414,119 +813,208 @@ Oil, gas, metals, uranium, agriculture/softs, commodity baskets, and commodity-l
 
 ### Responsibilities
 
-- Analyze demand, supply, inventories/reserves, trade flows, futures curve, roll/carry, macro sensitivity, geopolitics/policy, logistics/storage, cost curve, substitution, and instrument wrapper effects.
-- Produce specialist verdict and actionability label.
+- Analyze demand, supply, inventories, curve, roll/carry, macro, geopolitics, policy, logistics, storage, cost curve, substitution, and wrapper effects.
 
 ### Non-responsibilities
 
-- No precise price target, final buy/sell/hold, producer-equity underwriting, or trade execution plan.
+- No precise price target, final buy/sell/hold, producer-equity underwriting, or execution plan.
 
 ### Required inputs
 
-- Commodity/instrument identity.
-- Demand/supply/inventory evidence.
-- Curve/market data where relevant.
-- Macro/policy/logistics context.
+- asset_intake_block
+- evidence_pack.md
+- commodity_market_data
+- curve_inventory_supply_demand_context
+
+### Outputs
+
+- commodity_analysis.md
+- commodity_market_regime.md
+- commodity_structured_handoff
 
 ### Evidence requirements
 
-['Requires fresh market/curve data when setup is current or action-sensitive.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Lead asset agent for commodity routes; may hand off to Macro, ETF, Equity, Risk, Portfolio Fit, or IC.
+Lead asset agent for commodity routes; contributor for commodity ETFs, producers, and macro workflows.
 
 ### Handoffs
 
-- To Macro: inflation/growth/policy transmission.
-- To Equity/ETF: producer or wrapper implications.
-- To IC: setup quality, constraints, monitoring.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If physical data is delayed or proxy-heavy but direction can be bounded.
-- Blocked when: If commodity identity or decision-critical balance/market data is unavailable.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Covered instruments, asset-specific gates, specialist verdict boundary, downstream handoff needs, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Commodity setup, balance, risks, actionability label, and handoffs are clear.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Crypto Agent
 
-Status: Canonical  
-Category: Asset-Class Lead  
-Owner of: Crypto asset economics and viability analysis  
-Produces: crypto_analysis.md or crypto_market_regime.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Asset-Class Lead
+owner: Crypto Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - crypto_analysis.md
+  - crypto_market_regime.md
+  - crypto_structured_handoff
+consumes:
+  - asset_intake_block
+  - evidence_pack.md
+  - network_tokenomics_adoption_data
+  - liquidity_regulatory_security_context
+evidence_required: true
+decision_boundary: May produce scoped Asset-Class Lead output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Analyze crypto asset viability, economics, token value capture, liquidity, regulation, security, and governance.
+Crypto asset economics and viability analysis.
+
+### When to use
+
+Use when the workflow requires crypto asset economics and viability analysis within this agent's scope.
+
+### What you get
+
+crypto_analysis.md, crypto_market_regime.md, crypto_structured_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No custody instructions, yield-farming recommendations, legal/tax advice, leverage instructions, or final action.
 
 ### Scope
 
-BTC, ETH, L1/L2, DeFi, stablecoins, tokenization/RWA, crypto equities/treasuries by handoff, and crypto ETFs by wrapper handoff.
+BTC, ETH, L1/L2, DeFi, stablecoins, tokenization/RWA, exchange tokens, crypto ETFs by exposure handoff, and crypto market regimes.
 
 ### Responsibilities
 
-- Verify asset identity and economic category.
-- Analyze value accrual, adoption quality, tokenomics, liquidity, structural demand/supply, macro/liquidity sensitivity, regulation, custody/security, governance, and edge cases.
-- Apply investment-grade viability gate.
+- Verify asset identity
+- analyze value accrual, adoption, tokenomics, liquidity, supply/demand, macro sensitivity, regulation, custody/security, governance, and viability.
 
 ### Non-responsibilities
 
-- No custody instructions, yield-farming recommendations, legal/tax advice, leverage instructions, or final buy/sell/hold.
+- No custody instructions, yield-farming recommendations, legal/tax advice, leverage instructions, or final action.
 
 ### Required inputs
 
-- Verified asset identity.
-- Network/tokenomics/adoption/liquidity data.
-- Regulatory/security/governance evidence.
-- Market data and flows where relevant.
+- asset_intake_block
+- evidence_pack.md
+- network_tokenomics_adoption_data
+- liquidity_regulatory_security_context
+
+### Outputs
+
+- crypto_analysis.md
+- crypto_market_regime.md
+- crypto_structured_handoff
 
 ### Evidence requirements
 
-['Fresh data required for flows, liquidity, unlocks, hacks, regulation, derivatives stress, and current setup.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Lead asset agent for crypto routes; may hand off to ETF, Macro, Risk, Portfolio Fit, or IC.
+Lead asset agent for crypto routes; contributor for crypto ETFs/equities and market-regime workflows.
 
 ### Handoffs
 
-- To Risk: protocol/security/regulatory/thesis fragility.
-- To Portfolio Fit: volatility, custody/access, concentration.
-- To IC: viability, thesis, anti-thesis, monitoring.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If data is partial, dashboard-dependent, or fast-moving but bounded view is possible.
-- Blocked when: If asset identity, tokenomics, security, or critical liquidity evidence is unverifiable.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Covered instruments, asset-specific gates, specialist verdict boundary, downstream handoff needs, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Viability, thesis/anti-thesis, risks, valuation context, and monitoring triggers are clear.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Valuation & Expectations Agent
 
-Status: Canonical  
-Category: Specialist  
-Owner of: Public-equity valuation and implied expectations  
-Produces: valuation_expectations.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Specialist
+owner: Valuation & Expectations Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - valuation_expectations.md
+  - valuation_structured_handoff
+consumes:
+  - evidence_pack.md
+  - lead_analysis
+  - price_market_cap_ev
+  - financial_history_forecast_inputs
+evidence_required: true
+decision_boundary: May produce scoped Specialist output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Assess whether current market price is justified by realistic expectations.
+Public-equity valuation and implied expectations.
+
+### When to use
+
+Use when the workflow requires public-equity valuation and implied expectations within this agent's scope.
+
+### What you get
+
+valuation_expectations.md, valuation_structured_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final IC action, exact price target as final truth, or full operating model replacement.
 
 ### Scope
 
-Detailed implementation is public listed equities first; other asset valuation/compensation is owned by relevant asset agents.
+Valuation, implied expectations, upside/downside, margin of safety, and current price support, primarily for public equities.
 
 ### Responsibilities
 
-- Reverse-engineer market expectations.
-- Select context-appropriate valuation methods.
-- Build scenario-implied valuation range and return bridge.
-- Identify valuation risks, margin of safety, and what must be true.
+- Reverse-engineer market expectations
+- choose valuation method
+- build scenario range and return bridge
+- identify assumptions and valuation risks.
 
 ### Non-responsibilities
 
@@ -534,14 +1022,19 @@ Detailed implementation is public listed equities first; other asset valuation/c
 
 ### Required inputs
 
-- Price/market cap/EV.
-- Financial history and forecast inputs.
-- Business quality analysis.
-- Peer/historical/consensus context where available.
+- evidence_pack.md
+- lead_analysis
+- price_market_cap_ev
+- financial_history_forecast_inputs
+
+### Outputs
+
+- valuation_expectations.md
+- valuation_structured_handoff
 
 ### Evidence requirements
 
-['Requires timestamped market data and supported financial/estimate inputs.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
@@ -549,84 +1042,168 @@ Runs after lead equity/business and financial analysis when price/action is deci
 
 ### Handoffs
 
-- To Risk: priced-in expectations and downside sensitivity.
-- To IC: valuation constraint, asymmetry, monitoring.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If valuation inputs are partial, stale, or proxy-based but bounded scenarios are possible.
-- Blocked when: If core price, financial, capital structure, or scenario inputs are missing.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Trigger conditions, scoped verdict labels, missing IC gates, direct-specialist behavior, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-IC can see what is priced in, upside/downside range, assumptions, and valuation constraints.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Risk / Red Team Agent
 
-Status: Canonical  
-Category: Specialist  
-Owner of: Thesis failure analysis  
-Produces: risk_red_team.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Specialist
+owner: Risk / Red Team Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - risk_red_team.md
+  - risk_gate_handoff
+consumes:
+  - core_thesis
+  - evidence_pack.md
+  - lead_analysis
+  - valuation_context
+  - specialist_reports
+evidence_required: true
+decision_boundary: May produce scoped Specialist output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Challenge the actual thesis and identify material failure paths.
+Thesis failure analysis.
+
+### When to use
+
+Use when the workflow requires thesis failure analysis within this agent's scope.
+
+### What you get
+
+risk_red_team.md, risk_gate_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No generic risk list, hidden recommendation, exact sizing, or final action.
 
 ### Scope
 
-Asset, equity, theme, and IC workflows where thesis risk or final action is requested.
+Asset, theme, direct risk, and IC workflows where thesis risk, downside, or final action is requested.
 
 ### Responsibilities
 
-- Extract core thesis and assumptions.
-- Apply materiality and anti-overbreaking discipline.
-- Identify failure paths, bear case, risk gates, counter-evidence, and monitoring.
-- Link major risks to valuation/downside when Complete Review is requested.
+- Extract thesis
+- identify failure paths, counter-evidence, bear case, risk gates, downside, and monitoring triggers.
 
 ### Non-responsibilities
 
-- No generic risk list, hidden recommendation, exact position sizing, or final action.
+- No generic risk list, hidden recommendation, exact sizing, or final action.
 
 ### Required inputs
 
-- Core thesis.
-- Evidence pack.
-- Lead analysis.
-- Valuation context for Complete Review.
-- Relevant specialist reports.
+- core_thesis
+- evidence_pack.md
+- lead_analysis
+- valuation_context
+- specialist_reports
+
+### Outputs
+
+- risk_red_team.md
+- risk_gate_handoff
 
 ### Evidence requirements
 
-['Requires supported thesis facts and risk evidence; valuation link required for Complete Review.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Runs after lead analysis and valuation where final action is requested.
+Runs after lead analysis and valuation where final action is requested; may run direct as scoped specialist.
 
 ### Handoffs
 
-- To Evidence Collector: challenge requests.
-- To IC: failure paths, bear case, risk verdict, unresolved questions.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If thesis/evidence is available but valuation or specific risk evidence is incomplete.
-- Blocked when: If core thesis is undefined or decision-critical risk evidence is missing.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Trigger conditions, scoped verdict labels, missing IC gates, direct-specialist behavior, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-IC can see what could break the thesis, how it transmits, and what to monitor.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## News & Catalysts Agent
 
-Status: Canonical  
-Category: Specialist  
-Owner of: Recent events, catalysts, and event risk  
-Produces: news_catalysts.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Specialist
+owner: News & Catalysts Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - news_catalysts.md
+  - event_handoff
+consumes:
+  - subject_scope
+  - event_sources
+  - evidence_pack.md
+  - horizon
+evidence_required: true
+decision_boundary: May produce scoped Specialist output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Analyze recent news, active carryover events, upcoming catalysts, and event-driven thesis changes.
+Recent events, catalysts, and event risk.
+
+### When to use
+
+Use when the workflow requires recent events, catalysts, and event risk within this agent's scope.
+
+### What you get
+
+news_catalysts.md, event_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final IC action or rumor-based conclusion.
 
 ### Scope
 
@@ -634,62 +1211,104 @@ Company, sector, asset, macro, regulatory, litigation, earnings, M&A, product, c
 
 ### Responsibilities
 
-- Classify events as Confirmed, Reported, Unconfirmed, or Rumor.
-- Assess catalyst relevance, timing, thesis impact, and freshness.
-- Identify negative news and follow-up triggers.
+- Classify events as Confirmed, Reported, Unconfirmed, or Rumor
+- assess materiality, timing, thesis impact, freshness, and follow-up triggers.
 
 ### Non-responsibilities
 
-- No final IC action or unsupported rumor-based conclusion.
+- No final IC action or rumor-based conclusion.
 
 ### Required inputs
 
-- Subject/scope.
-- Recent event sources.
-- Evidence pack or source notes.
-- User requested horizon.
+- subject_scope
+- event_sources
+- evidence_pack.md
+- horizon
+
+### Outputs
+
+- news_catalysts.md
+- event_handoff
 
 ### Evidence requirements
 
-['Freshness and source confidence are mandatory for material events.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Conditional specialist in asset/theme workflows; direct specialist for news update requests.
+Conditional specialist in asset/theme workflows; direct specialist for news/catalyst requests.
 
 ### Handoffs
 
-- To Evidence Collector: source/freshness gaps.
-- To Risk/IC: event risks and catalyst constraints.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If reporting is partial, source confidence is low, or event status is unconfirmed.
-- Blocked when: If requested event conclusion cannot be verified.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Trigger conditions, scoped verdict labels, missing IC gates, direct-specialist behavior, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Material events, catalyst path, source confidence, and thesis relevance are clear.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Market Positioning Agent
 
-Status: Canonical  
-Category: Specialist  
-Owner of: Expectations, crowding, positioning, narrative saturation, and event bar  
-Produces: market_positioning.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Specialist
+owner: Market Positioning Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - market_positioning.md
+  - positioning_handoff
+consumes:
+  - asset_theme_context
+  - market_data
+  - flow_positioning_sentiment_estimate_evidence
+evidence_required: true
+decision_boundary: May produce scoped Specialist output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Assess what the market appears to believe and whether positioning creates risk or opportunity.
+Expectations, crowding, positioning, narrative saturation, and event bar.
+
+### When to use
+
+Use when the workflow requires expectations, crowding, positioning, narrative saturation, and event bar within this agent's scope.
+
+### What you get
+
+market_positioning.md, positioning_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final buy/sell action or claim that positioning alone determines fundamental value.
 
 ### Scope
 
-Assets, sectors, themes, events, and setup analysis where expectations/crowding are material.
+Assets, sectors, themes, events, and setup analysis where expectations or crowding are material.
 
 ### Responsibilities
 
 - Analyze priced-in narrative, expectation bar, crowding/neglect, revision momentum, event bar, and positioning risk.
-- Produce handoffs to Risk and IC.
 
 ### Non-responsibilities
 
@@ -697,13 +1316,18 @@ Assets, sectors, themes, events, and setup analysis where expectations/crowding 
 
 ### Required inputs
 
-- Asset/theme context.
-- Price action and market data.
-- Flow/positioning/sentiment/estimate evidence where available.
+- asset_theme_context
+- market_data
+- flow_positioning_sentiment_estimate_evidence
+
+### Outputs
+
+- market_positioning.md
+- positioning_handoff
 
 ### Evidence requirements
 
-['Flexible evidence allowed, but weak inputs must be labeled; current data required for current setup claims.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
@@ -711,28 +1335,68 @@ Conditional specialist; direct specialist when user asks about positioning.
 
 ### Handoffs
 
-- To Risk: positioning fragility.
-- To IC: expectation bar and setup constraint.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If positioning evidence is indirect or incomplete.
-- Blocked when: If no usable evidence supports a positioning conclusion.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Trigger conditions, scoped verdict labels, missing IC gates, direct-specialist behavior, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Market belief, crowding/neglect, event bar, and decision relevance are explicit.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Macro Agent
 
-Status: Canonical  
-Category: Specialist  
-Owner of: Macro sensitivity, regime context, and cross-asset macro drivers  
-Produces: macro_sensitivity.md or macro regime output
+```yaml
+contract_type: Agent
+status: Canonical
+category: Specialist
+owner: Macro Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - macro_sensitivity.md
+  - macro_regime_output
+  - macro_handoff
+consumes:
+  - asset_theme_context
+  - macro_variables
+  - fresh_market_data_when_needed
+evidence_required: true
+decision_boundary: May produce scoped Specialist output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Assess macro drivers that materially affect an asset, theme, or market setup.
+Macro sensitivity, regime context, and cross-asset macro drivers.
+
+### When to use
+
+Use when the workflow requires macro sensitivity, regime context, and cross-asset macro drivers within this agent's scope.
+
+### What you get
+
+macro_sensitivity.md, macro_regime_output, macro_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final asset action or generic macro commentary unrelated to thesis.
 
 ### Scope
 
@@ -740,10 +1404,10 @@ Growth, inflation, rates, real yields, liquidity, credit, FX, commodities, regio
 
 ### Responsibilities
 
-- Identify material macro channels.
-- Distinguish macro sensitivity from full macro essay.
-- Apply freshness rules for market-sensitive data.
-- Produce thesis-relevant implications and handoff.
+- Identify material macro channels
+- distinguish sensitivity from generic essay
+- apply freshness
+- state transmission, timeframe, scenarios, and thesis relevance.
 
 ### Non-responsibilities
 
@@ -751,13 +1415,19 @@ Growth, inflation, rates, real yields, liquidity, credit, FX, commodities, regio
 
 ### Required inputs
 
-- Asset/theme/request context.
-- Relevant macro variables.
-- Fresh market data where current/action-sensitive.
+- asset_theme_context
+- macro_variables
+- fresh_market_data_when_needed
+
+### Outputs
+
+- macro_sensitivity.md
+- macro_regime_output
+- macro_handoff
 
 ### Evidence requirements
 
-['Current rates/FX/commodity/spread/volatility data required when conclusions depend on them.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
@@ -765,28 +1435,67 @@ Conditional specialist in asset/theme workflows; direct specialist for macro req
 
 ### Handoffs
 
-- To asset agents: macro transmission.
-- To IC: macro constraint or tailwind/headwind.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If macro data is stale or only partly relevant.
-- Blocked when: If decision-critical macro data is unavailable for current setup.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Trigger conditions, scoped verdict labels, missing IC gates, direct-specialist behavior, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Macro drivers and their thesis relevance are clear and non-generic.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Portfolio Fit Agent
 
-Status: Canonical  
-Category: Specialist  
-Owner of: Generic role fit and user-specific portfolio fit constraints  
-Produces: portfolio_fit.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Specialist
+owner: Portfolio Fit Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - portfolio_fit.md
+  - portfolio_fit_handoff
+consumes:
+  - asset_thesis
+  - user_portfolio_context
+  - risk_valuation_asset_reports
+evidence_required: true
+decision_boundary: May produce scoped Specialist output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Assess how an asset or idea fits as portfolio exposure.
+Generic role fit and user-specific portfolio fit constraints.
+
+### When to use
+
+Use when the workflow requires generic role fit and user-specific portfolio fit constraints within this agent's scope.
+
+### What you get
+
+portfolio_fit.md, portfolio_fit_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No exact allocation, execution plan, or final buy/sell action.
 
 ### Scope
 
@@ -794,8 +1503,8 @@ Generic role analysis and user-specific fit when portfolio context exists.
 
 ### Responsibilities
 
-- Separate generic role fit from user-specific fit.
-- Assess overlap, concentration, volatility, drawdown, liquidity, FX, tax caveats, implementation burden, and monitoring burden.
+- Separate generic from personalized fit
+- assess overlap, concentration, volatility, drawdown, liquidity, FX, tax caveats, implementation burden, and monitoring burden.
 
 ### Non-responsibilities
 
@@ -803,68 +1512,120 @@ Generic role analysis and user-specific fit when portfolio context exists.
 
 ### Required inputs
 
-- Asset/thesis.
-- User portfolio context if available.
-- Risk/valuation/asset reports where available.
+- asset_thesis
+- user_portfolio_context
+- risk_valuation_asset_reports
+
+### Outputs
+
+- portfolio_fit.md
+- portfolio_fit_handoff
 
 ### Evidence requirements
 
-['Portfolio-specific conclusions require user portfolio context; otherwise mark user-specific section Limited.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Conditional specialist when portfolio role or suitability is requested/material.
+Conditional specialist when portfolio role, sizing, or suitability is requested or material.
 
 ### Handoffs
 
-- To IC: role fit, constraints, missing portfolio context.
-- To user/workflow: required portfolio information.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If user-specific portfolio context is missing; still produce generic role fit.
-- Blocked when: If user asks for user-specific fit and refuses/does not provide necessary context.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Trigger conditions, scoped verdict labels, missing IC gates, direct-specialist behavior, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Generic and user-specific fit are separated and constraints are explicit.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Market Sense Agent
 
-Status: Canonical  
-Category: Specialist  
-Owner of: Market move explanation, driver dominance, pattern matching, hypothesis generation  
-Produces: market_sense.md or driver dominance output
+```yaml
+contract_type: Agent
+status: Canonical
+category: Specialist
+owner: Market Sense Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - market_sense.md
+  - driver_dominance_output
+  - market_reaction_handoff
+consumes:
+  - asset_market_move
+  - fresh_market_data
+  - news_macro_positioning_context
+  - driver_maps
+evidence_required: true
+decision_boundary: May produce scoped Specialist output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Explain why an asset or market moved and what drivers dominated.
+Market move explanation, driver dominance, pattern matching, and hypotheses.
+
+### When to use
+
+Use when the workflow requires market move explanation, driver dominance, pattern matching, and hypotheses within this agent's scope.
+
+### What you get
+
+market_sense.md, driver_dominance_output, market_reaction_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final recommendation or unsupported causal certainty.
 
 ### Scope
 
-Market reaction, driver dominance, expected-vs-actual reaction, narrative shift, and pattern matching requests.
+Market reaction, driver dominance, expected-vs-actual reaction, narrative shift, and pattern matching.
 
 ### Responsibilities
 
-- Define price move.
-- Identify dominant/supporting/opposing/ignored drivers.
-- Check surprise vs expectations and cross-asset confirmation.
-- Generate hypotheses with confidence and disconfirming evidence.
+- Define move
+- identify dominant/supporting/opposing/ignored drivers
+- check surprise and cross-asset confirmation
+- generate hypotheses and disconfirming evidence.
 
 ### Non-responsibilities
 
-- No final investment recommendation or unsupported causal certainty.
+- No final recommendation or unsupported causal certainty.
 
 ### Required inputs
 
-- Asset/market and price move.
-- Fresh market data.
-- Relevant news/macro/positioning context.
-- Asset driver map and pattern references.
+- asset_market_move
+- fresh_market_data
+- news_macro_positioning_context
+- driver_maps
+
+### Outputs
+
+- market_sense.md
+- driver_dominance_output
+- market_reaction_handoff
 
 ### Evidence requirements
 
-['Current data required for current market reaction; causal claims require support/confidence labels.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
@@ -872,38 +1633,78 @@ Direct specialist or context module for asset/IC workflows.
 
 ### Handoffs
 
-- To Evidence Collector: missing driver evidence.
-- To Risk/Positioning/IC: implications and uncertainty.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If evidence supports hypotheses but not a confident dominant driver.
-- Blocked when: If price move or evidence context is unavailable.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Trigger conditions, scoped verdict labels, missing IC gates, direct-specialist behavior, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Dominant driver explanation is bounded, evidence-aware, and includes alternatives.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Market Intelligence Agent
 
-Status: Canonical  
-Category: Specialist  
-Owner of: Market briefings and material market updates  
-Produces: market_intelligence_briefing.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Specialist
+owner: Market Intelligence Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - market_intelligence_briefing.md
+  - market_development_handoff
+consumes:
+  - market_news_data_sources
+  - user_scope
+  - asset_universe
+  - theme_focus
+evidence_required: true
+decision_boundary: May produce scoped Specialist output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Provide market situational awareness and route material developments to relevant agents.
+Market briefings and material market updates.
+
+### When to use
+
+Use when the workflow requires market briefings and material market updates within this agent's scope.
+
+### What you get
+
+market_intelligence_briefing.md, market_development_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final investment decision or IC replacement.
 
 ### Scope
 
-Daily/weekly market briefings, material news, cross-asset updates, and market-monitoring outputs.
+Daily/weekly briefings, material news, cross-asset updates, and monitoring-style situational awareness.
 
 ### Responsibilities
 
-- Separate facts from interpretation.
-- Identify material developments and affected assets/themes.
-- Route items to relevant agents or workflows.
+- Separate facts from interpretation
+- identify material developments
+- route items to relevant agents or workflows.
 
 ### Non-responsibilities
 
@@ -911,12 +1712,19 @@ Daily/weekly market briefings, material news, cross-asset updates, and market-mo
 
 ### Required inputs
 
-- Market news/data sources.
-- User scope, region, asset universe, or theme focus.
+- market_news_data_sources
+- user_scope
+- asset_universe
+- theme_focus
+
+### Outputs
+
+- market_intelligence_briefing.md
+- market_development_handoff
 
 ### Evidence requirements
 
-['Source/date confidence required for market developments.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
@@ -924,29 +1732,70 @@ Standalone briefing or upstream context provider.
 
 ### Handoffs
 
-- To News/Catalysts: event items.
-- To Market Sense: reaction items.
-- To asset/theme workflows: relevant developments.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If coverage/source access is partial.
-- Blocked when: If requested briefing cannot access any reliable current sources.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Trigger conditions, scoped verdict labels, missing IC gates, direct-specialist behavior, and `Boundary: Not an IC Action`.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Briefing is material, sourced, routed, and not decision-overclaiming.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Sector & Industry Analysis Agent
 
-Status: Canonical  
-Category: Discovery / Specialist  
-Owner of: Sector structure, profit pools, subsector attractiveness, and public-market investability  
-Produces: sector_industry_memo.md; sector_investment_map.md; sector_monitoring_plan.md; embedded sector_context.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Discovery
+owner: Sector & Industry Analysis Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - sector_industry_memo.md
+  - sector_investment_map.md
+  - sector_monitoring_plan.md
+  - sector_context.md
+consumes:
+  - sector_theme_definition
+  - evidence_pack.md
+  - company_subsector_universe
+  - horizon_constraints
+evidence_required: true
+decision_boundary: May produce scoped Discovery output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Analyze sectors/industries as standalone opportunities or embedded company context.
+Sector structure, profit pools, subsector attractiveness, and investability.
+
+### When to use
+
+Use when the workflow requires sector structure, profit pools, subsector attractiveness, and investability within this agent's scope.
+
+### What you get
+
+sector_industry_memo.md, sector_investment_map.md, sector_monitoring_plan.md, sector_context.md with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final action on individual securities without asset-first workflow.
 
 ### Scope
 
@@ -954,7 +1803,7 @@ Standalone sector diagnostics, embedded company context, and broad theme-as-sect
 
 ### Responsibilities
 
-- Analyze sector structure, TAM discipline, growth quality, drivers, value chain, profit pools, subsectors, competition, metrics, valuation context, public-market investability, risks, and monitoring.
+- Analyze structure, TAM discipline, growth quality, drivers, value chain, profit pools, subsectors, competition, metrics, valuation context, investability, risks, and monitoring.
 
 ### Non-responsibilities
 
@@ -962,14 +1811,21 @@ Standalone sector diagnostics, embedded company context, and broad theme-as-sect
 
 ### Required inputs
 
-- Sector/theme definition.
-- Evidence pack.
-- Relevant companies/subsectors.
-- User horizon/universe constraints.
+- sector_theme_definition
+- evidence_pack.md
+- company_subsector_universe
+- horizon_constraints
+
+### Outputs
+
+- sector_industry_memo.md
+- sector_investment_map.md
+- sector_monitoring_plan.md
+- sector_context.md
 
 ### Evidence requirements
 
-['Uses Discovery or Analytical Evidence; decision action requires later asset-level Decision Evidence.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
@@ -977,29 +1833,69 @@ Theme workflow owner or embedded context provider for equity workflow.
 
 ### Handoffs
 
-- To Structural Winners: candidate opportunity areas.
-- To Equity/ETF: sector context.
-- To IC: sector constraints when material.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If sector boundaries or data are partial but useful map is possible.
-- Blocked when: If sector/theme cannot be scoped or evidence is too weak.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Candidate/theme ranking method, `Candidate Discovery, Not Investment Action` boundary, missing asset-level gates, and no buy/sell language.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Output explains sector attractiveness, drivers, risks, valuation context, beneficiaries, and monitoring.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Structural Winners Discovery Agent
 
-Status: Canonical  
-Category: Discovery  
-Owner of: Theme-driven candidate discovery and ranking  
-Produces: structural_winners_memo.md; candidate_watchlist.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Discovery
+owner: Structural Winners Discovery Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - structural_winners_memo.md
+  - candidate_watchlist.md
+  - asset_intake_handoff
+consumes:
+  - theme_industry_definition
+  - discovery_evidence
+  - universe_constraints
+  - sector_context
+evidence_required: true
+decision_boundary: May produce scoped Discovery output for its domain; must not issue final IC Action or exceed the stated owner boundary.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Discover and rank potential long-term structural winner candidates inside a theme or industry.
+Theme-driven candidate discovery and ranking.
+
+### When to use
+
+Use when the workflow requires theme-driven candidate discovery and ranking within this agent's scope.
+
+### What you get
+
+structural_winners_memo.md, candidate_watchlist.md, asset_intake_handoff with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No final investment action, valuation conclusion, or portfolio recommendation.
 
 ### Scope
 
@@ -1007,10 +1903,10 @@ Theme/industry discovery, similar-company search, failed-known-company contrast 
 
 ### Responsibilities
 
-- Map value chain.
-- Identify candidate archetypes.
-- Apply positive/negative criteria and hard disqualifiers.
-- Rank candidates and define evidence gaps/monitoring.
+- Map value chain and archetypes
+- apply positive/negative criteria and hard disqualifiers
+- rank candidates by review priority
+- define evidence gaps and monitoring.
 
 ### Non-responsibilities
 
@@ -1018,14 +1914,20 @@ Theme/industry discovery, similar-company search, failed-known-company contrast 
 
 ### Required inputs
 
-- Theme/industry definition.
-- Discovery evidence.
-- Universe constraints.
-- Sector context where available.
+- theme_industry_definition
+- discovery_evidence
+- universe_constraints
+- sector_context
+
+### Outputs
+
+- structural_winners_memo.md
+- candidate_watchlist.md
+- asset_intake_handoff
 
 ### Evidence requirements
 
-['Discovery Evidence supports candidate ranking only; asset-level Decision Evidence is required for action.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
@@ -1033,29 +1935,72 @@ Runs inside theme-first workflow; hands candidates to Asset Intake for deep dive
 
 ### Handoffs
 
-- To Asset Intake: candidate identity and thesis reason.
-- To Evidence Collector: required asset-level evidence gaps.
-- To user/IC: explicit non-actionability boundary.
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
-### Limited / Blocked rules
+- To Evidence Collector: evidence needs, source limitations, and challenge requests where relevant.
+- To downstream agents: structured output with status, evidence status, limitations, required follow-up, and decision constraints.
+- To IC: only as scoped input unless this is the Investment Committee Agent.
 
-- Limited when: If candidate universe or evidence is partial but ranking can be bounded.
-- Blocked when: If theme cannot define a candidate universe or evidence is too weak.
+### Status and failure rules
+
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Candidate/theme ranking method, `Candidate Discovery, Not Investment Action` boundary, missing asset-level gates, and no buy/sell language.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Candidates are ranked with rationale, caveats, and next-step handoff, without hidden recommendations.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
 
 ## Investment Committee Agent
 
-Status: Canonical  
-Category: Synthesis  
-Owner of: Final investment decision-support memo  
-Produces: final_investment_memo.md
+```yaml
+contract_type: Agent
+status: Canonical
+category: Synthesis / IC
+owner: Investment Committee Agent
+used_by:
+  - Financial Agent System workflows
+produces:
+  - final_investment_memo.md
+  - limited_ic_draft
+  - evidence_gap_memo
+  - decision_prep_memo
+consumes:
+  - intake_context
+  - evidence_pack_and_pre_ic_lock
+  - lead_analysis
+  - valuation_report
+  - risk_report
+  - material_specialist_reports
+evidence_required: true
+decision_boundary: Owns Investment View and IC Action when gates permit; must not invent facts, override evidence readiness, or provide exact sizing.
+known_gaps:
+  - none
+```
 
 ### Purpose
 
-Integrate evidence and specialist reports into a final decision-support memo.
+Final investment decision-support memo.
+
+### When to use
+
+Use when the workflow requires final investment decision-support memo within this agent's scope.
+
+### What you get
+
+final_investment_memo.md, limited_ic_draft, evidence_gap_memo, decision_prep_memo with status, evidence limits, decision constraints, and structured handoff.
+
+### What it will not do
+
+No unsupported new facts, exact position sizing, raw evidence collection, or internal transcript as main output.
 
 ### Scope
 
@@ -1063,41 +2008,75 @@ Final investment memos and Limited/Blocked final outputs for asset/theme workflo
 
 ### Responsibilities
 
-- Synthesize intake, evidence, lead analysis, valuation, risk, and material specialist reports.
-- Apply positive-action gate.
-- Produce Action Box, Investment View, IC Action, decision confidence, rationale, risks, monitoring, and follow-up requests.
+- Synthesize intake, evidence, lead analysis, valuation, risk, and material specialists
+- apply positive-action gate
+- resolve conflicts
+- produce Action Box when allowed.
 
 ### Non-responsibilities
 
-- No unsupported new facts, exact position sizing, raw evidence collection, or internal agent transcript.
+- No unsupported new facts, exact position sizing, raw evidence collection, or internal transcript as main output.
 
 ### Required inputs
 
-- Intake context.
-- Evidence pack and pre-IC lock.
-- Lead asset/theme analysis.
-- Valuation and Risk when decision-relevant.
-- Material specialist reports.
+- intake_context
+- evidence_pack_and_pre_ic_lock
+- lead_analysis
+- valuation_report
+- risk_report
+- material_specialist_reports
+
+### Outputs
+
+- final_investment_memo.md
+- limited_ic_draft
+- evidence_gap_memo
+- decision_prep_memo
 
 ### Evidence requirements
 
-['Must obey Evidence Collector readiness and source limitations.']
+Evidence is required and must follow the Evidence Layer source hierarchy, freshness, conflict, provenance, and readiness rules.
 
 ### Workflow role
 
-Runs last when final synthesis is requested.
+Runs last when final synthesis is requested or gate-aware non-final output is needed.
 
 ### Handoffs
 
+Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
+
 - To user: final memo or Limited/Blocked follow-up requests.
-- To Evidence Collector: targeted refresh requests if new evidence is needed.
+- To Evidence Collector: targeted refresh requests.
+- To upstream agents: missing or invalid structured handoff requests.
 - To monitoring/future workflows: triggers and thesis hooks.
 
-### Limited / Blocked rules
+### Status and failure rules
 
-- Limited when: If analysis is useful but material limitations constrain action strength.
-- Blocked when: If required evidence, valuation, risk, or lead analysis is missing for requested action.
+- Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
+- Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
+
+### Category-specific add-on
+
+- Evidence lock, required specialist inputs, conflict synthesis, positive-action gates, Action Box use, IC Action ownership, and final memo constraints.
+- Apply P5-AGT-01 edge-case behavior when relevant.
 
 ### Success criteria
 
-Final memo is decision-oriented, evidence-constrained, and clear about action, limitations, and monitoring.
+- Required inputs, outputs, boundaries, evidence limits, handoffs, and status are clear.
+- Downstream agents can consume the output without guessing.
+- The output cannot be mistaken for an unauthorized final IC Action.
+
+## P5-AGT-01 acceptance checklist
+
+P5-AGT-01 is complete when:
+
+- All 20 planned agents are present with Template v2 metadata and UX blocks.
+- Every agent defines required inputs, outputs, evidence requirements, workflow role, structured handoffs, status behavior, category add-on, and success criteria.
+- Non-IC agents cannot issue final `IC Action` or use `Action Box`.
+- Discovery outputs cannot be mistaken for buy lists.
+- Evidence readiness, freshness, source scope, and conflicts constrain agent status.
+- Hybrid instrument lead/contributor ownership is explicit.
+- Runtime custom-agent TOML adapters remain thin and synchronized to these canonical contracts.
+- QA coverage in `implementation/09-system-acceptance-qa.md` covers P5-AGT-01 structural and scenario checks.

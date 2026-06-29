@@ -1,5 +1,30 @@
 # Equity Deep Dive Workflow
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Equity Agent  
+Contributors: Router Layer; Evidence Collector; Investment Committee  
+Used by: Equity Agent; equity-company-analysis skill; IC synthesis workflows  
+Primary reference for: equity deep-dive workflow examples  
+Supporting reference for: workflow sequencing examples only; canonical workflow contracts remain authoritative  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when routing/workflow contracts or equity deep-dive output expectations change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
+## P9 Authority Boundary
+
+This file is a workflow example and reference map only. Active routing behavior, required workflow steps, evidence gates, agent responsibilities, report schemas, and IC Action behavior are governed by the canonical implementation documents. When this file uses imperative wording from the legacy workflow draft, read it as advisory example language unless the same requirement appears in the canonical contracts.
+
+
 ## 1. Purpose
 
 This document defines the full investment-oriented workflow for analyzing a single public equity.
@@ -158,12 +183,14 @@ The workflow is partially parallel, not strictly linear.
 
 ### Step 0 — Intake and Routing
 
-The workflow starts only after the request has been classified by:
+The workflow starts only after the request has been classified by the canonical routing layer:
 
 ```text
-master-intake-router-prd.md
-asset-intake-router-prd.md
+implementation/05-routing-and-workflows.md
+implementation/06-agent-contracts.md
 ```
+
+Legacy router PRDs are source material only and are not active routing authority.
 
 For generic public-equity requests such as:
 
@@ -171,9 +198,9 @@ For generic public-equity requests such as:
 Analyze Nvidia.
 ```
 
-the Asset Intake Router should treat the request as a full asset-first equity workflow unless the user explicitly scopes it to a narrower task such as valuation, risk, market reaction, or financial statement analysis.
+advisory example: the Asset Intake Router may treat the request as a full asset-first equity workflow unless the user explicitly scopes it to a narrower task such as valuation, risk, market reaction, or financial statement analysis.
 
-The router should ask up to three relevant context questions when useful, but it should not block the workflow with a full questionnaire if the route is already clear.
+Advisory example: the router may ask up to three relevant context questions when useful, without blocking a clear route with a full questionnaire; canonical routing behavior governs.
 
 Expected intake artifact:
 
@@ -207,7 +234,7 @@ For a complete equity deep dive, the evidence pack should include:
 - missing, stale, proxied, contradictory, or inaccessible data;
 - downstream readiness matrix for Equity, Valuation, Risk, Market Positioning, News / Catalysts, Macro, and Investment Committee.
 
-The Evidence Collector should distinguish Analytical Evidence Sufficiency from Decision Evidence Sufficiency. Specialist work may proceed when analytical evidence is sufficient, but a complete final IC decision requires decision-grade evidence and a pre-IC evidence lock.
+Canonical evidence behavior is governed by `implementation/04-evidence-layer.md`, `implementation/06-agent-contracts.md`, and `implementation/11-skill-contracts.md`. Advisory example: distinguish analytical evidence sufficiency from decision evidence sufficiency before IC synthesis.
 
 ### Step 2 — Parallel Specialist Work
 
@@ -221,32 +248,13 @@ Market Positioning
 Macro Sensitivity
 ```
 
-News & Catalysts should use the dedicated package:
+News & Catalysts active behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`; `news-catalysts-framework.md` is supporting reference material. Advisory example output: a memo-first `news_catalysts.md` with recent events, active carryover events, upcoming catalyst map, negative news check, source / date confidence, event-risk flags, and structured handoffs. Canonical status rules determine the output status based on scope and source quality.
 
-```text
-news-catalysts-agent-prd.md
-news-catalysts-method-skill-prd.md
-news-catalysts-framework.md
-```
+Macro active behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`; macro frameworks and source registries are supporting reference material.
 
-It should produce a memo-first `news_catalysts.md` with recent events, active carryover events, upcoming catalyst map, negative news check, source / date confidence, event-risk flags, and structured handoffs. The output status should be Complete, Limited, Blocked, or Preliminary Catalyst Scan depending on scope and source quality.
+Advisory example output: `macro_sensitivity.md`, focused on material macro drivers for the company or thesis, such as real yields, Fed path, growth cycle, consumer income, credit spreads, liquidity, USD / FX translation, commodity inputs, or G3 regional policy exposure where relevant.
 
-Macro Sensitivity should use the dedicated Macro package:
-
-```text
-macro-agent-prd.md
-macro-analysis-method-skill-prd.md
-macro-sensitivity-framework.md
-macro-regime-framework.md
-macro-indicator-cadence-source-registry.md
-macro-block-playbooks.md
-macro-g3-fx-regional-policy-overlay.md
-macro-expectations-surprise-framework.md
-```
-
-It should produce `macro_sensitivity.md`, not a full macro essay. In an equity deep dive, Macro Agent should identify only material macro drivers for the company or thesis, such as real yields, Fed path, growth cycle, consumer income, credit spreads, liquidity, USD / FX translation, commodity inputs, or G3 regional policy exposure where relevant.
-
-Fresh market data are mandatory when the macro conclusion depends on current rates, FX, DXY, oil, gold, credit spreads, volatility, or market-implied policy expectations. Slow official releases may be carried forward only with timestamps. If material macro data are stale or missing, Macro Sensitivity should be Limited or Blocked for the affected conclusion rather than filled with generic commentary.
+Canonical freshness rules apply when the macro conclusion depends on current rates, FX, DXY, oil, gold, credit spreads, volatility, or market-implied policy expectations. Advisory example: slow official releases may be carried forward with timestamps; stale or missing material macro data should constrain the affected conclusion rather than be replaced with generic commentary.
 
 Expected outputs:
 
@@ -291,13 +299,7 @@ This report should address:
 What is already priced in, and are those expectations reasonable?
 ```
 
-It should use an expectations-adjusted value doctrine and follow the dedicated Valuation & Expectations package:
-
-```text
-valuation-expectations-agent-prd.md
-valuation-expectations-method-skill-prd.md
-valuation-expectations-framework.md
-```
+Valuation & Expectations active behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`; `valuation-expectations-framework.md` is supporting reference material.
 
 The report should include:
 
@@ -326,7 +328,7 @@ Blocked Valuation
 
 The Valuation & Expectations Agent should use financial analysis, market data, consensus expectations as a benchmark, management guidance, estimate revisions, historical valuation, peer valuation with comparability scoring, and reverse-expectations logic where available.
 
-The agent must follow source hierarchy, timestamp discipline, and anti-hallucination rules. Unsupported valuation numbers must not be invented.
+Canonical evidence and source rules govern source hierarchy, timestamp discipline, and anti-hallucination behavior. Advisory example: unsupported valuation numbers should not be invented.
 
 ### Step 5 — Risk / Red Team
 
@@ -344,13 +346,7 @@ Expected output:
 risk_red_team.md
 ```
 
-The report should follow the dedicated Risk / Red Team package:
-
-```text
-risk-red-team-agent-prd.md
-risk-red-team-method-skill-prd.md
-risk-red-team-framework.md
-```
+Risk / Red Team active behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`; `risk-red-team-framework.md` is supporting reference material.
 
 The report should include:
 
@@ -382,93 +378,39 @@ If valuation is not ready, Risk / Red Team may begin a preliminary business-risk
 
 The agent must not issue buy/sell/hold recommendations, target prices, position sizing, or hidden investment actions. It may issue a risk challenge verdict and analytical challenge requests.
 
-### Step 6 — Investment Committee Synthesis
+### Step 6 - Investment Committee Synthesis (Reference Example Only)
 
-The Investment Committee Agent writes:
-
-```text
-final_investment_memo.md
-```
-
-It uses:
+This section is a legacy workflow example, not an active IC contract. Canonical behavior is governed by:
 
 ```text
-investment-committee-agent-prd.md
-investment-committee-synthesis-method-skill-prd.md
-investment-committee-memo-framework.md
+implementation/07-investment-committee-and-report-schemas.md
+implementation/00-master-rules.md
+implementation/04-evidence-layer.md
+implementation/06-agent-contracts.md
+implementation/11-skill-contracts.md
 ```
 
-The Investment Committee Agent is downstream-only. It should run after the required evidence and specialist reports are available and after the Evidence Collector has completed a pre-IC evidence lock / freshness check.
+Advisory example: an equity deep-dive workflow typically prepares `final_investment_memo.md` only after evidence, lead equity analysis, valuation/expectations, risk review, and material context modules are available or explicitly limited. The canonical IC/report schemas determine required sections, Action Box use, allowed IC Action labels, missing-gate treatment, and final-vs-limited artifact naming.
 
-For a Complete equity final memo, required inputs normally include:
+Do not use this reference to authorize a positive action, Action Box, final memo status, exact sizing, target price, or buy/sell/hold language. Use the canonical IC/report schema and master rules instead.
 
-- intake context;
-- `evidence_pack.md`;
-- `equity_company_analysis.md`;
-- `valuation_expectations.md`;
-- `risk_red_team.md`;
-- relevant context reports where material, such as macro, news / catalysts, market positioning, sector context, and portfolio fit.
-
-Positive actions such as Initiate Position, Add to Existing Position, or Build Gradually require sufficient valuation / expectations work, Risk / Red Team review, and decision evidence sufficiency confirmed by the Evidence Collector.
-
-The final memo should synthesize all specialist work into a natural professional investment memo. It should not mention internal agents by name in the main conclusion and should not become an agent-by-agent recap.
-
-The default Standard IC Memo includes:
-
-- Investment View;
-- Action Box;
-- Why This Action, Not the Alternatives;
-- What Matters Most;
-- Investment Scorecard;
-- Situation Overview;
-- The Core Debate;
-- Core Thesis;
-- Key Assumptions;
-- Integrated Evidence Synthesis;
-- What Is Priced In;
-- Where the Market May Be Wrong;
-- Bull / Base / Bear Cases;
-- Risks and Thesis Breakers;
-- Catalysts and Monitoring Plan;
-- Next Steps;
-- Evidence & Data Quality Appendix.
-
-The Action Box should use natural labels such as:
-
-```text
-For a New Position: Do Not Initiate Yet
-For Existing Holders: Maintain / Hold
-```
-
-Every action must include practical meaning, Decision Confidence with explanation, time horizon, light qualitative portfolio role, and reassessment trigger.
-
-The final memo must not include exact position sizing.
-
-If required inputs are missing, the Investment Committee Agent should produce a Blocked or Limited memo with structured follow-up requests rather than improvising a final opinion.
 ## 8. Completion Rules
 
-### 8.1 Mandatory Decision Gates
+### 8.1 Decision Gates (Canonical Pointer)
 
-A complete final investment memo cannot be produced without these mandatory decision-gate reports:
-
-```text
-valuation_expectations.md
-risk_red_team.md
-```
-
-Without either of these, the Investment Committee Agent must not issue a positive action. The final memo must be marked:
+This reference does not define mandatory decision gates. For current gate behavior, use:
 
 ```text
-Status: incomplete / blocked for final decision
+implementation/00-master-rules.md
+implementation/04-evidence-layer.md
+implementation/07-investment-committee-and-report-schemas.md
 ```
 
-A preliminary synthesis may be produced, but not a complete final investment decision.
-
-Before IC synthesis, the Evidence Collector should perform a pre-IC evidence lock. If the lock status is `Refresh Required` or `Blocked`, the IC Agent must not produce a Complete Final Memo. If IC readiness is Limited, the IC Agent may produce only a Limited Final Memo unless the limitation is resolved or is clearly not decision-critical.
+Advisory example: valuation/expectations, risk review, and evidence readiness are normally decision-critical for a Complete equity final memo and for any positive IC Action. If these inputs are missing or stale, the canonical IC schemas determine whether the result is a Decision-Prep Memo, Limited IC Draft, Evidence Gap Memo, or Complete Final Memo.
 
 ### 8.2 Context Limitations
 
-The following reports are required for the full investment-oriented workflow but are not always mandatory decision gates for a business-plus-valuation conclusion:
+In this legacy workflow example, the following context reports may be included when material. Canonical workflow and IC documents determine whether they are required for a specific output:
 
 ```text
 market_positioning.md
@@ -476,21 +418,24 @@ news_catalysts.md
 macro_sensitivity.md
 ```
 
-If any are missing, the final memo must clearly state:
+Advisory example: if any are missing and material, the IC-facing artifact should disclose:
 
 ```text
 Limited timing / market context.
 ```
 
-Market Positioning becomes a conditional decision-relevant gate when expectations, crowding, positioning, event reaction, or narrative saturation are material to the investment case. Examples include “is this priced in?”, “is this crowded?”, post-earnings reaction analysis, high-multiple narrative stocks, short-squeeze risk, crowded themes, or timing-sensitive entry questions.
+Advisory example: Market Positioning may become decision-relevant when expectations, crowding, positioning, event reaction, or narrative saturation are material to the investment case. Examples include “is this priced in?”, “is this crowded?”, post-earnings reaction analysis, high-multiple narrative stocks, short-squeeze risk, crowded themes, or timing-sensitive entry questions.
 
-In those cases, missing or blocked `market_positioning.md` may require a Limited Final Memo or block the specific conclusion that depends on positioning evidence. Missing optional positioning channels should not block the whole workflow unless they are material to the conclusion being made.
+In those cases, the canonical IC/report schema may limit the specific conclusion that depends on positioning evidence. Optional positioning channels should not be treated as blocking unless canonical materiality and evidence rules make them decision-critical.
 
-News & Catalysts becomes a conditional decision-relevant gate when recent events, upcoming catalysts, event risk, catalyst failure, or freshness materially affect the investment case. Examples include earnings or guidance windows, regulatory decisions, M&A, litigation, major product or customer events, management changes, index / capital-markets events, and material peer read-throughs.
+Advisory example: News & Catalysts may become decision-relevant when recent events, upcoming catalysts, event risk, catalyst failure, or freshness materially affect the investment case. Examples include earnings or guidance windows, regulatory decisions, M&A, litigation, major product or customer events, management changes, index / capital-markets events, and material peer read-throughs.
 
-In those cases, missing, stale, or blocked `news_catalysts.md` may require a Limited Final Memo or block a positive IC action until the material news / catalyst freshness issue is resolved. A bounded negative-news check is sufficient only when its source window, source types, and limitations are clearly stated.
+In those cases, missing, stale, or blocked `news_catalysts.md` may constrain the canonical IC artifact until the material news / catalyst freshness issue is resolved. A bounded negative-news check is useful only when its source window, source types, and limitations are clearly stated; canonical evidence and IC rules determine sufficiency.
 
-## 9. Ownership Map
+## 9. Ownership Map (Reference Example Only)
+
+Canonical agent ownership is governed by `implementation/06-agent-contracts.md`; canonical workflows are governed by `implementation/05-routing-and-workflows.md`. The table below is an advisory map for understanding the legacy equity deep-dive example.
+
 
 | Question | Primary Owner | Output |
 |---|---|---|
@@ -507,21 +452,19 @@ In those cases, missing, stale, or blocked `news_catalysts.md` may require a Lim
 
 ## 10. Relationship to Equity Agent
 
-The Equity Agent does not own the full workflow.
-
-It owns only:
+Canonical ownership is governed by `implementation/06-agent-contracts.md`. In this reference example, the Equity Agent contributes primarily:
 
 ```text
 equity_company_analysis.md
 ```
 
-Its output should answer:
+Its reference example output addresses:
 
 ```text
 Is this a good business?
 ```
 
-The workflow as a whole answers:
+The full canonical workflow and IC synthesis address:
 
 ```text
 Is this an attractive investment now?
@@ -549,9 +492,9 @@ The original company deep-dive prompt is implemented as a workflow rather than a
 | Investment thesis | Investment Committee Agent |
 | Sources | Evidence Collector Agent + all specialist agents |
 
-## 12. Report Style Rule
+## 12. Report Style Rule (Canonical Pointer)
 
-All reports in the workflow should follow the clean main report / appendix structure:
+Canonical report style is governed by `implementation/00-master-rules.md` and `implementation/07-investment-committee-and-report-schemas.md`. This reference example uses the following clean main report / appendix structure:
 
 ```text
 Main report:
@@ -561,9 +504,7 @@ Appendix:
 Confidence, evidence limits, missing data, source notes, and technical checks.
 ```
 
-Critical caveats that change the conclusion must remain in the main report.
-
-Technical caveats should go to the appendix.
+Advisory example: critical caveats that change the conclusion should remain in the main report; technical caveats usually belong in the appendix, subject to canonical report schemas.
 
 This rule should later be promoted to the global report style policy for all agents.
 
@@ -581,7 +522,10 @@ The workflow must not:
 - bury the main thesis breaker in a generic risk list;
 - skip source limitations when evidence is incomplete.
 
-## 14. Current Design Decisions Captured
+## 14. Historical Design Decisions Captured (Reference Only)
+
+These decisions are retained as historical/reference context. Active authority is held by canonical implementation documents and the documentation registry.
+
 
 1. Equity Deep Dive Workflow is separate from Equity Agent.
 2. The workflow covers single-company public equity analysis only.
@@ -593,8 +537,8 @@ The workflow must not:
 8. Valuation and Risk are mandatory decision gates for a complete final decision memo and for any positive action; they are not automatic specialist vetoes over IC judgment.
 9. Missing Market Positioning, News, or Macro creates timing / market-context limitations.
 10. The workflow uses a clear output folder structure.
-11. Evidence Collector is now defined by `evidence-collector-agent-prd.md`, `evidence-collection-method-skill-prd.md`, `evidence-pack-framework.md`, `source-registry-framework.md`, and `evidence-request-protocol.md`.
-12. Valuation & Expectations is now defined by `valuation-expectations-agent-prd.md`, `valuation-expectations-method-skill-prd.md`, and `valuation-expectations-framework.md`.
-13. Risk / Red Team is now defined by `risk-red-team-agent-prd.md`, `risk-red-team-method-skill-prd.md`, and `risk-red-team-framework.md`.
-14. Market Positioning is now defined by `market-positioning-agent-prd.md`, `market-positioning-method-skill-prd.md`, and `market-positioning-framework.md`.
+11. Evidence Collector active behavior is governed by `implementation/04-evidence-layer.md`, `implementation/06-agent-contracts.md`, and `implementation/11-skill-contracts.md`; evidence references remain supporting material.
+12. Valuation & Expectations active behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`; `valuation-expectations-framework.md` remains supporting reference material.
+13. Risk / Red Team active behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`; `risk-red-team-framework.md` remains supporting reference material.
+14. Market Positioning active behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`; `market-positioning-framework.md` remains supporting reference material.
 15. Technical / price-action analysis is intentionally deferred outside the core workflow; if used later, it must remain a lightweight input and cannot override valuation, evidence, or Investment Committee ownership.

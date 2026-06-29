@@ -1,8 +1,28 @@
 # Market Positioning Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Market Positioning  
+Contributors: Market Sense; Evidence Collector; asset-class agents  
+Used by: Market Positioning Agent; market-positioning skill  
+Primary reference for: positioning, crowding, and flow framework examples  
+Supporting reference for: market-pattern and risk-context interpretation  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: High  
+Last reviewed: 2026-06-28  
+Review trigger: Review quarterly or when positioning data availability, flow sources, or market-structure assumptions change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Objective
 
-This framework defines the structure, definitions, source rules, freshness rules, evidence ladders, positioning archetypes, output template, and prohibited language for Market Positioning analysis.
+This framework provides advisory structure, definitions, source overlays, freshness nuances, evidence-ladder examples, positioning archetypes, output examples, and prohibited-language examples for Market Positioning analysis. `implementation/04-evidence-layer.md` governs evidence readiness and source authority.
 
 It supports:
 
@@ -371,7 +391,7 @@ Use when relevant:
 Visible expectations appear to reflect [theme / risk / catalyst], but whether the current price fully discounts it belongs to Valuation & Expectations and Investment Committee synthesis.
 ```
 
-## Source Hierarchy
+## Advisory Source Overlay
 
 ## General Principle
 

@@ -1,5 +1,25 @@
 # ETF Analysis Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: ETF Agent  
+Contributors: Evidence Collector; Portfolio Fit; Risk Red Team; Valuation/Expectations  
+Used by: ETF Agent; etf-analysis skill  
+Primary reference for: ETF vehicle and exposure analysis examples  
+Supporting reference for: implementation quality, vehicle-quality, and portfolio-fit context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when ETF structure, disclosure, liquidity, or wrapper-analysis conventions change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This framework defines the standard structure and analytical principles for ETF Agent outputs.

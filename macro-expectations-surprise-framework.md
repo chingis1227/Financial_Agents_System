@@ -1,5 +1,25 @@
 # Macro Expectations and Surprise Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Macro Agent  
+Contributors: Market Sense; Market Intelligence; Evidence Collector  
+Used by: Macro Agent; macro-analysis skill; Market Sense  
+Primary reference for: macro expectations and surprise interpretation  
+Supporting reference for: market reaction and driver-dominance context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when macro surprise framework, policy reaction functions, or source cadence assumptions change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This framework defines how the Macro Agent analyzes macro data, policy events, and market moves relative to expectations.

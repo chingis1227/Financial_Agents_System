@@ -1,10 +1,30 @@
 # Market News Source Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Market Intelligence  
+Contributors: Evidence Collector; News & Catalysts; Macro Agent  
+Used by: Market Intelligence Agent; market-intelligence-briefing skill; News & Catalysts  
+Primary reference for: market-news source overlays  
+Supporting reference for: news verification and market-context evidence packs  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: High  
+Last reviewed: 2026-06-28  
+Review trigger: Review quarterly or when news source reliability, access, or verification practices change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
 This reference supports the Market Intelligence Agent and `market-intelligence-briefing` skill.
 
-It defines the source hierarchy for market news discovery, verification, and framing.
+It provides advisory source overlays for market news discovery, verification, and framing. `implementation/04-evidence-layer.md` governs evidence readiness and source authority.
 
 Core rule:
 
@@ -14,7 +34,7 @@ Use official sources for confirmation when available.
 Use institutional commentary for framing, not primary facts.
 ```
 
-## 2. Source Trust Hierarchy
+## 2. Advisory Source Trust Overlay
 
 ### Tier 1 — Primary and Official Sources
 

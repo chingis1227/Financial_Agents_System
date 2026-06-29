@@ -1,5 +1,25 @@
 # Valuation & Expectations Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Valuation/Expectations  
+Contributors: asset-class agents; Investment Committee; Risk Red Team  
+Used by: Valuation/Expectations Agent; valuation-expectations skill; asset-class agents  
+Primary reference for: valuation and expectations framework examples  
+Supporting reference for: asset-class valuation-equivalent and IC decision-prep context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when valuation skill, expectations bridge, or asset-class valuation-equivalent methods change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Objective
 
 This framework defines the practical checklist used by the Valuation & Expectations Agent when producing `valuation_expectations.md`.
@@ -169,7 +189,9 @@ These labels are valuation judgments, not investment recommendations.
 - product concentration;
 - regulatory milestones.
 
-## Source Hierarchy
+## Advisory Source Notes
+
+Canonical evidence authority: `implementation/04-evidence-layer.md` governs evidence readiness and source authority. This section provides advisory valuation/expectations source examples only.
 
 ### Tier 1 - Official / primary
 
@@ -542,4 +564,3 @@ It says:
 ```text
 The stock trades at 28x forward EPS. This premium is partly supported by high ROIC, durable FCF conversion, and strong balance sheet quality. However, the current price implies sustained high-single-digit revenue growth, stable margins, and limited multiple compression. The valuation is reasonable only if those expectations remain intact; otherwise, downside is driven primarily by multiple compression and lower FCF conversion.
 ```
-

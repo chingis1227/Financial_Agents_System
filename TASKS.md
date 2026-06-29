@@ -1,4 +1,4 @@
-﻿# TASKS — Financial Agent System Implementation
+# TASKS — Financial Agent System Implementation
 
 Source: `IMPLEMENTATION_BACKLOG.md`  
 Scope: Full agents-first financial analysis system implementation.  
@@ -62,8 +62,8 @@ Rule: No MVP reduction; implementation targets agent contracts, workflow contrac
 
 **Tasks:**
 - Adopt `implementation/03-contract-templates.md`.
-- Normalize legacy Agent PRDs, Skill PRDs, Workflow docs, and Framework docs into standard contracts.
-- Add explicit inputs, outputs, failure states, handoffs, and success criteria where missing.
+- Define normalization rules for legacy Agent PRDs, Skill PRDs, Workflow docs, and Framework docs so later P5/P5-SKL work can convert them into standard contracts.
+- Define required inputs, outputs, failure states, handoffs, and success criteria fields so later normalization does not require guessing.
 
 **Done when:**
 - Implementers can understand responsibilities, inputs, outputs, and completion conditions without guessing.
@@ -175,14 +175,14 @@ Rule: No MVP reduction; implementation targets agent contracts, workflow contrac
 | P0-DOC-01 | 0 | Done | Establish documentation registry and source-of-truth precedence. | None | Documentation control | Registry lists included legacy files, excludes archive/reminder files, documents precedence, and defines source-issue handling. |
 | P0-DOC-02 | 0 | Done | Add traceability matrix from legacy corpus to canonical docs. | P0-DOC-01 | Documentation control | Every included legacy file maps to canonical destination and remaining gap. |
 | P1-ARCH-01 | 1 | Done | Finalize canonical architecture and owner/contributor model. | P0-DOC-01 | Architecture | Agent categories, orchestration rule, and decision boundaries are explicit. |
-| P1-RULE-01 | 1 | Done | Centralize statuses, gates, confidence, Action Box, evidence display, style, and artifact naming. | P1-ARCH-01 | Architecture | `implementation/00-master-rules.md` is the master rule authority. |
-| P1A-CODEX-01 | 1A | Open | Define Codex-native runtime architecture and packaging rules. | P1-ARCH-01 | Codex runtime architecture | `implementation/13-codex-runtime-architecture.md` defines `AGENTS.md`, `README.md`, `.codex/agents`, `.agents/skills`, workflow runbooks, and source-of-truth routing rules. |
-| P1A-CODEX-02 | 1A | Open | Create Codex-native project files and directories from canonical contracts. | P1A-CODEX-01; P5-AGT-01; P5-SKL-01 | Codex runtime architecture | Root `AGENTS.md` and `README.md` exist; 20 custom-agent TOML files and repo skill folders are generated from canonical contracts without copying full legacy PRDs. |
-| P2-TPL-01 | 2 | Open | Standardize Agent, Skill, Workflow, and Report templates. | P1-RULE-01 | Documentation control | Implementers can normalize all PRDs without inventing fields. |
-| P3-EVD-01 | 3 | Open | Canonicalize evidence model, source hierarchy, readiness, and pre-IC lock. | P1-RULE-01 | Evidence Collector | Evidence layer defines claim support, freshness, missing data, and allowed IC status. |
-| P4-RTE-01 | 4 | Open | Canonicalize master, asset, theme, and direct-specialist routing. | P1-ARCH-01; P3-EVD-01 | Router layer | Every request family has deterministic route and safe fallback. |
-| P5-AGT-01 | 5–7 | Open | Normalize router, evidence, asset, specialist, discovery, and IC agent contracts. | P2-TPL-01; P4-RTE-01 | Agent layer | Each agent has inputs, outputs, evidence, handoffs, Limited/Blocked rules, success criteria. |
-| P5-SKL-01 | 2, 5–7 | Open | Normalize all method-skill contracts. | P2-TPL-01; P5-AGT-01 | Skill layer | Each method skill has trigger, inputs, steps, output, guardrails, quality checks. |
-| P8-IC-01 | 8 | Open | Canonicalize IC memo and report schemas. | P3-EVD-01; P5-AGT-01 | IC layer | Final memo uses `final_investment_memo.md`, Action Box, confidence, gates, and source limits. |
-| P9-REF-01 | 9 | Open | Govern reference libraries and split/index large references where needed. | P0-DOC-02 | Reference layer | References have owner/used-by metadata and do not override contracts. |
-| P10-QA-01 | 10 | Open | Run full acceptance and failure scenarios. | P3-EVD-01; P4-RTE-01; P5-AGT-01; P8-IC-01 | QA | All route/evidence/agent/IC invariants pass. |
+| P1-RULE-01 | 1 | Done | Centralize statuses, gates, confidence, Action Box, evidence display, style, and artifact naming. | P1-ARCH-01 | Architecture | `implementation/00-master-rules.md` is the master rule authority; 30 approved edge-case rules are canonicalized with QA coverage and decision-log record. |
+| P1A-CODEX-01 | 1A | Done | Define Codex-native runtime architecture and packaging rules. | P1-ARCH-01 | Codex runtime architecture | `implementation/13-codex-runtime-architecture.md` defines `AGENTS.md`, `README.md`, `.codex/agents`, `.agents/skills`, workflow runbooks, source-of-truth routing rules, and 35 approved runtime edge-case rules with QA coverage and decision-log record. |
+| P1A-CODEX-02 | 1A | Done | Create Codex-native project files and directories from canonical contracts. | P1A-CODEX-01; P1A structural runtime readiness gate in `implementation/13-codex-runtime-architecture.md` | Codex runtime architecture | Root `AGENTS.md` and `README.md` exist; 20 custom-agent TOML files and repo skill folders are generated from canonical contracts without copying full legacy PRDs; `.codex/runtime-readiness-report.md` records structural readiness; P5-AGT-01 is now normalized, while broader P5-SKL-01 method-skill normalization is now complete. |
+| P2-TPL-01 | 2 | Done | Standardize Agent, Skill, Workflow, and Report templates. | P1-RULE-01 | Documentation control | Template v2 defines metadata headers, UX blocks, category add-ons, statuses, handoffs, label permissions, gates, and QA so implementers can normalize PRDs without inventing fields. |
+| P3-EVD-01 | 3 | Done | Canonicalize evidence model, source hierarchy, readiness, and pre-IC lock. | P1-RULE-01 | Evidence Collector | Evidence layer defines claim support, freshness, missing data, allowed IC status, 25 canonical evidence edge-case rules, and QA coverage. |
+| P4-RTE-01 | 4 | Done | Canonicalize master, asset, theme, and direct-specialist routing. | P1-ARCH-01; P3-EVD-01 | Router layer | Every request family has deterministic route, safe fallback, status limit, escalation path, and QA coverage with 20 canonical routing edge-case rules. |
+| P5-AGT-01 | 5–7 | Done | Normalize router, evidence, asset, specialist, discovery, and IC agent contracts. | P2-TPL-01; P4-RTE-01 | Agent layer | Each agent has inputs, outputs, evidence, handoffs, Limited/Blocked rules, success criteria. |
+| P5-SKL-01 | 2, 5-7 | Done | Normalize all method-skill contracts. | P2-TPL-01; P5-AGT-01 | Skill layer | `implementation/11-skill-contracts.md` contains 19 Template v2 method skills with output core, guardrails, failure states, QA coverage, and synchronized runtime `.agents/skills/*/SKILL.md` adapters. |
+| P8-IC-01 | 8 | Done | Canonicalize IC memo and report schemas. | P3-EVD-01; P5-AGT-01 | IC layer | `implementation/07-investment-committee-and-report-schemas.md` defines `final_investment_memo.md`, `limited_ic_draft.md`, `decision_prep_memo.md`, and `evidence_gap_memo.md` with Template v2-style metadata, Action Box / Decision-Prep Box boundaries, freshness and negative-action matrices, 20 P8 edge-case rules, QA coverage, decision-log record, and documentation-control treatment note. |
+| P9-REF-01 | 9 | Done | Govern reference libraries and split/index large references where needed. | P0-DOC-02 | Reference layer | Supporting references have governance metadata, `implementation/reference-library-index.md` provides central navigation, `market-pattern-library.md` is split/indexed under `market-patterns/`, and references remain advisory without overriding contracts, evidence, routing, or IC Action. |
+| P10-QA-01 | 10 | Done | Run full acceptance and failure scenarios. | P3-EVD-01; P4-RTE-01; P5-AGT-01; P8-IC-01 | QA | `implementation/p10-qa-execution-report.md` records Pareto Gate, Full Regression, Live-Smoke, and structural validation with 0 blocking issues and 0 safety failures. |

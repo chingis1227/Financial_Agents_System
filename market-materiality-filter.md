@@ -1,5 +1,25 @@
 # Market Materiality Filter
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Market Intelligence  
+Contributors: News & Catalysts; Evidence Collector; Market Sense  
+Used by: Market Intelligence Agent; market-intelligence-briefing skill; News & Catalysts  
+Primary reference for: market-news materiality filtering  
+Supporting reference for: briefing inclusion decisions and catalyst triage  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when market-intelligence workflow, catalyst taxonomy, or materiality criteria change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
 This reference supports the Market Intelligence Agent and `market-intelligence-briefing` skill.

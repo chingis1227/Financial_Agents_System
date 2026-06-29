@@ -1,5 +1,25 @@
 # Equity Company Analysis Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Equity Agent  
+Contributors: Financial Statement Analysis; Valuation/Expectations; Risk Red Team  
+Used by: Equity Agent; equity-company-analysis skill; financial-statement-analysis skill  
+Primary reference for: equity company analysis framework examples  
+Supporting reference for: valuation, risk, financial statement, and IC equity context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when equity skill contract, reporting conventions, or analysis modules materially change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
 This framework is the practical reference for analyzing a public company as a business.
@@ -356,9 +376,9 @@ Common monitoring signals:
 - management guidance accuracy;
 - competitor wins/losses.
 
-## 15. What Must Be Checked Separately
+## 15. Reference-Only Checks That Often Belong Outside Company Quality
 
-Equity Agent must hand off the following:
+Canonical agent and workflow contracts govern required handoffs. This framework keeps the following as advisory examples of checks that often belong outside company-quality analysis:
 
 ```text
 Valuation & Expectations:

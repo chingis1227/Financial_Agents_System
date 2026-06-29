@@ -1,5 +1,25 @@
 # Macro Regime Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Macro Agent  
+Contributors: Market Sense; asset-class agents; Risk Red Team  
+Used by: Macro Agent; macro-analysis skill; Market Sense  
+Primary reference for: macro regime taxonomy and interpretation examples  
+Supporting reference for: asset-class sensitivity and IC context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when macro regime taxonomy or market-policy relationships materially change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Objective
 
 This framework defines how the Macro Agent diagnoses macro regimes, separates confirmed regimes from risk overlays, applies regime-change discipline, maintains macro baseline memory, handles scenarios, and maps macro regimes into asset sensitivity.

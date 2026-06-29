@@ -1,5 +1,25 @@
 # Risk / Red Team Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Risk Red Team  
+Contributors: Evidence Collector; asset-class agents; Investment Committee  
+Used by: Risk Red Team Agent; risk-red-team skill; IC synthesis  
+Primary reference for: risk challenge scenarios and red-team templates  
+Supporting reference for: risk-gate context and IC downside review  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when risk taxonomy, risk-gate rules, or asset-specific risk playbooks change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Objective
 
 This framework defines the practical checklist used by the Risk / Red Team Agent when producing `risk_red_team.md`.

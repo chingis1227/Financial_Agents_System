@@ -1,16 +1,36 @@
 # Structural Winner Discovery Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Structural Winners Discovery  
+Contributors: Sector & Industry Analysis; Equity Agent; Valuation/Expectations; Risk Red Team  
+Used by: Structural Winners Discovery Agent; structural-winner-discovery skill  
+Primary reference for: structural-winner discovery framework examples  
+Supporting reference for: theme-to-asset handoffs and discovery ranking context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when discovery workflow, candidate ranking language, or sector-analysis taxonomy changes.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
-This reference supports `structural-winners-discovery-agent-prd.md` and `structural-winner-discovery-method-skill-prd.md`.
+This reference supports Structural Winners Discovery analysis. Active agent and skill behavior is governed by `implementation/06-agent-contracts.md` and `implementation/11-skill-contracts.md`.
 
-It defines the long-form investment logic used to identify public companies that may become structural winners inside a theme, industry, value chain, or technology transition. It is a reference framework, not a standalone agent and not a final recommendation engine.
+It provides advisory discovery logic for identifying public companies that may become structural winners inside a theme, industry, value chain, or technology transition. It is a reference framework, not a standalone agent and not a final recommendation engine.
 
 ## Core Doctrine
 
 Structural winner discovery is not a search for exciting stories. It is a search for companies that may control economically valuable bottlenecks, scarce capabilities, repeatable demand channels, or value-capture positions while avoiding businesses that only appear exposed to a theme.
 
-The output should remain candidate discovery. A candidate becomes investment-actionable only after company analysis, financial statement analysis, valuation, risk review, evidence checks, and Investment Committee synthesis where required.
+Discovery output should remain candidate discovery. A candidate becomes investment-actionable only after the relevant canonical asset-level, evidence, valuation, risk, and IC gates are satisfied where required.
 
 ## Structural Winner Tests
 

@@ -1,5 +1,25 @@
 # Fixed Income Analysis Framework
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Fixed Income Agent  
+Contributors: Macro Agent; Risk Red Team; Valuation/Expectations  
+Used by: Fixed Income Agent; fixed-income-analysis skill  
+Primary reference for: fixed-income analysis framework examples  
+Supporting reference for: duration, spread, credit, and macro-rate context  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when fixed-income skill contract, instrument taxonomy, or market-structure assumptions change.  
+Owner review needed: No  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## Purpose
 
 This framework defines the output structure, evidence rules, metric discipline, scenario rules, verdict labels, and handoff format for fixed income analysis.
@@ -333,4 +353,3 @@ Do not:
 - hide missing data;
 - use final action language;
 - overstate safety.
-

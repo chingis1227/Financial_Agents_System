@@ -1,4 +1,4 @@
-﻿# Canonical Architecture — Financial Agent System
+# Canonical Architecture — Financial Agent System
 
 Status: Canonical implementation architecture
 
@@ -80,7 +80,7 @@ Specialized labels such as `Complete Risk Review` or `Limited Valuation` are all
 | Actionability Label | Domain owner where explicitly defined, including asset-class, specialist, or discovery agents | Indicates setup quality or required next step, but not final allocation or IC action. |
 | Vehicle Quality Verdict | ETF and similar vehicle analysis | Wrapper/vehicle quality assessment. Not final portfolio action. |
 | Investment View | Investment Committee | Final synthesized view for the memo. |
-| IC Action | Investment Committee | Decision-support action label such as initiate, add, hold/watch, avoid, defer, or blocked. |
+| IC Action | Investment Committee | Decision-support action label such as Initiate, Add, Maintain / Hold, Trim, Exit, Watchlist, Defer / Not Actionable, or Hard Avoid. |
 
 ## 7. Positive action gate
 

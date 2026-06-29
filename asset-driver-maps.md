@@ -1,5 +1,25 @@
 # Asset Driver Maps
 
+<!-- reference-governance:start -->
+## Reference Governance Metadata
+
+Status: Supporting Reference  
+Owner: Driver Dominance  
+Contributors: Market Sense; Equity Agent; ETF Agent; Fixed Income Agent; Commodity Agent; Crypto Agent; Macro Agent  
+Used by: driver-dominance-analysis skill; Market Sense Agent; asset-class agents  
+Primary reference for: cross-asset driver-map selection and driver checklist design  
+Supporting reference for: market interpretation; asset-class setup analysis; driver-dominance handoffs  
+Not responsible for: final decision; evidence readiness; routing; IC Action; agent ownership  
+Freshness sensitivity: Medium  
+Last reviewed: 2026-06-28  
+Review trigger: Review when asset-driver taxonomy, driver-dominance skill, or major market-structure assumptions change.  
+Owner review needed: Yes - cross-asset ownership should remain visible.  
+Split/index status: Indexed in implementation/reference-library-index.md  
+Canonical authority: Advisory reference only. Canonical implementation documents govern active agent, skill, evidence, routing, and IC behavior.
+
+<!-- reference-governance:end -->
+
+
 ## 1. Purpose
 
 This reference supports the active `driver-dominance-analysis` skill and Market Sense Agent.

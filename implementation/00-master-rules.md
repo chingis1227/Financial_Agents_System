@@ -45,7 +45,7 @@ Examples:
 
 ```text
 Analysis Status: Complete for available evidence
-IC Action Status: Limited ? positive action is not allowed until valuation and risk review are complete
+IC Action Status: Limited - positive action is not allowed until valuation and risk review are complete
 ```
 
 The analysis may be Complete, Limited, Preliminary, or Blocked independently from the IC Action Status. A complete specialist analysis does not imply a complete IC action.
@@ -83,7 +83,7 @@ When the positive action gate is not satisfied:
 - A positive `IC Action` is prohibited.
 - The system may still provide a Preliminary or Limited stance when supported by available evidence.
 - Non-IC agents may provide cautious / negative domain verdicts or Watchlist / Defer signals only as `Specialist Verdict` or `Actionability Label`, not as final `IC Action`.
-- Final IC-level action labels such as Avoid, Defer, Hold, Add, Initiate, Trim, or Exit belong only to the Investment Committee.
+- Final IC-level action labels such as Hard Avoid, Defer / Not Actionable, Watchlist, Maintain / Hold, Add, Initiate, Trim, or Exit belong only to the Investment Committee.
 - The output must state what minimum evidence, valuation, risk, context, or implementation checks would be needed to unlock final decision support.
 
 ### Negative and cautionary outcomes
@@ -97,6 +97,8 @@ Positive action requires the full positive action gate. Negative / cautionary ou
 | Watchlist | Thesis or quality may be interesting, but entry point, evidence, risk, implementation, or timing is not ready. | Monitoring / follow-up state, not a buy recommendation. |
 
 A Hard Avoid needs a clearly stated disqualifying reason. If the issue is merely missing information, use Defer / Not Actionable instead.
+
+Only IC may issue `IC Action: Hard Avoid`. Non-IC agents may flag a disqualifying `Specialist Verdict` or risk warning, with `Boundary: Not an IC Action`.
 
 ### Risk gate
 
@@ -245,9 +247,21 @@ Rumors may be mentioned only as unconfirmed claims. They must not be treated as 
 
 ## 8. User-context and UX rules
 
+### Action intent taxonomy
+
+Classify action-oriented requests before deciding whether to answer immediately or ask for context:
+
+| Intent level | Examples | Required behavior |
+|---|---|---|
+| Personal / final action | "Should I buy?", "What should I do with my position?", "How much should I buy?", "Should I sell my shares?" | If decision-critical personal context is missing, ask the minimum clarifying questions before giving an action-oriented conclusion. Do not substitute silent assumptions. |
+| Market action / investment attractiveness | "Is it a buy?", "Is it attractive here?", "Is gold a good setup now?" | A `Quick Take / Preliminary` or `Limited` market view is allowed when evidence supports it, but no final `IC Action` is allowed unless all gates pass. |
+| Analysis-only | "Analyze this company", "Value this company only", "What are the risks?", "What changed recently?" | Provide scoped analysis with status, evidence limits, boundary, and missing IC gates where relevant. |
+
+When intent is ambiguous, use the safer level if the wording could reasonably be read as personal action. General analysis may continue with explicit scope limits.
+
 ### Fast action requests
 
-If the user asks for a short buy/sell/hold answer, the system may give `Quick Take / Preliminary` and a cautious preliminary stance, but not final `IC Action`.
+If the user asks for a short market-action answer, the system may give `Quick Take / Preliminary` and a cautious preliminary stance, but not final `IC Action`. If the user asks for personal / final action and key context is missing, ask for the minimum missing context first instead of giving an action conclusion.
 
 Required pattern:
 
@@ -260,7 +274,9 @@ Needed for final IC Action:
 
 ### Missing personal context
 
-If a user asks for buy/sell/hold without decision-critical personal context, use a preliminary scenario-based answer and request only the minimum missing context needed for final IC Action.
+If a user asks for personal / final buy/sell/hold/add/trim/exit guidance without decision-critical personal context, ask for only the minimum missing context needed before giving an action-oriented conclusion. The system may still offer to provide a non-personal, non-final analytical overview after the question is answered or if the user explicitly chooses general analysis.
+
+If the request is market action / investment attractiveness rather than personal action, use a `Preliminary` or `Limited` scenario-based answer with visible assumptions and request the minimum context needed for final IC Action.
 
 Minimum context usually includes:
 - current position: none / existing / considering add / considering trim or exit;
@@ -324,6 +340,32 @@ Not allowed:
 - exact allocation as an instruction;
 - precise position size without user context;
 - leverage, custody, or yield-farming instructions that exceed the relevant workflow boundaries.
+
+### Limited and Blocked next-step UX
+
+`Limited` and `Blocked` outputs must not stop at a status label. They must include a short next-step block:
+
+```text
+What is missing:
+Why it matters:
+Minimum next step:
+What can be done now:
+```
+
+The block should be concise and practical. Detailed checklists are optional when the user asks for full detail or when the missing data is complex.
+
+### "No disclaimers" or "be decisive" requests
+
+If the user asks for no disclaimers, no caveats, or a decisive answer, compress critical limitations but do not remove them. Status, evidence limits, missing gates, and non-IC boundaries are part of the answer, not optional legal boilerplate.
+
+Allowed pattern:
+
+```text
+Short answer:
+Status / boundary:
+Main reason:
+Needed for final action:
+```
 
 ### Plain-English mode
 
@@ -416,12 +458,24 @@ Project outputs should be concise, businesslike, investment-oriented, and analyt
 
 Even a full detailed memo must be layered:
 
-1. Decision summary / Action Box when IC-level.
+1. Action Box only for `final_investment_memo.md`; Decision-Prep Box for non-final IC artifacts.
 2. Main decision-oriented analysis.
 3. Key risks and what would change the view.
 4. Evidence, valuation, risk, specialist summaries, and assumptions in appendices.
 
 Raw agent transcripts are not the main report. They may be exported only as a debug or audit artifact when explicitly requested.
+
+### Response depth rule
+
+Match detail to the user's requested depth while preserving mandatory safety fields:
+
+| Request depth | Expected shape |
+|---|---|
+| Quick question | Short answer plus 3-5 mandatory status, boundary, evidence, or next-step lines. |
+| Standard analysis | Summary, key reasoning, limitations, and next steps. |
+| Full memo | Layered artifact with decision-oriented main body and appendices. |
+
+Concise output is acceptable only when it does not hide material status, evidence, IC-gate, or source-scope limits.
 
 ### What would change the view
 
@@ -460,35 +514,37 @@ Canonical implementation documents are source of truth. Legacy PRDs, drafts, old
 
 ## 11. Approved edge-case behavior table
 
-| # | Case | Canonical behavior |
-|---:|---|---|
-| 1 | Analysis partly ready but final action unavailable | Use separate `Analysis Status` and `IC Action Status`. |
-| 2 | Buy/sell/hold without personal context | Give Preliminary scenario view and request minimum context for final IC Action. |
-| 3 | Fresh data unavailable or stale | Give structural/scenario analysis only; block or limit current action. |
-| 4 | Sources conflict | Show `Evidence Conflict`; constrain status if material. |
-| 5 | User asks for one-line action | Give Quick Take / Preliminary, not final IC Action. |
-| 6 | User asks for "best" without criteria | Use default criteria and scenario winners; no absolute winner. |
-| 7 | New buy / hold / add / trim / exit unclear | Provide action scenario matrix; do not assume new buy. |
-| 8 | High-quality asset but valuation weak | Separate Quality Verdict, Valuation Support, Investment View, and IC Action Status. |
-| 9 | Risk review negative while others positive | Risk may create gate failure; IC remains final synthesis owner. |
-| 10 | Specialist directly asked for final conclusion | Specialist gives scoped verdict plus boundary; no IC Action. |
-| 11 | Cross-asset comparison | Quick view is scenario-based; final action requires asset-class work plus IC. |
-| 12 | Discovery candidates look like buy list | Use Discovery Ranking and review priority, not Buy Ranking. |
-| 13 | Portfolio Fit without portfolio data | Give generic fit plus checklist; mark personal fit Limited. |
-| 14 | Classic valuation not applicable | Use asset-class valuation / expectations equivalent; strengthen risk review when anchor is weak. |
-| 15 | Good idea, weak implementation vehicle | Implementation check is required when material; suggest alternatives if weak. |
-| 16 | User asks for all details | Use layered report; main memo stays decision-oriented. |
-| 17 | Update prior memo | Use delta-update if prior memo exists; otherwise request it or fresh-analysis disclaimer. |
-| 18 | Evidence readiness fails but user wants answer | Block IC Action; allow bounded analysis, scenarios, checklist, risk map. |
-| 19 | News, rumors, and market reaction mixed | Separate confirmed, unconfirmed, and market-implied claims. |
-| 20 | Exact sizing / allocation requested | Give illustrative ranges or portfolio-fit ranges only; no exact instruction. |
-| 21 | Time horizon missing | Split short-term / long-term; final IC Action requires Time Horizon. |
-| 22 | Confidence confused with forecast accuracy | Explain confidence as support for conclusion, not price certainty. |
-| 23 | Action Box appears outside IC memo | Prohibit; use specialist mini-boxes with `Not an IC Action`. |
-| 24 | Negative action before full positive gate | Hard Avoid only with strong disqualifying evidence; otherwise Defer / Not Actionable. |
-| 25 | User asks what changes the view | Provide monitoring and action/view-change triggers. |
-| 26 | User wants personal support without private details | Accept approximate buckets; otherwise scenario-based only. |
-| 27 | User asks for simple explanation | Use plain-English mode without dropping gates/statuses. |
-| 28 | Paid/private data unavailable | Provide Public-data view plus checklist; constrain confidence/status when material. |
-| 29 | Many artifacts confuse final output | `final_investment_memo.md` is canonical final; supporting artifacts need metadata. |
-| 30 | Legacy/draft/backup used as source of truth | Canonical docs win; legacy is supporting/excluded by registry. |
+Stable IDs in this table are used for QA traceability. If a rule changes, update both the detailed rule section and the matching QA row.
+
+| Rule ID | # | Case | Canonical behavior |
+|---|---:|---|---|
+| P1-RULE-01-01 | 1 | Analysis partly ready but final action unavailable | Use separate `Analysis Status` and `IC Action Status`. |
+| P1-RULE-01-02 | 2 | Personal buy/sell/hold without personal context | Ask the minimum missing context before giving an action-oriented conclusion; market-action questions may receive Preliminary/Limited scenario views. |
+| P1-RULE-01-03 | 3 | Fresh data unavailable or stale | Give structural/scenario analysis only; block or limit current action. |
+| P1-RULE-01-04 | 4 | Sources conflict | Show `Evidence Conflict`; constrain status if material. |
+| P1-RULE-01-05 | 5 | User asks for one-line action | For market action, give Quick Take / Preliminary, not final IC Action; for personal final action with missing context, ask first. |
+| P1-RULE-01-06 | 6 | User asks for "best" without criteria | Use default criteria and scenario winners; no absolute winner. |
+| P1-RULE-01-07 | 7 | New buy / hold / add / trim / exit unclear | If personal final action is requested, ask the minimum clarifier; otherwise provide an explicitly non-final scenario matrix and do not assume new buy. |
+| P1-RULE-01-08 | 8 | High-quality asset but valuation weak | Separate Quality Verdict, Valuation Support, Investment View, and IC Action Status. |
+| P1-RULE-01-09 | 9 | Risk review negative while others positive | Risk may create gate failure; IC remains final synthesis owner. |
+| P1-RULE-01-10 | 10 | Specialist directly asked for final conclusion | Specialist gives scoped verdict plus boundary; no IC Action. |
+| P1-RULE-01-11 | 11 | Cross-asset comparison | Quick view is scenario-based; final action requires asset-class work plus IC. |
+| P1-RULE-01-12 | 12 | Discovery candidates look like buy list | Use Discovery Ranking and review priority, not Buy Ranking. |
+| P1-RULE-01-13 | 13 | Portfolio Fit without portfolio data | Ask for minimum portfolio context before personal fit; generic fit may proceed only as Limited / not personalized with next steps. |
+| P1-RULE-01-14 | 14 | Classic valuation not applicable | Use asset-class valuation / expectations equivalent; strengthen risk review when anchor is weak. |
+| P1-RULE-01-15 | 15 | Good idea, weak implementation vehicle | Implementation check is required when material; suggest alternatives if weak. |
+| P1-RULE-01-16 | 16 | User asks for short or detailed output | Use response depth layering; mandatory safety fields remain visible, and full detail stays decision-oriented. |
+| P1-RULE-01-17 | 17 | Update prior memo | Use delta-update if prior memo exists; otherwise request it or fresh-analysis disclaimer. |
+| P1-RULE-01-18 | 18 | Evidence readiness fails but user wants answer | Block IC Action; allow bounded analysis, scenarios, checklist, risk map. |
+| P1-RULE-01-19 | 19 | News, rumors, and market reaction mixed | Separate confirmed, unconfirmed, and market-implied claims. |
+| P1-RULE-01-20 | 20 | Exact sizing / allocation requested | Give illustrative ranges or portfolio-fit ranges only; no exact instruction. |
+| P1-RULE-01-21 | 21 | Time horizon missing | Split short-term / long-term; final IC Action requires Time Horizon. |
+| P1-RULE-01-22 | 22 | Confidence confused with forecast accuracy | Explain confidence as support for conclusion, not price certainty. |
+| P1-RULE-01-23 | 23 | Action Box appears outside IC memo | Prohibit; use specialist mini-boxes with `Not an IC Action`. |
+| P1-RULE-01-24 | 24 | Negative action before full positive gate | Hard Avoid only with strong disqualifying evidence; otherwise Defer / Not Actionable. |
+| P1-RULE-01-25 | 25 | User asks what changes the view | Provide monitoring and action/view-change triggers. |
+| P1-RULE-01-26 | 26 | User wants personal support without private details | Accept approximate buckets; otherwise scenario-based only. |
+| P1-RULE-01-27 | 27 | User asks for simple explanation | Use plain-English mode without dropping gates/statuses. |
+| P1-RULE-01-28 | 28 | Paid/private data unavailable | Provide Public-data view plus checklist; constrain confidence/status when material. |
+| P1-RULE-01-29 | 29 | Many artifacts confuse final output | `final_investment_memo.md` is canonical final; supporting artifacts need metadata. |
+| P1-RULE-01-30 | 30 | Legacy/draft/backup used as source of truth | Canonical docs win; legacy is supporting/excluded by registry. |
