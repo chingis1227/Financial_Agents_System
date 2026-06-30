@@ -1,5 +1,6 @@
 # P10-QA-01 Execution Report
 
+Status: Supporting operational validation record
 Artifact Type: Supporting operational validation record  
 Owner: QA  
 Task: P10-QA-01  
@@ -15,7 +16,7 @@ P10-QA-01 was executed as a manual acceptance and failure-scenario run over the 
 
 Method:
 
-1. Preflight verified the project root through `TASKS.md`, `IMPLEMENTATION_BACKLOG.md`, and `implementation/`.
+1. Historical preflight verified former build-phase root markers; current state supersedes this with `PROJECT_STATE.md`, `AGENTS.md`, `implementation/`, and archived provenance records under `archive/project-history/`.
 2. Current `git status --short` was captured before edits; the repository already had many uncommitted changes from prior implementation stages.
 3. P10 product decisions were canonicalized in the master, QA, runtime, and root navigator documents.
 4. Pareto Gate fixtures were checked as synthetic structural fixtures: each fixture maps to expected invariants and observed canonical/runtime assertions.
@@ -33,13 +34,13 @@ Completion status:
 | Structural runtime checks | Pass | 20 / 20 agents, 21 / 21 repo skills total, 19 / 19 method skills, and 2 / 2 presentation skills present; TOML parse passed; required rule ranges passed. |
 | Session 09 Runtime Workflow QA | Pass | S09 fixtures now cover Single-agent and Delegated modes, Microsoft, QQQ vs SCHG, gold setup now, BTC 3-year, fixed-income ambiguity, handoff artifacts, no premature IC Action, Portfolio Fit limitation, and stale-evidence handling. |
 | Source issues | Pass | 0 blocking, 0 warning, 1 info. |
-| Final closure | Pass | `TASKS.md` Done status is supported by this hardened report, decision-log record, and validation checks. |
+| Final closure | Pass | Historical `archive/project-history/TASKS.md` Done status is supported by this hardened report, decision-log record, and validation checks; it is not current runtime authority. |
 
 ## 2. Preflight record
 
 | Check | Expected | Observed | Result |
 |---|---|---|---|
-| Project root | Root contains `TASKS.md`, `IMPLEMENTATION_BACKLOG.md`, and `implementation/`. | All present. | Pass |
+| Project root | Historical root check used former build-control files. | Current state uses `PROJECT_STATE.md`, `AGENTS.md`, `implementation/`, and `archive/project-history/` provenance records. | Pass |
 | Source-of-truth routing | Use `AGENTS.md`, `implementation/01-documentation-control.md`, `implementation/00-master-rules.md`, and `implementation/09-system-acceptance-qa.md`. | Required documents read and used. | Pass |
 | Existing work preservation | Do not reset, auto-format, or rewrite unrelated files. | Pre-existing uncommitted changes were left in place; P10 edits were limited to P10-relevant documents. | Pass |
 | Implementation mode | User explicitly requested implementation. | Repository mutations allowed for P10. | Pass |
@@ -53,7 +54,7 @@ Info: the repository had many pre-existing uncommitted changes before P10 implem
 | File | P10 purpose |
 |---|---|
 | `AGENTS.md` | Root runtime navigator synchronized to P10 action-intent, safety-failure, next-step, and Hard Avoid / Defer rules. |
-| `TASKS.md` | Operational register updated after passing P10 closure checks. |
+| `archive/project-history/TASKS.md` | Historical operational register preserved after passing P10 closure checks; provenance only. |
 | `implementation/00-master-rules.md` | Canonical master UX/action-intent, next-step, no-disclaimer, and response-depth rules. |
 | `implementation/01-documentation-control.md` | Registered this execution report as a Supporting operational validation record. |
 | `implementation/09-system-acceptance-qa.md` | Added P10 execution model, tiers, scoring, fixtures, live-smoke behavior, and Done criteria. |
@@ -338,7 +339,7 @@ add("S09-FAIL checks", 7, len(s09_fail_ids), len(s09_fail_ids) == 7)
 add("Scenario 1A execution mode", 1, int("`Execution mode: Single-agent Full Cycle` shown before the Runtime Execution Plan" in qa), "`Execution mode: Single-agent Full Cycle` shown before the Runtime Execution Plan" in qa)
 
 reg = (root / "implementation" / "01-documentation-control.md").read_text(encoding="utf-8-sig")
-tasks = (root / "TASKS.md").read_text(encoding="utf-8-sig")
+tasks = (root / "archive" / "project-history" / "TASKS.md").read_text(encoding="utf-8-sig")
 report = (root / "implementation" / "p10-qa-execution-report.md").read_text(encoding="utf-8-sig")
 report_par_list = re.findall(r"\| Pareto Gate \| (P10-PAR-\d{2}) \|", report)
 report_par_duplicates = sorted({x for x in report_par_list if report_par_list.count(x) > 1})
@@ -452,4 +453,4 @@ Required operational follow-up completed as part of P10 closure:
 
 - Register this report in `implementation/01-documentation-control.md`.
 - Add decision-log record in `implementation/12-decision-log.md`.
-- Mark `P10-QA-01` as Done in `TASKS.md`.
+- Historical closure note: `P10-QA-01` was marked Done in `archive/project-history/TASKS.md`; this archived file is provenance only.

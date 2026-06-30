@@ -1,6 +1,6 @@
 ---
 name: structural-winner-discovery
-description: Use for theme-driven candidate discovery, maps, rankings, and watchlists.
+description: Use for scoped structural-winner discovery, theme-to-asset mapping, bottlenecks, candidate ranking for review, and watchlist construction; does not issue final IC Action.
 ---
 
 # Structural Winner Discovery Method Skill

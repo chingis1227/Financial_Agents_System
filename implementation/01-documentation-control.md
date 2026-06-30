@@ -6,7 +6,7 @@ Status: Canonical implementation-control document
 
 This document controls which legacy PRD / Markdown documents are active implementation inputs, which are references, which require consolidation, and which are excluded from active implementation.
 
-The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canonical implementation documents explicitly listed below. Files located under `implementation/` are not automatically canonical unless this registry lists them as canonical. Legacy PRD and draft-source files have been removed from the project root and retained under `archive/legacy-prd/`; active advisory references live under `references/`. `НАПОМИНАНИЕ.md` is intentionally excluded from this registry by user instruction.
+The canonical implementation layer is the canonical implementation documents explicitly listed below; historical build-roadmap files are retained under `archive/project-history/`. Files located under `implementation/` are not automatically canonical unless this registry lists them as canonical. Legacy PRD and draft-source files have been removed from the project root and retained under `archive/legacy-prd/`; active advisory references live under `references/`. `НАПОМИНАНИЕ.md` is intentionally excluded from this registry by user instruction.
 
 ## Status definitions
 
@@ -23,7 +23,6 @@ The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canon
 
 | Document | Status | Role |
 |---|---|---|
-| `IMPLEMENTATION_BACKLOG.md` | Canonical | Main phase-level implementation backlog. |
 | `implementation/00-master-rules.md` | Canonical | Master statuses, gates, output standards, confidence, source display, style, artifact naming. |
 | `implementation/01-documentation-control.md` | Canonical | Active document registry and status control. |
 | `implementation/02-canonical-architecture.md` | Canonical | Architecture, ownership, orchestration, statuses, labels. |
@@ -38,12 +37,15 @@ The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canon
 | `implementation/11-skill-contracts.md` | Canonical | Canonical method-skill contracts. |
 | `implementation/13-codex-runtime-architecture.md` | Canonical | Codex-native runtime architecture, `AGENTS.md`, repo skills, custom subagents, and workflow runbook conventions. |
 | `implementation/14-language-and-style.md` | Canonical | User-facing language selection, Russian language policy, and investment-analytical presentation style. |
+| `implementation/15-documentation-sync-contract.md` | Canonical | Documentation synchronization, behavior-fixture, and validator requirements for runtime/doc changes. |
 
 ## Implementation governance records
 
 | Document | Record type | Role |
 |---|---|---|
-| `TASKS.md` | Operational control register | Active work queue and task status tracker. It controls what is currently open or done; `IMPLEMENTATION_BACKLOG.md` governs phase meaning and scope when they differ. |
+| `PROJECT_STATE.md` | Current runtime state record | Short current-state entrypoint for daily Codex runtime behavior, ready routes, current limitations, and historical/superseded document handling. It does not override canonical implementation documents. |
+| `archive/project-history/TASKS.md` | Historical implementation task log | Archived build-phase task tracker. It is retained for provenance only and is not active daily runtime authority. |
+| `archive/project-history/IMPLEMENTATION_BACKLOG.md` | Historical implementation roadmap | Archived build-phase backlog and phase roadmap. It is retained for provenance only and is not active daily runtime authority. |
 | `implementation/12-decision-log.md` | Supporting decision record | Decision history and rationale. It explains why documentation-control rules were chosen, but it does not override canonical implementation documents. |
 | `implementation/remaining-requirements.md` | Supporting residual-requirement register | Candidate requirement inventory after root legacy cleanup. It records residual items to evaluate and may not override domain canonical documents unless an item is promoted through canonical change control. |
 | `.codex/runtime-readiness-report.md` | Supporting operational validation record | P1A-CODEX-02 generated-runtime readiness, structural gate, validation, and idempotency record. It does not override canonical implementation documents. |
@@ -51,6 +53,7 @@ The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canon
 | `implementation/reference-library-index.md` | Supporting operational index | P9-REF-01 reference-library navigation, owner/used-by metadata, freshness tier, split/index state, and non-blocking review notes. It does not override the registry or canonical implementation documents. |
 | `implementation/p10-qa-execution-report.md` | Supporting operational validation record | P10-QA-01 Pareto Gate, Full Regression, Live-Smoke, structural validation, source issues, and final closure evidence. It does not override canonical implementation documents. |
 | `implementation/final-system-audit-report.md` | Supporting operational validation record | Session 11 final system audit for root cleanup, workflow docs, agents, skills, handoff artifacts, README prompts, QA, Microsoft smoke test, blockers, warnings, residual tasks, and regular-use readiness. It does not override canonical implementation documents. |
+| `implementation/non_equity_production_hardening_report.md` | Supporting operational validation record | Non-equity Level 2 runtime hardening, delegated smoke-test, workflow runbook, validator, and readiness evidence for ETF, commodity, crypto, fixed income, and multi-asset routes. It does not override canonical implementation documents. |
 | `workflows/equity_full_cycle.md` | Runtime runbook | Executable Equity Full Cycle runbook. It is subordinate to canonical implementation documents and must not override `implementation/00-master-rules.md`, `implementation/05-routing-and-workflows.md`, `implementation/06-agent-contracts.md`, `implementation/07-investment-committee-and-report-schemas.md`, or `implementation/13-codex-runtime-architecture.md`. |
 | `workflows/etf_full_cycle.md` | Runtime runbook | Executable ETF Full Cycle runbook. It is subordinate to canonical implementation documents and must not override master rules, routing contracts, agent contracts, IC schemas, or Codex runtime architecture. |
 | `workflows/commodity_full_cycle.md` | Runtime runbook | Executable Commodity Full Cycle runbook. It is subordinate to canonical implementation documents and must not override master rules, routing contracts, agent contracts, IC schemas, or Codex runtime architecture. |
@@ -58,6 +61,15 @@ The canonical implementation layer is `IMPLEMENTATION_BACKLOG.md` plus the canon
 | `workflows/fixed_income_full_cycle.md` | Runtime runbook | Executable Fixed Income Full Cycle runbook. It is subordinate to canonical implementation documents and must not override master rules, routing contracts, agent contracts, IC schemas, or Codex runtime architecture. |
 | `workflows/multi_asset_full_agent_workflow.md` | Runtime runbook | Executable multi-asset comparison runbook. It is subordinate to canonical implementation documents and must not override master rules, routing contracts, agent contracts, IC schemas, or Codex runtime architecture. |
 | `workflows/handoff_artifact_standard.md` | Runtime standard | Mandatory handoff artifact field standard for Full Cycle and Delegated Full Agent Workflow runs. It is subordinate to canonical implementation documents and must not override master status/gate rules, evidence rules, agent contracts, routing contracts, IC schemas, or Codex runtime architecture. |
+| `workflows/route_cards/investment_request_router.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
+| `workflows/route_cards/quick_take.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
+| `workflows/route_cards/equity_full_cycle.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
+| `workflows/route_cards/etf_full_cycle.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
+| `workflows/route_cards/commodity_full_cycle.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
+| `workflows/route_cards/crypto_full_cycle.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
+| `workflows/route_cards/fixed_income_full_cycle.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
+| `workflows/route_cards/multi_asset_comparison.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
+| `workflows/route_cards/direct_specialist.md` | Runtime route card | Daily Codex runtime route card subordinate to canonical implementation documents and `PROJECT_STATE.md`; it must not override master gates, evidence rules, IC schemas, or documentation-control rules. |
 
 ## Legacy document registry
 
@@ -292,7 +304,7 @@ Use this routing table before answering implementation-rule questions:
 | Codex-native runtime structure, `AGENTS.md`, repo skills, custom subagents, workflow runbooks | `implementation/13-codex-runtime-architecture.md` |
 | User-facing language selection, Russian language policy, and investment-analytical presentation style | `implementation/14-language-and-style.md` |
 
-`TASKS.md` controls the active work queue. `IMPLEMENTATION_BACKLOG.md` controls phase meaning and scope when the two documents differ.
+`PROJECT_STATE.md` controls the short current runtime state summary. `archive/project-history/TASKS.md` and `archive/project-history/IMPLEMENTATION_BACKLOG.md` are historical build records and do not control daily runtime behavior.
 
 ## Change control
 

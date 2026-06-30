@@ -26,13 +26,13 @@ The current working tree already contains a large uncommitted runtime/QA change 
 | Repo skills | 19 | Existing `.agents/skills/*/SKILL.md` modifications. |
 | Implementation docs | 11 | Existing canonical/runtime/QA documentation changes. |
 | Runtime readiness report | 1 | Existing `.codex/runtime-readiness-report.md` change. |
-| Root navigation/task files | 2 | Existing `AGENTS.md` / `TASKS.md` changes. |
+| Historical root navigation/task files | 2 | Existing `AGENTS.md` changes and former task-register changes now preserved under `archive/project-history/TASKS.md` for provenance only. |
 
 ## P11 / Full Cycle / Microsoft baseline classification
 
 | Theme | Observed files | Baseline meaning |
 |---|---|---|
-| P11 runtime hardening | `TASKS.md`, `implementation/12-decision-log.md`, `.codex/runtime-readiness-report.md` | Concrete-asset Full Cycle hardening is already in the working tree. |
+| P11 runtime hardening | `archive/project-history/TASKS.md`, `implementation/12-decision-log.md`, `.codex/runtime-readiness-report.md` | Concrete-asset Full Cycle hardening record is historical/provenance only and already in the working tree. |
 | Full Cycle routing/gates | `AGENTS.md`, `implementation/00-master-rules.md`, `implementation/05-routing-and-workflows.md`, `implementation/07-investment-committee-and-report-schemas.md`, `implementation/13-codex-runtime-architecture.md` | Runtime Execution Plan, module statuses, gate-aware artifacts, and no final positive `IC Action` without gates are already present. `implementation/05-routing-and-workflows.md` is an existing modified canonical workflow doc, not a new Session 1 runbook. |
 | Agent/skill runtime behavior | `.codex/agents/*.toml`, `.agents/skills/*/SKILL.md`, `implementation/06-agent-contracts.md`, `implementation/11-skill-contracts.md` | Existing adapters/skills already include Full Cycle, handoff, and Limited/Blocked behavior. |
 | Microsoft fixture / QA | `implementation/09-system-acceptance-qa.md`, `implementation/p10-qa-execution-report.md` | Microsoft 3+ year Russian prompt, expected `decision_prep_memo.md`, Portfolio Fit limitation, and no final positive `IC Action` are already represented. |
@@ -85,7 +85,7 @@ M .agents/skills/commodity-analysis/SKILL.md
  M .codex/agents/valuation-expectations-agent.toml
  M .codex/runtime-readiness-report.md
  M AGENTS.md
- M TASKS.md
+ M archive/project-history/TASKS.md
  M implementation/00-master-rules.md
  M implementation/02-canonical-architecture.md
  M implementation/04-evidence-layer.md
@@ -146,7 +146,7 @@ M .agents/skills/commodity-analysis/SKILL.md
  .codex/agents/valuation-expectations-agent.toml    |   7 ++
  .codex/runtime-readiness-report.md                 |  23 +++--
  AGENTS.md                                          |   9 +-
- TASKS.md                                           |   1 +
+ archive/project-history/TASKS.md                   |   1 +
  implementation/00-master-rules.md                  |  23 +++--
  implementation/02-canonical-architecture.md        |   6 +-
  implementation/04-evidence-layer.md                |   2 +-

@@ -1,6 +1,6 @@
 ---
 name: fixed-income-analysis
-description: Use for bond and fixed-income instrument analysis.
+description: Use for scoped fixed income, bond, bond ETF, rates, duration, credit, spread, carry, maturity, or yield analysis after route selection; does not issue final IC Action.
 ---
 
 # Fixed Income Analysis Method Skill

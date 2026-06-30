@@ -1,144 +1,89 @@
 # Financial Agent System
 
-The Financial Agent System is an agents-first financial analysis project. It packages canonical implementation documents into Codex-native project instructions, thin custom agents, reusable repo skills, and workflow runbooks while preserving evidence discipline and Investment Committee boundaries.
+The Financial Agent System is a Codex-native, agents-first financial analysis project. It uses concise runtime route cards, reusable skills, canonical implementation documents, and validator-backed behavior tests to make investment workflows more repeatable.
 
-## Quick start for users
+The current state is summarized in `PROJECT_STATE.md`. Historical build trackers are archived under `archive/project-history/` and do not control daily runtime behavior.
 
-Use the system from the project root and ask for one of three request modes. By canonical default, ordinary concrete-asset investment-action requests should run as a delegated workflow with relevant subagents when subagent tooling is available; `Single-agent Full Cycle` is the fallback when subagents are unavailable or are not actually spawned.
+## How to use it
 
-| Mode | When to use | What the system should do | Output boundary |
+Start Codex from the project root. For investment requests, Codex should route through `workflows/route_cards/investment_request_router.md` before answering.
+
+| Mode | Use when | What happens | Boundary |
 |---|---|---|---|
-| `Quick Take` | You ask for a short, fast, preliminary view. | Give a concise `Preliminary` or `Limited` answer using only the evidence that can be handled safely in a quick pass. For today/now/latest requests, it still needs current timestamps or must be marked `Limited` / `Blocked`. | Not a final buy/sell decision and not a full Investment Committee action. |
-| `Full Cycle` | You ask whether to invest, buy, add, hold, sell, or assess an asset over a multi-year horizon. | Run the full analytical sequence: intake, evidence, lead asset analysis, financial statements when material, valuation, risk, portfolio fit or limited portfolio fit, and Investment Committee synthesis. When subagent tooling is available, the canonical default is delegated execution with relevant subagents; otherwise it falls back to a single-session execution. | Gate-aware output. Audit metadata records either `Delegated Full Agent Workflow` or `Single-agent Full Cycle` based on what actually ran. |
-| `Delegated Full Agent Workflow` | The workflow actually spawns relevant subagents. Concrete-asset Full Cycle should default to this mode when subagents are available; the user may also request it directly with words such as `Full Agent Workflow`, `subagents`, `delegated workflow`, or `run the relevant agents`. | Spawn the relevant available subagents, collect structured handoff artifacts or summaries, and synthesize only from those handoffs plus the evidence lock. | Audit/debug materials record `Execution mode: Delegated Full Agent Workflow`, the agents actually used, omitted agents with reasons, and the handoffs consumed. Ordinary user-facing chat hides these technical blocks unless requested. If subagents are unavailable or not actually spawned, audit metadata must say so and fall back to `Single-agent Full Cycle` or `Limited`. |
+| `Quick Take` | You explicitly ask for short, quick, fast, or preliminary output. | Codex asks exactly 3 relevant questions, then gives a chat-only Preliminary / Limited view. | No saved report, no audit, no final IC Action. |
+| `Full Cycle` | You ask whether to buy, invest, hold, sell, add, or evaluate a concrete asset for a capital decision. | Codex asks exactly 5 relevant questions, then runs the selected Full Cycle route card. | Gate-aware report. Missing portfolio context keeps Portfolio Fit / IC Action limited. |
+| `Delegated Full Agent Workflow` | A Full Cycle route uses relevant subagents and they actually ran, either through Codex spawning or a real orchestrator. | Codex records the agents actually spawned and consumes structured handoffs. If no subagents actually ran, use `Single-agent Full Cycle`. | Do not claim delegation unless subagents actually ran. |
 
-Which prompt should you use?
-
-- Want a short preliminary view? Ask for `Quick Take`.
-- Want full analysis? Ask for `Full Cycle`, or simply ask an investment-action question. The runtime should use relevant delegated subagents when available; if no subagents are actually spawned, it must record `Single-agent Full Cycle`.
-- Want real spawned subagents? Explicitly ask for `Delegated Full Agent Workflow`, `подагенты`, `отдельные агенты`, or `запусти нужных агентов`.
-
-Important distinction: `Full Cycle` is the analytical route; `Delegated Full Agent Workflow` is the runtime mode where subagents are actually spawned. A normal concrete-asset investment request should default to delegated execution when relevant subagents are available; if no subagents actually run, the audit must say `Single-agent Full Cycle`.
-
-## Russian prompt templates
-
-These templates are written for user-facing use. Controlled runtime labels and artifact filenames remain in English where the system expects exact names.
-
-### Простые режимы работы
-
-| Режим | Простыми словами |
-|---|---|
-| `Quick Take` | быстрый предварительный вывод. |
-| `Single-agent Full Cycle` | полный анализ в одной сессии. |
-| `Delegated Full Agent Workflow` | полный многоагентный запуск. |
-| `decision_prep_memo.md` | мемо для подготовки решения. |
-
-### ETF: QQQ vs SCHG
+## Prompt examples
 
 ```text
-полный многоагентный запуск: QQQ vs SCHG. мемо для подготовки решения: `decision_prep_memo.md`. Без финального buy/sell/hold.
+Quick Take: дай быстрый предварительный взгляд на Microsoft.
 ```
-
-### Commodity: золото
 
 ```text
-полный многоагентный запуск по золоту. мемо для подготовки решения: `decision_prep_memo.md`.
+Full Cycle: стоит ли инвестировать в Microsoft на горизонт 3+ лет?
 ```
-
-### Crypto: BTC на 3 года
 
 ```text
-полный многоагентный запуск: BTC на горизонт 3 года. мемо для подготовки решения: `decision_prep_memo.md`.
+Полный многоагентный запуск: QQQ vs SCHG. Без финального buy/sell/hold, если IC gates не закрыты.
 ```
-
-### Fixed income: TLT как bond ETF
 
 ```text
-полный многоагентный запуск: TLT как bond ETF на длинные казначейские облигации США. мемо для подготовки решения: `decision_prep_memo.md`.
+Почему Nvidia выросла сегодня? Используй свежие источники с timestamp или пометь вывод Limited / Blocked.
 ```
 
-### Multi-asset: BTC, золото, QQQ и TLT
+Additional routing examples to keep behavior explicit:
 
 ```text
-полный многоагентный запуск: BTC, золото, QQQ и TLT на горизонт 3 года. мемо для подготовки решения: `decision_prep_memo.md`.
+Дай быстрый предварительный вывод по BTC.
 ```
 
-### Output naming rules in short
+```text
+Нужен полный анализ в одной сессии по TLT.
+```
 
-- Use `decision_prep_memo.md` when missing portfolio context is the remaining final-action gate.
-- Use `evidence_gap_memo.md` when evidence or freshness gaps drive the limitation.
-- Use `limited_ic_draft.md` when the analysis is useful but one or more non-portfolio gates remain open.
-- Use `final_investment_memo.md` only when the Investment Committee gates pass under the canonical schemas.
+```text
+Сделай мемо для подготовки решения по золоту; если свежих источников нет, пометь результат Limited.
+```
 
-## Current implementation status
+```text
+Проверь маршрутизацию для BTC, золото, QQQ и TLT.
+```
 
-- Active work is tracked in `TASKS.md`.
-- Phase meaning and full implementation scope are tracked in `IMPLEMENTATION_BACKLOG.md`.
-- Codex runtime packaging is governed by `implementation/13-codex-runtime-architecture.md`.
-- Equity Full Cycle runtime execution is described in `workflows/equity_full_cycle.md`.
-- Handoff artifacts are governed by `workflows/handoff_artifact_standard.md`.
-- Runtime files are generated conservatively: navigation files are safe to use, while agents and skills are runtime-ready only when their canonical contracts pass readiness gates.
-
-## Directory map
+## Current runtime files
 
 | Path | Purpose |
 |---|---|
-| `AGENTS.md` | Concise Codex navigator and runtime instruction entrypoint. |
-| `README.md` | Human-readable project map and user prompt templates. |
-| `TASKS.md` | Active work register and task status. |
-| `IMPLEMENTATION_BACKLOG.md` | Phase scope and implementation roadmap. |
-| `implementation/` | Canonical implementation layer and supporting control documents. |
-| `references/` | Advisory frameworks, playbooks, source overlays, and split reference libraries. |
-| `archive/legacy-prd/` | Retired PRDs, drafts, backups, and audit artifacts retained for provenance only. |
-| `.codex/agents/` | Project-scoped thin custom-agent TOML files. |
-| `.agents/skills/` | Repo-scoped reusable Codex skills. |
-| `workflows/` | Executable workflow runbooks and handoff standards subordinate to canonical documents. |
+| `PROJECT_STATE.md` | Short current-state entrypoint. |
+| `AGENTS.md` | Compact Codex runtime instructions. |
+| `workflows/route_cards/` | Daily route selection and workflow contracts. |
+| `.agents/skills/investment-workflow-router/` | First skill for investment-action and comparison prompts. |
+| `implementation/` | Canonical reference layer and supporting operational records. |
+| `references/` | Advisory playbooks and source overlays. |
+| `archive/project-history/` | Historical task and backlog records. |
+| `archive/legacy-prd/` | Retired PRDs and provenance-only material. |
 
-## Canonical document map
+## Validation
 
-| Need | Canonical source |
-|---|---|
-| Statuses, gates, confidence, source display, style, artifact naming | `implementation/00-master-rules.md` |
-| Registry, precedence, archive behavior, source issues | `implementation/01-documentation-control.md` |
-| Architecture and owner/contributor boundaries | `implementation/02-canonical-architecture.md` |
-| Standard contract templates | `implementation/03-contract-templates.md` |
-| Evidence model and readiness | `implementation/04-evidence-layer.md` |
-| Routing and workflow behavior | `implementation/05-routing-and-workflows.md` |
-| Agent contracts | `implementation/06-agent-contracts.md` |
-| IC memo and report schemas | `implementation/07-investment-committee-and-report-schemas.md` |
-| Reference cleanup rules | `implementation/08-reference-library-cleanup.md` |
-| System acceptance and QA | `implementation/09-system-acceptance-qa.md` |
-| Legacy routing and traceability | `implementation/10-traceability-matrix.md` |
-| Residual candidate requirements | `implementation/remaining-requirements.md` |
-| Skill contracts | `implementation/11-skill-contracts.md` |
-| Decision history | `implementation/12-decision-log.md` |
-| Codex runtime architecture | `implementation/13-codex-runtime-architecture.md` |
-| User-facing language and presentation style | `implementation/14-language-and-style.md` |
+Run these after changing docs, route cards, agents, skills, workflow behavior, tests, or validators:
 
-## Runtime surfaces
+```powershell
+py -3 tools\validate_project_consistency.py
+py -3 tools\validate_behavior_contracts.py
+py -3 tools\validate_runtime_readiness.py
+```
 
-Executable runtime workflow files live under `workflows/` when deliberately split out by a canonical task. Current runtime files include `workflows/equity_full_cycle.md` and `workflows/handoff_artifact_standard.md`; both remain subordinate to the canonical implementation documents.
+Validation is the TDD-like gate for this documentation-driven system: behavior rules must have fixtures, fixtures must be checked by validators, and project state must stay synchronized with the registry.
 
-- Custom agents are narrow adapters that point to canonical contracts and return status, key findings, limitations, handoffs, and next required steps.
-- Repo skills are focused reusable workflows with triggers, inputs, steps, outputs, guardrails, Limited/Blocked behavior, and quality checks.
-- Presentation skills under `.agents/skills/language-policy/` and `.agents/skills/investment-analytical-style/` control user-facing language cleanup and investment-analytical style; they do not replace analytical method skills or IC gates.
-- Archived legacy PRDs under `archive/legacy-prd/` are provenance only; advisory frameworks and playbooks live under `references/` and are usable only through the documentation registry and traceability matrix.
+## Source-of-truth model
 
-## How to add or change runtime assets
+- Canonical statuses, gates, and report rules live in `implementation/00-master-rules.md`.
+- Registry and source precedence live in `implementation/01-documentation-control.md`.
+- Current runtime state lives in `PROJECT_STATE.md`.
+- Daily investment routing lives in `workflows/route_cards/`.
+- Documentation synchronization rules live in `implementation/15-documentation-sync-contract.md`.
+- Historical reports and archived PRDs do not override current state or canonical implementation documents.
 
-1. Update or confirm the relevant canonical implementation document first.
-2. Check `implementation/01-documentation-control.md` and `implementation/10-traceability-matrix.md` before using legacy detail.
-3. Keep custom-agent TOML files thin; do not copy full PRDs or methodology libraries.
-4. Keep skills focused on reusable method steps; do not let skills override agent, evidence, workflow, or IC boundaries.
-5. If a runtime file conflicts with canonical documents, preserve the canonical rule and surface a source issue.
-6. Use diff-aware, idempotent updates; do not silently overwrite manual edits.
+## OpenAI / Codex best-practice alignment
 
-## How to validate changes
-
-- Confirm required runtime paths exist: `AGENTS.md`, `README.md`, `.codex/agents/`, `.agents/skills/`, and `workflows/`.
-- Validate custom-agent TOML fields: `name`, `description`, and `developer_instructions`.
-- Confirm custom agents remain thin and canonical-doc-driven.
-- Confirm skills include YAML front matter and the required skill contract sections.
-- Confirm README prompt templates preserve the three user-facing modes: `Quick Take`, `Full Cycle`, and `Delegated Full Agent Workflow`.
-- Confirm Russian prompt templates render as Cyrillic UTF-8, not replacement question marks or mojibake.
-- Run acceptance scenarios from `implementation/09-system-acceptance-qa.md`, especially routing, evidence readiness, specialist boundaries, freshness, conflict handling, ambiguity handling, and IC gates.
+This project follows OpenAI / Codex guidance by keeping `AGENTS.md` concise, turning repeated workflows into skills, using explicit validation, keeping custom agents narrow, and treating subagents as real only when actually spawned. A future API-backed version may use OpenAI Agents SDK orchestration with a manager agent, handoffs or agents-as-tools, guardrails, and traces.

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "golden_microsoft_full_cycle",
+    "prompt": "Проанализируй Microsoft и скажи, стоит ли в неё инвестировать на горизонт 3+ года.",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "explicit_quick": false,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "final_ic_action_before_gates"
+    ]
+  },
+  {
+    "id": "golden_microsoft_quick",
+    "prompt": "Quick Take: дай краткий предварительный вывод по Microsoft.",
+    "expected_route": "quick_take",
+    "required_questions": 3,
+    "explicit_quick": true,
+    "forbidden": [
+      "investment_report.md",
+      "audit/",
+      "final_ic_action"
+    ]
+  },
+  {
+    "id": "golden_btc_three_year",
+    "prompt": "BTC на 3 года, стоит ли инвестировать?",
+    "expected_route": "crypto_full_cycle",
+    "required_questions": 5,
+    "explicit_quick": false
+  },
+  {
+    "id": "golden_qqq_schg",
+    "prompt": "QQQ vs SCHG: что лучше на 3 года?",
+    "expected_route": "multi_asset_comparison",
+    "required_questions": 5,
+    "explicit_quick": false
+  },
+  {
+    "id": "golden_gold_latest",
+    "prompt": "Золото: свежий расклад и инвестиционный сетап.",
+    "expected_route": "commodity_full_cycle",
+    "required_questions": 5,
+    "freshness_required": true
+  },
+  {
+    "id": "golden_tlt",
+    "prompt": "Стоит ли покупать TLT как bond ETF на текущем уровне ставок?",
+    "expected_route": "fixed_income_full_cycle",
+    "required_questions": 5,
+    "explicit_quick": false
+  },
+  {
+    "id": "golden_nvda_today",
+    "prompt": "Почему Nvidia сегодня выросла?",
+    "expected_route": "quick_take_or_market_reaction",
+    "required_questions": 3,
+    "freshness_required": true
+  },
+  {
+    "id": "golden_risk_only",
+    "prompt": "Сделай только risk review по Microsoft.",
+    "expected_route": "direct_specialist",
+    "required_boundary": "Boundary: Not an IC Action",
+    "required_questions": 0
+  },
+  {
+    "id": "golden_premature_final_memo",
+    "prompt": "Дай final memo сейчас, без evidence и valuation.",
+    "expected_route": "direct_specialist",
+    "required_artifact": "gate_aware_non_final",
+    "forbidden": [
+      "final_investment_memo.md",
+      "Action Box"
+    ],
+    "required_questions": 0
+  }
+]

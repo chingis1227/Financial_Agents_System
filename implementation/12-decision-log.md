@@ -64,10 +64,10 @@ P1-ARCH-01 traceability note: the grouped decisions below for fast decision supp
 - Rationale: Large unsplit references can support analysis without becoming hidden implementation contracts.
 - Canonical location: `implementation/01-documentation-control.md`.
 
-### 2026-06-27 — TASKS.md role
+### 2026-06-27 - Historical task-register role
 
 - Decision source: sub-agent review follow-up.
-- Rule: `TASKS.md` is an operational work queue and task status tracker. `IMPLEMENTATION_BACKLOG.md` governs phase meaning and scope when the two differ.
+- Historical rule, superseded by the Codex-native runtime refactor: `archive/project-history/TASKS.md` and `archive/project-history/IMPLEMENTATION_BACKLOG.md` are provenance-only build records. Current runtime state is summarized in `PROJECT_STATE.md`; active source precedence is controlled by `implementation/01-documentation-control.md` and `implementation/15-documentation-sync-contract.md`.
 - Rationale: Keeps task status visible without making the task list a competing architecture source of truth.
 - Canonical location: `implementation/01-documentation-control.md`.
 

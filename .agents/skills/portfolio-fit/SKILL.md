@@ -1,6 +1,6 @@
 ---
 name: portfolio-fit
-description: Use for portfolio role, exposure fit, diversification, and risk-budget framing.
+description: Use for scoped portfolio fit, role, overlap, sizing-context limits, diversification, risk tolerance, and scenario-based fit; does not issue final IC Action or exact allocation instructions.
 ---
 
 # Portfolio Fit Method Skill

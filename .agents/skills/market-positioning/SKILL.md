@@ -1,6 +1,6 @@
 ---
 name: market-positioning
-description: Use for consensus, positioning, flows, and expectations analysis where data is available.
+description: Use for scoped positioning, flows, crowding, sentiment, volatility, ETF/crypto/futures positioning, and market technical setup analysis; does not issue final IC Action.
 ---
 
 # Market Positioning Method Skill

@@ -1,6 +1,6 @@
 ---
 name: etf-analysis
-description: Use for ETF wrapper, exposure, holdings, cost, liquidity, and tracking analysis.
+description: Use for scoped ETF or fund wrapper analysis after the investment workflow router selects an ETF route. Covers holdings, methodology, fees, liquidity, tracking, exposure purity, and handoff; does not issue final IC Action.
 ---
 
 # ETF Analysis Method Skill

@@ -357,7 +357,7 @@ Every contract must define `Complete`, `Preliminary`, `Limited`, and `Blocked` b
 | Status | Template meaning |
 |---|---|
 | Complete | Required inputs and gates are sufficient for the stated scope. Complete specialist output does not imply complete IC action. |
-| Preliminary | Early or narrow output that may improve with further workflow steps. Quick Takes are Preliminary unless full gates pass. |
+| Preliminary | Early or narrow output that may improve with further workflow steps. Quick Takes are always Preliminary or Limited and never final IC Actions; if full gates are being completed, route or upgrade to Full Cycle / IC synthesis. |
 | Limited | Output can proceed, but source scope, evidence quality, freshness, workflow exclusions, or missing gates constrain conclusion strength. |
 | Blocked | The requested conclusion must not be made until required input, evidence, clarification, or gate resolution is available. |
 

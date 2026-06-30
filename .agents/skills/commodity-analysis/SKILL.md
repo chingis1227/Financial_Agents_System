@@ -1,6 +1,6 @@
 ---
 name: commodity-analysis
-description: Use for commodity and commodity-linked exposure analysis.
+description: Use for scoped commodity or commodity-linked exposure analysis after the investment workflow router selects a commodity route. Covers supply/demand, macro sensitivity, curve/positioning context, and specialist handoff; does not issue final IC Action.
 ---
 
 # Commodity Analysis Method Skill

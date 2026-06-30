@@ -8,11 +8,24 @@ import tomllib
 ROOT = Path(__file__).resolve().parents[1]
 
 WORKFLOWS = [
+    "workflows/equity_full_cycle.md",
     "workflows/etf_full_cycle.md",
     "workflows/commodity_full_cycle.md",
     "workflows/crypto_full_cycle.md",
     "workflows/fixed_income_full_cycle.md",
     "workflows/multi_asset_full_agent_workflow.md",
+]
+
+ROUTE_CARDS = [
+    "workflows/route_cards/investment_request_router.md",
+    "workflows/route_cards/quick_take.md",
+    "workflows/route_cards/equity_full_cycle.md",
+    "workflows/route_cards/etf_full_cycle.md",
+    "workflows/route_cards/commodity_full_cycle.md",
+    "workflows/route_cards/crypto_full_cycle.md",
+    "workflows/route_cards/fixed_income_full_cycle.md",
+    "workflows/route_cards/multi_asset_comparison.md",
+    "workflows/route_cards/direct_specialist.md",
 ]
 
 STALE_DELEGATED_DEFAULT_PATTERNS = [
@@ -106,6 +119,38 @@ if doc_control.exists():
     doc_txt = read(doc_control)
     for rel in WORKFLOWS:
         add(f"documentation control registers {rel}", f"`{rel}`" in doc_txt)
+
+# Current-state and route-card runtime layer
+project_state = ROOT / "PROJECT_STATE.md"
+add("project state exists", project_state.exists(), str(project_state))
+if project_state.exists():
+    ps_txt = read(project_state)
+    for token in ["Codex-native first", "Full Cycle", "Quick Take", "Single-agent Full Cycle", "archive/project-history/TASKS.md"]:
+        add(f"project state contains {token}", token in ps_txt)
+    for token in ["subagents were actually spawned", "do not claim delegated execution", "Single-agent Full Cycle"]:
+        add(f"project state enforces delegation fallback: {token}", token in ps_txt)
+
+for rel in ROUTE_CARDS:
+    p = ROOT / rel
+    add(f"route card exists: {rel}", p.exists(), str(p))
+    if p.exists():
+        txt = read(p)
+        for section in ["## Trigger", "## Required first action", "## Forbidden output", "## Downgrade rules", "## Validation expectations"]:
+            add(f"route card {rel} contains {section}", section in txt)
+        if doc_control.exists():
+            add(f"documentation control registers route card {rel}", f"`{rel}`" in doc_txt)
+
+router_skill = ROOT / ".agents" / "skills" / "investment-workflow-router" / "SKILL.md"
+add("investment workflow router skill exists", router_skill.exists(), str(router_skill))
+if router_skill.exists():
+    rs_txt = read(router_skill)
+    for token in ["description:", "exactly 5", "exactly 3", "Selected route card", "does not issue `IC Action`"]:
+        add(f"investment workflow router skill contains {token}", token in rs_txt)
+
+add("TASKS archived away from root", not (ROOT / "TASKS.md").exists())
+add("IMPLEMENTATION_BACKLOG archived away from root", not (ROOT / "IMPLEMENTATION_BACKLOG.md").exists())
+add("archived TASKS exists", (ROOT / "archive" / "project-history" / "TASKS.md").exists())
+add("archived IMPLEMENTATION_BACKLOG exists", (ROOT / "archive" / "project-history" / "IMPLEMENTATION_BACKLOG.md").exists())
 
 # Agents
 agent_dir = ROOT / ".codex" / "agents"
@@ -220,8 +265,11 @@ if readme.exists():
     txt = read(readme)
     for pat in STALE_DELEGATED_DEFAULT_PATTERNS:
         add(f"README has no stale delegated-default wording: {pat.pattern}", pat.search(txt) is None)
-    for token in ["\u0431\u044b\u0441\u0442\u0440\u044b\u0439 \u043f\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0432\u044b\u0432\u043e\u0434", "\u043f\u043e\u043b\u043d\u044b\u0439 \u0430\u043d\u0430\u043b\u0438\u0437 \u0432 \u043e\u0434\u043d\u043e\u0439 \u0441\u0435\u0441\u0441\u0438\u0438", "\u043f\u043e\u043b\u043d\u044b\u0439 \u043c\u043d\u043e\u0433\u043e\u0430\u0433\u0435\u043d\u0442\u043d\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a", "\u043c\u0435\u043c\u043e \u0434\u043b\u044f \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0438 \u0440\u0435\u0448\u0435\u043d\u0438\u044f", "QQQ", "SCHG", "\u0437\u043e\u043b\u043e\u0442\u0443", "BTC", "TLT", "BTC, \u0437\u043e\u043b\u043e\u0442\u043e, QQQ \u0438 TLT"]:
-        add(f"README contains Russian prompt/term: {token}", token in txt)
+    for token in ["subagents actually ran", "Single-agent Full Cycle", "Do not claim delegation"]:
+        add(f"README contains delegated execution guardrail: {token}", token in txt)
+    for raw_token in ["\u0431\u044b\u0441\u0442\u0440\u044b\u0439 \u043f\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0432\u044b\u0432\u043e\u0434", "\u043f\u043e\u043b\u043d\u044b\u0439 \u0430\u043d\u0430\u043b\u0438\u0437 \u0432 \u043e\u0434\u043d\u043e\u0439 \u0441\u0435\u0441\u0441\u0438\u0438", "\u043f\u043e\u043b\u043d\u044b\u0439 \u043c\u043d\u043e\u0433\u043e\u0430\u0433\u0435\u043d\u0442\u043d\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a", "\u043c\u0435\u043c\u043e \u0434\u043b\u044f \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0438 \u0440\u0435\u0448\u0435\u043d\u0438\u044f", "QQQ", "SCHG", "\u0437\u043e\u043b\u043e\u0442\u0443", "BTC", "TLT", "BTC, \u0437\u043e\u043b\u043e\u0442\u043e, QQQ \u0438 TLT"]:
+        token = raw_token.encode("ascii").decode("unicode_escape") if "\\u" in raw_token else raw_token
+        add(f"README contains Russian prompt/term: {token}", token.casefold() in txt.casefold())
 else:
     add("README exists", False)
 

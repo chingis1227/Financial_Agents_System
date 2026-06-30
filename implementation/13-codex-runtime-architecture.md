@@ -57,8 +57,8 @@ Required content:
 - project authority order;
 - runtime reading order;
 - rule that canonical implementation documents govern over legacy PRDs;
-- instruction to use `TASKS.md` for active work status;
-- instruction to use `IMPLEMENTATION_BACKLOG.md` for phase meaning and scope;
+- instruction to use `PROJECT_STATE.md` for current runtime state;
+- instruction to treat `archive/project-history/TASKS.md` and `archive/project-history/IMPLEMENTATION_BACKLOG.md` as historical records;
 - instruction to use `implementation/01-documentation-control.md` and `implementation/10-traceability-matrix.md` before treating any legacy PRD as relevant;
 - no-MVP rule;
 - evidence-before-synthesis rule;
@@ -72,8 +72,8 @@ Project authority order:
 1. implementation/00-master-rules.md for statuses, gates, output standards, confidence, source display, style, and artifact naming
 2. implementation/01-documentation-control.md for registry, source precedence, archive behavior, and source issues
 3. implementation/14-language-and-style.md for user-facing language selection, Russian language policy, and investment-analytical presentation style
-4. IMPLEMENTATION_BACKLOG.md for phase meaning and implementation scope
-5. TASKS.md for active work status
+4. PROJECT_STATE.md for current runtime state
+5. workflows/route_cards/ for daily runtime route selection
 6. Other canonical implementation documents for their specific domains
 7. Supporting References under `references/` only when they do not conflict with canonical documents
 8. `implementation/remaining-requirements.md` only as a residual candidate-requirement register, not as executable runtime authority
@@ -323,7 +323,7 @@ When P10-QA executes runtime acceptance checks, Codex runtime behavior follows t
 The Codex runtime architecture layer is ready when:
 
 - `implementation/13-codex-runtime-architecture.md` defines the intended root `AGENTS.md`, root `README.md`, `.codex/agents/`, `.agents/skills/`, and workflow runbook conventions;
-- project authority order and runtime reading order are separated clearly;
+- project authority order and runtime reading order are separated clearly around `PROJECT_STATE.md` and route cards;
 - the project-root discovery rule is documented;
 - the 20 planned custom-agent files are mapped to canonical agent/router contracts;
 - planned repo skills are mapped to canonical method-skill contracts;
@@ -350,11 +350,11 @@ P1A-CODEX-02 may be marked Done when the generated Codex runtime package is crea
 The generated Codex runtime package is ready when:
 
 - root `AGENTS.md` exists and provides concise project guidance;
-- root `README.md` exists and orients human maintainers;
+- root `README.md` exists and orients users and maintainers;
 - `.codex/agents/` contains the 20 planned custom-agent TOML files;
 - `.agents/skills/` contains method skills mapped to canonical skill contracts and presentation skills mapped to `implementation/14-language-and-style.md`;
 - custom agents are narrow adapters and do not copy full PRDs;
 - skills are focused reusable workflows and do not silently override canonical contracts;
 - legacy PRDs are accessed only through the registry and traceability matrix;
-- workflow runbooks explain how routers, evidence, agents, skills, handoffs, and IC synthesis connect;
+- route cards and workflow runbooks explain how routers, evidence, agents, skills, handoffs, and IC synthesis connect;
 - QA scenarios can verify routing, evidence, specialist output, skill activation, and IC gates.

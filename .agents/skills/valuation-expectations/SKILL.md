@@ -1,6 +1,6 @@
 ---
 name: valuation-expectations
-description: Use for valuation, embedded expectations, and upside/downside bridge analysis.
+description: Use for scoped valuation and expectations work: what is priced in, scenario support, multiples/DCF or asset-class equivalent, and valuation gates; does not issue final IC Action.
 ---
 
 # Valuation & Expectations Method Skill

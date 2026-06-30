@@ -1,6 +1,6 @@
 ---
 name: crypto-analysis
-description: Use for crypto asset and crypto-linked exposure analysis.
+description: Use for scoped crypto asset or crypto-linked exposure analysis after the investment workflow router selects a crypto route. Covers adoption, liquidity, tokenomics, custody/regulation, and specialist handoff; does not issue final IC Action.
 ---
 
 # Crypto Analysis Method Skill

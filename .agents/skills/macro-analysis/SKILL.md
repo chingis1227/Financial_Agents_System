@@ -1,6 +1,6 @@
 ---
 name: macro-analysis
-description: Use for macro regime, sensitivity, policy, inflation, rates, FX, or growth analysis.
+description: Use for scoped macro context, regime, rates, inflation, liquidity, FX, growth, and cross-asset sensitivity analysis inside Full Cycle workflows; does not issue final IC Action.
 ---
 
 # Macro Analysis Method Skill

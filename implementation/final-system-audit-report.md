@@ -4,7 +4,7 @@ Status: Supporting operational validation record
 Session: 11 - Final system audit  
 Date: 2026-06-30  
 Scope: Financial Agent System runtime readiness after P11 runtime hardening  
-Authority: Subordinate to `IMPLEMENTATION_BACKLOG.md` and canonical implementation documents under `implementation/`  
+Authority: Supporting historical audit record subordinate to current canonical implementation documents, `PROJECT_STATE.md`, and `implementation/01-documentation-control.md`  
 
 ## 1. Executive result
 
@@ -27,7 +27,7 @@ The system is ready for a new chat to run:
 
 - `Quick Take` when the user explicitly asks for short / fast / preliminary output.
 - `Single-agent Full Cycle` for ordinary concrete-asset investment-action requests.
-- `Delegated Full Agent Workflow` only when subagents are explicitly requested and actually spawned.
+- Superseded runtime note: current state allows `Delegated Full Agent Workflow` when relevant subagents actually ran, either through Codex spawning or a real orchestrator; otherwise use `Single-agent Full Cycle` and do not claim delegation.
 
 ## 2. Audit method
 
@@ -80,7 +80,7 @@ Result: Pass.
 
 Observed state:
 
-- Project root contains active navigation/control files only: `AGENTS.md`, `README.md`, `TASKS.md`, `IMPLEMENTATION_BACKLOG.md`, and `.gitignore`.
+- Historical note: at the time of this audit, the project root still contained former build-control files. Current state supersedes that observation: `archive/project-history/TASKS.md` and `archive/project-history/IMPLEMENTATION_BACKLOG.md` are provenance-only records, while the active root navigation files are `PROJECT_STATE.md`, `AGENTS.md`, and `README.md`.
 - Former root-level legacy PRDs and framework files are no longer active root documents.
 - Legacy PRD material is retained under `archive/legacy-prd/`.
 - Supporting playbooks/frameworks are retained under `references/`.
@@ -161,7 +161,7 @@ Result: Pass.
 
 - `Quick Take` for explicit short/preliminary output.
 - `Full Cycle` / ordinary action-intent requests as `Single-agent Full Cycle`.
-- `Delegated Full Agent Workflow` only when real subagents are explicitly requested.
+- Superseded runtime note: current state allows `Delegated Full Agent Workflow` when real relevant subagents actually ran; otherwise use `Single-agent Full Cycle` and do not claim delegation.
 
 Russian prompt templates are present for:
 

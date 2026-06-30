@@ -1,6 +1,6 @@
 ---
 name: investment-committee-synthesis
-description: Use for IC synthesis after evidence and specialist gates are ready.
+description: Use only for Investment Committee synthesis after evidence and required module handoffs are available. Owns IC-level report synthesis and gate-aware action status under canonical report schemas.
 ---
 
 # Investment Committee Synthesis Method Skill

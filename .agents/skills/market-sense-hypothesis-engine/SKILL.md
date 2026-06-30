@@ -1,6 +1,6 @@
 ---
 name: market-sense-hypothesis-engine
-description: Use for market-behavior hypotheses without replacing evidence or IC synthesis.
+description: Use for scoped market-sense hypothesis generation: what the market may be pricing, ignoring, or reinterpreting, with testable hypotheses and boundaries; does not issue final IC Action.
 ---
 
 # Market Sense Hypothesis Engine Skill

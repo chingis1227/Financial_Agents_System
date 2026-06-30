@@ -310,7 +310,7 @@ Classify action-oriented requests before deciding whether to answer immediately 
 | Intent level | Examples | Required behavior |
 |---|---|---|
 | Personal / final action | "Should I buy?", "What should I do with my position?", "How much should I buy?", "Should I sell my shares?" | If the request requires exact personal trade action, sizing, or existing-position handling and decision-critical personal context is missing, ask the minimum clarifying questions before giving an action-oriented conclusion. If the asset identity and capital-decision route are clear but portfolio context is missing, continue the concrete-asset Full Cycle and mark Portfolio Fit / IC Action `Limited`; do not substitute silent assumptions or issue final `IC Action`. |
-| Market action / investment attractiveness | "Is it a buy?", "Is it attractive here?", "Is gold a good setup now?" | Concrete-asset action requests default to Full Cycle unless the user explicitly asks for short / fast / quick take / no full cycle / preliminary output. Non-concrete setup questions or explicit Quick Takes may receive `Preliminary` / `Limited` market views, but no final `IC Action` is allowed unless all gates pass. |
+| Market action / investment attractiveness | "Is it a buy?", "Is it attractive here?", "Is gold a good setup now?" | Concrete-asset action requests default to Full Cycle unless the user explicitly asks for short / fast / quick take / no full cycle / preliminary output. Non-concrete setup questions or explicit Quick Takes may receive `Preliminary` / `Limited` market views, but Quick Take never issues final `IC Action`; if final gates are being completed, route or upgrade to Full Cycle / IC synthesis. |
 | Analysis-only | "Analyze this company", "Value this company only", "What are the risks?", "What changed recently?" | Provide scoped analysis with status, evidence limits, boundary, and missing IC gates where relevant. |
 
 When intent is ambiguous, use the safer level if the wording could reasonably be read as personal action. General analysis may continue with explicit scope limits.
@@ -322,18 +322,19 @@ When intent is ambiguous, use the safer level if the wording could reasonably be
 | Asset identity, ticker/listing, instrument, wrapper, currency, maturity, or structure is materially ambiguous | Ask the minimum clarifying question before analysis | Block or limit until identity is resolved |
 | User asks exact sizing, exact trade, or what to do with an existing personal position and position context is required | Ask the minimum personal context before personalized final action | No personalized final action until answered |
 | Portfolio composition, risk tolerance, objective, or overlap is missing but the asset and route are clear | Continue Full Cycle | Portfolio Fit is Limited / not personalized; IC Action Status remains Limited or Blocked |
-| User explicitly requests short / fast / Quick Take / no full cycle | Provide Preliminary / Limited Quick Take | No final IC Action unless gates independently pass |
+| User explicitly requests short / fast / Quick Take / no full cycle | Provide Preliminary / Limited Quick Take | No final IC Action; if final gates are being completed, route or upgrade to Full Cycle / IC synthesis |
 
 ### Fast action requests
 
-If the user explicitly asks for a short, fast, preliminary, Quick Take, or no full cycle market-action answer, ask exactly 3 relevant questions first, then give `Quick Take / Preliminary` in chat only with no saved report/audit, and do not issue final `IC Action`. Concrete-asset investment action requests default to Full Cycle when the user asks whether to invest, buy, add, hold, sell, start exposure, or evaluate the asset for a stated horizon / portfolio decision, unless the user explicitly requests Quick Take. If the user asks for personal / final action and key blocking context is missing, ask for the minimum missing context first instead of giving an action conclusion.
+If the user explicitly asks for a short, fast, preliminary, Quick Take, or no full cycle market-action answer, ask exactly 3 relevant questions first, then give `Quick Take / Preliminary` in chat only with no saved report/audit, and do not issue final `IC Action`. Quick Take never issues final IC Action; if final gates are being completed, route or upgrade to Full Cycle / IC synthesis. Concrete-asset investment action requests default to Full Cycle when the user asks whether to invest, buy, add, hold, sell, start exposure, or evaluate the asset for a stated horizon / portfolio decision, unless the user explicitly requests Quick Take. If the user asks for personal / final action and key blocking context is missing, ask for the minimum missing context first instead of giving an action conclusion.
 
 Required pattern:
 
 ```text
 Quick Take:
 Status: Preliminary
-IC Action Status: Limited or Blocked unless required gates pass
+IC Action Status: Limited or Blocked
+Final IC Action: Not available in Quick Take; upgrade to Full Cycle / IC synthesis if final gates are complete or being completed
 Needed for final IC Action:
 ```
 
@@ -594,7 +595,7 @@ Superseded By:
 
 ### Source-of-truth rule
 
-Canonical implementation documents are source of truth. Legacy PRDs, drafts, old architecture maps, backups, archives, and audits are supporting or excluded according to `implementation/01-documentation-control.md` and cannot override canonical rules. If conflict exists, canonical wins.
+Canonical implementation documents are source of truth. `PROJECT_STATE.md` summarizes current runtime state but does not override canonical rules. Legacy PRDs, drafts, old architecture maps, historical build logs, backups, archives, and audits are supporting or excluded according to `implementation/01-documentation-control.md` and cannot override canonical rules. If conflict exists, canonical wins.
 
 ## 11. Approved edge-case behavior table
 

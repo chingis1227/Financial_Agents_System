@@ -1,6 +1,6 @@
 ---
 name: equity-company-analysis
-description: Use for equity business-quality and thesis-durability analysis.
+description: Use for scoped public-company equity analysis after the investment workflow router selects an equity route. Covers business quality, moat, growth, financial context handoff, and thesis boundaries; does not issue final IC Action.
 ---
 
 # Equity Company Analysis Method Skill

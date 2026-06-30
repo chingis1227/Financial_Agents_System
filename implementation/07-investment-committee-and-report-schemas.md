@@ -951,7 +951,7 @@ Threshold basis: explicit metric / directional / qualitative
 |---|---|---|
 | P8-IC-01-01 | User requests final memo before required gates are complete. | Produce `limited_ic_draft.md`, `decision_prep_memo.md`, or `evidence_gap_memo.md`; do not present it as a Complete Final Memo. |
 | P8-IC-01-02 | Non-final IC output needs a top summary. | Use `Decision-Prep Box`; `Action Box` is reserved for `final_investment_memo.md`. |
-| P8-IC-01-03 | User asks for a short investment answer. | Provide Quick Take / Preliminary framing only when the user explicitly asks for short / fast / quick take / no full cycle / preliminary output; otherwise concrete-asset investment action requests route to Full Cycle and no final IC Action unless gates are complete. |
+| P8-IC-01-03 | User asks for a short investment answer. | Provide Quick Take / Preliminary framing only when the user explicitly asks for short / fast / quick take / no full cycle / preliminary output. Quick Take never issues final IC Action; if gates are complete or being completed, route or upgrade to Full Cycle / IC synthesis. |
 | P8-IC-01-04 | Request depends on today / now / latest / earnings / price action and fresh data are missing. | Separate structural view from current-action view; current IC Action Status is Limited or Blocked. |
 | P8-IC-01-05 | Evidence or specialists conflict on a material claim. | Show `Evidence / Specialist Conflict` in the main memo and constrain status if decision-critical. |
 | P8-IC-01-06 | Decision mode is unspecified. | Use scenario matrix; do not assume new buy. |

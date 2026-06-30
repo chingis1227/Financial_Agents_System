@@ -1,6 +1,6 @@
 ---
 name: evidence-collection
-description: Use when a workflow needs evidence collection, source readiness, or claim-level support status.
+description: Use for evidence collection, source quality, freshness, provenance, claim support, and evidence gaps before downstream financial analysis or IC synthesis; does not issue final IC Action.
 ---
 
 # Evidence Collection Method Skill

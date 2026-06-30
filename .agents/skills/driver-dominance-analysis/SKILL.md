@@ -1,6 +1,6 @@
 ---
 name: driver-dominance-analysis
-description: Use to identify which drivers dominate an asset, theme, or thesis.
+description: Use for scoped driver-dominance work when a workflow needs to identify which macro, fundamental, positioning, valuation, news, or technical driver is controlling asset behavior; does not issue final IC Action.
 ---
 
 # Driver Dominance Analysis Skill

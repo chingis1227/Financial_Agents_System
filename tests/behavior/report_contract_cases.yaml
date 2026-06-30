@@ -1,0 +1,51 @@
+[
+  {
+    "id": "quick_take_contract",
+    "route": "quick_take",
+    "must_not_create": [
+      "investment_report.md",
+      "audit/"
+    ],
+    "required_status": [
+      "Preliminary",
+      "Limited"
+    ],
+    "required_questions": 3,
+    "forbidden": [
+      "Action Box",
+      "IC Action: Buy",
+      "IC Action: Sell",
+      "IC Action: Hold",
+      "IC Action: Add",
+      "IC Action: Trim",
+      "IC Action: Exit",
+      "final_investment_memo.md",
+      "final buy/sell/hold"
+    ]
+  },
+  {
+    "id": "full_cycle_contract",
+    "route": "full_cycle",
+    "must_create": [
+      "investment_report.md",
+      "audit/run_metadata.md"
+    ],
+    "required_questions": 5,
+    "required_audit_fields": [
+      "Execution mode",
+      "Included modules",
+      "Module status table"
+    ]
+  },
+  {
+    "id": "direct_specialist_contract",
+    "route": "direct_specialist",
+    "required_boundary": "Boundary: Not an IC Action",
+    "forbidden": [
+      "Action Box",
+      "IC Action: Buy",
+      "IC Action: Sell",
+      "IC Action: Hold"
+    ]
+  }
+]

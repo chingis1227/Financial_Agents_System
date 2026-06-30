@@ -1,6 +1,6 @@
 ---
 name: sector-industry-analysis
-description: Use for sector, industry, value-chain, and competitive-context analysis.
+description: Use for scoped sector and industry structure, profit pools, competitive dynamics, value-chain mapping, and sector context inside workflows; does not issue final IC Action.
 ---
 
 # Sector & Industry Analysis Method Skill

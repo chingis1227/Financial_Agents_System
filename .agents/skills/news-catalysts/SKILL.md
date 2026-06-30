@@ -1,6 +1,6 @@
 ---
 name: news-catalysts
-description: Use for recent events, upcoming catalysts, and news materiality analysis.
+description: Use for scoped news, catalysts, earnings/events, monitoring triggers, and thesis-changing developments with freshness treatment; does not issue final IC Action.
 ---
 
 # News & Catalysts Method Skill

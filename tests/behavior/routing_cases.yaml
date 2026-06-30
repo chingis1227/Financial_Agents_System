@@ -1,0 +1,51 @@
+[
+  {
+    "id": "microsoft_full_cycle_default",
+    "prompt": "Стоит ли инвестировать в Microsoft на 3 года?",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "explicit_quick": false
+  },
+  {
+    "id": "microsoft_quick_take",
+    "prompt": "Дай быстрый взгляд на Microsoft.",
+    "expected_route": "quick_take",
+    "required_questions": 3,
+    "explicit_quick": true
+  },
+  {
+    "id": "btc_three_year_full_cycle",
+    "prompt": "BTC на 3 года, стоит ли инвестировать?",
+    "expected_route": "crypto_full_cycle",
+    "required_questions": 5,
+    "explicit_quick": false
+  },
+  {
+    "id": "qqq_schg_comparison",
+    "prompt": "QQQ vs SCHG на 3 года: что выбрать?",
+    "expected_route": "multi_asset_comparison",
+    "required_questions": 5,
+    "explicit_quick": false
+  },
+  {
+    "id": "gold_latest_setup",
+    "prompt": "Золото: свежий расклад и инвестиционный сетап.",
+    "expected_route": "commodity_full_cycle",
+    "required_questions": 5,
+    "freshness_required": true
+  },
+  {
+    "id": "tlt_fixed_income",
+    "prompt": "Стоит ли покупать TLT как bond ETF?",
+    "expected_route": "fixed_income_full_cycle",
+    "required_questions": 5,
+    "explicit_quick": false
+  },
+  {
+    "id": "direct_risk_review",
+    "prompt": "Сделай только risk review по Microsoft.",
+    "expected_route": "direct_specialist",
+    "required_questions": 0,
+    "specialist_only": true
+  }
+]

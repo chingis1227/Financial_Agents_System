@@ -1,6 +1,6 @@
 ---
 name: market-intelligence-briefing
-description: Use for broad market intelligence briefings and material market updates.
+description: Use for scoped market intelligence, current news, event monitoring, cross-market context, and source-timestamped briefing when freshness matters; does not issue final IC Action.
 ---
 
 # Market Intelligence Briefing Skill

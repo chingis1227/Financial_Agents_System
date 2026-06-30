@@ -1,6 +1,6 @@
 ---
 name: risk-red-team
-description: Use to challenge a thesis, identify downside risks, and test failure modes.
+description: Use for scoped risk red-team review, downside cases, thesis breakers, risk gates, failure modes, and disconfirming evidence; does not issue final IC Action.
 ---
 
 # Risk / Red Team Method Skill

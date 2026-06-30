@@ -1,6 +1,6 @@
 ---
 name: financial-statement-analysis
-description: Use to diagnose financial quality and risk from company financial statements.
+description: Use for scoped financial statement analysis when company fundamentals, earnings quality, margins, cash flow, balance sheet, or accounting quality are material; does not issue final IC Action.
 ---
 
 # Financial Statement Analysis Skill

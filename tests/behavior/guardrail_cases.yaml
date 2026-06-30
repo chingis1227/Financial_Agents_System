@@ -1,0 +1,41 @@
+[
+  {
+    "id": "non_ic_no_final_action",
+    "scope": "non_ic_outputs",
+    "forbidden_patterns": [
+      "IC Action: Buy",
+      "IC Action: Sell",
+      "IC Action: Hold",
+      "Action Box",
+      "Buy recommendation",
+      "Sell recommendation",
+      "Hold recommendation"
+    ]
+  },
+  {
+    "id": "delegated_requires_spawn",
+    "scope": "execution_mode",
+    "rule": "delegated_valid_only_with_spawned_agents"
+  },
+  {
+    "id": "freshness_requires_timestamp_or_limited",
+    "scope": "freshness",
+    "rule": "freshness_prompts_require_timestamped_sources_or_limited_blocked"
+  },
+  {
+    "id": "missing_context_not_hard_avoid",
+    "scope": "ic_action",
+    "rule": "missing_information_alone_is_defer_not_hard_avoid"
+  },
+  {
+    "id": "quick_take_no_final_action_escape_hatch",
+    "scope": "quick_take",
+    "rule": "quick_take_never_issues_final_ic_action_even_if_gates_pass",
+    "forbidden_patterns": [
+      "No final IC Action unless",
+      "IC Action Status: Limited or Blocked unless",
+      "Quick Take unless all gates pass",
+      "Quick Take unless required gates pass"
+    ]
+  }
+]
