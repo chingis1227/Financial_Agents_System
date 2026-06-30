@@ -4,7 +4,7 @@ Status: Canonical synthesis and report-schema contract
 
 ## 1. Investment Committee contract
 
-Canonical final memo artifact: `final_investment_memo.md`. Legacy references to `investment_committee_memo.md` should be treated as aliases during migration, not as the preferred new artifact name.
+Internal canonical final IC memo artifact: `final_investment_memo.md`. Saved user-facing Full Cycle output is always `investment_report.md`. Legacy references to `investment_committee_memo.md` should be treated as aliases during migration, not as the preferred new internal artifact name.
 
 The Investment Committee Agent is the final synthesis and decision-support layer. It is downstream-only. It owns `Investment View` and `IC Action` only when gates permit. It must not invent facts, override evidence readiness, hide material conflicts, provide exact trade instructions, or convert specialist verdicts into final action without required synthesis.
 
@@ -17,16 +17,37 @@ Required inputs for Complete Final Memo:
 - Implementation / vehicle-quality review when vehicle, wrapper, liquidity, fees, custody, spreads, tax, access, or structure can materially affect the result.
 - Material specialist reports where relevant.
 
+External user-facing report packaging:
+
+- For saved full workflows, the reader-facing file is always `investment_report.md` regardless of the internal IC artifact type.
+- Internal canonical artifact types (`final_investment_memo.md`, `limited_ic_draft.md`, `decision_prep_memo.md`, `evidence_gap_memo.md`) remain in metadata/audit and control gate behavior; they are not ordinary chat labels.
+- Ordinary chat reproduces the full `investment_report.md` text exactly and ends only with `Отчёт сохранён: ...\investment_report.md` for Russian output or an equivalent report-path line in the user's language.
+- Audit materials, agent lists, runtime plans, module statuses, full source registers, and canonical artifact names are shown in chat only when explicitly requested.
+
 Allowed IC output artifacts:
 
 | Artifact / output | Status use | Action Box allowed | Use |
 |---|---|---:|---|
 | `final_investment_memo.md` | Complete Final Memo | Yes | Required evidence and decision-gate reports are sufficient for the stated scope. |
 | `limited_ic_draft.md` / Limited IC Draft | Limited | No | Analysis is useful, but missing gates, source scope, freshness, conflicts, or workflow exclusions constrain conclusion strength. |
-| `decision_prep_memo.md` / Decision-Prep Memo | Preliminary or Limited | No | User needs an actionable preparation summary before final IC gates are complete. |
+| `decision_prep_memo.md` / Decision-Prep Memo | Preliminary or Limited | No | User needs an actionable preparation summary before final IC gates are complete; default artifact for Full Cycle public-data analysis when user portfolio context is the missing final-action gate. Use `limited_ic_draft.md` or `evidence_gap_memo.md` when other gates drive the limitation. |
 | `evidence_gap_memo.md` / Evidence Gap Memo | Limited or Blocked | No | Decision-critical evidence, freshness, or upstream reports are missing or unreliable. |
 
-Positive IC actions require sufficient evidence, valuation / expectations support, risk review, lead analysis, material context modules, and implementation quality when material. If those gates are missing, the IC output must be Limited or Blocked and must use a gate-aware non-final artifact unless the final request is explicitly for a blocked/negative IC response. Final cautionary IC Actions follow narrower evidence standards: Hard Avoid requires strong disqualifying evidence; Defer / Not Actionable may be final when IC has enough evidence to conclude readiness is insufficient; Watchlist may be final when the idea is supported but lacks a defined trigger, price, catalyst, risk resolution, or implementation readiness for positive action. Missing data alone does not justify Hard Avoid.
+Positive IC actions require sufficient evidence, valuation / expectations support, risk review, lead analysis, material context modules, portfolio fit when user-specific action is requested, and implementation quality when material. If those gates are missing, the IC output must be Limited or Blocked and must use a gate-aware non-final artifact unless the final request is explicitly for a blocked/negative IC response. Final cautionary IC Actions follow narrower evidence standards: Hard Avoid requires strong disqualifying evidence; Defer / Not Actionable may be final when IC has enough evidence to conclude readiness is insufficient; Watchlist may be final when the idea is supported but lacks a defined trigger, price, catalyst, risk resolution, or implementation readiness for positive action. Missing data alone does not justify Hard Avoid.
+
+## 1A. Reader-facing `investment_report.md` rules
+
+`investment_report.md` uses the applicable IC schema content but hides internal runtime machinery from the ordinary reader-facing surface.
+
+Required reader-facing behavior:
+
+- Start with a short preparation date.
+- Use the user's language for all reader-facing headings and prose; Russian reports must apply `language-policy` and `investment-analytical-style`.
+- Keep technical metadata, execution mode, runtime plan, agent lists, handoff metadata, module-status tables, and canonical artifact names in `audit`, unless the user explicitly asks for them.
+- Put conclusion status, concise missing items for a final personalized decision, and a short key-source list at the bottom.
+- Store the full source list and detailed evidence registers in `audit`.
+- Show material source or specialist conflicts in the report using a concise reader-facing label such as `Конфликт данных`; non-material conflicts may remain only in `audit`.
+- Do not include a separate reader-facing block named `Принятые вводные и допущения`; record questions, answers, and assumptions in `audit` and reflect decision-critical assumptions only where they affect the analysis.
 
 ## 2. Final memo style rules
 
@@ -50,11 +71,12 @@ Final memos must be layered:
 
 Raw agent transcripts must not be the main memo. Specialist detail may be summarized or moved to appendices.
 
-## 3. Required report metadata
+## 3. Reader-facing report fields and internal metadata
 
-All report artifacts should include:
+Reader-facing `investment_report.md` should include the user-readable fields needed for the decision memo, without technical runtime blocks or a separate assumptions block. Internal IC artifacts and audit files should include:
 
 ```text
+Artifact:
 Subject:
 Request type:
 Workflow:
@@ -62,22 +84,29 @@ Produced by:
 As-of date/time:
 Output status: Complete / Limited / Blocked / Preliminary
 Evidence status:
+Freshness status:
 Source scope:
+Evidence limits:
 Key limitations:
+Missing gates:
 Decision boundary:
 Downstream handoff:
+Required follow-up:
 ```
 
-IC-level artifacts should additionally include:
+IC-level internal artifact metadata and audit files should additionally include these audit-only fields:
 
 ```text
 Analysis Status:
 IC Action Status:
 Decision Confidence:
 Time Horizon:
-Freshness status:
+Consumed handoff artifacts:
+Runtime Execution Plan, when Full Cycle is claimed:
 Included / Excluded Modules and Why:
 ```
+
+For Full Cycle / Full Agent Workflow outputs, each internal IC artifact or audit handoff file must include a `## Structured handoff` block using the universal controlled fields from `workflows/handoff_artifact_standard.md`. The ordinary reader-facing `investment_report.md` must not show this technical block unless the user explicitly asks for audit/debug detail.
 
 ### Freshness top block
 
@@ -97,6 +126,11 @@ Current-action impact:
 ```
 
 If freshness is material and not current, structural analysis may proceed, but current entry-point conclusions and positive IC Action remain Limited or Blocked.
+
+
+### Runtime Execution Plan preservation
+
+When an IC-level artifact is produced after a Full Cycle request, audit metadata must preserve the Runtime Execution Plan summary: included modules, excluded modules, module status (`Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`), and why the selected output artifact is allowed. The reader-facing report should summarize only scope limits and missing decision checks in plain language. If the completion checklist is not satisfied, select the non-final artifact by the limiting gate: use `decision_prep_memo.md` when missing portfolio context is the missing final-action gate; use `evidence_gap_memo.md` for decision-critical evidence, freshness, or source gaps; use `limited_ic_draft.md` for other incomplete-but-useful IC work. Do not label the output as `final_investment_memo.md`.
 
 ## 4. IC Action labels and decision boxes
 
@@ -123,18 +157,19 @@ IC Action Status:
 
 Use `Decision-Prep Box`, not `Action Box`, for Limited IC Drafts, Decision-Prep Memos, and Evidence Gap Memos.
 
-Required Decision-Prep Box fields:
+Required Decision-Prep Box fields. Render reader-facing labels in the user's language; do not add a separate assumptions field. Full assumptions stay in audit, while decision-critical assumptions appear only in the relevant prose where they affect the working view:
 
 ```text
-Preliminary / Limited View:
+Working view:
 IC Action Status: Limited / Blocked
 What can be concluded now:
-Missing gates:
-Source / freshness limits:
-Decision mode assumptions:
-Needed for final IC Action:
+What limits the conclusion:
+Missing checks:
+Source and freshness limitations:
+What is needed for final IC decision:
 ```
 
+Working View labels in non-final artifacts may include `candidate for staged review`, `candidate only at a better price`, `watch for triggers`, `not ready for an investment decision yet`, or `not suitable on risk / quality / valuation`. These labels are working views, not final IC Actions. Do not use `buy`, `sell`, `definitely buy`, or equivalent final-action language in a Decision-Prep Box unless a final IC memo and gates permit it.
 ### Controlled IC Action labels
 
 Final IC Action labels must use this controlled set:
@@ -147,7 +182,7 @@ Final IC Action labels must use this controlled set:
 | Trim | Reduce an existing exposure when valuation, risk, portfolio fit, or thesis change supports reduction. |
 | Exit | Fully leave an existing exposure when thesis, risk, valuation, or implementation quality no longer supports holding. |
 | Watchlist | Idea is interesting but needs a trigger, better price, catalyst, evidence, risk resolution, or implementation improvement before action. |
-| Defer / Not Actionable | Current decision is not ready because gates, data, source quality, setup, or user context are insufficient. |
+| Defer / Not Actionable | Final readiness is insufficient after enough completed-gate evidence; do not use this final label merely because personal portfolio context, current evidence/freshness, or upstream analysis is missing. |
 | Hard Avoid | Strong disqualifying evidence exists; not a substitute for missing data. |
 
 `Buy`, `Sell`, `Strong Buy`, `Strong Sell`, `Trade now`, or free-form broker-style labels are not canonical IC Action labels. Specialist and asset reports must not use IC Action labels as their own final decisions.
@@ -156,7 +191,7 @@ Final IC Action labels must use this controlled set:
 
 - `Maintain / Hold` applies to an existing position and means keep exposure within the stated horizon and constraints.
 - `Watchlist` means the idea may be attractive, but needs a defined trigger before final action.
-- `Defer / Not Actionable` means a decision should not be made now because evidence, gates, source scope, valuation, risk, implementation, or user context is insufficient.
+- `Defer / Not Actionable` means a decision should not be made now because completed IC review shows readiness is insufficient. If the main limitation is missing user portfolio context, missing current evidence/freshness, or missing upstream analysis, use the appropriate non-final artifact instead of a final readiness decision.
 - `Hard Avoid` requires a strong disqualifier such as fraud, insolvency, broken instrument mechanics, severe liquidity failure, unacceptable custody/security risk, or equivalent material red flag.
 
 ### Negative / cautionary final action matrix
@@ -164,7 +199,7 @@ Final IC Action labels must use this controlled set:
 | IC Action label | Required evidence | Allowed artifact | Action Box | Status treatment |
 |---|---|---|---:|---|
 | Hard Avoid | Strong disqualifying evidence; not merely missing data. | `final_investment_memo.md` when IC can support the final warning; otherwise specialist warning or Evidence Gap Memo. | Yes only in final memo | Complete for cautionary / negative action, or Blocked if evidence is insufficient. |
-| Defer / Not Actionable | Enough evidence to conclude readiness is insufficient, or decision-critical gates are absent. | `final_investment_memo.md` for a final readiness decision; `limited_ic_draft.md` / `decision_prep_memo.md` when still preliminary or scoped. | Yes only in final memo | Complete for readiness decision, or Limited / Blocked when evidence is still incomplete. |
+| Defer / Not Actionable | Enough completed-gate evidence to conclude final readiness is insufficient; not merely missing personal portfolio context, missing current evidence/freshness, or absent upstream analysis. | `final_investment_memo.md` only for a final readiness decision after enough gates are complete; `decision_prep_memo.md` when missing portfolio context is the missing final-action gate; `evidence_gap_memo.md` for evidence/freshness gaps; `limited_ic_draft.md` for other incomplete-but-useful IC work. | Yes only in final memo | Complete for final readiness decision, or Limited / Blocked when gates remain incomplete. |
 | Watchlist | Supported thesis or quality plus missing trigger, price, catalyst, risk resolution, or implementation readiness. | `final_investment_memo.md` for final IC Watchlist; non-final artifacts when gates are incomplete. | Yes only in final memo | Complete for Watchlist decision when evidence is sufficient; otherwise Limited. |
 | Maintain / Hold | Existing-position context plus sufficient evidence for continuing exposure under stated horizon. | `final_investment_memo.md`; scenario-only discussion if no position context exists. | Yes only in final memo | Complete when position context and gates are sufficient; otherwise Limited / scenario-only. |
 
@@ -202,7 +237,7 @@ Required sections:
 10. Thesis dependencies.
 11. What would change the view.
 12. Monitoring triggers.
-13. Structured handoff.
+13. Structured handoff in audit.
 
 ### Financial statement analysis
 
@@ -235,7 +270,7 @@ Required sections:
 9. Peer comparison and overlap, if relevant.
 10. Special vehicle risks.
 11. Vehicle Quality Verdict.
-12. Structured handoff.
+12. Structured handoff in audit.
 
 ### Fixed income analysis
 
@@ -250,7 +285,7 @@ Required sections:
 6. Call, prepayment, extension, and covenant risks.
 7. Downside scenario.
 8. Compensation verdict.
-9. Structured handoff.
+9. Structured handoff in audit.
 
 ### Commodity analysis
 
@@ -425,16 +460,22 @@ known_gaps:
 
 Use when the user requests final IC-level decision support and required evidence, valuation, risk, lead analysis, material modules, and implementation checks are sufficient for the stated scope.
 
+IC synthesis must consume validated structured handoff artifacts or artifact-equivalent summaries, not uncontrolled agent-to-agent chat. For Full Cycle runs, apply `workflows/handoff_artifact_standard.md` to verify owner, output status, evidence status, evidence limits, missing gates, decision boundary, and downstream handoff before treating an upstream module as usable.
+
 #### What you get
 
-A layered decision memo with Action Box, integrated thesis, gate status, evidence limits, risks, valuation, monitoring, and view-change triggers.
+A layered decision memo with Action Box, integrated thesis, reader-facing decision status, evidence limits, risks, valuation, monitoring, and view-change triggers. When saved for the user, this content is rendered as `investment_report.md`; the internal artifact name remains metadata/audit.
 
 #### What it will not do
 
 It will not expose raw agent transcripts, provide exact allocation/trade instructions, hide material conflicts, or issue positive action when gates are incomplete.
 
-#### Required metadata
+#### Required internal metadata / audit metadata
 
+Internal metadata belongs in audit and internal IC artifacts. It is not ordinary reader-facing `investment_report.md` content unless explicitly requested.
+
+
+- Artifact:
 - Subject:
 - Request type:
 - Workflow:
@@ -442,6 +483,8 @@ It will not expose raw agent transcripts, provide exact allocation/trade instruc
 - As-of date/time:
 - Output status: Complete
 - Evidence status:
+- Evidence limits:
+- Consumed handoff artifacts: (audit-only unless explicitly requested)
 - Analysis Status:
 - IC Action Status:
 - Source scope:
@@ -449,9 +492,11 @@ It will not expose raw agent transcripts, provide exact allocation/trade instruc
 - Time Horizon / N/A:
 - Decision Confidence / Not Rateable:
 - Key limitations:
-- Included / Excluded Modules and Why:
+- Missing gates:
+- Included / Excluded Modules and Why: (audit-only unless explicitly requested)
 - Decision boundary:
-- Downstream handoff:
+- Downstream handoff: (audit-only unless explicitly requested)
+- Required follow-up:
 
 #### Required sections
 
@@ -462,8 +507,8 @@ It will not expose raw agent transcripts, provide exact allocation/trade instruc
 5. Why this action, not the alternatives.
 6. What matters most.
 7. Core thesis.
-8. Key assumptions.
-9. Included / Excluded Modules and Why.
+8. Decision-critical assumptions integrated in the relevant prose; full assumptions stay in audit, not as a separate reader-facing block.
+9. Scope, included analytical coverage, and material exclusions in reader-facing prose; detailed module list stays in audit.
 10. Evidence synthesis and limitations.
 11. Evidence / Specialist Conflict, if material.
 12. Valuation and expectations.
@@ -474,6 +519,7 @@ It will not expose raw agent transcripts, provide exact allocation/trade instruc
 17. What would change the view.
 18. Evidence & Data Quality Appendix when limitations affect the conclusion.
 19. Follow-up requests if any residual non-blocking limitations remain.
+20. Bottom status line and concise missing items for any final personalized decision limits, plus short key-source list.
 
 #### Optional sections
 
@@ -481,22 +527,42 @@ It will not expose raw agent transcripts, provide exact allocation/trade instruc
 - Prior memo delta-update block when updating an available prior memo.
 - Audit Trail appendix only when explicitly requested.
 
-#### Handoff block
+#### Audit handoff block
 
-```text
-Downstream relevance:
-Required follow-up:
-Decision constraints:
-Monitoring owner / cadence:
-Evidence refresh needed:
-Next review trigger:
+For Full Cycle / Full Agent Workflow internal artifacts and audit files, use this universal structured handoff block from `workflows/handoff_artifact_standard.md`. Do not place this block in ordinary `investment_report.md` unless the user explicitly asks for technical/audit details:
+
+```markdown
+## Structured handoff
+- Artifact:
+- Subject:
+- Scope:
+- Owner:
+- Producing agent/skill/workflow:
+- Workflow:
+- Execution mode:
+- As-of date/time:
+- Output status:
+- Evidence status:
+- Freshness status:
+- Source scope:
+- Evidence limits:
+- Key limitations:
+- Key findings:
+- Missing gates:
+- Decision boundary:
+- Decision constraints:
+- Downstream handoff: (audit-only unless explicitly requested)
+- Required follow-up:
 ```
+
+Additional artifact-specific follow-up fields may be added after the universal block, such as monitoring cadence, evidence refresh needed, next review trigger, maximum allowed status before follow-up, specialist modules needed, current-action limitation, blocking evidence gaps, resolution standard, or allowed interim output.
+
 #### Status and failure rules
 
 - Complete when required IC gates are sufficient for the stated scope.
 - Limited when useful synthesis is possible but material limitations constrain conclusion strength; use a non-final artifact unless the user requested a blocked/limited IC response explicitly.
 - Blocked when decision-critical evidence or upstream work is missing or unreliable enough that the requested conclusion must not be made.
-- Preliminary when the user requests a Quick Take or early read before full workflow completion; do not use `final_investment_memo.md`.
+- Preliminary only for saved/staged Full Cycle early reads before full workflow completion; do not use `final_investment_memo.md`. Explicit short / fast / Quick Take mode requires exactly 3 questions, waits for the user's next message, remains chat-only, and must not create `decision_prep_memo.md`, `investment_report.md`, or `audit`.
 
 ### Limited IC Draft
 
@@ -523,6 +589,8 @@ known_gaps:
 
 Use when the user asks for IC-level synthesis but one or more material gates, source scopes, freshness checks, or specialist modules are incomplete and the available work still supports useful bounded analysis.
 
+The available work must be represented as structured handoff artifacts or artifact-equivalent summaries. If an upstream module is missing owner, status, evidence limits, missing gates, or downstream handoff, the memo must list that as a missing gate or request a corrected handoff rather than treating the module as complete.
+
 #### What you get
 
 A decision-oriented limited IC synthesis with a Decision-Prep Box, visible scope limits, missing gates, current conclusions, scenario framing when needed, and follow-up required for final IC Action.
@@ -531,8 +599,9 @@ A decision-oriented limited IC synthesis with a Decision-Prep Box, visible scope
 
 It will not use Action Box, issue positive final IC Action, hide excluded workflow blocks, or convert missing information into a final recommendation.
 
-#### Required metadata
+#### Required internal metadata / audit metadata
 
+- Artifact:
 - Subject:
 - Request type:
 - Workflow:
@@ -540,6 +609,8 @@ It will not use Action Box, issue positive final IC Action, hide excluded workfl
 - As-of date/time:
 - Output status: Limited
 - Evidence status:
+- Evidence limits:
+- Consumed handoff artifacts: (audit-only unless explicitly requested)
 - Analysis Status: Limited
 - IC Action Status: Limited / Blocked
 - Source scope:
@@ -547,9 +618,11 @@ It will not use Action Box, issue positive final IC Action, hide excluded workfl
 - Time Horizon / N/A:
 - Decision Confidence / Not Rateable:
 - Key limitations:
-- Included / Excluded Modules and Why:
+- Missing gates:
+- Included / Excluded Modules and Why: (audit-only unless explicitly requested)
 - Decision boundary:
-- Downstream handoff:
+- Downstream handoff: (audit-only unless explicitly requested)
+- Required follow-up:
 
 #### Required sections
 
@@ -559,10 +632,10 @@ It will not use Action Box, issue positive final IC Action, hide excluded workfl
 4. What can be concluded now.
 5. Missing gates and why they matter.
 6. Evidence, freshness, and source limitations.
-7. Conflicts or unresolved assumptions.
+7. Conflicts or unresolved decision-critical assumptions that materially affect the working view; full assumptions stay in audit.
 8. Scenario matrix when decision mode or user context is missing.
 9. Needed for final IC Action.
-10. Structured handoff / follow-up requests.
+10. Follow-up requests; structured handoff stays in audit.
 
 #### Optional sections
 
@@ -570,16 +643,36 @@ It will not use Action Box, issue positive final IC Action, hide excluded workfl
 - Prior memo delta-update block when a prior memo is available.
 - Evidence & Data Quality Appendix when limitations are material.
 
-#### Handoff block
+#### Audit handoff block
 
-```text
-Downstream relevance:
-Required follow-up:
-Decision constraints:
-Missing gates:
-Evidence / freshness refresh needed:
-Maximum allowed status before follow-up:
+For Full Cycle / Full Agent Workflow internal artifacts and audit files, use this universal structured handoff block from `workflows/handoff_artifact_standard.md`. Do not place this block in ordinary `investment_report.md` unless the user explicitly asks for technical/audit details:
+
+```markdown
+## Structured handoff
+- Artifact:
+- Subject:
+- Scope:
+- Owner:
+- Producing agent/skill/workflow:
+- Workflow:
+- Execution mode:
+- As-of date/time:
+- Output status:
+- Evidence status:
+- Freshness status:
+- Source scope:
+- Evidence limits:
+- Key limitations:
+- Key findings:
+- Missing gates:
+- Decision boundary:
+- Decision constraints:
+- Downstream handoff: (audit-only unless explicitly requested)
+- Required follow-up:
 ```
+
+Additional artifact-specific follow-up fields may be added after the universal block, such as monitoring cadence, evidence refresh needed, next review trigger, maximum allowed status before follow-up, specialist modules needed, current-action limitation, blocking evidence gaps, resolution standard, or allowed interim output.
+
 
 #### Status and failure rules
 
@@ -612,18 +705,21 @@ known_gaps:
 
 #### When to use
 
-Use for early IC-level preparation, Quick Takes that need IC framing, or staged workflows where the user wants practical next-step guidance before final gates are complete.
+Use for early IC-level preparation or staged / Full Cycle workflows where the user wants practical next-step guidance before final gates are complete. Explicit short / fast / quick-take mode remains chat-only and must not create `decision_prep_memo.md`, `investment_report.md`, or `audit`. For a concrete-asset Full Cycle based on public data, use this artifact by default when missing user portfolio context is the missing final-action gate and personal final action cannot be completed. If evidence, freshness, valuation, risk, or upstream-analysis gaps are the primary limitation, use `evidence_gap_memo.md` or `limited_ic_draft.md` instead.
+
+For Full Cycle decision preparation, the memo must name the handoff artifacts consumed and preserve their evidence limits and missing gates. It cannot upgrade unstructured, incomplete, or non-IC specialist outputs into final action support.
 
 #### What you get
 
-A concise preparation memo with current working view, IC Action Status, evidence/freshness/source limits, missing gates, decision-mode assumptions, and the minimum work required to reach a Complete Final Memo.
+A concise preparation memo with current working view, evidence/freshness/source limits, missing gates, decision-mode context, decision-critical assumptions only where they affect the view, and the minimum work required to reach a Complete Final Memo. When saved for the user, this content is rendered as `investment_report.md`; internal `IC Action Status` and artifact type stay in metadata/audit unless explicitly requested.
 
 #### What it will not do
 
 It will not use Action Box, present a final IC Action, provide exact sizing/trade instructions, or imply current-market action when freshness is missing.
 
-#### Required metadata
+#### Required internal metadata / audit metadata
 
+- Artifact:
 - Subject:
 - Request type:
 - Workflow:
@@ -631,29 +727,34 @@ It will not use Action Box, present a final IC Action, provide exact sizing/trad
 - As-of date/time:
 - Output status: Preliminary / Limited
 - Evidence status:
+- Evidence limits:
+- Consumed handoff artifacts: (audit-only unless explicitly requested)
 - Analysis Status: Preliminary / Limited
 - IC Action Status: Limited / Blocked
 - Source scope:
 - Freshness status:
-- Decision mode assumptions:
+- Decision mode assumptions: (audit-only unless decision-critical in prose)
 - Time Horizon / N/A:
 - Decision Confidence / Not Rateable:
 - Key limitations:
-- Included / Excluded Modules and Why:
+- Missing gates:
+- Included / Excluded Modules and Why: (audit-only unless explicitly requested)
 - Decision boundary:
-- Downstream handoff:
+- Downstream handoff: (audit-only unless explicitly requested)
+- Required follow-up:
 
 #### Required sections
 
-1. Decision-Prep Box.
-2. Decision mode and assumptions.
-3. Current working view.
+1. Reader-facing working summary, not labeled with internal artifact names.
+2. Decision mode and assumptions in audit; only decision-critical assumptions appear in the relevant prose.
+3. Current working view / Working View (`Рабочий вывод` in Russian user-facing outputs).
 4. Evidence status, source scope, and freshness status.
 5. Gate checklist.
 6. Main uncertainties.
 7. Most important next evidence or specialist work.
 8. What would upgrade this to a Complete Final Memo.
-9. Structured handoff / follow-up requests.
+9. Follow-up requests; structured handoff stays in audit.
+10. Bottom status line, concise missing items for final personalized decision, and short key-source list.
 
 #### Optional sections
 
@@ -661,23 +762,44 @@ It will not use Action Box, present a final IC Action, provide exact sizing/trad
 - General Portfolio Fit checklist.
 - Fresh-data refresh checklist.
 
-#### Handoff block
+#### Audit handoff block
 
-```text
-Downstream relevance:
-Required follow-up:
-Decision constraints:
-Minimum evidence needed:
-Specialist modules needed:
-Current-action limitation:
+For Full Cycle / Full Agent Workflow internal artifacts and audit files, use this universal structured handoff block from `workflows/handoff_artifact_standard.md`. Do not place this block in ordinary `investment_report.md` unless the user explicitly asks for technical/audit details:
+
+```markdown
+## Structured handoff
+- Artifact:
+- Subject:
+- Scope:
+- Owner:
+- Producing agent/skill/workflow:
+- Workflow:
+- Execution mode:
+- As-of date/time:
+- Output status:
+- Evidence status:
+- Freshness status:
+- Source scope:
+- Evidence limits:
+- Key limitations:
+- Key findings:
+- Missing gates:
+- Decision boundary:
+- Decision constraints:
+- Downstream handoff: (audit-only unless explicitly requested)
+- Required follow-up:
 ```
+
+Additional artifact-specific follow-up fields may be added after the universal block, such as monitoring cadence, evidence refresh needed, next review trigger, maximum allowed status before follow-up, specialist modules needed, current-action limitation, blocking evidence gaps, resolution standard, or allowed interim output.
+
 
 #### Status and failure rules
 
-- Preliminary when the memo is an early read or Quick Take before full workflow completion.
+- Preliminary only for saved/staged Full Cycle decision-preparation artifacts before full workflow completion. Explicit short / fast / Quick Take mode remains chat-only and must not create `decision_prep_memo.md`, `investment_report.md`, or `audit`.
 - Limited when available evidence supports a bounded preparation view but material gates remain incomplete.
 - Blocked when decision-critical evidence is missing; use `evidence_gap_memo.md` if the main output is a gap explanation.
 - Complete and final positive IC Action are not allowed for this artifact.
+- Final buy/sell language is not allowed; use working-view labels and state what would be required for final IC Action.
 
 ### Evidence Gap Memo
 
@@ -705,6 +827,8 @@ known_gaps:
 
 Use when the requested IC conclusion cannot be made because decision-critical evidence, freshness, source access, provenance, or upstream work is missing, contradictory, stale, or unreliable.
 
+Use this artifact rather than a final memo when required structured handoff artifacts are absent, unstructured, stale, contradictory, or missing owner/status/evidence limits/missing gates/downstream handoff in a way that prevents reliable IC synthesis.
+
 #### What you get
 
 A focused explanation of what blocks the decision, why it matters, the impact on Analysis Status and IC Action Status, and the minimum evidence or workflow needed to proceed.
@@ -713,8 +837,9 @@ A focused explanation of what blocks the decision, why it matters, the impact on
 
 It will not synthesize a final positive action, use Action Box, fill evidence gaps with assumptions, or treat user-provided / scoped sources as sufficient without provenance and sanity checks.
 
-#### Required metadata
+#### Required internal metadata / audit metadata
 
+- Artifact:
 - Subject:
 - Request type:
 - Workflow:
@@ -722,6 +847,8 @@ It will not synthesize a final positive action, use Action Box, fill evidence ga
 - As-of date/time:
 - Output status: Limited / Blocked
 - Evidence status:
+- Evidence limits:
+- Consumed handoff artifacts: (audit-only unless explicitly requested)
 - Analysis Status: Limited / Blocked
 - IC Action Status: Limited / Blocked
 - Source scope:
@@ -729,10 +856,12 @@ It will not synthesize a final positive action, use Action Box, fill evidence ga
 - Time Horizon / N/A:
 - Decision Confidence / Not Rateable:
 - Key limitations:
+- Missing gates:
 - Blocking issues:
-- Included / Excluded Modules and Why:
+- Included / Excluded Modules and Why: (audit-only unless explicitly requested)
 - Decision boundary:
-- Downstream handoff:
+- Downstream handoff: (audit-only unless explicitly requested)
+- Required follow-up:
 
 #### Required sections
 
@@ -744,7 +873,7 @@ It will not synthesize a final positive action, use Action Box, fill evidence ga
 6. Impact on IC Action Status.
 7. Minimum evidence needed to proceed.
 8. Suggested follow-up workflow.
-9. Structured handoff / evidence request.
+9. Evidence request; structured handoff stays in audit.
 
 #### Optional sections
 
@@ -752,16 +881,36 @@ It will not synthesize a final positive action, use Action Box, fill evidence ga
 - Public-data view when premium/private data is unavailable.
 - User-file provenance and sanity-check notes.
 
-#### Handoff block
+#### Audit handoff block
 
-```text
-Downstream relevance:
-Required follow-up:
-Decision constraints:
-Blocking evidence gaps:
-Resolution standard:
-Allowed interim output:
+For Full Cycle / Full Agent Workflow internal artifacts and audit files, use this universal structured handoff block from `workflows/handoff_artifact_standard.md`. Do not place this block in ordinary `investment_report.md` unless the user explicitly asks for technical/audit details:
+
+```markdown
+## Structured handoff
+- Artifact:
+- Subject:
+- Scope:
+- Owner:
+- Producing agent/skill/workflow:
+- Workflow:
+- Execution mode:
+- As-of date/time:
+- Output status:
+- Evidence status:
+- Freshness status:
+- Source scope:
+- Evidence limits:
+- Key limitations:
+- Key findings:
+- Missing gates:
+- Decision boundary:
+- Decision constraints:
+- Downstream handoff: (audit-only unless explicitly requested)
+- Required follow-up:
 ```
+
+Additional artifact-specific follow-up fields may be added after the universal block, such as monitoring cadence, evidence refresh needed, next review trigger, maximum allowed status before follow-up, specialist modules needed, current-action limitation, blocking evidence gaps, resolution standard, or allowed interim output.
+
 
 #### Status and failure rules
 
@@ -802,17 +951,17 @@ Threshold basis: explicit metric / directional / qualitative
 |---|---|---|
 | P8-IC-01-01 | User requests final memo before required gates are complete. | Produce `limited_ic_draft.md`, `decision_prep_memo.md`, or `evidence_gap_memo.md`; do not present it as a Complete Final Memo. |
 | P8-IC-01-02 | Non-final IC output needs a top summary. | Use `Decision-Prep Box`; `Action Box` is reserved for `final_investment_memo.md`. |
-| P8-IC-01-03 | User asks for a short investment answer. | Provide Quick Take / Preliminary framing and no final IC Action unless gates are complete. |
+| P8-IC-01-03 | User asks for a short investment answer. | Provide Quick Take / Preliminary framing only when the user explicitly asks for short / fast / quick take / no full cycle / preliminary output; otherwise concrete-asset investment action requests route to Full Cycle and no final IC Action unless gates are complete. |
 | P8-IC-01-04 | Request depends on today / now / latest / earnings / price action and fresh data are missing. | Separate structural view from current-action view; current IC Action Status is Limited or Blocked. |
 | P8-IC-01-05 | Evidence or specialists conflict on a material claim. | Show `Evidence / Specialist Conflict` in the main memo and constrain status if decision-critical. |
 | P8-IC-01-06 | Decision mode is unspecified. | Use scenario matrix; do not assume new buy. |
-| P8-IC-01-07 | User asks for personal decision without portfolio context. | Provide general scenario-based Portfolio Fit and request minimum context; no personalized final action. |
+| P8-IC-01-07 | User asks for personal decision without portfolio context. | Continue asset Full Cycle when identity and route are clear, provide general scenario-based Portfolio Fit, mark personal fit Limited/not personalized, request minimum context, and use `decision_prep_memo.md` when portfolio context is the missing gate; reserve other gate-aware non-final artifacts for other gate failures; no personalized final action. |
 | P8-IC-01-08 | User wants a short readable final memo. | Use layered memo: decision summary, main memo, risks/triggers, appendices. |
 | P8-IC-01-09 | User restricts workflow or source scope. | Respect scope, label artifact as Limited / source-scope constrained, and list prohibited conclusions. |
 | P8-IC-01-10 | Strong disqualifying evidence appears before all positive gates. | IC may issue `Hard Avoid` only with strong disqualifier; missing data alone uses `Defer / Not Actionable`. |
 | P8-IC-01-11 | User asks exact sizing, allocation, or trade instruction. | Provide only illustrative ranges or scenario constraints; no exact instruction. |
 | P8-IC-01-12 | Specialist or asset report sounds like final recommendation. | Non-IC reports may use scoped verdicts only, with `Boundary: Not an IC Action`; no IC Action labels or Action Box. |
-| P8-IC-01-13 | Workflow has many optional modules. | Use materiality-based modules and show `Included / Excluded Modules and Why`. |
+| P8-IC-01-13 | Workflow has many optional modules. | Use materiality-based modules and record `Included / Excluded Modules and Why` in audit and summarize scope limits in reader-facing prose. |
 | P8-IC-01-14 | Memo can become stale after publication. | Show As-of date/time and Freshness status near the top. |
 | P8-IC-01-15 | Final action wording could drift. | Use controlled IC Action labels only. |
 | P8-IC-01-16 | Watchlist, Defer, and Hold could be confused. | Distinguish them by user meaning: existing-position hold, trigger-based watchlist, or insufficient-readiness defer. |

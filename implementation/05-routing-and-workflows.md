@@ -1,4 +1,4 @@
-﻿# Routing and Workflow Contracts
+# Routing and Workflow Contracts
 
 Status: Canonical workflow implementation contract
 
@@ -20,7 +20,7 @@ If the request is ambiguous, the router should either ask for the minimum missin
 Default ambiguity behavior:
 - If a useful preliminary answer is possible, choose the safest bounded route, label assumptions, and use Preliminary or Limited status.
 - If a missing input is decision-critical and cannot be safely assumed, ask the minimum clarifying question.
-- If the user asks for a fast answer, route to Quick Take / Preliminary rather than final IC Action.
+- If the user asks for a fast / short / quick-take answer, ask exactly 3 relevant questions in one block, wait for the user's next message, then route to chat-only Quick Take / Preliminary; do not create `investment_report.md` or `audit`, and do not present it as final IC Action.
 - If the user asks for final decision support, route through the required evidence, asset / specialist, risk, valuation / expectations, and IC gates.
 - If current evidence is material, attempt current evidence collection before producing action-oriented analysis.
 
@@ -70,6 +70,14 @@ Asset routes:
 
 Positive action requires evidence readiness plus valuation/risk review when capital allocation is decision-relevant.
 
+Full Cycle default triggers for concrete assets include concrete-asset capital-decision wording such as whether to invest, buy, add, hold, sell, start exposure, no current position, multi-year horizon, `should I invest`, `should I buy`, and `worth buying`. Quick Take is allowed instead only when the user explicitly asks for short / fast / quick take / no full cycle / preliminary output.
+
+Execution-mode routing rule:
+- Ordinary concrete-asset investment-action requests route to `Delegated Full Agent Workflow` by default, using only relevant subagents/modules for the selected workflow.
+- Delegation must be real: use `Delegated Full Agent Workflow` only when relevant subagents are actually spawned and return structured handoffs or artifact-equivalent summaries. If delegated tooling is unavailable or no subagents are actually spawned, use `Single-agent Full Cycle` in audit metadata and do not imply delegated execution.
+- Ordinary chat must not show `Execution mode`, Runtime Execution Plan, agent lists, skipped-agent lists, handoff metadata, module statuses, technical gate tables, runtime gate metadata, or canonical artifact names unless the user explicitly asks for workflow/debug/audit details. These details are recorded in `audit\run_metadata.md` and related audit files. Do show reader-facing conclusion status, material limitations, and missing checks needed for a final personalized decision.
+- If the user says "run all agents", select all relevant workflow agents, not every configured agent. Record included/excluded agents and reasons in audit; show them in chat only on explicit request.
+
 Asset-first edge-case behavior:
 - If horizon, objective, risk tolerance, or position context is missing, provide a bounded answer with explicit assumptions or ask the minimum clarifying question; do not issue final IC Action.
 - If the request may mean new buy, hold, add, trim, or exit, distinguish these cases and request position size, entry price, and portfolio weight before personalized final decision support.
@@ -87,26 +95,29 @@ Comparison behavior:
 Required sequence:
 1. Intake and routing.
 2. Evidence pack.
-3. Parallel or staged context work: Equity Company Analysis, Financial Statement Analysis, Sector Context, News, Market Positioning, Macro Sensitivity where material.
+3. Parallel or staged context work: Equity Company Analysis, Financial Statement Analysis, Sector / Industry Context, Macro Context, News, and Market Positioning where material. Macro and sector / industry are default equity modules; they may be Limited, Not material, or Skipped with reason only with an audit-recorded justification.
 4. Valuation & Expectations.
 5. Risk / Red Team.
 6. Pre-IC evidence lock.
 7. Investment Committee memo.
 
-Required decision-gate reports:
+Required Full Cycle artifacts and modules:
+- User-facing saved report: `investment_report.md`.
+- Audit metadata: `audit\run_metadata.md`, `audit\sources.md` when available, `audit\intake.md`, and one handoff/report for every actually run subagent or module.
 - Evidence pack / evidence readiness.
-- `equity_company_analysis.md`.
+- Macro context by default for every full asset workflow.
+- Sector / industry context by default for equity.
+- `equity_company_analysis.md` for equity workflows.
 - Financial statement analysis output when financial quality is decision-relevant.
 - `valuation_expectations.md` when price/action is decision-relevant.
-- `risk_red_team.md` when final action is requested.
-- `final_investment_memo.md` for final synthesis.
+- `risk_red_team.md` when final action or decision-preparation is requested.
+- `portfolio_fit.md` or Limited Portfolio Fit when portfolio/user context is material.
+- Internal IC-stage gate-aware artifact: `decision_prep_memo.md`, `limited_ic_draft.md`, `evidence_gap_memo.md`, or `final_investment_memo.md` only when IC schemas allow it. These canonical artifact names stay in audit/internal metadata unless the user asks for technical detail.
 
-Conditional reports:
-- `sector_context.md`.
+Conditional additional reports:
 - `news_catalysts.md`.
 - `market_positioning.md`.
-- `macro_sensitivity.md`.
-- `portfolio_fit.md`.
+- driver dominance / market sense / implementation checks when material.
 
 ## 5. Theme / opportunity workflow
 
@@ -180,12 +191,12 @@ This table is the compact P1A-CODEX-02 runtime bridge between workflow selection
 | Workflow family | Lead router / agent | Required repo skills | Conditional repo skills | Completion handoff |
 |---|---|---|---|---|
 | Master intake / request classification | Master Intake Router | None | Evidence Collection when facts must be checked before routing | Route selection block |
-| Asset-first analysis | Asset Intake Router plus asset-class lead | Evidence Collection; asset-class skill matching the instrument | Valuation & Expectations; Risk / Red Team; News & Catalysts; Market Positioning; Macro; Portfolio Fit; Driver Dominance | Asset specialist handoff or IC-ready package |
-| Equity deep dive | Equity Agent | Evidence Collection; Equity Company Analysis; Financial Statement Analysis | Valuation & Expectations; Risk / Red Team; News & Catalysts; Market Positioning; Portfolio Fit; Driver Dominance | `equity_company_analysis.md` plus downstream specialist handoffs |
-| ETF / fund review | ETF Agent | Evidence Collection; ETF Analysis | Macro; Market Positioning; Portfolio Fit; Risk / Red Team; News & Catalysts | `etf_analysis.md` plus IC or portfolio-fit handoff |
-| Fixed income review | Fixed Income Agent | Evidence Collection; Fixed Income Analysis | Macro; Risk / Red Team; Portfolio Fit; News & Catalysts | `fixed_income_analysis.md` plus IC handoff when requested |
-| Commodity review | Commodity Agent | Evidence Collection; Commodity Analysis | Macro; Market Positioning; News & Catalysts; Risk / Red Team; Portfolio Fit | `commodity_analysis.md` plus IC handoff when requested |
-| Crypto review | Crypto Agent | Evidence Collection; Crypto Analysis | Market Positioning; News & Catalysts; Risk / Red Team; Macro; Portfolio Fit | `crypto_analysis.md` plus IC handoff when requested |
+| Asset-first analysis | Asset Intake Router plus asset-class lead | Evidence Collection; Macro; asset-class skill matching the instrument | Valuation & Expectations; Risk / Red Team; News & Catalysts; Market Positioning; Macro; Portfolio Fit; Driver Dominance | Asset specialist handoff or IC-ready package |
+| Equity deep dive | Equity Agent | Evidence Collection; Macro; Sector & Industry Analysis; Equity Company Analysis; Financial Statement Analysis | Valuation & Expectations; Risk / Red Team; News & Catalysts; Market Positioning; Portfolio Fit; Driver Dominance | `equity_company_analysis.md` plus downstream specialist handoffs |
+| ETF / fund review | ETF Agent | Evidence Collection; Macro; ETF Analysis | Market Positioning; Portfolio Fit; Risk / Red Team; News & Catalysts | `etf_analysis.md` plus IC or portfolio-fit handoff |
+| Fixed income review | Fixed Income Agent | Evidence Collection; Macro; Fixed Income Analysis | Risk / Red Team; Portfolio Fit; News & Catalysts | `fixed_income_analysis.md` plus IC handoff when requested |
+| Commodity review | Commodity Agent | Evidence Collection; Macro; Commodity Analysis | Market Positioning; News & Catalysts; Risk / Red Team; Portfolio Fit | `commodity_analysis.md` plus IC handoff when requested |
+| Crypto review | Crypto Agent | Evidence Collection; Macro; Crypto Analysis | Market Positioning; News & Catalysts; Risk / Red Team; Portfolio Fit | `crypto_analysis.md` plus IC handoff when requested |
 | Theme / opportunity workflow | Theme / Opportunity Intake Router | Evidence Collection; Sector & Industry Analysis | Structural Winner Discovery; Market Intelligence Briefing; Macro; News & Catalysts | Theme map, candidate list, and asset-intake handoff |
 | Structural winner discovery | Structural Winners Discovery Agent | Evidence Collection; Structural Winner Discovery | Sector & Industry Analysis; Driver Dominance; Market Intelligence Briefing | `structural_winners_memo.md` and `candidate_watchlist.md` |
 | Direct valuation request | Valuation & Expectations Agent | Evidence Collection; Valuation & Expectations | Financial Statement Analysis; Risk / Red Team | `valuation_expectations.md`; not an IC Action |
@@ -193,7 +204,7 @@ This table is the compact P1A-CODEX-02 runtime bridge between workflow selection
 | Market update / latest / news | Market Intelligence Agent or News & Catalysts Agent | Evidence Collection; Market Intelligence Briefing or News & Catalysts | Market Sense Hypothesis Engine; Market Positioning; Macro | Market briefing, event handoff, or Limited freshness note |
 | Market sense / price-action hypothesis | Market Sense Agent | Evidence Collection; Market Sense Hypothesis Engine | Market Positioning; News & Catalysts; Macro | Hypothesis handoff; not evidence or IC replacement |
 | Portfolio fit request | Portfolio Fit Agent | Evidence Collection; Portfolio Fit | Risk / Red Team; Macro; asset-class skill matching the instrument | `portfolio_fit_report.md`; exact sizing remains out of scope |
-| Final IC synthesis | Investment Committee Agent | Evidence Collection; Investment Committee Synthesis | Valuation & Expectations; Risk / Red Team; Portfolio Fit; other material specialists | `final_investment_memo.md` only when gates are complete |
+| Final IC synthesis | Investment Committee Agent | Evidence Collection; Investment Committee Synthesis | Valuation & Expectations; Risk / Red Team; Portfolio Fit; other material specialists | Internal `final_investment_memo.md` only when gates are complete; saved user-facing Full Cycle output remains `investment_report.md` |
 
 ## 9. Update workflow
 
@@ -225,7 +236,7 @@ These decisions canonicalize master, asset, theme, comparison, market, update, a
 
 | Rule ID | Case | Canonical behavior | Allowed output/status | Escalation |
 |---|---|---|---|---|
-| P4-RTE-01-01 | Ordinary asset question asks "what do you think" or "worth buying" without final-decision wording. | Route to Asset-first Quick Take by default, label assumptions, and avoid final action. | Preliminary or Limited Quick Take; no final `IC Action`. | If user asks for final decision support, route through evidence, asset lead, valuation/expectations, risk, material context, implementation checks where relevant, and IC gates. |
+| P4-RTE-01-01 | Concrete-asset question asks whether to invest, buy, add, sell, start exposure, or whether the asset is worth buying for a stated horizon / portfolio decision. | Ask 5 asset-specific questions, then route to asset-first Full Cycle by default; use relevant delegated subagents when available; record Runtime Execution Plan in `audit\run_metadata.md`; hide runtime blocks in ordinary chat. Quick Take is allowed only when explicitly requested as short / fast / quick take / no full cycle / preliminary. | Full Cycle output with Complete/Limited/Blocked status as gates permit; missing portfolio context internally defaults to `decision_prep_memo.md`; no final positive `IC Action` unless all gates pass. | If the user explicitly asks for Quick Take, ask 3 questions and provide Preliminary/Limited chat-only Quick Take; otherwise complete or visibly downgrade the delegated/default Full Cycle checklist. |
 | P4-RTE-01-02 | User asks what to do with their position or uses personal-position language. | Treat as personal / position-specific decision support and ask only the minimum missing context before final personalization. | Preliminary scenario view until current position, horizon, risk/objective, and approximate exposure are known. | With enough context, route to Portfolio Fit and, when action is requested, IC workflow. |
 | P4-RTE-01-03 | Ticker, listing, instrument, wrapper, share class, currency, maturity, or exposure is ambiguous. | Use a safe default with an explicit instrument assumption when obvious; ask clarification when ambiguity can materially change the conclusion. | Preliminary or Limited until identity is verified for decision-critical outputs. | Final, IC, or portfolio-specific outputs require identity check before conclusion. |
 | P4-RTE-01-04 | Theme / opportunity request could be read as a buy list. | Route to Theme / Opportunity workflow and label results as discovery, candidate watchlist, or review priority, not buy ranking. | Discovery Ranking / Candidate Watchlist; not an IC Action. | User may select 1-3 candidates for asset-first review and IC synthesis. |
@@ -237,7 +248,7 @@ These decisions canonicalize master, asset, theme, comparison, market, update, a
 | P4-RTE-01-10 | User asks for sizing, allocation, or "how much to buy". | Without portfolio context, provide only scenario-based ranges; with approximate context, route to Portfolio Fit. | Generic scenario ranges or Personalized Portfolio Fit support; no exact trade instruction. | Concentrated or high-risk exposure triggers Portfolio Fit and Risk gates before strong conclusions. |
 | P4-RTE-01-11 | User asks to update a prior memo or prior thesis. | Use true delta-update only when prior memo/thesis is available; otherwise label as fresh/current analysis. | Delta-update when prior exists; otherwise Limited fresh analysis with disclaimer. | Material action impact routes to renewed evidence collection and IC review. |
 | P4-RTE-01-12 | User asks for final memo/action before required gates are complete. | Do not issue `final_investment_memo.md` or positive IC Action. Produce gate-aware non-final artifact by default. | `Limited IC Draft`, `Preliminary Investment Brief`, `Evidence Gap Memo`, or `Decision-Prep Memo`. | If closing gates is costly or broad, ask whether to proceed with draft or complete gates first. |
-| P4-RTE-01-13 | User says "run all agents". | Interpret as all relevant workflow agents, not literally every system agent. | Workflow plan or scoped workflow output with included/excluded agents when useful; Complete or positive IC Action Status only when all required gates pass. | Exhaustive panel may be offered, but irrelevant agents remain excluded and IC gates still govern action. |
+| P4-RTE-01-13 | User says "run all agents". | Interpret as all relevant workflow agents, not literally every system agent; use `Delegated Full Agent Workflow` for relevant agents when actually spawned. | Workflow audit plan records execution mode, included/excluded agents or modules, and handoff requirements; ordinary chat shows these only if requested; Complete or positive IC Action Status only when all required gates pass. | Exhaustive panel may be offered, but irrelevant agents remain excluded, subagents must not be claimed unless actually spawned, and IC gates still govern action. |
 | P4-RTE-01-14 | Complex or nonstandard product: leveraged/inverse ETF, option, structured note, HY bond, crypto yield, VIX-like product. | If educational, explain mechanics and risks; if action-oriented, route through enhanced structure, risk, and implementation gates. | Educational explainer or Limited enhanced decision workflow. | Positive action requires product mechanics, liquidity/implementation, risk, and relevant asset exposure gates. |
 | P4-RTE-01-15 | Time horizon is missing. | Infer horizon from wording when clear; otherwise split short-term and long-term views. | Preliminary or Limited split-horizon output. | Final IC Action and personal decision support require explicit Time Horizon. |
 | P4-RTE-01-16 | User restricts sources or asks not to refresh. | Respect the requested source scope and make the scope visible. | `Limited by source scope` when excluded checks are material; no unsupported full IC action. | List excluded decision-critical checks needed to upgrade analysis. |

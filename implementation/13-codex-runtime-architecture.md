@@ -75,226 +75,144 @@ Project authority order:
 4. IMPLEMENTATION_BACKLOG.md for phase meaning and implementation scope
 5. TASKS.md for active work status
 6. Other canonical implementation documents for their specific domains
-7. Supporting References only when they do not conflict with canonical documents
-8. Needs Merge / Draft Source documents only as source material
-9. Archive documents never as active source of truth
+7. Supporting References under `references/` only when they do not conflict with canonical documents
+8. `implementation/remaining-requirements.md` only as a residual candidate-requirement register, not as executable runtime authority
+9. Archive documents under `archive/legacy-prd/` never as active source of truth
 ```
 
-Runtime reading order:
+Runtime audit plan template:
 
 ```text
-1. AGENTS.md as the concise navigator Codex loads first
-2. implementation/01-documentation-control.md when source status matters
-3. implementation/00-master-rules.md when global statuses, gates, style, or artifact naming matter
-4. IMPLEMENTATION_BACKLOG.md when phase meaning or scope matters
-5. TASKS.md when active work status matters
-6. The specific canonical implementation document for the task domain
-7. implementation/13-codex-runtime-architecture.md when Codex runtime packaging, custom agents, repo skills, or edge-case runtime rules matter
-8. implementation/14-language-and-style.md when user-facing language, Russian output, translation cleanup, or investment-analytical presentation style matters
-9. implementation/10-traceability-matrix.md before using legacy detail
-10. Supporting legacy files only after registry / traceability routing
-```
-
-`AGENTS.md` is first in runtime reading order because Codex loads it first. It is not higher than canonical implementation documents in project authority.
-
-### Root `README.md`
-
-Purpose: human-readable orientation for maintainers and operators.
-
-Required content:
-
-- what the Financial Agent System is;
-- current implementation status;
-- directory map;
-- canonical document map;
-- planned Codex runtime surfaces;
-- how to add or change agents, skills, workflows, and references;
-- how to validate changes.
-
-`README.md` is informational. It must not override canonical implementation documents.
-
-### `.codex/agents/`
-
-Purpose: project-scoped custom Codex agents.
-
-Each custom agent must be a standalone TOML file with:
-
-- `name`;
-- `description`;
-- `developer_instructions`.
-
-Optional fields such as model, reasoning effort, sandbox, and skills should be omitted unless there is a documented project reason. Inheriting the parent session default is preferred unless a task explicitly requires a different model or execution profile.
-
-Validation checks for future custom-agent TOML files:
-
-- required fields exist: `name`, `description`, `developer_instructions`;
-- `description` is narrow and trigger-oriented;
-- `developer_instructions` points to canonical documents instead of copying full PRD content;
-- no model, reasoning, sandbox, or tool override is included unless justified by the relevant runtime task;
-- agent boundaries match `implementation/06-agent-contracts.md`;
-- the file does not promote a legacy PRD, framework, or example above canonical documents.
-
-### `.agents/skills/`
-
-Purpose: repo-scoped reusable task workflows.
-
-Each skill must be a directory containing `SKILL.md` with YAML front matter:
-
-```md
----
-name: skill-name
-description: Clear when-to-use trigger and boundaries.
----
-```
-
-Each skill should include:
-
-- purpose;
-- when to use / when not to use;
-- required canonical documents;
-- required inputs;
-- step sequence;
-- output contract;
-- guardrails;
-- failure / Limited / Blocked behavior;
-- quality checks.
-
-Prefer instruction-only skills unless deterministic scripts are needed.
-
-### Workflow runbooks
-
-Workflow runbooks may live under a future `workflows/` folder or inside `implementation/05-routing-and-workflows.md` until split.
-
-Each runbook should specify:
-
-- entry condition;
-- lead router / agent;
-- required skills;
-- optional custom agents;
-- evidence requirements;
-- sequence and parallelizable branches;
-- handoff artifacts;
-- completion rules;
-- acceptance checks.
-
-## 4. Custom-agent mapping
-
-Create these 20 project-scoped custom-agent files when `P1A-CODEX-02` is executed.
-
-| Planned contract | Custom-agent file | Runtime role |
+Execution mode: [Delegated Full Agent Workflow | Single-agent Full Cycle]
+Subject: [asset]
+Route: Master Intake -> Asset Intake -> [asset workflow]
+Included modules:
+- request intake and 5-question workflow intake
+- asset identity and route check
+- evidence collection and freshness check
+- macro context (default for every asset class)
+- sector / industry context (default for equity; otherwise include only when relevant)
+- lead asset-class analysis
+- financial statement analysis, when applicable
+- news / catalysts, when freshness or event risk is material
+- valuation / expectations or asset-class equivalent
+- risk / red-team review
+- portfolio fit / limited portfolio fit
+- IC synthesis
+Actually spawned subagents when delegated:
+- [agent name -> handoff artifact]
+Fallback reason when not delegated:
+- [only if Single-agent Full Cycle fallback is used]
+Excluded modules:
+- [module -> reason]
+Module status table:
+| Module | Status | Reason / limitation |
 |---|---|---|
-| Master Intake Router | `.codex/agents/master-intake-router.toml` | Classifies user request and selects workflow; does not make investment decisions. |
-| Asset Intake Router | `.codex/agents/asset-intake-router.toml` | Routes asset-first requests to the correct asset workflow. |
-| Theme / Opportunity Intake Router | `.codex/agents/theme-opportunity-intake-router.toml` | Routes theme-first and opportunity-discovery requests. |
-| Evidence Collector Agent | `.codex/agents/evidence-collector.toml` | Controls evidence collection, source status, and readiness. |
-| Equity Agent | `.codex/agents/equity-agent.toml` | Produces equity specialist analysis. |
-| ETF Agent | `.codex/agents/etf-agent.toml` | Produces ETF wrapper / exposure analysis. |
-| Fixed Income Agent | `.codex/agents/fixed-income-agent.toml` | Produces bond / fixed-income specialist analysis. |
-| Commodity Agent | `.codex/agents/commodity-agent.toml` | Produces commodity and commodity-linked exposure analysis. |
-| Crypto Agent | `.codex/agents/crypto-agent.toml` | Produces crypto asset and crypto-linked exposure analysis. |
-| Valuation & Expectations Agent | `.codex/agents/valuation-expectations-agent.toml` | Produces valuation and expectations analysis. |
-| Risk / Red Team Agent | `.codex/agents/risk-red-team-agent.toml` | Challenges thesis quality and downside risks. |
-| News & Catalysts Agent | `.codex/agents/news-catalysts-agent.toml` | Identifies recent and upcoming market-moving events. |
-| Market Positioning Agent | `.codex/agents/market-positioning-agent.toml` | Assesses consensus, positioning, flows, and expectations where available. |
-| Macro Agent | `.codex/agents/macro-agent.toml` | Assesses macro regime, sensitivity, and surprise context. |
-| Portfolio Fit Agent | `.codex/agents/portfolio-fit-agent.toml` | Assesses portfolio role and fit without exact sizing. |
-| Market Sense Agent | `.codex/agents/market-sense-agent.toml` | Produces market-behavior hypotheses without replacing evidence. |
-| Market Intelligence Agent | `.codex/agents/market-intelligence-agent.toml` | Produces broad market intelligence briefings. |
-| Sector & Industry Analysis Agent | `.codex/agents/sector-industry-analysis-agent.toml` | Produces sector / industry context. |
-| Structural Winners Discovery Agent | `.codex/agents/structural-winners-discovery-agent.toml` | Produces candidate discovery, maps, and watchlists. |
-| Investment Committee Agent | `.codex/agents/investment-committee-agent.toml` | Produces final decision-support synthesis subject to evidence and specialist gates. |
-
-## 5. Custom-agent authoring standard
-
-Each custom-agent TOML should be thin and should use this shape:
-
-```toml
-name = "agent-name"
-description = "One-sentence trigger and scope."
-developer_instructions = """
-You are [Agent Name] for the Financial Agent System.
-
-Before working, follow AGENTS.md and read only the canonical documents needed for the task:
-- implementation/00-master-rules.md
-- implementation/01-documentation-control.md
-- implementation/02-canonical-architecture.md when architecture or boundaries matter
-- implementation/05-routing-and-workflows.md when workflow routing matters
-- implementation/06-agent-contracts.md for agent scope
-- implementation/11-skill-contracts.md for method-skill behavior
-- implementation/10-traceability-matrix.md when legacy detail is needed
-
-Use the relevant repo skill when the task matches it.
-Do not treat legacy PRDs as source of truth unless routed through the registry.
-Do not override Evidence Collector readiness or Investment Committee boundaries.
-Return status, key findings, evidence limitations, handoffs, and next required step.
-"""
+| request intake and workflow intake | Complete / Limited / Blocked | [reason] |
+| evidence collection | Complete / Limited / Blocked | [reason] |
+| macro context | Complete / Limited / Blocked / Not material | default module for all full asset workflows; at least a short macro handoff is expected unless explicit source scope or route rationale justifies Not material / Skipped with reason in audit |
+| sector / industry context | Complete / Limited / Blocked / Not material | default for equity; otherwise explain relevance |
+| lead asset-class analysis | Complete / Limited / Blocked | [reason] |
+| financial statement analysis | Complete / Limited / Blocked / Not material | [reason] |
+| valuation / expectations | Complete / Limited / Blocked | [reason] |
+| risk / red-team review | Complete / Limited / Blocked | [reason] |
+| portfolio fit | Complete / Limited / Blocked | [reason] |
+| IC synthesis | Complete / Limited / Blocked | [reason] |
 ```
 
-Do not include full legacy PRD content, large frameworks, or long methodology libraries inside `developer_instructions`.
+Minimum equity handoff artifact set:
 
-## 6. Repo-skill mapping
+```text
+evidence_pack.md
+macro_sensitivity.md or macro_context.md
+sector_context.md or sector_industry_analysis.md
+equity_company_analysis.md
+financial_statement_analysis.md
+valuation_expectations.md
+risk_red_team.md
+portfolio_fit.md
+IC-stage gate-aware artifact: decision_prep_memo.md by default when portfolio context is the remaining final-action gate; otherwise limited_ic_draft.md, evidence_gap_memo.md, or final_investment_memo.md only as allowed by IC schemas.
+```
 
-Create repo skills from canonical skill contracts in `implementation/11-skill-contracts.md`.
+Investment Committee synthesis may consume only the audit Runtime Execution Plan, validated handoff artifacts or artifact-equivalent summaries, the pre-IC evidence lock, material conditional-module handoffs, and sanity-checked user context. If a required handoff is missing or lacks owner/status/evidence limits/missing gates/downstream handoff, IC must request the corrected handoff or select a gate-aware Limited/Blocked artifact such as `decision_prep_memo.md`, `limited_ic_draft.md`, or `evidence_gap_memo.md`.
 
-Initial planned method skills:
-
-| Canonical skill contract | Skill folder |
-|---|---|
-| Evidence Collection Method Skill | `.agents/skills/evidence-collection/` |
-| Equity Company Analysis Method Skill | `.agents/skills/equity-company-analysis/` |
-| Financial Statement Analysis Skill | `.agents/skills/financial-statement-analysis/` |
-| Valuation & Expectations Method Skill | `.agents/skills/valuation-expectations/` |
-| Risk / Red Team Method Skill | `.agents/skills/risk-red-team/` |
-| Investment Committee Synthesis Method Skill | `.agents/skills/investment-committee-synthesis/` |
-| ETF Analysis Method Skill | `.agents/skills/etf-analysis/` |
-| Fixed Income Analysis Method Skill | `.agents/skills/fixed-income-analysis/` |
-| Commodity Analysis Method Skill | `.agents/skills/commodity-analysis/` |
-| Crypto Analysis Method Skill | `.agents/skills/crypto-analysis/` |
-| Macro Analysis Method Skill | `.agents/skills/macro-analysis/` |
-| News & Catalysts Method Skill | `.agents/skills/news-catalysts/` |
-| Market Positioning Method Skill | `.agents/skills/market-positioning/` |
-| Portfolio Fit Method Skill | `.agents/skills/portfolio-fit/` |
-| Sector & Industry Analysis Method Skill | `.agents/skills/sector-industry-analysis/` |
-| Structural Winner Discovery Method Skill | `.agents/skills/structural-winner-discovery/` |
-| Driver Dominance Analysis Skill | `.agents/skills/driver-dominance-analysis/` |
-| Market Sense Hypothesis Engine Skill | `.agents/skills/market-sense-hypothesis-engine/` |
-| Market Intelligence Briefing Skill | `.agents/skills/market-intelligence-briefing/` |
-
-Presentation-layer repo skills are governed by `implementation/14-language-and-style.md`, not by the method-skill contracts in `implementation/11-skill-contracts.md`:
-
-| Presentation behavior | Skill folder |
-|---|---|
-| Russian language policy, translation cleanup, and Russian-target normalization | `.agents/skills/language-policy/` |
-| Concise investment-analytical user-facing writing style | `.agents/skills/investment-analytical-style/` |
-
-Presentation skills are runtime adapters for final user-facing text. They must not collect evidence, decide routing, issue `IC Action`, use `Action Box`, add facts, add sources, add caveats, add conclusions, add recommendations, add investment calls, add risk warnings, or replace analytical method skills.
-
-## 7. Skill authoring standard
-
-Each `SKILL.md` should:
-
-- keep the `description` concise and trigger-oriented;
-- front-load when to use and when not to use the skill;
-- use imperative steps;
-- point to canonical contracts rather than copying them;
-- identify supporting references from the traceability matrix only when needed;
-- require explicit output artifacts and handoff blocks;
-- include Limited / Blocked behavior;
-- include quality checks that map back to `implementation/09-system-acceptance-qa.md`.
-
-## 8. Workflow execution model
+### Canonical sequence
 
 The runtime should preserve the canonical system sequence:
 
 1. Intake router classifies the request.
-2. Evidence Collector establishes source readiness.
-3. Relevant asset, specialist, discovery, or market agents run according to the workflow contract.
-4. Reusable analytical methods are executed through repo skills.
-5. Specialist outputs produce handoff artifacts.
-6. Investment Committee synthesizes only after evidence and required specialist gates are satisfied.
-7. Final output follows master rules and report schemas.
+2. Concrete-asset investment action requests default to Full Cycle unless the user explicitly asks for a short / fast / quick take / no full cycle / preliminary answer.
+3. Full Cycle runs record `Execution mode` and a Runtime Execution Plan in audit before analysis, including included modules, excluded modules, and rationale.
+4. Evidence Collector establishes source readiness.
+5. Relevant asset, specialist, discovery, or market modules run according to the workflow contract. In `Single-agent Full Cycle`, the main session performs these modules; in `Delegated Full Agent Workflow`, actually spawned subagents perform the delegated modules and return structured handoffs.
+6. Reusable analytical methods are executed through repo skills.
+7. Specialist outputs produce handoff artifacts or handoff summaries.
+8. Investment Committee synthesizes only after evidence and required specialist gates are satisfied, or produces a gate-aware non-final artifact when gates are incomplete.
+9. Final output follows master rules and report schemas and must not imply delegated subagents ran unless they actually did.
 
-Subagents must be used only when the user, workflow runbook, or operator explicitly requests parallel delegated work. Custom agents are configuration layers for spawned Codex sessions, not permanently running independent agents. They should not create uncontrolled agent-to-agent chat. Handoffs must use structured artifacts and workflow rules.
+
+### Full Cycle runtime plan and completion check
+
+For concrete-asset investment action requests, such as asking whether to invest, buy, add, hold, sell, start exposure, or evaluate an asset for a multi-year horizon, the runtime must default to Full Cycle unless the user explicitly requests short / fast / quick take / no full cycle / preliminary output. Full Cycle defaults to delegated relevant subagents when available.
+
+The audit pack must record `Execution mode` and a compact Runtime Execution Plan before analysis. In `Single-agent Full Cycle`, the plan lists analytical modules executed by the main session; in `Delegated Full Agent Workflow`, the plan lists the subagents actually spawned and the handoffs they must return. Ordinary chat does not show this block unless explicitly requested:
+
+Runtime Execution Plan required fields are audit metadata: execution mode, subject / asset, included modules, excluded modules, reason for route, actually spawned subagents when delegated, fallback reason when not delegated, and module status for every included module using `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
+
+```text
+# audit\run_metadata.md snippet; not ordinary chat
+Execution mode: [Delegated Full Agent Workflow | Single-agent Full Cycle]
+Subject: [asset]
+Route: Master Intake -> Asset Intake -> Equity Full Cycle
+Included modules:
+- request intake and 5-question workflow intake
+- asset identity and route check
+- evidence collection and freshness check
+- macro context (default for every full asset workflow)
+- sector / industry context (default for equity)
+- equity company analysis
+- financial statement analysis, when applicable
+- news / catalysts, when freshness or event risk is material
+- valuation / expectations
+- risk / red-team review
+- portfolio fit / limited portfolio fit
+- IC synthesis
+Actually spawned subagents when delegated:
+- [agent name -> handoff artifact]
+Fallback reason when not delegated:
+- [only if Single-agent Full Cycle fallback is used]
+Excluded modules:
+- [module -> reason]
+Module status table:
+| Module | Status | Reason / limitation |
+|---|---|---|
+| request intake and workflow intake | Complete / Limited / Blocked | [reason] |
+| evidence collection | Complete / Limited / Blocked | [reason] |
+| macro context | Complete / Limited / Blocked / Not material | default module for every full asset workflow; at least a short macro handoff is expected unless explicit source scope or route rationale justifies Not material / Skipped with reason in audit |
+| sector / industry context | Complete / Limited / Blocked / Not material | default equity module; status must be audit-recorded |
+| equity company analysis | Complete / Limited / Blocked | [reason] |
+| financial statement analysis | Complete / Limited / Blocked / Not material | [reason] |
+| valuation / expectations | Complete / Limited / Blocked | [reason] |
+| risk / red-team review | Complete / Limited / Blocked | [reason] |
+| portfolio fit | Complete / Limited / Blocked | [reason] |
+| IC synthesis | Complete / Limited / Blocked | [reason] |
+Reason:
+- [short route rationale]
+```
+
+Every listed module must have an audit-recorded status as `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
+
+Status tokens `Complete`, `Limited`, `Blocked`, `Not material`, and `Skipped with reason` are controlled metadata and may remain in English inside audit; reader-facing report prose must follow the user-facing language policy.
+
+Before calling the result Full Cycle, the runtime must verify that every item listed under Included Modules appears in a Module Status table with one valid status. Conditional modules such as financial statements, news/catalysts, valuation, risk, and Portfolio Fit must be included with status or excluded with reason. Macro is a default module for every asset class; sector / industry is a default module for equity. If any listed module has no valid status, complete the missing work, record a valid module status, or downgrade to `Preliminary`, `Limited`, `Evidence Gap Memo`, or another gate-aware non-final artifact. A Limited Full Cycle remains a Full Cycle only when every included module has an audit-recorded valid status and the artifact is gate-aware.
+
+Subagents should be used by default for full concrete-asset investment workflows when relevant and available, and must be used when explicitly requested unless tooling is unavailable. Custom agents are configuration layers for spawned Codex sessions, not permanently running independent agents. They should not create uncontrolled agent-to-agent chat. Handoffs must use structured artifacts and workflow rules. If no subagents were spawned, the only valid mode is `Single-agent Full Cycle` or another non-delegated mode; do not present the output as a delegated workflow.
+
+### Intake questions and report packaging
+
+Before a full investment workflow starts, ask exactly 5 asset-specific questions in one block and wait for the user's next message. Before an explicit short / fast / Quick Take answer, ask exactly 3 relevant questions in one block and keep the answer chat-only. If the asset or instrument identity is ambiguous, resolve identity first, then ask the 5 or 3 questions.
+
+Full workflow packaging writes `investment_report.md` plus an `audit\` folder under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-dd hhmm\`. The chat response must reproduce `investment_report.md` exactly and end with only the saved report path. The audit path, agent list, execution mode, runtime plan, module statuses, canonical artifact type, full source list, and handoff metadata are shown only when explicitly requested.
 
 ## 9. Generation sequence
 
@@ -341,7 +259,7 @@ Rule IDs preserve the original review sequence. The tables below group them by r
 | Rule ID | Runtime edge case | Required safe behavior |
 |---|---|---|
 | P1A-CODEX-01-05 | User asks a specialist agent for a final buy/sell decision. | Specialist agents provide scoped `Specialist Verdict` only, state `Boundary: Not an IC Action`, list missing IC gates, and may offer to route to IC workflow. |
-| P1A-CODEX-01-17 | User asks to "run all agents" for one idea. | Interpret full analysis as a relevant-complete workflow, not literally all agents; router selects required and trigger-based agents and explains the scope. |
+| P1A-CODEX-01-17 | User asks to "run all agents" for one idea. | Interpret full analysis as a relevant-complete delegated workflow, not literally all agents; use relevant agents only, record included/excluded agents and structured handoffs in audit, and show them in chat only if requested. |
 | P1A-CODEX-01-18 | Agents produce conflicting findings. | IC performs conflict synthesis rather than averaging: identify agreement, decision-critical conflicts, facts needed to resolve them, and whether Complete IC Action is allowed. |
 | P1A-CODEX-01-20 | A task matches both a custom agent and a repo skill. | Agent owns role, boundary, status, and handoff; skill owns reusable method. Workflow/router decides sequencing. Skills do not issue final IC Actions. |
 | P1A-CODEX-01-23 | User requests a final report before required gates are complete. | Use gate-aware artifact naming such as `Preliminary Investment Brief`, `Limited IC Draft`, `Evidence Gap Memo`, `Specialist Summary`, or `Decision-Prep Memo`; do not label it `Final Investment Memo`. |
@@ -362,10 +280,10 @@ Rule IDs preserve the original review sequence. The tables below group them by r
 
 | Rule ID | Runtime edge case | Required safe behavior |
 |---|---|---|
-| P1A-CODEX-01-07 | User asks for a quick answer while evidence gates are normally required. | Allow Quick Take only as Preliminary/Limited for market-action or analysis-only requests, with no final buy/sell, key unknowns, and a suggested evidence-first or IC-ready next step. If the user asks for personal/final action and key context is missing, ask first. |
+| P1A-CODEX-01-07 | User asks for a quick answer while evidence gates are normally required. | Allow Quick Take only when the user explicitly asks for short / fast / quick take / no full cycle / preliminary output. Concrete-asset investment action requests otherwise default to Full Cycle, with no final buy/sell unless IC gates pass. If blocking personal context or identity is missing, ask first; non-blocking portfolio context limits Portfolio Fit / IC status. |
 | P1A-CODEX-01-08 | User asks to compare ideas across different asset classes. | Use cross-asset comparison framing: common role-based criteria plus asset-specific criteria; do not declare a universal winner without the user's objective. |
 | P1A-CODEX-01-09 | User omits investment horizon. | For quick takes, separate tactical 0-3 months, medium-term 6-18 months, and long-term 3-5 years; final IC Action requires explicit time horizon. |
-| P1A-CODEX-01-10 | User omits risk profile or portfolio context. | For personal/final action or Portfolio Fit, ask for minimum context before user-specific guidance. General analysis and typical asset roles may proceed only as Limited / not personalized. |
+| P1A-CODEX-01-10 | User omits risk profile or portfolio context. | For clear concrete-asset Full Cycle requests, proceed with general analysis and mark Portfolio Fit Limited / not personalized; ask minimum context before personalized final action. If the missing context blocks route or safe identity, ask first. |
 | P1A-CODEX-01-11 | User requests exact position size or allocation. | Discuss only scenario-based ranges with assumptions and stress tests; do not issue exact allocation as an instruction. |
 | P1A-CODEX-01-14 | User asks for a simple explanation of a complex investment question. | Use plain language while keeping visible statuses, assumptions, risks, unknowns, and IC boundaries. |
 | P1A-CODEX-01-15 | User asks for "no disclaimers" or just the action. | Compress wording but preserve critical guardrails: status, assumptions, missing data, evidence limits, and specialist-vs-IC boundary. |
@@ -390,7 +308,7 @@ When P10-QA executes runtime acceptance checks, Codex runtime behavior follows t
 
 - use synthetic fixtures for stable pass/fail behavior and live-smoke checks only for freshness behavior;
 - score safety/gate correctness separately from UX/usefulness, and do not let UX usefulness override a safety failure;
-- classify prompts as personal/final action, market action / investment attractiveness, or analysis-only before choosing ask-first versus Preliminary/Limited output;
+- classify prompts as personal/final action, concrete-asset investment action, market setup / attractiveness, or analysis-only before choosing Full Cycle, ask-first, or explicit Preliminary/Limited output;
 - treat final action language from non-IC agents or skills as a safety failure;
 - require Limited/Blocked outputs to include a concise next-step block;
 - compress caveats when requested, but never remove status, evidence limits, missing gates, or boundaries;
@@ -409,7 +327,7 @@ The Codex runtime architecture layer is ready when:
 - the project-root discovery rule is documented;
 - the 20 planned custom-agent files are mapped to canonical agent/router contracts;
 - planned repo skills are mapped to canonical method-skill contracts;
-- subagent usage is limited to explicitly requested or runbook-defined delegated work;
+- full concrete-asset investment workflows default to relevant delegated subagents when available; if no subagents are actually spawned, audit records `Single-agent Full Cycle` and output must not imply delegation;
 - validation checks for future custom-agent TOML files are documented;
 - legacy PRDs remain routed through the registry and traceability matrix.
 - this document contains stable runtime edge-case rules `P1A-CODEX-01-01` through `P1A-CODEX-01-35`;

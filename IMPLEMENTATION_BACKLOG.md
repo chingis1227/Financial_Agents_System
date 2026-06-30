@@ -33,6 +33,7 @@ Supporting / operational records:
 
 - `TASKS.md` - operational work queue and task status tracker; `IMPLEMENTATION_BACKLOG.md` governs phase meaning and scope when they differ.
 - `implementation/12-decision-log.md` - decision history and rationale; it does not override canonical implementation documents.
+- `implementation/final-system-audit-report.md` - Session 11 final system audit for root cleanup, runtime workflow docs, agents, skills, handoff artifacts, README prompts, QA, and Microsoft smoke-test readiness; it does not override canonical implementation documents.
 
 ## 3. Phase backlog
 
@@ -43,7 +44,7 @@ Outcome: active implementation documents are separated from draft, backup, and a
 Work items:
 - Adopt `implementation/01-documentation-control.md` as the registry.
 - Assign every legacy document one implementation status: `Canonical`, `Supporting Reference`, `Draft Source`, `Archive`, `Needs Merge`, or `Needs Split`.
-- Exclude `prd.backup-before-full-target-language-20260625.md` and `final-architecture-audit.md` from active source-of-truth use.
+- Exclude `archive/legacy-prd/prd.backup-before-full-target-language-20260625.md` and `archive/legacy-prd/final-architecture-audit.md` from active source-of-truth use.
 - Treat missing legacy references as non-active unless explicitly created later.
 - Document source-of-truth precedence and source-issue behavior for conflicts, missing files, unreadable files, duplicate statuses, unregistered files, stale paths, and user override requests.
 - Record documentation-control decisions in `implementation/12-decision-log.md` as supporting rationale, not source-of-truth authority.
@@ -61,8 +62,8 @@ Outcome: one canonical architecture model governs implementation.
 
 Work items:
 - Use `implementation/02-canonical-architecture.md` as the architecture layer.
-- Treat `prd.md` as product-level draft source, not architecture truth.
-- Treat `system-architecture-map.md` as architecture draft source superseded by the canonical implementation layer where conflicts exist.
+- Treat `archive/legacy-prd/prd.md` as product-level draft source, not architecture truth.
+- Treat `archive/legacy-prd/system-architecture-map.md` as architecture draft source superseded by the canonical implementation layer where conflicts exist.
 - Enforce owner/contributor boundaries and workflow-controlled handoffs.
 - Standardize base statuses: `Complete`, `Limited`, `Blocked`, `Preliminary`.
 - Standardize decision labels: `Specialist Verdict`, `Actionability Label`, `Investment View`, `IC Action`, `Vehicle Quality Verdict`.
@@ -220,8 +221,9 @@ Acceptance criteria:
 | P5-AGT-01 | Normalize router, evidence, asset, specialist, discovery, and IC agent contracts. | P2-TPL-01; P4-RTE-01 | Agent layer | Each agent has inputs, outputs, evidence, handoffs, Limited/Blocked rules, success criteria. |
 | P5-SKL-01 | Normalize all method-skill contracts. | P2-TPL-01; P5-AGT-01 | Skill layer | `implementation/11-skill-contracts.md` contains 19 Template v2 method skills with output core, guardrails, failure states, QA coverage, and synchronized runtime `.agents/skills/*/SKILL.md` adapters. |
 | P8-IC-01 | Canonicalize IC memo and report schemas. | P3-EVD-01; P5-AGT-01 | IC layer | Final memo uses `final_investment_memo.md`, Action Box, confidence, gates, and source limits. |
-| P9-REF-01 | Govern reference libraries and split/index large references where needed. | P0-DOC-02 | Reference layer | Supporting references have governance metadata, `implementation/reference-library-index.md` provides central navigation, `market-pattern-library.md` is split/indexed under `market-patterns/`, and references remain advisory without overriding contracts, evidence, routing, or IC Action. |
+| P9-REF-01 | Govern reference libraries and split/index large references where needed. | P0-DOC-02 | Reference layer | Supporting references have governance metadata, `implementation/reference-library-index.md` provides central navigation, `references/market-pattern-library.md` is split/indexed under `references/market-patterns/`, and references remain advisory without overriding contracts, evidence, routing, or IC Action. |
 | P10-QA-01 | Run full acceptance and failure scenarios. | P3-EVD-01; P4-RTE-01; P5-AGT-01; P8-IC-01 | QA | All route/evidence/agent/IC invariants pass. |
+| P11-RUNTIME-01 | Final system audit after runtime hardening. | P4-RTE-01; P5-AGT-01; P5-SKL-01; P8-IC-01; P10-QA-01 | Codex runtime architecture | `implementation/final-system-audit-report.md` records root cleanup, workflow docs, agents, skills, handoff artifacts, README prompts, QA, Microsoft smoke-test readiness, blockers, warnings, and residual tasks; Equity Full Cycle has 0 blocking issues for regular use. |
 
 ## 4. Defaults
 

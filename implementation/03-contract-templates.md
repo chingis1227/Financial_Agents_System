@@ -319,11 +319,14 @@ known_gaps:
 - Subject:
 - Request type:
 - As-of date:
-- Evidence status:
 - Output status:
-- Limitations:
+- Evidence status:
+- Evidence limits:
+- Key limitations:
+- Missing gates:
 - Source scope:
 - Decision boundary:
+- Downstream handoff:
 
 ## Required sections
 1. Executive summary
@@ -336,7 +339,7 @@ known_gaps:
 - [Conditional sections]
 
 ## Handoff block
-- Downstream relevance:
+- Downstream handoff:
 - Required follow-up:
 - Decision constraints:
 
@@ -372,17 +375,29 @@ Handoffs must be structured artifacts, not uncontrolled agent-to-agent chat.
 
 ```markdown
 ## Structured handoff
+- Artifact:
 - Subject:
 - Scope:
+- Owner:
 - Producing agent/skill/workflow:
+- Workflow:
+- Execution mode:
+- As-of date/time:
 - Output status:
 - Evidence status:
+- Freshness status:
+- Source scope:
+- Evidence limits:
+- Key limitations:
 - Key findings:
-- Limitations:
-- Required follow-up:
+- Missing gates:
+- Decision boundary:
 - Decision constraints:
-- Downstream relevance:
+- Downstream handoff:
+- Required follow-up:
 ```
+
+For Full Cycle and Full Agent Workflow runs, `workflows/handoff_artifact_standard.md` provides the executable field standard and compatibility mapping. New handoffs should use these controlled field names rather than aliases such as `Status`, `Limitations`, or `Downstream relevance`.
 
 ## 12. Decision label permissions
 

@@ -237,13 +237,13 @@ P1-ARCH-01 traceability note: the grouped decisions below for fast decision supp
 - Rationale: Converts chat-only product decisions into durable reference behavior so references enrich analysis without becoming hidden PRDs, hidden agents, source-of-truth policy, or IC decision layers.
 - Canonical location: `implementation/08-reference-library-cleanup.md`.
 - Operational index: `implementation/reference-library-index.md`.
-- Runtime reference split: `market-pattern-library.md` plus `market-patterns/*.md`.
+- Runtime reference split: `references/market-pattern-library.md` plus `references/market-patterns/*.md`.
 - Scope note: This log is a supporting record only and does not override canonical implementation documents or the documentation registry.
 
 ### 2026-06-28 - P10-QA-01 acceptance execution and closure
 
 - Decision source: user-approved P10 QA implementation plan and execution results.
-- Rule: P10-QA uses synthetic fixtures for stable pass/fail, live-smoke checks only for freshness behavior, separate Safety and UX results, ask-first behavior for personal/final action with missing context, Preliminary/Limited behavior for market-action prompts, IC-boundary severity, Limited/Blocked next-step blocks, compressed-but-not-removed limitations, gate-aware non-final artifacts, Hard Avoid only with strong disqualifying evidence, missing data as Defer / Not Actionable, and layered response depth.
+- Rule: P10-QA uses synthetic fixtures for stable pass/fail, live-smoke checks only for freshness behavior, separate Safety and UX results, ask-first behavior for personal/final action with blocking missing context, concrete-asset investment-action Full Cycle behavior as superseded by P11-RUNTIME-01, Preliminary/Limited behavior only for non-concrete market setup or explicitly quick/short requests, IC-boundary severity, Limited/Blocked next-step blocks, compressed-but-not-removed limitations, gate-aware non-final artifacts, Hard Avoid only with strong disqualifying evidence, missing data as Defer / Not Actionable, and layered response depth.
 - Rationale: Converts the final QA pass from a loose checklist into a repeatable acceptance model that tests system safety and product usefulness without relying on unstable market conclusions.
 - Canonical location: `implementation/09-system-acceptance-qa.md`.
 - Supporting execution record: `implementation/p10-qa-execution-report.md`.
@@ -260,3 +260,33 @@ P1-ARCH-01 traceability note: the grouped decisions below for fast decision supp
 - QA location: `implementation/09-system-acceptance-qa.md`.
 - Runtime location: `.agents/skills/language-policy/SKILL.md`, `.agents/skills/investment-analytical-style/SKILL.md`, root `AGENTS.md`, and `implementation/13-codex-runtime-architecture.md`.
 - Scope note: This log is a supporting record only and does not override canonical implementation documents.
+
+### 2026-06-29 - P11-RUNTIME-01 Full Cycle default for concrete-asset investment action requests
+
+- Decision source: user-requested runtime audit and implementation plan after the Microsoft test prompt exposed a Quick Take / Full Cycle mismatch.
+- Rule: Concrete-asset investment action requests default to Full Cycle unless the user explicitly asks for short / fast / quick take / no full cycle / preliminary. Missing non-blocking portfolio context does not stop the workflow; it limits Portfolio Fit and IC Action Status and defaults the output to `decision_prep_memo.md` when final personal action gates are incomplete.
+- Rationale: The system already had agents, skills, evidence rules, and IC schemas, but the runtime allowed a silent Quick Take for prompts where the user expected the full agent workflow. This decision makes orchestration explicit and auditable.
+- Canonical location: `implementation/05-routing-and-workflows.md`, `implementation/07-investment-committee-and-report-schemas.md`, `implementation/13-codex-runtime-architecture.md`, and root `AGENTS.md`.
+- QA location: `implementation/09-system-acceptance-qa.md` and `implementation/p10-qa-execution-report.md`.
+- Runtime location: `.codex/agents/*.toml` selected adapters and relevant `.agents/skills/*/SKILL.md` method adapters.
+- Scope note: This log is a supporting record only and does not override canonical implementation documents.
+
+### 2026-06-29 - Session 04 mandatory handoff artifact standard
+
+- Decision source: user-requested Session 04 implementation plan for making every agent leave a verifiable result.
+- Rule: Full Cycle and Full Agent Workflow modules must produce structured handoff artifacts or artifact-equivalent summaries with the controlled fields in `workflows/handoff_artifact_standard.md`, including artifact name, owner, output status, evidence status, evidence limits, key limitations, missing gates, decision boundary, downstream handoff, and required follow-up. Equity Full Cycle minimum artifacts are `evidence_pack.md`, `equity_company_analysis.md`, `financial_statement_analysis.md`, `valuation_expectations.md`, `risk_red_team.md`, `portfolio_fit.md`, and one IC-stage gate-aware artifact: `decision_prep_memo.md` by default when portfolio context is the remaining final-action gate, otherwise `limited_ic_draft.md`, `evidence_gap_memo.md`, or `final_investment_memo.md` only when IC schemas allow it.
+- Rationale: IC synthesis must be auditable and may not rely on uncontrolled agent-to-agent chat, hidden assumptions, or non-IC outputs that sound like final buy/sell/hold decisions.
+- Runtime standard: `workflows/handoff_artifact_standard.md`.
+- Canonical synchronization: `implementation/00-master-rules.md`, `implementation/05-routing-and-workflows.md`, `implementation/06-agent-contracts.md`, `implementation/07-investment-committee-and-report-schemas.md`, `implementation/09-system-acceptance-qa.md`, `implementation/13-codex-runtime-architecture.md`, and root `AGENTS.md`.
+- Scope note: This log is a supporting record only and does not override canonical implementation documents.
+
+
+### 2026-06-29 - Session 07 root PRD cleanup
+
+- Decision source: user-requested Session 07 implementation plan for cleaning root-level PRD chaos.
+- Rule: Former root-level PRD, draft-source, backup, and audit Markdown files are retired from the project root and retained under `archive/legacy-prd/`; active advisory frameworks, playbooks, source overlays, and market-pattern split files live under `references/`; residual candidate requirements from retired PRDs are centralized in `implementation/remaining-requirements.md`.
+- Rationale: Keeps the project root navigable while preserving provenance and preventing legacy PRDs from silently acting as source of truth after canonical implementation documents, agents, skills, workflow runbooks, and QA have been normalized.
+- Canonical synchronization: `implementation/01-documentation-control.md`, `implementation/10-traceability-matrix.md`, `implementation/08-reference-library-cleanup.md`, and `implementation/reference-library-index.md`.
+- Handling rule: Archived files are provenance only; residual requirements must be promoted through canonical change control before changing runtime behavior.
+- Scope note: This log is a supporting record only and does not override canonical implementation documents.
+

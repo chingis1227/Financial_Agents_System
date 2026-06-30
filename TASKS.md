@@ -11,7 +11,7 @@ Rule: No MVP reduction; implementation targets agent contracts, workflow contrac
 **Tasks:**
 - Adopt `implementation/01-documentation-control.md` as the documentation registry.
 - Assign every legacy document one implementation status: `Canonical`, `Supporting Reference`, `Draft Source`, `Archive`, `Needs Merge`, or `Needs Split`.
-- Exclude `prd.backup-before-full-target-language-20260625.md` and `final-architecture-audit.md` from source-of-truth use.
+- Exclude `archive/legacy-prd/prd.backup-before-full-target-language-20260625.md` and `archive/legacy-prd/final-architecture-audit.md` from source-of-truth use.
 - Treat missing legacy references as non-active unless explicitly created later.
 
 **Done when:**
@@ -25,8 +25,8 @@ Rule: No MVP reduction; implementation targets agent contracts, workflow contrac
 
 **Tasks:**
 - Use `implementation/02-canonical-architecture.md` as the architecture layer.
-- Treat `prd.md` as product-level draft source, not architecture truth.
-- Treat `system-architecture-map.md` as draft source superseded by canonical implementation docs where conflicts exist.
+- Treat `archive/legacy-prd/prd.md` as product-level draft source, not architecture truth.
+- Treat `archive/legacy-prd/system-architecture-map.md` as draft source superseded by canonical implementation docs where conflicts exist.
 - Enforce owner/contributor boundaries and workflow-controlled handoffs.
 - Standardize base statuses: `Complete`, `Limited`, `Blocked`, `Preliminary`.
 - Standardize decision labels: `Specialist Verdict`, `Actionability Label`, `Investment View`, `IC Action`, `Vehicle Quality Verdict`.
@@ -184,5 +184,6 @@ Rule: No MVP reduction; implementation targets agent contracts, workflow contrac
 | P5-AGT-01 | 5–7 | Done | Normalize router, evidence, asset, specialist, discovery, and IC agent contracts. | P2-TPL-01; P4-RTE-01 | Agent layer | Each agent has inputs, outputs, evidence, handoffs, Limited/Blocked rules, success criteria. |
 | P5-SKL-01 | 2, 5-7 | Done | Normalize all method-skill contracts. | P2-TPL-01; P5-AGT-01 | Skill layer | `implementation/11-skill-contracts.md` contains 19 Template v2 method skills with output core, guardrails, failure states, QA coverage, and synchronized runtime `.agents/skills/*/SKILL.md` adapters. |
 | P8-IC-01 | 8 | Done | Canonicalize IC memo and report schemas. | P3-EVD-01; P5-AGT-01 | IC layer | `implementation/07-investment-committee-and-report-schemas.md` defines `final_investment_memo.md`, `limited_ic_draft.md`, `decision_prep_memo.md`, and `evidence_gap_memo.md` with Template v2-style metadata, Action Box / Decision-Prep Box boundaries, freshness and negative-action matrices, 20 P8 edge-case rules, QA coverage, decision-log record, and documentation-control treatment note. |
-| P9-REF-01 | 9 | Done | Govern reference libraries and split/index large references where needed. | P0-DOC-02 | Reference layer | Supporting references have governance metadata, `implementation/reference-library-index.md` provides central navigation, `market-pattern-library.md` is split/indexed under `market-patterns/`, and references remain advisory without overriding contracts, evidence, routing, or IC Action. |
+| P9-REF-01 | 9 | Done | Govern reference libraries and split/index large references where needed. | P0-DOC-02 | Reference layer | Supporting references have governance metadata, `implementation/reference-library-index.md` provides central navigation, `references/market-pattern-library.md` is split/indexed under `references/market-patterns/`, and references remain advisory without overriding contracts, evidence, routing, or IC Action. |
 | P10-QA-01 | 10 | Done | Run full acceptance and failure scenarios. | P3-EVD-01; P4-RTE-01; P5-AGT-01; P8-IC-01 | QA | `implementation/p10-qa-execution-report.md` records Pareto Gate, Full Regression, Live-Smoke, and structural validation with 0 blocking issues and 0 safety failures. |
+| P11-RUNTIME-01 | 11 | Done | Final system audit after runtime hardening. | P4-RTE-01; P5-AGT-01; P5-SKL-01; P8-IC-01; P10-QA-01 | Codex runtime architecture | `implementation/final-system-audit-report.md` records root cleanup, workflow docs, agents, skills, handoff artifacts, README prompts, QA, Microsoft smoke-test readiness, blockers, warnings, and residual tasks; Equity Full Cycle has 0 blocking issues for regular use; language/style behavior follows `implementation/14-language-and-style.md`; concrete-asset investment action requests default to Full Cycle unless explicitly short/Quick Take; Decision-Prep Memo remains default without portfolio context. |

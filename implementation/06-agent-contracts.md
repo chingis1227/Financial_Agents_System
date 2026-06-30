@@ -11,29 +11,41 @@ Legacy PRDs and frameworks are supporting source material only when routed throu
 
 ## Standard handoff requirement
 
-All agents must use structured handoff blocks rather than uncontrolled agent-to-agent chat.
+All agents must use structured handoff blocks rather than uncontrolled agent-to-agent chat. Full Cycle and Full Agent Workflow runs must also follow `workflows/handoff_artifact_standard.md`; that runtime standard is subordinate to this canonical contract layer but provides the mandatory artifact field list for executable handoffs.
 
 ```markdown
 ## Structured handoff
+- Artifact:
 - Subject:
 - Scope:
+- Owner:
 - Producing agent/skill/workflow:
+- Workflow:
+- Execution mode:
+- As-of date/time:
 - Output status:
 - Evidence status:
+- Freshness status:
+- Source scope:
+- Evidence limits:
+- Key limitations:
 - Key findings:
-- Limitations:
-- Required follow-up:
+- Missing gates:
+- Decision boundary:
 - Decision constraints:
-- Downstream relevance:
+- Downstream handoff:
+- Required follow-up:
 ```
 
 Non-IC agents must include `Boundary: Not an IC Action` whenever their output could be mistaken for final decision support.
+
+Every handoff artifact or artifact-equivalent summary used downstream must use the controlled fields above. IC cannot produce a Complete memo from missing, unstructured, ownerless, or evidence-limit-free handoffs. If a required handoff is incomplete, the receiving agent must request a corrected handoff or downgrade to the appropriate Limited / Blocked gate-aware artifact.
 
 ## P5-AGT-01 approved edge-case behavior
 
 | Rule ID | Case | Canonical agent-contract behavior |
 |---|---|---|
-| P5-AGT-01-01 | Premature buy/sell request | Default to Preliminary/Limited Quick Take plus scenario matrix; final IC Action requires full gates. |
+| P5-AGT-01-01 | Premature buy/sell request | Concrete-asset investment action requests default to Full Cycle unless the user explicitly asks for short / fast / quick take / no full cycle / preliminary; final IC Action still requires full gates. |
 | P5-AGT-01-02 | Ambiguous ticker or instrument | Use safe assumption when obvious; clarify or verify when ambiguity can materially change conclusion or final action. |
 | P5-AGT-01-03 | Freshness-dependent request | Attempt current sources with timestamps; without them, provide Limited structural view only. |
 | P5-AGT-01-04 | Specialist sounds like IC | Allow scoped verdict, require `Boundary: Not an IC Action`, list missing IC gates, and offer IC routing. |
@@ -147,7 +159,7 @@ Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 ### Category-specific add-on
 
 - Routing defaults, ambiguity handling, safe bounded defaults, minimum clarification, and proof that router does not issue investment decisions.
-- Apply P5-AGT-01 edge-case behavior when relevant.
+- Apply P5-AGT-01 edge-case behavior when relevant, including the Full Cycle default for concrete-asset investment action requests unless the user explicitly asks for Quick Take.
 
 ### Success criteria
 
@@ -1970,9 +1982,9 @@ used_by:
   - Financial Agent System workflows
 produces:
   - final_investment_memo.md
-  - limited_ic_draft
-  - evidence_gap_memo
-  - decision_prep_memo
+  - limited_ic_draft.md
+  - evidence_gap_memo.md
+  - decision_prep_memo.md
 consumes:
   - intake_context
   - evidence_pack_and_pre_ic_lock
@@ -1996,7 +2008,7 @@ Use when the workflow requires final investment decision-support memo within thi
 
 ### What you get
 
-final_investment_memo.md, limited_ic_draft, evidence_gap_memo, decision_prep_memo with status, evidence limits, decision constraints, and structured handoff.
+final_investment_memo.md, limited_ic_draft.md, evidence_gap_memo.md, decision_prep_memo.md with status, evidence limits, decision constraints, and structured handoff.
 
 ### What it will not do
 
@@ -2029,9 +2041,9 @@ Final investment memos and Limited/Blocked final outputs for asset/theme workflo
 ### Outputs
 
 - final_investment_memo.md
-- limited_ic_draft
-- evidence_gap_memo
-- decision_prep_memo
+- limited_ic_draft.md
+- evidence_gap_memo.md
+- decision_prep_memo.md
 
 ### Evidence requirements
 

@@ -36,6 +36,7 @@ Read only the canonical documents needed for the task. Default required set:
 - `implementation/04-evidence-layer.md`
 - `implementation/06-agent-contracts.md` for owning agent boundaries
 - `implementation/11-skill-contracts.md` for this skill contract
+- `workflows/handoff_artifact_standard.md` when producing Full Cycle or Full Agent Workflow handoffs
 
 Conditional references:
 
@@ -80,13 +81,14 @@ Every output must include:
 - Limitations
 - Missing IC Gates
 - Boundary
-- Structured Handoff
+- `## Structured handoff` using the controlled fields from `workflows/handoff_artifact_standard.md`
+- Full Cycle / Full Agent Workflow handoff must also include `## Handoff metadata` and use the exact `## Structured handoff` block and field names from `workflows/handoff_artifact_standard.md`; do not rename or omit required fields
 
-Boundary wording: `Boundary: Method output only; not an IC Action.`
+Boundary wording: `Boundary: Not an IC Action. Method output only.`
 
 ## Cross-skill guardrails
 
-- Direct skill calls are allowed only as scoped method outputs with boundary and missing IC gates.
+- Direct skill calls are allowed only as scoped method outputs with boundary and missing IC gates; Full Cycle handoffs must use the controlled handoff fields.
 - Non-IC outputs must not issue final `IC Action`, use `Action Box`, or provide exact allocation instructions.
 - Evidence status, freshness, source restrictions, user-file provenance, and material conflicts constrain conclusions.
 - Freshness-sensitive requests split structural view from current-action view.
@@ -100,14 +102,21 @@ Boundary wording: `Boundary: Method output only; not an IC Action.`
 ## Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: evidence is partial/stale/proxy-heavy.
 - Blocked when: decision-critical support is unavailable.
+
+
+## Full Cycle behavior
+
+Expected Full Cycle artifact: `evidence_pack.md`. The skill remains the method layer; the owning agent or workflow owns role, boundary, status, and handoff publication.
+
+When this skill runs as part of a concrete-asset investment action Full Cycle, it produces the evidence pack, readiness matrix, evidence requests, and pre-IC evidence lock method output for the stated scope. It must not make valuation, risk, portfolio, specialist, or IC conclusions. If decision-critical evidence is missing, stale, conflicting, or inaccessible, mark the evidence output `Limited` or `Blocked` and state the downstream status impact.
 
 ## Quality checks
 
 - Output follows the canonical skill contract in `implementation/11-skill-contracts.md`.
-- Output uses the required output core and structured handoff.
+- Output uses the required output core and structured handoff; for Full Cycle / Full Agent Workflow, it also includes `## Handoff metadata` and the controlled handoff fields from `workflows/handoff_artifact_standard.md`.
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
-- Downstream agents or IC can consume the result without hidden assumptions.
+- Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.

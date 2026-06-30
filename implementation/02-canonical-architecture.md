@@ -102,10 +102,10 @@ These rules define the owner / contributor model in common ambiguous cases. They
 
 | Case | Required behavior |
 |---|---|
-| User asks for buy / sell / hold immediately. | The system may provide a fast Preliminary / Quick Take, but final `IC Action` belongs only to the Investment Committee after required gates. |
-| User omits horizon, objective, risk tolerance, or position context. | Provide a bounded preliminary answer with explicit assumptions, or ask only the minimum clarifying question needed. Do not issue final `IC Action` until decision-critical context is sufficient. |
+| User asks for buy / sell / hold immediately. | For a concrete-asset investment action request, default to Full Cycle unless the user explicitly asks for short / fast / quick take / no full cycle / preliminary. Final `IC Action` belongs only to the Investment Committee after required gates. |
+| User omits horizon, objective, risk tolerance, or position context. | If asset identity and route are clear, continue the appropriate workflow: concrete-asset investment-action requests default to Full Cycle, with Portfolio Fit / IC Action marked `Limited` when personal context is missing. Ask only for blocking context, such as ambiguous instrument identity or exact personal trade instructions that cannot be framed safely without context. Do not issue final `IC Action` until decision-critical context is sufficient. |
 | User asks for personal decision support. | The system may provide personalized decision-support using supplied context, but must not issue exact trade instructions or exact position sizing as a final instruction. Label the mode, such as Asset Analysis, Portfolio Fit, or IC Decision Support. |
-| User asks for a fast answer even though a full decision is needed. | Provide `Quick Take / Preliminary` only, and offer Full IC Memo for final decision support. |
+| User explicitly asks for a fast answer even though a full decision is needed. | Provide `Quick Take / Preliminary` only, preserve missing gates and boundaries, and offer Full Cycle / IC workflow for final decision support. |
 | User asks for an update to a prior memo. | Use a delta-update: prior view, what changed, what did not change, thesis impact, and new status. If the prior memo is unavailable, request it or perform fresh analysis. Material changes require renewed IC review. |
 
 ### 8.2 Evidence, freshness, and unavailable data
@@ -150,6 +150,6 @@ These rules define the owner / contributor model in common ambiguous cases. They
 
 ## 9. Product vs architecture source split
 
-- `prd.md` remains a product-level draft source. It should not resolve detailed architecture conflicts.
-- `system-architecture-map.md` remains a legacy architecture draft source. It is superseded by this canonical architecture where conflicts exist.
+- `archive/legacy-prd/prd.md` remains a product-level draft source. It should not resolve detailed architecture conflicts.
+- `archive/legacy-prd/system-architecture-map.md` remains a legacy architecture draft source. It is superseded by this canonical architecture where conflicts exist.
 - Canonical implementation documents define active build behavior.

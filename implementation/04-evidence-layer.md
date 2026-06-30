@@ -76,7 +76,7 @@ These rules are evidence-layer applications of the master output rules in `imple
 
 | Rule ID | Decision |
 |---|---|
-| P3-EVD-01-01 | When evidence is incomplete but the user asks for a final conclusion, provide a useful Quick Take only as Preliminary or Limited and separate it from `IC Action Status`. |
+| P3-EVD-01-01 | When evidence is incomplete and the user asks for a final conclusion, Quick Take is allowed only when explicitly requested as short / fast / quick take / no full cycle / preliminary. Otherwise, concrete-asset investment action requests route to Full Cycle with Evidence Gap / Decision-Prep / Limited IC treatment as gates require; do not silently downgrade to Quick Take. |
 | P3-EVD-01-02 | Conflicting sources use source hierarchy plus materiality. Decision-critical unresolved conflicts force Limited or Blocked status; low-materiality conflicts do not block. |
 | P3-EVD-01-03 | Freshness depends on both request wording and claim type. Today/latest/earnings/price/news/valuation claims require current sources and timestamps; structural claims can tolerate older evidence when labeled. |
 | P3-EVD-01-04 | Paywalled or inaccessible sources are pointers, not proof. They cannot support material claims until content is verified or replaced by accessible equivalent evidence. |

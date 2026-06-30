@@ -11,9 +11,9 @@ This report records the readiness-gate result used when creating the Codex-nativ
 | Root `AGENTS.md` exists | Pass |
 | Root `README.md` exists | Pass |
 | Custom-agent TOML files | 20 / 20 |
-| Repo skill folders | 19 / 19 |
+| Repo skill folders | 21 / 21 total; 19 method + 2 presentation |
 | Agent contracts passing structural readiness | 20 / 20 |
-| Skill contracts passing structural readiness | 19 / 19 |
+| Skill contracts passing structural readiness | 21 / 21 total; 19 method + 2 presentation |
 | Candidate overwrite-conflict files | 0 expected |
 | Workflow runbook location | `implementation/05-routing-and-workflows.md` until a canonical split creates `workflows/` |
 | Runtime edge-case authority | `implementation/13-codex-runtime-architecture.md`, rules `P1A-CODEX-01-01` through `P1A-CODEX-01-35` |
@@ -40,7 +40,7 @@ After P5-AGT-01 completion, the runtime package was re-checked against the norma
 
 - TOML parse check: all 20 custom-agent files parse with only `name`, `description`, and `developer_instructions` fields.
 - Thin-agent check: custom agents point to canonical documents, include agent-specific role snapshots, and do not copy full legacy PRDs.
-- Skill structure check: all 19 `SKILL.md` files have YAML front matter, concrete canonical triggers/inputs/steps, expected output targets, and minimum handoff schemas.
+- Skill structure check: all 21 `SKILL.md` files are present; 19 method skills have YAML front matter, concrete canonical triggers/inputs/steps, expected output targets, and minimum handoff schemas; 2 presentation skills cover language policy and investment-analytical style.
 - Canonical-source check: generated files reference canonical contracts and route legacy detail through registry and traceability.
 - Edge-case source check: runtime guidance points to `implementation/13-codex-runtime-architecture.md` for `P1A-CODEX-01-01` through `P1A-CODEX-01-35`.
 - Workflow connection check: workflow runbooks remain in `implementation/05-routing-and-workflows.md` until split by a later canonical task.
@@ -55,13 +55,15 @@ The following concrete checks were run after generation and after review-driven 
 | Root `AGENTS.md` present | 1 | 1 | Pass |
 | Root `README.md` present | 1 | 1 | Pass |
 | Custom-agent TOML count | 20 | 20 | Pass |
-| Repo skill `SKILL.md` count | 19 | 19 | Pass |
+| Repo skill `SKILL.md` total count | 21 | 21 | Pass |
+| Repo method skill count | 19 | 19 | Pass |
+| Repo presentation skill count | 2 | 2 | Pass |
 | TOML parse success | 20 | 20 | Pass |
 | TOML allowed fields only: `name`, `description`, `developer_instructions` | 20 | 20 | Pass |
 | Agent role snapshots include produces, non-responsibilities, handoffs, Limited/Blocked, success criteria | 20 | 20 | Pass |
-| Skill YAML front matter present | 19 | 19 | Pass |
-| Skill required runtime sections present | 19 | 19 | Pass |
-| Skill expected output target and minimum handoff schema present | 19 | 19 | Pass |
+| Method skill YAML front matter present | 19 | 19 | Pass |
+| Method skill required runtime sections present | 19 | 19 | Pass |
+| Method skill expected output target and minimum handoff schema present | 19 | 19 | Pass |
 | Runtime files reference `implementation/13-codex-runtime-architecture.md` | 39 | 39 | Pass |
 | `.candidate` overwrite-conflict files | 0 | 0 | Pass |
 | P1A structural gate formalized in canonical runtime architecture | 1 | 1 | Pass |
@@ -93,7 +95,7 @@ Validation command class: local read/parse checks over generated Markdown and TO
 | `.codex/agents/market-intelligence-agent.toml` | Market Intelligence Agent | market_intelligence_briefing.md | Runtime-Ready | None |
 | `.codex/agents/sector-industry-analysis-agent.toml` | Sector & Industry Analysis Agent | sector_industry_memo.md; sector_investment_map.md; sector_monitoring_plan.md; embedded sector_context.md | Runtime-Ready | None |
 | `.codex/agents/structural-winners-discovery-agent.toml` | Structural Winners Discovery Agent | structural_winners_memo.md; candidate_watchlist.md | Runtime-Ready | None |
-| `.codex/agents/investment-committee-agent.toml` | Investment Committee Agent | final_investment_memo.md | Runtime-Ready | None |
+| `.codex/agents/investment-committee-agent.toml` | Investment Committee Agent | final_investment_memo.md; decision_prep_memo.md; limited_ic_draft.md; evidence_gap_memo.md | Runtime-Ready | None |
 
 ## Skill readiness
 
@@ -104,7 +106,7 @@ Validation command class: local read/parse checks over generated Markdown and TO
 | `.agents/skills/financial-statement-analysis/` | Financial Statement Analysis Skill | Equity Agent; Valuation; Risk; IC | Equity Agent: equity_company_analysis.md; Valuation & Expectations Agent: valuation_expectations.md; Risk / Red Team Agent: risk_red_team.md; Investment Committee Agent: final_investment_memo.md | Runtime-Ready | None |
 | `.agents/skills/valuation-expectations/` | Valuation & Expectations Method Skill | Valuation & Expectations Agent | Valuation & Expectations Agent: valuation_expectations.md | Runtime-Ready | None |
 | `.agents/skills/risk-red-team/` | Risk / Red Team Method Skill | Risk / Red Team Agent | Risk / Red Team Agent: risk_red_team.md | Runtime-Ready | None |
-| `.agents/skills/investment-committee-synthesis/` | Investment Committee Synthesis Method Skill | Investment Committee Agent | Investment Committee Agent: final_investment_memo.md | Runtime-Ready | None |
+| `.agents/skills/investment-committee-synthesis/` | Investment Committee Synthesis Method Skill | Investment Committee Agent | Investment Committee Agent: final_investment_memo.md; decision_prep_memo.md; limited_ic_draft.md; evidence_gap_memo.md | Runtime-Ready | None |
 | `.agents/skills/etf-analysis/` | ETF Analysis Method Skill | ETF Agent | ETF Agent: etf_analysis.md | Runtime-Ready | None |
 | `.agents/skills/fixed-income-analysis/` | Fixed Income Analysis Method Skill | Fixed Income Agent | Fixed Income Agent: fixed_income_analysis.md | Runtime-Ready | None |
 | `.agents/skills/commodity-analysis/` | Commodity Analysis Method Skill | Commodity Agent | Commodity Agent: commodity_analysis.md or commodity_market_regime.md | Runtime-Ready | None |
@@ -118,6 +120,9 @@ Validation command class: local read/parse checks over generated Markdown and TO
 | `.agents/skills/driver-dominance-analysis/` | Driver Dominance Analysis Skill | Market Sense Agent | Market Sense Agent: market_sense.md or driver dominance output | Runtime-Ready | None |
 | `.agents/skills/market-sense-hypothesis-engine/` | Market Sense Hypothesis Engine Skill | Market Sense Agent | Market Sense Agent: market_sense.md or driver dominance output | Runtime-Ready | None |
 | `.agents/skills/market-intelligence-briefing/` | Market Intelligence Briefing Skill | Market Intelligence Agent | Market Intelligence Agent: market_intelligence_briefing.md | Runtime-Ready | None |
+
+| `.agents/skills/language-policy/` | Language Policy Presentation Skill | User-facing presentation layer | Natural user-language output, strict Russian mode, no Run-glish; does not add facts or recommendations. | Runtime-Ready | None |
+| `.agents/skills/investment-analytical-style/` | Investment Analytical Style Presentation Skill | User-facing presentation layer | Businesslike investment-analytical style; does not add facts, sources, conclusions, or IC Actions. | Runtime-Ready | None |
 
 ## Edge-case coverage
 

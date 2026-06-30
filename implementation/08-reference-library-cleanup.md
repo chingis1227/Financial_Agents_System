@@ -75,13 +75,13 @@ Examples of stricter interpretation:
 
 | Reference group | Documents | Owner / used by |
 |---|---|---|
-| Asset driver maps | `asset-driver-maps.md` | Driver Dominance; used by Market Sense and asset agents. |
-| Market patterns | `market-pattern-library.md`, `market-patterns/*.md` | Market Sense; used by Market Intelligence, Positioning, Macro, Risk, and asset agents as supporting context. |
-| Commodity playbooks | `commodity-family-playbooks.md` | Commodity Agent. |
-| Fixed income playbooks | `fixed-income-instrument-playbooks.md` | Fixed Income Agent. |
-| Macro references | `macro-block-playbooks.md`, `macro-regime-framework.md`, `macro-sensitivity-framework.md`, `macro-g3-fx-regional-policy-overlay.md`, `macro-expectations-surprise-framework.md`, `macro-indicator-cadence-source-registry.md` | Macro Agent with Evidence Collector source-overlay contribution where relevant. |
-| Source references | `source-registry-framework.md`, domain source overlays | Evidence Collector and relevant domain agents. |
-| Market news references | `market-news-source-framework.md`, `market-materiality-filter.md` | Market Intelligence, News & Catalysts, Evidence Collector. |
+| Asset driver maps | `references/asset-driver-maps.md` | Driver Dominance; used by Market Sense and asset agents. |
+| Market patterns | `references/market-pattern-library.md`, `references/market-patterns/*.md` | Market Sense; used by Market Intelligence, Positioning, Macro, Risk, and asset agents as supporting context. |
+| Commodity playbooks | `references/commodity-family-playbooks.md` | Commodity Agent. |
+| Fixed income playbooks | `references/fixed-income-instrument-playbooks.md` | Fixed Income Agent. |
+| Macro references | `references/macro-block-playbooks.md`, `references/macro-regime-framework.md`, `references/macro-sensitivity-framework.md`, `references/macro-g3-fx-regional-policy-overlay.md`, `references/macro-expectations-surprise-framework.md`, `references/macro-indicator-cadence-source-registry.md` | Macro Agent with Evidence Collector source-overlay contribution where relevant. |
+| Source references | `references/source-registry-framework.md`, domain source overlays | Evidence Collector and relevant domain agents. |
+| Market news references | `references/market-news-source-framework.md`, `references/market-materiality-filter.md` | Market Intelligence, News & Catalysts, Evidence Collector. |
 
 ## 6. Merge and cleanup rules
 
@@ -107,7 +107,7 @@ Split criteria:
 4. file size makes reliable retrieval unlikely;
 5. conflict risk with canonical documents is high.
 
-`market-pattern-library.md` has been converted into an index and usage guide. Detailed pattern bodies are split under `market-patterns/` by domain area.
+`references/market-pattern-library.md` has been converted into an index and usage guide. Detailed pattern bodies are split under `references/market-patterns/` by domain area.
 
 A `Needs Split` or unindexed reference may be used only as advisory/supporting context until split/index work is complete.
 
@@ -131,7 +131,7 @@ P9-REF-01 is complete when:
 
 1. all active Supporting Reference and former Needs Split references have metadata headers;
 2. a central reference index exists;
-3. large or ambiguous references have indexes or split files, especially `market-pattern-library.md`;
+3. large or ambiguous references have indexes or split files, especially `references/market-pattern-library.md`;
 4. references include canonical authority boundaries and do not override contracts;
 5. dangerous decision-like labels and hidden-agent language are normalized or constrained;
 6. source overlays point back to the Evidence Layer;

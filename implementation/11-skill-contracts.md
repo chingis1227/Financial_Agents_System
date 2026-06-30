@@ -5,13 +5,13 @@ Version: P5-SKL-01 normalized contracts
 
 ## Contract rule
 
-Skills are repeatable analytical methods used by agents or workflows. They do not own final routing, evidence readiness, or IC action. The only gated exception is the Investment Committee Synthesis Method Skill when the Investment Committee Agent applies evidence lock and required IC gates. Every skill below follows Template v2 from `implementation/03-contract-templates.md`.
+Skills are repeatable analytical methods used by agents or workflows. They do not own final routing, evidence readiness, or final IC action. The Investment Committee Synthesis Method Skill is a gated method used inside the Investment Committee Agent; the Investment Committee Agent owns any permitted IC Action after evidence lock and required gates pass. Every skill below follows Template v2 from `implementation/03-contract-templates.md`.
 
 `implementation/11-skill-contracts.md` is the canonical source of truth for method-skill contracts. Runtime files under `.agents/skills/*/SKILL.md` are concise executable adapters synchronized to this document. Legacy `*-skill-prd.md`, method PRDs, frameworks, and playbooks are source material only when routed through `implementation/01-documentation-control.md` and `implementation/10-traceability-matrix.md`; canonical documents govern conflicts.
 
 ## Standard method-output requirement
 
-Every skill output must include a human-readable method summary plus a structured handoff. The required method-output core is:
+Every skill output must include a human-readable method summary plus a structured handoff. The required method-output core is below. For Full Cycle or Full Agent Workflow runs, this core must include `## Handoff metadata` near the top and the exact controlled `## Structured handoff` block and field names from `workflows/handoff_artifact_standard.md`; a shorter method handoff is not valid IC input, and required fields must not be renamed or omitted. Full Cycle output template is the union of the exact `## Handoff metadata` block and the exact `## Structured handoff` block from `workflows/handoff_artifact_standard.md`; the concise template below shows the method wrapper plus exact structured handoff, not a replacement for handoff metadata.
 
 ```markdown
 ## Method Output Summary
@@ -35,25 +35,34 @@ Every skill output must include a human-readable method summary plus a structure
 - [Evidence, lead analysis, valuation, risk, implementation, portfolio, or context gates still required]
 
 ## Boundary
-Boundary: Method output only; not an IC Action. IC synthesis uses the separate gated IC exception below.
+Boundary: Not an IC Action. Method output only. IC synthesis uses the separate gated IC exception below.
 
-## Structured Handoff
+## Structured handoff
+- Artifact:
 - Subject:
 - Scope:
-- Producing skill:
+- Owner:
+- Producing agent/skill/workflow:
+- Workflow:
+- Execution mode:
+- As-of date/time:
 - Output status:
 - Evidence status:
-- Method confidence:
+- Freshness status:
+- Source scope:
+- Evidence limits:
+- Key limitations:
 - Key findings:
-- Limitations:
-- Required follow-up:
+- Missing gates:
+- Decision boundary:
 - Decision constraints:
-- Downstream relevance:
+- Downstream handoff:
+- Required follow-up:
 ```
 
 ## Cross-skill guardrails
 
-- Direct skill calls are allowed only as scoped method outputs with visible boundary and missing IC gates.
+- Direct skill calls are allowed only as scoped method outputs with visible boundary and missing IC gates. In Full Cycle, method skills produce structured handoffs for the owning agent / IC using the controlled fields in `workflows/handoff_artifact_standard.md`; they do not replace workflow synthesis.
 - Non-IC skills must not issue `IC Action`, use `Action Box`, provide exact allocation instructions, or present specialist output as final decision support.
 - Evidence status, freshness, source restrictions, user-file provenance, and material conflicts constrain every skill conclusion.
 - Freshness-sensitive requests split structural view from current-action view; current action requires current timestamped sources.
@@ -70,7 +79,7 @@ Boundary: Method output only; not an IC Action. IC synthesis uses the separate g
 | P5-SKL-01-01 | Skill visibility | Integrated output by default; skill-level detail only on request or audit/debug mode. |
 | P5-SKL-01-02 | Missing data | Block only decision-critical gaps; otherwise produce Preliminary/Limited scoped output with visible missing inputs. |
 | P5-SKL-01-03 | Compact contracts | Skill contracts and runtime adapters stay concise; deep method detail remains supporting reference material. |
-| P5-SKL-01-04 | Buy/sell/hold | Skills may give Preliminary Quick Take implications or scenario matrix but no final IC Action. |
+| P5-SKL-01-04 | Buy/sell/hold | Direct skills may give scoped Preliminary implications only when explicitly invoked or when the user asks for Quick Take; in Full Cycle, skills produce IC-ready structured handoffs and never final IC Action. |
 | P5-SKL-01-05 | Freshness | Separate structural view from current-action view and require current timestamped sources for current claims. |
 | P5-SKL-01-06 | Direct skill call | Allowed only as scoped method output with boundary and missing IC gates. |
 | P5-SKL-01-07 | User files | Treat as source material requiring provenance and sanity checks. |
@@ -79,7 +88,7 @@ Boundary: Method output only; not an IC Action. IC synthesis uses the separate g
 | P5-SKL-01-10 | Evidence conflict | Evidence status constrains conclusions; skills may challenge but not override readiness. |
 | P5-SKL-01-11 | Output layers | Every skill output has human summary plus structured handoff. |
 | P5-SKL-01-12 | Known gaps | Technical defaults from canonical docs are allowed; product/UX ambiguity is pending decision. |
-| P5-SKL-01-13 | Workflow depth | Run minimum sufficient relevant skills by default; Quick/Standard/Full by request. |
+| P5-SKL-01-13 | Workflow depth | Run minimum sufficient relevant skills by default for non-action or explicitly scoped work; concrete-asset investment action requests default to Full Cycle unless explicitly requested as short / fast / quick take / no full cycle / preliminary. |
 | P5-SKL-01-14 | Sizing | Only illustrative or Portfolio Fit ranges; exact allocation instructions prohibited. |
 | P5-SKL-01-15 | Complex products | Explainers allowed; positive action blocked until enhanced product gate. |
 | P5-SKL-01-16 | Ownership | Agents own role/boundary/status/handoff; skills own method; references own deep detail. |
@@ -159,7 +168,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Produce evidence pack, readiness matrix, and evidence requests
 7. Perform pre-IC evidence lock where needed
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -167,7 +176,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `evidence_pack.md`, `readiness_matrix`, `evidence_requests`, and `pre_ic_evidence_lock`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -178,7 +187,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: evidence is partial/stale/proxy-heavy.
 - Blocked when: decision-critical support is unavailable.
 
@@ -247,7 +256,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 5. Read through financial evidence
 6. Define thesis dependencies, breakpoints, and monitoring triggers
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -255,7 +264,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `equity_company_analysis.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -266,7 +275,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: company/financial evidence is partial.
 - Blocked when: identity or core business evidence is missing.
 
@@ -291,7 +300,7 @@ used_by:
   - Risk
   - IC
 produces:
-  - equity_company_analysis.md
+  - financial_statement_analysis.md
   - financial-statement-analysis_structured_handoff
 consumes:
   - latest_statements
@@ -337,15 +346,15 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Analyze dilution and capital allocation
 7. Identify red flags and trend breaks
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
 - Must use the standard method-output core from this document.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
-- Expected downstream artifact or section: `equity_company_analysis.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Expected downstream artifact or section: `financial_statement_analysis.md`.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -356,7 +365,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: history is partial.
 - Blocked when: core financial data is unavailable.
 
@@ -426,7 +435,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Reconcile methods and risks
 7. Define monitoring signals
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -434,7 +443,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `valuation_expectations.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -445,7 +454,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: inputs are partial/proxy.
 - Blocked when: core price/financial/capital-structure inputs are missing.
 
@@ -517,7 +526,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Include counter-evidence and challenge requests
 7. Issue risk challenge verdict
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -525,7 +534,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `risk_red_team.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -536,7 +545,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: thesis/evidence exists but valuation/risk detail is incomplete.
 - Blocked when: core thesis is undefined.
 
@@ -551,7 +560,7 @@ Keep the method output scoped to the owning agent or workflow.
 
 ## Investment Committee Synthesis Method Skill
 
-IC exception: this is the only method skill that may support `Action Box`, `Investment View`, or `IC Action`, and only inside the Investment Committee Agent after evidence lock and required gates pass. When those gates do not pass, it produces a gate-aware non-final artifact.
+IC exception: this is the only method skill that may support `Action Box`, `Investment View`, or `IC Action` content, and only inside the Investment Committee Agent after evidence lock and required gates pass. When those gates do not pass, it supports a gate-aware non-final IC artifact; the Investment Committee Agent owns issuance.
 
 ```yaml
 contract_type: Skill
@@ -560,43 +569,48 @@ owner: Investment Committee Agent
 used_by:
   - Investment Committee Agent
 produces:
-  - final_investment_memo.md
+  - final_investment_memo.md_when_gates_pass
+  - decision_prep_memo.md_when_portfolio_context_or_final_action_gate_is_limited
+  - limited_ic_draft.md_when_non-evidence_gates_are_limited
+  - evidence_gap_memo.md_when_evidence_or_freshness_is_limiting
   - investment-committee-synthesis_structured_handoff
 consumes:
   - intake_context
   - evidence_pack_and_pre-ic_lock
   - lead_analysis
   - valuation_and_risk_when_decision-relevant
-  - material_specialist_reports
+  - material_specialist_handoff_artifacts_or_artifact_equivalent_summaries
 evidence_required: true
-decision_boundary: IC synthesis method only; final IC Action allowed only when IC evidence lock and gates permit.
+decision_boundary: IC synthesis method inside Investment Committee Agent only; final IC Action issuance belongs to the Investment Committee Agent and is allowed only when IC evidence lock and gates permit.
 known_gaps:
   - none
 ```
 
 ### Purpose
 
-Integrate evidence and specialist reports into final decision-support memo.
+Integrate evidence and specialist handoffs into the appropriate gate-aware IC artifact inside the Investment Committee Agent.
 
 ### When to use
 
-- Final decision-support output is requested.
+- IC stage is reached after evidence lock and required specialist handoffs are available.
+- Final decision-support output is requested and the Investment Committee Agent is applying gate-aware artifact selection.
+- If evidence lock or required specialist handoffs are missing, use this skill only to support a Limited or Blocked gate-aware IC artifact.
 
 ### What you get
 
-A scoped method output for `Investment Committee Synthesis Method Skill` with method findings, evidence status, Method Confidence, limitations, missing IC gates, and structured handoff.
+A scoped method output for `Investment Committee Synthesis Method Skill` with method findings, evidence status, Method Confidence, limitations, missing IC gates, consumed handoff list, gate-aware artifact selection, and structured handoff for Investment Committee Agent issuance.
 
 ### What it will not do
 
-It will not exceed the Investment Committee boundary, bypass evidence readiness, or issue final IC Action unless evidence lock and required IC gates pass.
+It will not exceed the Investment Committee Agent boundary, bypass evidence readiness, or independently issue final IC Action; permitted IC Action issuance belongs to the Investment Committee Agent after evidence lock and required IC gates pass.
 
 ### Required inputs
 
 - Intake context
-- Evidence pack and pre-IC lock
+- Evidence pack, pre-IC lock, and consumed-source/evidence-limit summary
 - Lead analysis
 - Valuation and Risk when decision-relevant
-- Material specialist reports
+- Material specialist handoff artifacts or artifact-equivalent summaries using `workflows/handoff_artifact_standard.md`
 
 If required inputs are missing, continue only when a safe Preliminary or Limited scoped output is allowed; otherwise return Blocked with the missing inputs.
 
@@ -606,17 +620,17 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 2. Identify core debate and assumptions
 3. Integrate business, valuation, risk, catalyst, macro, positioning, and portfolio context
 4. Apply positive-action gate
-5. Produce Action Box, Investment View, IC Action, confidence, monitoring, and follow-up requests
+5. If final gates pass, support the Investment Committee Agent in assembling the gated IC artifact with Action Box, Investment View, IC Action, confidence, monitoring, and follow-up requests; otherwise support Decision-Prep Box / Evidence Gap / Limited IC framing with the gate-aware non-final artifact. The Investment Committee Agent owns issuance.
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the Investment Committee Agent and selected workflow; the Investment Committee Agent owns any permitted issuance.
 
 ### Output contract
 
 - Must use the standard method-output core from this document.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
-- Expected downstream artifact or section: `final_investment_memo.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Expected downstream artifact or section: `final_investment_memo.md` only when final gates pass; otherwise `decision_prep_memo.md`, `limited_ic_draft.md`, or `evidence_gap_memo.md` according to the limiting gate.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -627,7 +641,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: useful but constrained.
 - Blocked when: required evidence/valuation/risk/lead analysis is missing.
 
@@ -697,7 +711,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Assess yield/overlap/special risks
 7. Produce Vehicle Quality Verdict
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -705,7 +719,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `etf_analysis.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -716,7 +730,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: issuer data is stale/partial.
 - Blocked when: identity/holdings/methodology cannot be verified.
 
@@ -786,7 +800,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Build downside scenario
 7. Issue compensation verdict
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -794,7 +808,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `fixed_income_analysis.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -805,7 +819,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: market/credit data is partial.
 - Blocked when: terms or pricing/credit evidence are missing.
 
@@ -876,7 +890,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 7. Assess instrument context
 8. Produce verdict, actionability label, triggers
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -884,7 +898,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `commodity_analysis.md or commodity_market_regime.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -895,7 +909,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: physical data is delayed/proxy-heavy.
 - Blocked when: identity or decision-critical balance data is unavailable.
 
@@ -965,7 +979,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Run edge-case checks
 7. Produce verdict and monitoring triggers
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -973,7 +987,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `crypto_analysis.md or crypto_market_regime.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -984,7 +998,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: data is partial/fast-moving.
 - Blocked when: identity/tokenomics/security/liquidity evidence is unverifiable.
 
@@ -1051,7 +1065,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 5. Assess thesis relevance
 6. Produce handoff
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1059,7 +1073,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `macro_sensitivity.md or macro regime output`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1070,7 +1084,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: data is stale/partial.
 - Blocked when: decision-critical current data is unavailable.
 
@@ -1137,7 +1151,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 5. Run negative news check
 6. Produce handoff
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1145,7 +1159,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `news_catalysts.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1156,7 +1170,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: reporting is partial/low-confidence.
 - Blocked when: requested event cannot be verified.
 
@@ -1223,7 +1237,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 5. Identify positioning risk/opportunity
 6. Produce handoff
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1231,7 +1245,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `market_positioning.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1242,7 +1256,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: evidence is indirect/incomplete.
 - Blocked when: no usable positioning evidence exists.
 
@@ -1308,7 +1322,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 4. Assess monitoring burden
 5. Produce IC handoff
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1316,7 +1330,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `portfolio_fit.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1327,7 +1341,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: user portfolio context is missing.
 - Blocked when: user-specific answer is required but context is unavailable.
 
@@ -1400,7 +1414,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Build anti-thesis and monitoring
 7. Produce sector outputs
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1408,7 +1422,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `sector_industry_memo.md`, `sector_investment_map.md`, `sector_monitoring_plan.md`, and `sector_context.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1419,7 +1433,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: boundaries/data are partial.
 - Blocked when: scope/evidence is too weak.
 
@@ -1490,7 +1504,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Rank candidates
 7. Produce watchlist and handoff
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1498,7 +1512,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `structural_winners_memo.md` and `candidate_watchlist.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1509,7 +1523,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: universe/evidence is partial.
 - Blocked when: theme cannot define a universe.
 
@@ -1579,7 +1593,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 6. Identify dominant/supporting/opposing/ignored drivers
 7. Provide confirmation, alternative explanation, confidence, implication
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1587,7 +1601,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `market_sense.md or driver dominance output`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1598,7 +1612,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: hypotheses are plausible but not confirmed.
 - Blocked when: price move/context is unavailable.
 
@@ -1665,7 +1679,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 5. Identify confirm/disconfirm signals
 6. Produce implications and handoff
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1673,7 +1687,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `market_sense.md or driver dominance output`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1684,7 +1698,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: hypotheses are plausible but evidence is weak.
 - Blocked when: observation cannot be defined.
 
@@ -1749,7 +1763,7 @@ If required inputs are missing, continue only when a safe Preliminary or Limited
 5. Route items to relevant agents
 6. Produce briefing
 
-Keep the method output scoped to the owning agent or workflow.
+Keep the method output scoped to the owning agent or selected workflow; IC may consume it only as a structured handoff.
 
 ### Output contract
 
@@ -1757,7 +1771,7 @@ Keep the method output scoped to the owning agent or workflow.
 - Must state scope, assumptions, evidence status, Analysis Status, Method Confidence, limitations, missing IC gates, boundary, and structured handoff.
 - Domain Findings must map to the step sequence and include only findings supported by the evidence status.
 - Expected downstream artifact or section: `market_intelligence_briefing.md`.
-- Must not substitute for final IC memo schemas; P8-IC-01 owns final IC report schemas.
+- Must not substitute for final IC memo schemas; P8-IC-01 and `implementation/07-investment-committee-and-report-schemas.md` own final and non-final IC report schemas.
 
 ### Guardrails
 
@@ -1768,7 +1782,7 @@ Keep the method output scoped to the owning agent or workflow.
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an early, narrow, or Quick Take-style method view before all method inputs or workflow gates are complete.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: source coverage is partial.
 - Blocked when: no reliable current sources are available.
 
@@ -1785,7 +1799,7 @@ Keep the method output scoped to the owning agent or workflow.
 
 - All 19 planned method skills are present with Template v2 metadata and UX blocks.
 - Every skill defines required inputs, step sequence, output contract, guardrails, failure states, and quality checks.
-- Every skill output uses human summary plus structured handoff.
+- Every skill output uses human summary plus structured handoff; Full Cycle handoffs use the controlled fields in `workflows/handoff_artifact_standard.md`.
 - Non-IC skills cannot issue final `IC Action` or use `Action Box`.
 - `Complete` for a skill means `Complete for scoped method` and does not imply Complete IC Action.
 - Runtime `.agents/skills/*/SKILL.md` adapters remain concise and synchronized to this canonical document.
