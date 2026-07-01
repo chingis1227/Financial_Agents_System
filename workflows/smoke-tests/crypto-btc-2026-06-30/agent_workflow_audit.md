@@ -1,9 +1,9 @@
-# Delegated workflow audit - Crypto BTC smoke test
+# Spawned-subagent workflow audit - Crypto BTC smoke test
 
-Artifact: `delegated_workflow_audit.md`  
+Artifact: `agent_workflow_audit.md`  
 Subject: BTC over a 3-year horizon for crypto decision-prep smoke test  
 Date: 2026-06-30  
-Execution mode: `Delegated Full Agent Workflow`  
+Execution mode: `Agent workflow with spawned subagents`  
 Expected final artifact: `decision_prep_memo.md`  
 Final smoke-test result: Pass  
 Blocking issues: 0  

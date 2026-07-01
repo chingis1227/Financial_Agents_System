@@ -252,16 +252,16 @@ Rumors may be mentioned only as unconfirmed claims. They must not be treated as 
 
 ### Question intake before investment answers
 
-Before any full investment workflow, ask exactly 5 relevant, request-specific questions in one block. The questions must be tailored by asset type and should improve personalization, route quality, evidence scope, portfolio fit, implementation checks, or final IC synthesis. These questions are mandatory as a UX step but non-blocking:
+Before any `AGENT:` or ordinary routed full investment workflow, ask exactly 5 relevant, request-specific questions in one block. The questions must be tailored by asset type and should improve personalization, route quality, evidence scope, portfolio fit, implementation checks, or final IC synthesis. These questions are mandatory as a UX step but non-blocking:
 
 - wait for the user's next message after asking the 5 questions;
 - if the user answers all or some questions, use those answers and continue;
 - if the user says "continue", "продолжай", "не знаю", "без уточнений", "как считаешь", "сам реши", or equivalent, continue with the approved baseline assumptions only;
 - record the questions, answers, unanswered questions, and baseline assumptions in `audit`; do not add a separate assumptions block to `investment_report.md`;
-- do not use missing answers to suppress a useful asset-level Full Cycle when the asset and route are clear;
+- do not use missing answers to suppress a useful asset-level `AGENT:` workflow / internal full workflow when the asset and route are clear;
 - ask blocking clarification separately before the 5 questions only when asset identity, instrument, source scope, or requested action cannot be safely routed.
 
-For explicit short / fast / quick take / no full cycle / preliminary mode, ask exactly 3 relevant questions in one block, wait for the user's next message, and then answer in chat only. Short mode must not create `investment_report.md` or `audit`.
+For explicit `QUICK:` / short / fast / quick take / preliminary mode, ask exactly 3 relevant questions in one block, wait for the user's next message, and then answer in chat only. Quick mode must not create `investment_report.md` or `audit`.
 
 Approved baseline assumptions after unanswered or partial intake are limited to:
 
@@ -271,7 +271,7 @@ Approved baseline assumptions after unanswered or partial intake are limited to:
 - sizing: no exact position size without portfolio context;
 - tax: no personalized tax recommendation.
 
-Do not infer other defaults. The 5 full-workflow questions should be tailored by asset type. For example, Microsoft-like equity questions should cover objective, current broad/index/sector exposure, risk tolerance, entry style, and implementation constraints. Bitcoin-like questions should cover objective, volatility tolerance, existing crypto exposure, vehicle/custody preference, and jurisdiction/tax/custody constraints.
+Do not infer other defaults. The 5 `AGENT:` / full-workflow questions should be tailored by asset type. For example, Microsoft-like equity questions should cover objective, current broad/index/sector exposure, risk tolerance, entry style, and implementation constraints. Bitcoin-like questions should cover objective, volatility tolerance, existing crypto exposure, vehicle/custody preference, and jurisdiction/tax/custody constraints.
 
 ### Reader-facing workflow output
 
@@ -297,11 +297,13 @@ The ordinary chat response must output the full `investment_report.md` content e
 
 Do not show the audit path unless the user explicitly asks for audit/debug details.
 
-### Full workflow execution default
+### AGENT workflow execution default
 
-Concrete-asset Full Cycle investment workflows default to `Delegated Full Agent Workflow` with relevant subagents when subagent tooling is available. This default applies even when the user does not explicitly ask for agents. If subagents are unavailable or are not actually spawned, the runtime must not claim delegated execution; it must record `Single-agent Full Cycle` in audit metadata and preserve all evidence, valuation, risk, portfolio, and IC gates.
+User-facing runtime commands are `AGENT:`, `QUICK:`, and specialist prefixes. Existing file names, route IDs, smoke-test labels, and historical runbook terms may retain `full_cycle` / internal full workflow for compatibility, but internal full workflow is not a selectable user-facing mode.
 
-Delegation is relevant-complete, not literal-all-agents. Full workflows include macro context for every asset class. Equity Full Cycle additionally includes sector / industry context by default. In short mode, macro and sector/industry are considered briefly inside the answer rather than as separate full modules.
+`AGENT:` is the large agent workflow. It uses relevant spawned subagents when available and must not claim agent workflow execution unless subagents were actually spawned. If subagents are unavailable or are not actually spawned, record a non-spawned-subagent fallback only in audit metadata, mark the user-facing output Limited, and preserve all evidence, valuation, risk, portfolio, and IC gates. Do not advertise the fallback as a user-selectable mode. Ordinary concrete-asset investment-action prompts without a prefix still route through the router; recommended UX is `AGENT:` or `QUICK:`.
+
+Agent workflow scope is relevant-complete, not literal-all-agents. Large workflows include macro context for every asset class. Equity internal full workflows additionally include sector / industry context by default. In `QUICK:` mode, macro and sector/industry are considered briefly inside the answer rather than as separate full modules.
 
 ### Action intent taxonomy
 
@@ -309,24 +311,24 @@ Classify action-oriented requests before deciding whether to answer immediately 
 
 | Intent level | Examples | Required behavior |
 |---|---|---|
-| Personal / final action | "Should I buy?", "What should I do with my position?", "How much should I buy?", "Should I sell my shares?" | If the request requires exact personal trade action, sizing, or existing-position handling and decision-critical personal context is missing, ask the minimum clarifying questions before giving an action-oriented conclusion. If the asset identity and capital-decision route are clear but portfolio context is missing, continue the concrete-asset Full Cycle and mark Portfolio Fit / IC Action `Limited`; do not substitute silent assumptions or issue final `IC Action`. |
-| Market action / investment attractiveness | "Is it a buy?", "Is it attractive here?", "Is gold a good setup now?" | Concrete-asset action requests default to Full Cycle unless the user explicitly asks for short / fast / quick take / no full cycle / preliminary output. Non-concrete setup questions or explicit Quick Takes may receive `Preliminary` / `Limited` market views, but Quick Take never issues final `IC Action`; if final gates are being completed, route or upgrade to Full Cycle / IC synthesis. |
+| Personal / final action | "Should I buy?", "What should I do with my position?", "How much should I buy?", "Should I sell my shares?" | If the request requires exact personal trade action, sizing, or existing-position handling and decision-critical personal context is missing, ask the minimum clarifying questions before giving an action-oriented conclusion. If the asset identity and capital-decision route are clear but portfolio context is missing, continue the concrete-asset `AGENT:` workflow / internal full workflow and mark Portfolio Fit / IC Action `Limited`; do not substitute silent assumptions or issue final `IC Action`. |
+| Market action / investment attractiveness | "Is it a buy?", "Is it attractive here?", "Is gold a good setup now?" | Concrete-asset action requests route through the router; recommended explicit command is `AGENT:` unless the user asks for `QUICK:` / short / fast / quick take / preliminary output. Non-concrete setup questions or explicit Quick Takes may receive `Preliminary` / `Limited` market views, but Quick Take never issues final `IC Action`; if final gates are being completed, route to the gated large workflow / IC synthesis rather than the `QUICK:` route. |
 | Analysis-only | "Analyze this company", "Value this company only", "What are the risks?", "What changed recently?" | Provide scoped analysis with status, evidence limits, boundary, and missing IC gates where relevant. |
 
 When intent is ambiguous, use the safer level if the wording could reasonably be read as personal action. General analysis may continue with explicit scope limits.
 
-### Blocking versus non-blocking context for Full Cycle
+### Blocking versus non-blocking context for AGENT workflow
 
 | Missing item | Default behavior | Output effect |
 |---|---|---|
 | Asset identity, ticker/listing, instrument, wrapper, currency, maturity, or structure is materially ambiguous | Ask the minimum clarifying question before analysis | Block or limit until identity is resolved |
 | User asks exact sizing, exact trade, or what to do with an existing personal position and position context is required | Ask the minimum personal context before personalized final action | No personalized final action until answered |
-| Portfolio composition, risk tolerance, objective, or overlap is missing but the asset and route are clear | Continue Full Cycle | Portfolio Fit is Limited / not personalized; IC Action Status remains Limited or Blocked |
-| User explicitly requests short / fast / Quick Take / no full cycle | Provide Preliminary / Limited Quick Take | No final IC Action; if final gates are being completed, route or upgrade to Full Cycle / IC synthesis |
+| Portfolio composition, risk tolerance, objective, or overlap is missing but the asset and route are clear | Continue `AGENT:` workflow / internal full workflow | Portfolio Fit is Limited / not personalized; IC Action Status remains Limited or Blocked |
+| User explicitly requests `QUICK:` / short / fast / Quick Take | Provide Preliminary / Limited Quick Take | No final IC Action; if final gates are being completed, route to the gated large workflow / IC synthesis |
 
 ### Fast action requests
 
-If the user explicitly asks for a short, fast, preliminary, Quick Take, or no full cycle market-action answer, ask exactly 3 relevant questions first, then give `Quick Take / Preliminary` in chat only with no saved report/audit, and do not issue final `IC Action`. Quick Take never issues final IC Action; if final gates are being completed, route or upgrade to Full Cycle / IC synthesis. Concrete-asset investment action requests default to Full Cycle when the user asks whether to invest, buy, add, hold, sell, start exposure, or evaluate the asset for a stated horizon / portfolio decision, unless the user explicitly requests Quick Take. If the user asks for personal / final action and key blocking context is missing, ask for the minimum missing context first instead of giving an action conclusion.
+If the user explicitly asks for `QUICK:`, short, fast, preliminary, or Quick Take market-action answer, ask exactly 3 relevant questions first, then give `Quick Take / Preliminary` in chat only with no saved report/audit, and do not issue final `IC Action`. Quick Take never issues final IC Action; if final gates are being completed, route to the gated large workflow / IC synthesis. Concrete-asset investment action requests route through the router and should use `AGENT:` when the user asks whether to invest, buy, add, hold, sell, start exposure, or evaluate the asset for a stated horizon / portfolio decision, unless the user explicitly requests Quick Take. If the user asks for personal / final action and key blocking context is missing, ask for the minimum missing context first instead of giving an action conclusion.
 
 Required pattern:
 
@@ -334,15 +336,15 @@ Required pattern:
 Quick Take:
 Status: Preliminary
 IC Action Status: Limited or Blocked
-Final IC Action: Not available in Quick Take; upgrade to Full Cycle / IC synthesis if final gates are complete or being completed
+Final IC Action: Not available in Quick Take; route to the gated large workflow / IC synthesis if final gates are complete or being completed
 Needed for final IC Action:
 ```
 
 ### Missing personal context
 
-If a user asks for exact personal buy/sell/hold/add/trim/exit guidance, existing-position handling, or sizing without decision-critical personal context, ask for only the minimum missing context needed before giving that personal action-oriented conclusion. If the same prompt is a concrete-asset investment-action request with clear identity and route, do not stop the asset work solely because portfolio context is missing: continue Full Cycle, mark Portfolio Fit / IC Action `Limited`, and withhold final `IC Action` until the personal gates are closed.
+If a user asks for exact personal buy/sell/hold/add/trim/exit guidance, existing-position handling, or sizing without decision-critical personal context, ask for only the minimum missing context needed before giving that personal action-oriented conclusion. If the same prompt is a concrete-asset investment-action request with clear identity and route, do not stop the asset work solely because portfolio context is missing: continue the `AGENT:` workflow / internal full workflow, mark Portfolio Fit / IC Action `Limited`, and withhold final `IC Action` until the personal gates are closed.
 
-If the request is market action / investment attractiveness rather than personal action, first classify whether it is a concrete-asset investment-action request. For a concrete asset with capital-decision intent, continue the Full Cycle by default and mark Portfolio Fit / IC Action `Limited` when non-blocking personal context is missing. Use a `Preliminary` or `Limited` scenario-based answer only for non-concrete setup questions, explicitly requested Quick Takes, or cases where the user explicitly asks for short / fast / no full cycle.
+If the request is market action / investment attractiveness rather than personal action, first classify whether it is a concrete-asset investment-action request. For a concrete asset with capital-decision intent, route through the `AGENT:` workflow / internal full workflow by default and mark Portfolio Fit / IC Action `Limited` when non-blocking personal context is missing. Use a `Preliminary` or `Limited` scenario-based answer only for non-concrete setup questions, explicitly requested Quick Takes, or cases where the user explicitly asks for short / fast output.
 
 Minimum context usually includes:
 - current position: none / existing / considering add / considering trim or exit;
@@ -460,7 +462,7 @@ Direct specialist calls are allowed. The specialist must:
 
 ### Workflow handoff artifacts
 
-Full Cycle and Full Agent Workflow modules must leave structured handoff artifacts or artifact-equivalent summaries before downstream synthesis uses them. A valid handoff includes controlled artifact name, owner, producing agent/skill/workflow, workflow, execution mode, as-of date/time, output status, evidence status, freshness status, source scope, evidence limits, key limitations, missing gates, decision boundary, downstream handoff, and required follow-up.
+large workflow / spawned-subagent workflow modules must leave structured handoff artifacts or artifact-equivalent summaries before downstream synthesis uses them. A valid handoff includes controlled artifact name, owner, producing agent/skill/workflow, workflow, execution mode, as-of date/time, output status, evidence status, freshness status, source scope, evidence limits, key limitations, missing gates, decision boundary, downstream handoff, and required follow-up.
 
 IC synthesis must not treat unstructured chat, ownerless summaries, or handoffs missing evidence limits / missing gates as Complete upstream work. If a required handoff is incomplete, IC must request a corrected handoff or use a gate-aware Limited / Blocked artifact.
 
@@ -577,7 +579,7 @@ Where possible, use concrete metrics, thresholds, dates, events, KPI changes, or
 
 ### Canonical artifact naming
 
-Internal canonical final IC memo artifact: `final_investment_memo.md`. Saved user-facing Full Cycle output remains `investment_report.md`.
+Internal canonical final IC memo artifact: `final_investment_memo.md`. Saved user-facing large-workflow output remains `investment_report.md`.
 
 `investment_committee_memo.md` is allowed as a legacy alias only when migrating older source documents; new internal IC schemas and workflows should use `final_investment_memo.md`, while user-facing saved output remains `investment_report.md`.
 
@@ -604,10 +606,10 @@ Stable IDs in this table are used for QA traceability. If a rule changes, update
 | Rule ID | # | Case | Canonical behavior |
 |---|---:|---|---|
 | P1-RULE-01-01 | 1 | Analysis partly ready but final action unavailable | Use separate `Analysis Status` and `IC Action Status`. |
-| P1-RULE-01-02 | 2 | Personal buy/sell/hold without personal context | Ask the minimum blocking context before personalized final action; if asset identity and route are clear, continue Full Cycle with Portfolio Fit Limited. Explicit short/fast or non-concrete market-action questions may receive Preliminary/Limited scenario views. |
+| P1-RULE-01-02 | 2 | Personal buy/sell/hold without personal context | Ask the minimum blocking context before personalized final action; if asset identity and route are clear, continue the `AGENT:` workflow / internal full workflow with Portfolio Fit Limited. Explicit short/fast or non-concrete market-action questions may receive Preliminary/Limited scenario views. |
 | P1-RULE-01-03 | 3 | Fresh data unavailable or stale | Give structural/scenario analysis only; block or limit current action. |
 | P1-RULE-01-04 | 4 | Sources conflict | Show `Evidence Conflict`; constrain status if material. |
-| P1-RULE-01-05 | 5 | User asks for one-line action | Give Quick Take / Preliminary only when the user explicitly requests a short / fast / one-line answer; otherwise concrete-asset investment action requests route to Full Cycle. For personal final action with blocking missing context, ask first. |
+| P1-RULE-01-05 | 5 | User asks for one-line action | Give Quick Take / Preliminary only when the user explicitly requests a short / fast / one-line answer; otherwise concrete-asset investment action requests route to `AGENT:` / the internal full workflow. For personal final action with blocking missing context, ask first. |
 | P1-RULE-01-06 | 6 | User asks for "best" without criteria | Use default criteria and scenario winners; no absolute winner. |
 | P1-RULE-01-07 | 7 | New buy / hold / add / trim / exit unclear | If personal final action is requested, ask the minimum clarifier; otherwise provide an explicitly non-final scenario matrix and do not assume new buy. |
 | P1-RULE-01-08 | 8 | High-quality asset but valuation weak | Separate Quality Verdict, Valuation Support, Investment View, and IC Action Status. |
@@ -631,5 +633,5 @@ Stable IDs in this table are used for QA traceability. If a rule changes, update
 | P1-RULE-01-26 | 26 | User wants personal support without private details | Accept approximate buckets; otherwise scenario-based only. |
 | P1-RULE-01-27 | 27 | User asks for simple explanation | Use plain-English mode without dropping gates/statuses. |
 | P1-RULE-01-28 | 28 | Paid/private data unavailable | Provide Public-data view plus checklist; constrain confidence/status when material. |
-| P1-RULE-01-29 | 29 | Many artifacts confuse final output | `final_investment_memo.md` is the internal canonical final IC artifact; saved user-facing Full Cycle output remains `investment_report.md`; supporting artifacts need metadata. |
+| P1-RULE-01-29 | 29 | Many artifacts confuse final output | `final_investment_memo.md` is the internal canonical final IC artifact; saved user-facing large-workflow output remains `investment_report.md`; supporting artifacts need metadata. |
 | P1-RULE-01-30 | 30 | Legacy/draft/backup used as source of truth | Canonical docs win; legacy is supporting/excluded by registry. |

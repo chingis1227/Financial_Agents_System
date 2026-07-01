@@ -5,13 +5,13 @@
 - Subject: TLT as bond ETF / long-duration U.S. Treasury exposure smoke test
 - Owner: Fixed Income Agent
 - Producing agent/skill/workflow: Fixed Income Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Complete for scoped fixed-income method
 - Evidence status: Limited; mostly 2026-06-26 to 2026-06-29 public data
 - Freshness status: No June 30 close; latest official curve data lag
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No full ETF/risk/portfolio/IC package; no current close lock.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Missing gates: ETF vehicle review, macro, valuation, risk, portfolio fit, market positioning/flows, IC synthesis
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the TLT delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the TLT spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -33,13 +33,13 @@ TLT has 4.85% SEC yield, 15.44-year effective duration, 26.05-year maturity; car
 - Scope: Yield, duration, curve, convexity, real rates/inflation, term premium, carry, drawdown compensation
 - Owner: Fixed Income Agent
 - Producing agent/skill/workflow: Fixed Income Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Complete for scoped fixed-income method
 - Evidence status: Limited; mostly 2026-06-26 to 2026-06-29 public data
 - Freshness status: No June 30 close; latest official curve data lag
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No full ETF/risk/portfolio/IC package; no current close lock.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Key findings: TLT has 4.85% SEC yield, 15.44-year effective duration, 26.05-year maturity; carry absorbs only about 31 bp of adverse annual parallel rate movement; +100 bp shock remains severe.

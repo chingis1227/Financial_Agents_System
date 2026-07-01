@@ -39,7 +39,7 @@ Read only the canonical documents needed for the task. Default required set:
 - `implementation/06-agent-contracts.md` for owning agent boundaries
 - `implementation/07-investment-committee-and-report-schemas.md` for final and non-final IC report schemas
 - `implementation/11-skill-contracts.md` for this skill contract
-- `workflows/handoff_artifact_standard.md` when producing Full Cycle or Full Agent Workflow handoffs
+- `workflows/handoff_artifact_standard.md` when producing large workflow or spawned-subagent workflow handoffs
 
 Conditional references:
 
@@ -83,13 +83,15 @@ Every output must include:
 - Missing IC Gates
 - Boundary
 - `## Structured handoff` using the controlled fields from `workflows/handoff_artifact_standard.md`
-- Full Cycle / Full Agent Workflow handoff must also include `## Handoff metadata` and use the exact `## Structured handoff` block and field names from `workflows/handoff_artifact_standard.md`; do not rename or omit required fields
+- large workflow / spawned-subagent workflow handoff must also include `## Handoff metadata` and use the exact `## Structured handoff` block and field names from `workflows/handoff_artifact_standard.md`; do not rename or omit required fields
 
 Boundary wording: `Boundary: IC synthesis method inside the Investment Committee Agent only. IC Action and Action Box are allowed only after evidence lock and required IC gates pass; the Investment Committee Agent owns issuance. If gates are missing, use Decision-Prep Box or another gate-aware non-final artifact.`
 
+Direct `IC:` shortcut boundary wording: `Boundary: Not an IC Action. Committee-prep handoff only.`
+
 ## Cross-skill guardrails
 
-- Direct skill calls are allowed only as scoped method outputs with boundary and missing IC gates; Full Cycle handoffs must use the controlled handoff fields.
+- Direct skill calls are allowed only as scoped method outputs with boundary and missing IC gates; large-workflow handoffs must use the controlled handoff fields.
 - Non-IC outputs must not issue final `IC Action`, use `Action Box`, or provide exact allocation instructions.
 - Evidence status, freshness, source restrictions, user-file provenance, and material conflicts constrain conclusions.
 - Freshness-sensitive requests split structural view from current-action view.
@@ -103,19 +105,19 @@ Boundary wording: `Boundary: IC synthesis method inside the Investment Committee
 ## Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in large workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: useful but constrained.
 - Blocked when: required evidence/valuation/risk/lead analysis is missing.
 
 
-## Full Cycle behavior
+## Large workflow behavior
 
-When this skill runs as part of a Full Cycle, it integrates evidence and specialist handoffs into the allowed IC artifact. It requires evidence and specialist handoffs; if required handoffs are missing, unstructured, stale, or boundary-unsafe, mark IC synthesis `Limited` or `Blocked` and select a gate-aware non-final artifact. It may support `final_investment_memo.md` only when required gates pass; otherwise it must use `decision_prep_memo.md`, `limited_ic_draft.md`, or `evidence_gap_memo.md`. It must preserve the Runtime Execution Plan and must not bypass missing evidence, valuation, risk, or portfolio gates.
+When this skill runs as part of a large workflow, it integrates evidence and specialist handoffs into the allowed IC artifact. It requires evidence and specialist handoffs; if required handoffs are missing, unstructured, stale, or boundary-unsafe, mark IC synthesis `Limited` or `Blocked` and select a gate-aware non-final artifact. It may support `final_investment_memo.md` only when required gates pass; otherwise it must use `decision_prep_memo.md`, `limited_ic_draft.md`, or `evidence_gap_memo.md`. It must preserve the Runtime Execution Plan and must not bypass missing evidence, valuation, risk, or portfolio gates.
 
 ## Quality checks
 
 - Output follows the canonical skill contract in `implementation/11-skill-contracts.md`.
-- Output uses the required output core and structured handoff; for Full Cycle / Full Agent Workflow, it also includes `## Handoff metadata` and the controlled handoff fields from `workflows/handoff_artifact_standard.md`.
+- Output uses the required output core and structured handoff; for large workflow / spawned-subagent workflow, it also includes `## Handoff metadata` and the controlled handoff fields from `workflows/handoff_artifact_standard.md`.
 - Material claims are evidence-aware and limitations are visible.
 - IC output lists consumed handoffs and rejects missing, unstructured, stale, or boundary-unsafe inputs instead of silently filling gaps.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.

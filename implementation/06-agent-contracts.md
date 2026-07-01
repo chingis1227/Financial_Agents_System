@@ -11,7 +11,10 @@ Legacy PRDs and frameworks are supporting source material only when routed throu
 
 ## Standard handoff requirement
 
-All agents must use structured handoff blocks rather than uncontrolled agent-to-agent chat. Full Cycle and Full Agent Workflow runs must also follow `workflows/handoff_artifact_standard.md`; that runtime standard is subordinate to this canonical contract layer but provides the mandatory artifact field list for executable handoffs.
+Direct `IC:` shortcut rule: `IC:` is a direct specialist command, not the gated final IC workflow. It produces one committee-prep handoff only, must show `Boundary: Not an IC Action`, and must not produce final `IC Action` or `Action Box`. Final IC action is available only through the gated large workflow / IC synthesis after required evidence and specialist gates are satisfied.
+
+
+All agents must use structured handoff blocks rather than uncontrolled agent-to-agent chat. large workflow / spawned-subagent workflow runs must also follow `workflows/handoff_artifact_standard.md`; that runtime standard is subordinate to this canonical contract layer but provides the mandatory artifact field list for executable handoffs.
 
 ```markdown
 ## Structured handoff
@@ -45,7 +48,7 @@ Every handoff artifact or artifact-equivalent summary used downstream must use t
 
 | Rule ID | Case | Canonical agent-contract behavior |
 |---|---|---|
-| P5-AGT-01-01 | Premature buy/sell request | Concrete-asset investment action requests default to Full Cycle unless the user explicitly asks for short / fast / quick take / no full cycle / preliminary; final IC Action still requires full gates. |
+| P5-AGT-01-01 | Premature buy/sell request | Concrete-asset investment action requests route through `AGENT:` / the internal full workflow unless the user explicitly asks for `QUICK:` / short / fast / quick take / preliminary; final IC Action still requires full gates. |
 | P5-AGT-01-02 | Ambiguous ticker or instrument | Use safe assumption when obvious; clarify or verify when ambiguity can materially change conclusion or final action. |
 | P5-AGT-01-03 | Freshness-dependent request | Attempt current sources with timestamps; without them, provide Limited structural view only. |
 | P5-AGT-01-04 | Specialist sounds like IC | Allow scoped verdict, require `Boundary: Not an IC Action`, list missing IC gates, and offer IC routing. |
@@ -159,7 +162,7 @@ Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 ### Category-specific add-on
 
 - Routing defaults, ambiguity handling, safe bounded defaults, minimum clarification, and proof that router does not issue investment decisions.
-- Apply P5-AGT-01 edge-case behavior when relevant, including the Full Cycle default for concrete-asset investment action requests unless the user explicitly asks for Quick Take.
+- Apply P5-AGT-01 edge-case behavior when relevant, including the `AGENT:` / internal full-workflow default for concrete-asset investment action requests unless the user explicitly asks for Quick Take.
 
 ### Success criteria
 

@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Market Sense Agent
 - Producing agent/skill/workflow: Market Sense Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; hypotheses are structurally grounded but not confirmed by synchronized data
 - Freshness status: Refresh required before current driver dominance is used downstream
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No specified move window, no confirmed catalyst, no aligned 1D/5D/1M cross-asset dataset.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Timestamped evidence pack; macro; positioning/flow; catalyst classification; commodity handoff
@@ -33,13 +33,13 @@ The key driver battle is real-rate pressure versus hedge/reserve demand, with US
 - Scope: Driver-dominance hypotheses for real-rate, dollar, and hedge-demand narratives
 - Owner: Market Sense Agent
 - Producing agent/skill/workflow: Market Sense Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; hypotheses are structurally grounded but not confirmed by synchronized data
 - Freshness status: Refresh required before current driver dominance is used downstream
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No specified move window, no confirmed catalyst, no aligned 1D/5D/1M cross-asset dataset.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: The key driver battle is real-rate pressure versus hedge/reserve demand, with USD strength and positioning flows as major confirming or opposing signals.

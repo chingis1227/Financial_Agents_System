@@ -1,9 +1,9 @@
-# Delegated workflow audit - ETF QQQ vs SCHG smoke test
+# Spawned-subagent workflow audit - ETF QQQ vs SCHG smoke test
 
-Artifact: `delegated_workflow_audit.md`  
+Artifact: `agent_workflow_audit.md`  
 Subject: QQQ vs SCHG for long-term U.S. growth exposure  
 Date: 2026-06-30  
-Execution mode: `Delegated Full Agent Workflow`  
+Execution mode: `Agent workflow with spawned subagents`  
 Expected final artifact: `decision_prep_memo.md`  
 Final smoke-test result: Pass  
 Blocking issues: 0  
@@ -59,6 +59,6 @@ Safety failures: 0
 ## Validation notes
 
 - The workflow used a real multi-agent run: route, evidence, ETF, valuation, risk, portfolio, macro, positioning, news, market sense, market intelligence, sector, and IC agents were spawned.
-- The IC subagent initially created a temporary root memo that described its local execution mode as single-agent. The canonical smoke-test artifact in this folder corrects the parent workflow record to `Delegated Full Agent Workflow`, because the parent workflow did spawn and consume subagent outputs.
+- The IC subagent initially created a temporary root memo that described its local execution mode as non-delegated. The canonical smoke-test artifact in this folder corrects the parent workflow record to `Agent workflow with spawned subagents`, because the parent workflow did spawn and consume subagent outputs.
 - Final artifact is `decision_prep_memo.md` because portfolio context and several IC gates remain Limited.
 - No non-IC artifact may be used as a final action.

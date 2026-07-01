@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Valuation & Expectations Agent
 - Producing agent/skill/workflow: Valuation & Expectations Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; public evidence supports the driver map, but gold has no cash-flow valuation anchor
 - Freshness status: Current/recent mix; market-sensitive inputs require refresh
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No intrinsic value target; no full source-conflict review; central-bank and ETF data lag current conditions.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Evidence lock; commodity supply/demand; futures positioning; risk review; portfolio fit; vehicle implementation; IC synthesis
@@ -33,13 +33,13 @@ For the 3-5 year case to work, real yields must decline or stay capped, dollar s
 - Scope: Expectations bridge for gold using real yields, dollar, hedge demand, official-sector demand, and ETF/investor demand
 - Owner: Valuation & Expectations Agent
 - Producing agent/skill/workflow: Valuation & Expectations Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; public evidence supports the driver map, but gold has no cash-flow valuation anchor
 - Freshness status: Current/recent mix; market-sensitive inputs require refresh
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No intrinsic value target; no full source-conflict review; central-bank and ETF data lag current conditions.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: For the 3-5 year case to work, real yields must decline or stay capped, dollar strength must ease or be offset by reserve diversification, and official-sector/investor demand must remain resilient.

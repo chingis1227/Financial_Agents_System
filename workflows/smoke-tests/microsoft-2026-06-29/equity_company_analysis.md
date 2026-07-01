@@ -1,4 +1,4 @@
-﻿# equity_company_analysis.md - Microsoft / MSFT
+# equity_company_analysis.md - Microsoft / MSFT
 
 ## Handoff metadata
 - Artifact: `equity_company_analysis.md`
@@ -6,8 +6,8 @@
 - Scope: scoped company-quality and thesis-durability input
 - Owner: Equity Agent
 - Producing agent/skill/workflow: Equity Agent / `equity-company-analysis` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest runtime context
 - Output status: Complete
 - Evidence status: Official public evidence is sufficient for scoped business-quality analysis; Limited for stock attractiveness and final decision support
@@ -36,7 +36,7 @@ The main unresolved issue is not business quality. It is whether AI-related infr
 - Watch items: capex intensity, AI monetization, OpenAI economics, regulatory remedies, cybersecurity trust, and valuation compression.
 ## Scope note
 
-This file is a structured handoff artifact for the delegated smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
+This file is a structured handoff artifact for the spawned-subagent smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
 
 ## Structured handoff
 
@@ -45,8 +45,8 @@ This file is a structured handoff artifact for the delegated smoke test, not a f
 - Scope: scoped company-quality and thesis-durability input
 - Owner: Equity Agent
 - Producing agent/skill/workflow: Equity Agent / `equity-company-analysis` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest runtime context
 - Output status: Complete
 - Evidence status: Official public evidence is sufficient for scoped business-quality analysis; Limited for stock attractiveness and final decision support

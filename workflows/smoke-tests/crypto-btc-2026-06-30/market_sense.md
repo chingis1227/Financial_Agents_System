@@ -5,13 +5,13 @@
 - Subject: BTC over a 3-year horizon for crypto decision-prep smoke test
 - Owner: Market Sense Agent
 - Producing agent/skill/workflow: Market Sense Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Current public data; incomplete for full IC use
 - Freshness status: Current market data; ETF-flow close not complete for June 30
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: ETF-flow vendor variance; no full on-chain, options, custody, or portfolio evidence pack.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Missing gates: Crypto analysis, valuation/expectations, risk, implementation/custody, portfolio fit, IC synthesis
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the BTC delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the BTC spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -33,13 +33,13 @@ ETF flows dominate current BTC pressure; liquidity and regulated-access channel 
 - Scope: Driver-dominance hypotheses for liquidity vs ETF flow vs regulation vs leverage vs risk appetite
 - Owner: Market Sense Agent
 - Producing agent/skill/workflow: Market Sense Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Current public data; incomplete for full IC use
 - Freshness status: Current market data; ETF-flow close not complete for June 30
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: ETF-flow vendor variance; no full on-chain, options, custody, or portfolio evidence pack.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Key findings: ETF flows dominate current BTC pressure; liquidity and regulated-access channel likely dominate over 3 years; leverage is an amplifier.

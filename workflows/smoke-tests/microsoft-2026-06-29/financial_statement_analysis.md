@@ -1,4 +1,4 @@
-﻿# financial_statement_analysis.md - Microsoft / MSFT
+# financial_statement_analysis.md - Microsoft / MSFT
 
 ## Handoff metadata
 - Artifact: `financial_statement_analysis.md`
@@ -6,8 +6,8 @@
 - Scope: scoped financial-statement quality input
 - Owner: Financial Statement Analysis contributor
 - Producing agent/skill/workflow: Financial Statement Analysis contributor / `financial-statement-analysis` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest; evidence through FY26 Q3 release/Form 10-Q dated 2026-04-29 plus FY2025 Form 10-K
 - Output status: Complete
 - Evidence status: Official public filings support the core scoped financial-statement claims
@@ -41,7 +41,7 @@ Microsoft's latest reviewed quarter shows strong revenue and earnings growth. Fi
 The financial-statement gate does not show an immediate accounting-quality failure signal in the reviewed material. It does, however, pass a major valuation and risk question downstream: infrastructure spend must be translated into depreciation, capex intensity, margins, free-cash-flow conversion, and return-on-invested-capital scenarios.
 ## Scope note
 
-This file is a structured handoff artifact for the delegated smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
+This file is a structured handoff artifact for the spawned-subagent smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
 
 ## Structured handoff
 
@@ -50,8 +50,8 @@ This file is a structured handoff artifact for the delegated smoke test, not a f
 - Scope: scoped financial-statement quality input
 - Owner: Financial Statement Analysis contributor
 - Producing agent/skill/workflow: Financial Statement Analysis contributor / `financial-statement-analysis` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest; evidence through FY26 Q3 release/Form 10-Q dated 2026-04-29 plus FY2025 Form 10-K
 - Output status: Complete
 - Evidence status: Official public filings support the core scoped financial-statement claims

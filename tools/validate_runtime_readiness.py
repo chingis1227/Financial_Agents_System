@@ -40,31 +40,51 @@ REQUIRED_AGENTS = {
     "commodity-agent", "crypto-agent", "fixed-income-agent", "valuation-expectations-agent",
     "risk-red-team-agent", "portfolio-fit-agent", "macro-agent", "market-positioning-agent",
     "news-catalysts-agent", "market-sense-agent", "market-intelligence-agent",
-    "sector-industry-analysis-agent", "investment-committee-agent",
+    "sector-industry-analysis-agent", "investment-committee-agent", "equity-agent",
+    "structural-winners-discovery-agent",
+}
+
+COMMAND_AGENT_MAP = {
+    "RISK": "risk-red-team-agent",
+    "VAL": "valuation-expectations-agent",
+    "MACRO": "macro-agent",
+    "NEWS": "news-catalysts-agent",
+    "PORTFOLIO": "portfolio-fit-agent",
+    "SECTOR": "sector-industry-analysis-agent",
+    "EVIDENCE": "evidence-collector",
+    "POSITIONING": "market-positioning-agent",
+    "INTEL": "market-intelligence-agent",
+    "EQUITY": "equity-agent",
+    "ETF": "etf-agent",
+    "COMMODITY": "commodity-agent",
+    "CRYPTO": "crypto-agent",
+    "FI": "fixed-income-agent",
+    "WINNERS": "structural-winners-discovery-agent",
+    "IC": "investment-committee-agent",
 }
 
 SMOKE_TESTS = {
     "etf-qqq-schg-2026-06-30": [
-        "delegated_workflow_audit.md", "evidence_pack.md", "etf_analysis.md",
+        "agent_workflow_audit.md", "evidence_pack.md", "etf_analysis.md",
         "valuation_expectations.md", "risk_red_team.md", "portfolio_fit.md",
         "market_positioning.md", "macro_sensitivity.md", "news_catalysts.md",
         "market_sense.md", "market_intelligence_briefing.md", "sector_context.md",
         "decision_prep_memo.md",
     ],
     "commodity-gold-2026-06-30": [
-        "delegated_workflow_audit.md", "evidence_pack.md", "commodity_analysis.md",
+        "agent_workflow_audit.md", "evidence_pack.md", "commodity_analysis.md",
         "macro_sensitivity.md", "market_positioning.md", "valuation_expectations.md",
         "risk_red_team.md", "portfolio_fit.md", "news_catalysts.md", "market_sense.md",
         "market_intelligence_briefing.md", "decision_prep_memo.md",
     ],
     "crypto-btc-2026-06-30": [
-        "delegated_workflow_audit.md", "evidence_pack.md", "crypto_analysis.md",
+        "agent_workflow_audit.md", "evidence_pack.md", "crypto_analysis.md",
         "valuation_expectations.md", "macro_sensitivity.md", "market_positioning.md",
         "risk_red_team.md", "portfolio_fit.md", "news_catalysts.md", "market_sense.md",
         "market_intelligence_briefing.md", "decision_prep_memo.md",
     ],
     "fixed-income-tlt-2026-06-30": [
-        "delegated_workflow_audit.md", "evidence_pack.md", "etf_analysis.md",
+        "agent_workflow_audit.md", "evidence_pack.md", "etf_analysis.md",
         "fixed_income_analysis.md", "macro_sensitivity.md", "valuation_expectations.md",
         "risk_red_team.md", "portfolio_fit.md", "market_positioning.md", "news_catalysts.md",
         "market_sense.md", "market_intelligence_briefing.md", "decision_prep_memo.md",
@@ -85,6 +105,9 @@ STRUCTURED_HANDOFF_FIELDS = [
     "Missing gates", "Decision boundary", "Decision constraints", "Downstream handoff",
     "Required follow-up",
 ]
+
+VALID_EXECUTION_MODES = {"Agent workflow with spawned subagents", "Non-delegated audit fallback"}
+STALE_RUNTIME_LABELS = ["Delegated Full Agent Workflow", "Single-agent Full Cycle"]
 
 FORBIDDEN_FINAL_ACTION_PATTERNS = [
     re.compile(r"(?im)^\s*(IC Action|Final IC Action|Final action|Action)\s*:\s*(Buy|Sell|Hold|Add|Trim|Exit)\b"),
@@ -107,7 +130,7 @@ for rel in WORKFLOWS:
     add(f"workflow exists: {rel}", p.exists(), str(p))
     if p.exists():
         txt = read(p)
-        for token in ["Execution modes", "decision_prep_memo.md", "evidence_gap_memo.md", "final_investment_memo.md", "Delegated Full Agent Workflow", "Single-agent Full Cycle"]:
+        for token in ["Execution modes", "decision_prep_memo.md", "evidence_gap_memo.md", "final_investment_memo.md", "Agent workflow with spawned subagents", "Non-delegated audit fallback"]:
             add(f"workflow {rel} contains {token}", token in txt)
         for pat in STALE_DELEGATED_DEFAULT_PATTERNS:
             add(f"workflow {rel} has no stale delegated-default wording: {pat.pattern}", pat.search(txt) is None)
@@ -125,10 +148,57 @@ project_state = ROOT / "PROJECT_STATE.md"
 add("project state exists", project_state.exists(), str(project_state))
 if project_state.exists():
     ps_txt = read(project_state)
-    for token in ["Codex-native first", "Full Cycle", "Quick Take", "Single-agent Full Cycle", "archive/project-history/TASKS.md"]:
+    for token in ["Codex-native first", "AGENT:", "QUICK:", "audit metadata", "archive/project-history/TASKS.md"]:
         add(f"project state contains {token}", token in ps_txt)
-    for token in ["subagents were actually spawned", "do not claim delegated execution", "Single-agent Full Cycle"]:
+    for token in ["subagents were actually spawned", "Do not claim", "fallback only in audit metadata"]:
         add(f"project state enforces delegation fallback: {token}", token in ps_txt)
+    for cmd, agent in COMMAND_AGENT_MAP.items():
+        add(f"project state command map contains {cmd}", f"`{cmd}:`" in ps_txt and f"`{agent}`" in ps_txt)
+
+canonical_fallback_docs = [
+    ("master rules", ROOT / "implementation" / "00-master-rules.md"),
+    ("routing workflows", ROOT / "implementation" / "05-routing-and-workflows.md"),
+]
+for label, path in canonical_fallback_docs:
+    add(f"{label} fallback doc exists", path.exists(), str(path))
+    if path.exists():
+        txt = read(path)
+        has_no_spawn_condition = (
+            "If subagents are unavailable or are not actually spawned" in txt
+            or "If subagent spawning tooling is unavailable or no subagents are actually spawned" in txt
+        )
+        has_unconditional_limited = (
+            "mark the user-facing output Limited" in txt
+            or "mark user-facing output Limited" in txt
+        )
+        add(
+            f"{label} has unconditional no-spawn Limited fallback",
+            has_no_spawn_condition and has_unconditional_limited,
+        )
+        add(
+            f"{label} does not weaken no-spawn Limited fallback",
+            "when the fallback matters" not in txt,
+        )
+
+canonical_ambiguity_docs = [
+    ("runtime architecture", ROOT / "implementation" / "13-codex-runtime-architecture.md"),
+    ("investment router route card", ROOT / "workflows" / "route_cards" / "investment_request_router.md"),
+    ("investment router skill", ROOT / ".agents" / "skills" / "investment-workflow-router" / "SKILL.md"),
+]
+for label, path in canonical_ambiguity_docs:
+    add(f"{label} ambiguity doc exists", path.exists(), str(path))
+    if path.exists():
+        txt = read(path)
+        add(
+            f"{label} counts identity clarification inside required questions where possible",
+            "count the clarification inside the required 5-question `AGENT:` block or 3-question `QUICK:` block" in txt
+            or "Count identity clarification inside the required intake block where possible" in txt
+            or "count exact ticker/ISIN/CUSIP" in txt,
+        )
+        add(
+            f"{label} has no resolve-identity-before-questions rule",
+            "resolve identity first, then ask the 5 or 3 questions" not in txt,
+        )
 
 for rel in ROUTE_CARDS:
     p = ROOT / rel
@@ -144,8 +214,22 @@ router_skill = ROOT / ".agents" / "skills" / "investment-workflow-router" / "SKI
 add("investment workflow router skill exists", router_skill.exists(), str(router_skill))
 if router_skill.exists():
     rs_txt = read(router_skill)
-    for token in ["description:", "exactly 5", "exactly 3", "Selected route card", "does not issue `IC Action`"]:
+    for token in ["description:", "AGENT:", "QUICK:", "Command mapping", "exactly 5", "exactly 3", "Selected route card", "does not issue `IC Action`"]:
         add(f"investment workflow router skill contains {token}", token in rs_txt)
+    add(
+        "investment workflow router skill counts ambiguity inside required questions where possible",
+        "count the clarification inside the required 5-question `AGENT:` block or 3-question `QUICK:` block" in rs_txt,
+    )
+    add(
+        "investment workflow router skill reserves separate clarification for truly unroutable identity conflicts",
+        "Ask a separate blocking clarification only when the request is truly unroutable" in rs_txt,
+    )
+    add(
+        "investment workflow router skill has no broad blocking-clarification-first wording",
+        "ask the minimum blocking clarification first" not in rs_txt,
+    )
+    for cmd, agent in COMMAND_AGENT_MAP.items():
+        add(f"router skill maps {cmd}", f"`{cmd}:`" in rs_txt and f"`{agent}`" in rs_txt)
 
 add("TASKS archived away from root", not (ROOT / "TASKS.md").exists())
 add("IMPLEMENTATION_BACKLOG archived away from root", not (ROOT / "IMPLEMENTATION_BACKLOG.md").exists())
@@ -192,8 +276,12 @@ for p in sorted(skill_dir.glob("*/SKILL.md")):
 handoff = ROOT / "workflows" / "handoff_artifact_standard.md"
 if handoff.exists():
     txt = read(handoff)
-    for token in ["ETF Full Cycle artifacts", "Commodity Full Cycle artifacts", "Crypto Full Cycle artifacts", "Fixed Income Full Cycle artifacts", "Multi-asset comparison artifacts"]:
+    for token in ["ETF large-workflow artifacts", "Commodity large-workflow artifacts", "Crypto large-workflow artifacts", "Fixed Income large-workflow artifacts", "Multi-asset comparison artifacts"]:
         add(f"handoff standard contains {token}", token in txt)
+    add(
+        "handoff standard marks AGENT no-spawn fallback user-facing output Limited",
+        "If an `AGENT:` request cannot actually spawn relevant subagents, the user-facing saved report or chat output must be marked `Limited`" in txt,
+    )
 else:
     add("handoff standard exists", False)
 
@@ -209,7 +297,14 @@ for folder, artifacts in SMOKE_TESTS.items():
         txt = read(p)
         for pat in FORBIDDEN_FINAL_ACTION_PATTERNS:
             add(f"no final action wording: {folder}/{artifact}/{pat.pattern[:30]}", not pat.search(txt))
-        if artifact == "delegated_workflow_audit.md":
+
+        # Execution mode labels in smoke-test artifacts must use the current controlled vocabulary.
+        for stale in STALE_RUNTIME_LABELS:
+            add(f"smoke artifact has no stale execution label: {folder}/{artifact}/{stale}", stale not in txt)
+        for match in re.finditer(r"(?im)^\s*-?\s*Execution mode:\s*`?([^`\r\n]+?)`?\s*$", txt):
+            mode = match.group(1).strip().rstrip(".")
+            add(f"smoke artifact execution mode is current: {folder}/{artifact}", mode in VALID_EXECUTION_MODES, mode)
+        if artifact == "agent_workflow_audit.md":
             for token in ["## Spawned agents", "## Skipped agents", "## Required artifact checklist", "Final smoke-test result: Pass"]:
                 add(f"audit {folder} contains {token}", token in txt)
             unresolved = re.search(r"(?im)^\|\s*`[^`]+`\s*\|\s*`[^`]+`\s*\|\s*(Pending|Blocked|Unavailable|Missing)\s*\|", txt)
@@ -220,7 +315,7 @@ for folder, artifacts in SMOKE_TESTS.items():
             add(f"run log exists: {folder}", run_log.exists(), str(run_log))
             if run_log.exists():
                 rt = read(run_log)
-                for token in ["## Spawn record", "Agent id", "Delegated Full Agent Workflow"]:
+                for token in ["## Spawn record", "Agent id"]:
                     add(f"run log {folder} contains {token}", token in rt)
         else:
             meta = txt.split("## Handoff metadata", 1)[1].split("\n## ", 1)[0] if "## Handoff metadata" in txt else ""
@@ -265,11 +360,13 @@ if readme.exists():
     txt = read(readme)
     for pat in STALE_DELEGATED_DEFAULT_PATTERNS:
         add(f"README has no stale delegated-default wording: {pat.pattern}", pat.search(txt) is None)
-    for token in ["subagents actually ran", "Single-agent Full Cycle", "Do not claim delegation"]:
+    for token in ["AGENT:", "QUICK:", "subagents actually ran", "fallback is audit-only", "Do not claim"]:
         add(f"README contains delegated execution guardrail: {token}", token in txt)
-    for raw_token in ["\u0431\u044b\u0441\u0442\u0440\u044b\u0439 \u043f\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0432\u044b\u0432\u043e\u0434", "\u043f\u043e\u043b\u043d\u044b\u0439 \u0430\u043d\u0430\u043b\u0438\u0437 \u0432 \u043e\u0434\u043d\u043e\u0439 \u0441\u0435\u0441\u0441\u0438\u0438", "\u043f\u043e\u043b\u043d\u044b\u0439 \u043c\u043d\u043e\u0433\u043e\u0430\u0433\u0435\u043d\u0442\u043d\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a", "\u043c\u0435\u043c\u043e \u0434\u043b\u044f \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0438 \u0440\u0435\u0448\u0435\u043d\u0438\u044f", "QQQ", "SCHG", "\u0437\u043e\u043b\u043e\u0442\u0443", "BTC", "TLT", "BTC, \u0437\u043e\u043b\u043e\u0442\u043e, QQQ \u0438 TLT"]:
+    for cmd, agent in COMMAND_AGENT_MAP.items():
+        add(f"README command map contains {cmd}", f"`{cmd}:`" in txt and f"`{agent}`" in txt)
+    for raw_token in ["AGENT: Microsoft", "QUICK: Microsoft", "RISK: Microsoft", "VAL: Nvidia", "NEWS: why did Nvidia", "ETF: QQQ vs SCHG"]:
         token = raw_token.encode("ascii").decode("unicode_escape") if "\\u" in raw_token else raw_token
-        add(f"README contains Russian prompt/term: {token}", token.casefold() in txt.casefold())
+        add(f"README contains command prompt/term: {token}", token.casefold() in txt.casefold())
 else:
     add("README exists", False)
 

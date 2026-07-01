@@ -5,13 +5,13 @@
 - Subject: TLT as bond ETF / long-duration U.S. Treasury exposure smoke test
 - Owner: Market Intelligence Agent
 - Producing agent/skill/workflow: Market Intelligence Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Complete for scoped method
 - Evidence status: Public-data only; latest curve and positioning data lag
 - Freshness status: Official 20Y/30Y curve latest through 2026-06-29; CFTC lagged to 2026-06-23
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: ETF flow evidence is a single-day public snapshot; CFTC is futures-based, not direct TLT ownership.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Missing gates: Evidence pack, fixed-income analysis, ETF review, valuation, risk, portfolio fit, IC synthesis
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the TLT delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the TLT spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -33,13 +33,13 @@ TLT is highly duration-sensitive; restrictive Fed/inflation backdrop and supply 
 - Scope: TLT market backdrop, rates, curve, auction/supply, ETF flows, positioning, Fed/inflation context, IC routing notes
 - Owner: Market Intelligence Agent
 - Producing agent/skill/workflow: Market Intelligence Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Complete for scoped method
 - Evidence status: Public-data only; latest curve and positioning data lag
 - Freshness status: Official 20Y/30Y curve latest through 2026-06-29; CFTC lagged to 2026-06-23
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: ETF flow evidence is a single-day public snapshot; CFTC is futures-based, not direct TLT ownership.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Key findings: TLT is highly duration-sensitive; restrictive Fed/inflation backdrop and supply are key; ETF inflow and split futures positioning require refresh.

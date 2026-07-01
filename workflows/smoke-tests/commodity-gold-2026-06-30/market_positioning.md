@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Market Positioning Agent
 - Producing agent/skill/workflow: Market Positioning Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited public-data evidence; no pre-IC evidence lock
 - Freshness status: Mixed; CFTC and WGC inputs lag current market conditions
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No proprietary CTA, option-dealer, OTC, physical-flow, or institutional positioning data.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Next CFTC report; June ETF flows; options/skew; CTA exposure; physical flow; current real-yield and dollar close
@@ -33,13 +33,13 @@ Gold positioning appears net long and narrative-saturated around central-bank de
 - Scope: Positioning, flows, narrative saturation, crowding, dollar/real-rate sensitivity, and source limits
 - Owner: Market Positioning Agent
 - Producing agent/skill/workflow: Market Positioning Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited public-data evidence; no pre-IC evidence lock
 - Freshness status: Mixed; CFTC and WGC inputs lag current market conditions
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No proprietary CTA, option-dealer, OTC, physical-flow, or institutional positioning data.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: Gold positioning appears net long and narrative-saturated around central-bank demand, USD debasement, real rates, and the $4,000/oz area; ETF flows require June confirmation.

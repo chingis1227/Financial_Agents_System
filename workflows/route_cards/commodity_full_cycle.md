@@ -1,4 +1,4 @@
-﻿# Commodity Full Cycle Route Card
+# Commodity AGENT Workflow Route Card
 
 Status: Runtime route card
 Authority: Subordinate to `workflows/commodity_full_cycle.md` and canonical implementation documents.
@@ -37,4 +37,4 @@ Use Limited / Blocked when price, yields, FX, futures curve, inventory, or event
 
 ## Validation expectations
 
-Gold latest/setup prompt must require freshness treatment and route to commodity Full Cycle unless explicitly Quick Take.
+Gold latest/setup prompt must require freshness treatment and route to commodity AGENT workflow unless the user uses `QUICK:`.

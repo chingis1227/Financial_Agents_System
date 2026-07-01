@@ -83,7 +83,7 @@ Project authority order:
 Runtime audit plan template:
 
 ```text
-Execution mode: [Delegated Full Agent Workflow | Single-agent Full Cycle]
+Execution mode: [Agent workflow with spawned subagents | Non-delegated audit fallback]
 Subject: [asset]
 Route: Master Intake -> Asset Intake -> [asset workflow]
 Included modules:
@@ -99,10 +99,10 @@ Included modules:
 - risk / red-team review
 - portfolio fit / limited portfolio fit
 - IC synthesis
-Actually spawned subagents when delegated:
+Actually spawned subagents when spawned-subagent mode is used:
 - [agent name -> handoff artifact]
-Fallback reason when not delegated:
-- [only if Single-agent Full Cycle fallback is used]
+Fallback reason when no subagents were spawned:
+- [only if non-delegated audit fallback is used]
 Excluded modules:
 - [module -> reason]
 Module status table:
@@ -141,29 +141,29 @@ Investment Committee synthesis may consume only the audit Runtime Execution Plan
 The runtime should preserve the canonical system sequence:
 
 1. Intake router classifies the request.
-2. Concrete-asset investment action requests default to Full Cycle unless the user explicitly asks for a short / fast / quick take / no full cycle / preliminary answer.
-3. Full Cycle runs record `Execution mode` and a Runtime Execution Plan in audit before analysis, including included modules, excluded modules, and rationale.
+2. Concrete-asset investment action requests route through `AGENT:` / the internal full workflow unless the user explicitly asks for `QUICK:` / short / fast / quick take / preliminary answer.
+3. Large workflow runs record `Execution mode` and a Runtime Execution Plan in audit before analysis, including included modules, excluded modules, and rationale.
 4. Evidence Collector establishes source readiness.
-5. Relevant asset, specialist, discovery, or market modules run according to the workflow contract. In `Single-agent Full Cycle`, the main session performs these modules; in `Delegated Full Agent Workflow`, actually spawned subagents perform the delegated modules and return structured handoffs.
+5. Relevant asset, specialist, discovery, or market modules run according to the workflow contract. When subagents are actually spawned, they perform spawned-subagent modules and return structured handoffs; otherwise the main session records a non-delegated audit fallback without advertising it as a user mode.
 6. Reusable analytical methods are executed through repo skills.
 7. Specialist outputs produce handoff artifacts or handoff summaries.
 8. Investment Committee synthesizes only after evidence and required specialist gates are satisfied, or produces a gate-aware non-final artifact when gates are incomplete.
-9. Final output follows master rules and report schemas and must not imply delegated subagents ran unless they actually did.
+9. Final output follows master rules and report schemas and must not imply spawned subagents ran unless they actually did.
 
 
-### Full Cycle runtime plan and completion check
+### AGENT workflow runtime plan and completion check
 
-For concrete-asset investment action requests, such as asking whether to invest, buy, add, hold, sell, start exposure, or evaluate an asset for a multi-year horizon, the runtime must default to Full Cycle unless the user explicitly requests short / fast / quick take / no full cycle / preliminary output. Full Cycle defaults to delegated relevant subagents when available.
+For concrete-asset investment action requests, such as asking whether to invest, buy, add, hold, sell, start exposure, or evaluate an asset for a multi-year horizon, the runtime routes through `AGENT:` / the internal full workflow unless the user explicitly requests `QUICK:` / short / fast / quick take / preliminary output. `AGENT:` uses relevant spawned subagents when available, and must not claim agent workflow execution unless subagents were actually spawned.
 
-The audit pack must record `Execution mode` and a compact Runtime Execution Plan before analysis. In `Single-agent Full Cycle`, the plan lists analytical modules executed by the main session; in `Delegated Full Agent Workflow`, the plan lists the subagents actually spawned and the handoffs they must return. Ordinary chat does not show this block unless explicitly requested:
+The audit pack must record `Execution mode` and a compact Runtime Execution Plan before analysis. The plan lists analytical modules executed by the main session and, only when spawned-subagent work actually occurred, the subagents spawned and the handoffs they must return. Non-spawned-subagent fallback is audit-only and not a selectable user mode. Ordinary chat does not show this block unless explicitly requested:
 
-Runtime Execution Plan required fields are audit metadata: execution mode, subject / asset, included modules, excluded modules, reason for route, actually spawned subagents when delegated, fallback reason when not delegated, and module status for every included module using `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
+Runtime Execution Plan required fields are audit metadata: execution mode, subject / asset, included modules, excluded modules, reason for route, actually spawned subagents when spawned-subagent mode is used, fallback reason when no subagents were spawned, and module status for every included module using `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
 
 ```text
 # audit\run_metadata.md snippet; not ordinary chat
-Execution mode: [Delegated Full Agent Workflow | Single-agent Full Cycle]
+Execution mode: [Agent workflow with spawned subagents | Non-delegated audit fallback]
 Subject: [asset]
-Route: Master Intake -> Asset Intake -> Equity Full Cycle
+Route: Master Intake -> Asset Intake -> Equity internal full workflow
 Included modules:
 - request intake and 5-question workflow intake
 - asset identity and route check
@@ -177,10 +177,10 @@ Included modules:
 - risk / red-team review
 - portfolio fit / limited portfolio fit
 - IC synthesis
-Actually spawned subagents when delegated:
+Actually spawned subagents when spawned-subagent mode is used:
 - [agent name -> handoff artifact]
-Fallback reason when not delegated:
-- [only if Single-agent Full Cycle fallback is used]
+Fallback reason when no subagents were spawned:
+- [only if non-delegated audit fallback is used]
 Excluded modules:
 - [module -> reason]
 Module status table:
@@ -204,13 +204,13 @@ Every listed module must have an audit-recorded status as `Complete`, `Limited`,
 
 Status tokens `Complete`, `Limited`, `Blocked`, `Not material`, and `Skipped with reason` are controlled metadata and may remain in English inside audit; reader-facing report prose must follow the user-facing language policy.
 
-Before calling the result Full Cycle, the runtime must verify that every item listed under Included Modules appears in a Module Status table with one valid status. Conditional modules such as financial statements, news/catalysts, valuation, risk, and Portfolio Fit must be included with status or excluded with reason. Macro is a default module for every asset class; sector / industry is a default module for equity. If any listed module has no valid status, complete the missing work, record a valid module status, or downgrade to `Preliminary`, `Limited`, `Evidence Gap Memo`, or another gate-aware non-final artifact. A Limited Full Cycle remains a Full Cycle only when every included module has an audit-recorded valid status and the artifact is gate-aware.
+Before calling the result a complete large workflow, the runtime must verify that every item listed under Included Modules appears in a Module Status table with one valid status. Conditional modules such as financial statements, news/catalysts, valuation, risk, and Portfolio Fit must be included with status or excluded with reason. Macro is a default module for every asset class; sector / industry is a default module for equity. If any listed module has no valid status, complete the missing work, record a valid module status, or downgrade to `Preliminary`, `Limited`, `Evidence Gap Memo`, or another gate-aware non-final artifact. A Limited large workflow remains valid only when every included module has an audit-recorded valid status and the artifact is gate-aware.
 
-Subagents should be used by default for full concrete-asset investment workflows when relevant and available, and must be used when explicitly requested unless tooling is unavailable. Custom agents are configuration layers for spawned Codex sessions, not permanently running independent agents. They should not create uncontrolled agent-to-agent chat. Handoffs must use structured artifacts and workflow rules. If no subagents were spawned, the only valid mode is `Single-agent Full Cycle` or another non-delegated mode; do not present the output as a delegated workflow.
+Subagents should be used for `AGENT:` concrete-asset investment workflows when relevant and available. Custom agents are configuration layers for spawned Codex sessions, not permanently running independent agents. They should not create uncontrolled agent-to-agent chat. Handoffs must use structured artifacts and workflow rules. If no subagents were spawned, record a non-spawned-subagent fallback only in audit metadata; do not present the output as an agent workflow with spawned subagents.
 
 ### Intake questions and report packaging
 
-Before a full investment workflow starts, ask exactly 5 asset-specific questions in one block and wait for the user's next message. Before an explicit short / fast / Quick Take answer, ask exactly 3 relevant questions in one block and keep the answer chat-only. If the asset or instrument identity is ambiguous, resolve identity first, then ask the 5 or 3 questions.
+Before an `AGENT:` / full investment workflow starts, ask exactly 5 asset-specific questions in one block and wait for the user's next message. Before an explicit short / fast / Quick Take answer, ask exactly 3 relevant questions in one block and keep the answer chat-only. If asset identity, ticker, instrument, currency, maturity, or structure is ambiguous, count the clarification inside the required 5-question `AGENT:` block or 3-question `QUICK:` block wherever possible. Ask a separate blocking clarification only when the request is truly unroutable, such as an unresolved ticker/share-class/instrument conflict that prevents route selection.
 
 Full workflow packaging writes `investment_report.md` plus an `audit\` folder under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-dd hhmm\`. The chat response must reproduce `investment_report.md` exactly and end with only the saved report path. The audit path, agent list, execution mode, runtime plan, module statuses, canonical artifact type, full source list, and handoff metadata are shown only when explicitly requested.
 
@@ -259,7 +259,7 @@ Rule IDs preserve the original review sequence. The tables below group them by r
 | Rule ID | Runtime edge case | Required safe behavior |
 |---|---|---|
 | P1A-CODEX-01-05 | User asks a specialist agent for a final buy/sell decision. | Specialist agents provide scoped `Specialist Verdict` only, state `Boundary: Not an IC Action`, list missing IC gates, and may offer to route to IC workflow. |
-| P1A-CODEX-01-17 | User asks to "run all agents" for one idea. | Interpret full analysis as a relevant-complete delegated workflow, not literally all agents; use relevant agents only, record included/excluded agents and structured handoffs in audit, and show them in chat only if requested. |
+| P1A-CODEX-01-17 | User asks to "run all agents" for one idea. | Interpret full analysis as a relevant-complete spawned-subagent workflow, not literally all agents; use relevant agents only, record included/excluded agents and structured handoffs in audit, and show them in chat only if requested. |
 | P1A-CODEX-01-18 | Agents produce conflicting findings. | IC performs conflict synthesis rather than averaging: identify agreement, decision-critical conflicts, facts needed to resolve them, and whether Complete IC Action is allowed. |
 | P1A-CODEX-01-20 | A task matches both a custom agent and a repo skill. | Agent owns role, boundary, status, and handoff; skill owns reusable method. Workflow/router decides sequencing. Skills do not issue final IC Actions. |
 | P1A-CODEX-01-23 | User requests a final report before required gates are complete. | Use gate-aware artifact naming such as `Preliminary Investment Brief`, `Limited IC Draft`, `Evidence Gap Memo`, `Specialist Summary`, or `Decision-Prep Memo`; do not label it `Final Investment Memo`. |
@@ -280,10 +280,10 @@ Rule IDs preserve the original review sequence. The tables below group them by r
 
 | Rule ID | Runtime edge case | Required safe behavior |
 |---|---|---|
-| P1A-CODEX-01-07 | User asks for a quick answer while evidence gates are normally required. | Allow Quick Take only when the user explicitly asks for short / fast / quick take / no full cycle / preliminary output. Concrete-asset investment action requests otherwise default to Full Cycle, with no final buy/sell unless IC gates pass. If blocking personal context or identity is missing, ask first; non-blocking portfolio context limits Portfolio Fit / IC status. |
+| P1A-CODEX-01-07 | User asks for a quick answer while evidence gates are normally required. | Allow Quick Take only when the user explicitly asks for `QUICK:` / short / fast / quick take / preliminary output. Concrete-asset investment action requests otherwise route to `AGENT:` / the internal full workflow, with no final buy/sell unless IC gates pass. Count identity clarification inside the required intake block where possible; ask separately only for truly unroutable identity conflicts. Non-blocking portfolio context limits Portfolio Fit / IC status. |
 | P1A-CODEX-01-08 | User asks to compare ideas across different asset classes. | Use cross-asset comparison framing: common role-based criteria plus asset-specific criteria; do not declare a universal winner without the user's objective. |
 | P1A-CODEX-01-09 | User omits investment horizon. | For quick takes, separate tactical 0-3 months, medium-term 6-18 months, and long-term 3-5 years; final IC Action requires explicit time horizon. |
-| P1A-CODEX-01-10 | User omits risk profile or portfolio context. | For clear concrete-asset Full Cycle requests, proceed with general analysis and mark Portfolio Fit Limited / not personalized; ask minimum context before personalized final action. If the missing context blocks route or safe identity, ask first. |
+| P1A-CODEX-01-10 | User omits risk profile or portfolio context. | For clear concrete-asset internal full workflow requests, proceed with general analysis and mark Portfolio Fit Limited / not personalized; ask minimum context before personalized final action. If the missing context blocks route or safe identity, ask first. |
 | P1A-CODEX-01-11 | User requests exact position size or allocation. | Discuss only scenario-based ranges with assumptions and stress tests; do not issue exact allocation as an instruction. |
 | P1A-CODEX-01-14 | User asks for a simple explanation of a complex investment question. | Use plain language while keeping visible statuses, assumptions, risks, unknowns, and IC boundaries. |
 | P1A-CODEX-01-15 | User asks for "no disclaimers" or just the action. | Compress wording but preserve critical guardrails: status, assumptions, missing data, evidence limits, and specialist-vs-IC boundary. |
@@ -300,7 +300,7 @@ Rule IDs preserve the original review sequence. The tables below group them by r
 | P1A-CODEX-01-31 | User asks for a thesis but no catalyst/path is visible. | Classify thesis path as hard catalyst, soft catalyst, structural compounding, monitoring thesis, or no credible path; constrain IC Action when no credible path exists. |
 | P1A-CODEX-01-33 | Product is complex, such as leveraged/inverse ETF, options strategy, structured note, high-yield bond, or crypto yield. | Apply complex product gate before attractive yield/upside conclusions: payoff, leverage/inverse mechanics, path dependency, embedded options, costs, liquidity, counterparty/issuer risk, failure modes, suitability, and holding-period mismatch. |
 | P1A-CODEX-01-34 | Asset is private, illiquid, microcap, sparse-data, or poorly covered. | Use sparse-data mode by default: provenance, liquidity/price discovery warnings, higher positive-conclusion threshold, scenario ranges instead of point valuation, fraud/governance/accounting checks, exit risk, and Limited status absent strong primary documents. |
-| P1A-CODEX-01-35 | Ticker, listing, instrument, or asset identity is ambiguous. | Use ambiguity gate: proceed with explicit assumption only when obvious; ask for exact ticker/ISIN/CUSIP, exchange, currency, asset type, maturity, structure, share class, or jurisdiction when ambiguity is material. |
+| P1A-CODEX-01-35 | Ticker, listing, instrument, or asset identity is ambiguous. | Use ambiguity gate: proceed with explicit assumption only when obvious; count exact ticker/ISIN/CUSIP, exchange, currency, asset type, maturity, structure, share class, or jurisdiction clarification inside the required intake block where possible, and ask separately only when the request is truly unroutable. |
 
 ### P10 runtime QA operating note
 
@@ -308,7 +308,7 @@ When P10-QA executes runtime acceptance checks, Codex runtime behavior follows t
 
 - use synthetic fixtures for stable pass/fail behavior and live-smoke checks only for freshness behavior;
 - score safety/gate correctness separately from UX/usefulness, and do not let UX usefulness override a safety failure;
-- classify prompts as personal/final action, concrete-asset investment action, market setup / attractiveness, or analysis-only before choosing Full Cycle, ask-first, or explicit Preliminary/Limited output;
+- classify prompts as personal/final action, concrete-asset investment action, market setup / attractiveness, or analysis-only before choosing internal full workflow, ask-first, or explicit Preliminary/Limited output;
 - treat final action language from non-IC agents or skills as a safety failure;
 - require Limited/Blocked outputs to include a concise next-step block;
 - compress caveats when requested, but never remove status, evidence limits, missing gates, or boundaries;
@@ -327,7 +327,7 @@ The Codex runtime architecture layer is ready when:
 - the project-root discovery rule is documented;
 - the 20 planned custom-agent files are mapped to canonical agent/router contracts;
 - planned repo skills are mapped to canonical method-skill contracts;
-- full concrete-asset investment workflows default to relevant delegated subagents when available; if no subagents are actually spawned, audit records `Single-agent Full Cycle` and output must not imply delegation;
+- `AGENT:` / full concrete-asset investment workflows use relevant spawned subagents when available; if no subagents are actually spawned, audit records a non-spawned-subagent fallback and output must not imply subagent spawning;
 - validation checks for future custom-agent TOML files are documented;
 - legacy PRDs remain routed through the registry and traceability matrix.
 - this document contains stable runtime edge-case rules `P1A-CODEX-01-01` through `P1A-CODEX-01-35`;

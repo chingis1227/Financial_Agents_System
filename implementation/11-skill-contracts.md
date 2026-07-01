@@ -11,7 +11,7 @@ Skills are repeatable analytical methods used by agents or workflows. They do no
 
 ## Standard method-output requirement
 
-Every skill output must include a human-readable method summary plus a structured handoff. The required method-output core is below. For Full Cycle or Full Agent Workflow runs, this core must include `## Handoff metadata` near the top and the exact controlled `## Structured handoff` block and field names from `workflows/handoff_artifact_standard.md`; a shorter method handoff is not valid IC input, and required fields must not be renamed or omitted. Full Cycle output template is the union of the exact `## Handoff metadata` block and the exact `## Structured handoff` block from `workflows/handoff_artifact_standard.md`; the concise template below shows the method wrapper plus exact structured handoff, not a replacement for handoff metadata.
+Every skill output must include a human-readable method summary plus a structured handoff. The required method-output core is below. For large workflow or spawned-subagent workflow runs, this core must include `## Handoff metadata` near the top and the exact controlled `## Structured handoff` block and field names from `workflows/handoff_artifact_standard.md`; a shorter method handoff is not valid IC input, and required fields must not be renamed or omitted. large-workflow output template is the union of the exact `## Handoff metadata` block and the exact `## Structured handoff` block from `workflows/handoff_artifact_standard.md`; the concise template below shows the method wrapper plus exact structured handoff, not a replacement for handoff metadata.
 
 ```markdown
 ## Method Output Summary
@@ -62,7 +62,7 @@ Boundary: Not an IC Action. Method output only. IC synthesis uses the separate g
 
 ## Cross-skill guardrails
 
-- Direct skill calls are allowed only as scoped method outputs with visible boundary and missing IC gates. In Full Cycle, method skills produce structured handoffs for the owning agent / IC using the controlled fields in `workflows/handoff_artifact_standard.md`; they do not replace workflow synthesis.
+- Direct skill calls are allowed only as scoped method outputs with visible boundary and missing IC gates. In internal full workflow, method skills produce structured handoffs for the owning agent / IC using the controlled fields in `workflows/handoff_artifact_standard.md`; they do not replace workflow synthesis.
 - Non-IC skills must not issue `IC Action`, use `Action Box`, provide exact allocation instructions, or present specialist output as final decision support.
 - Evidence status, freshness, source restrictions, user-file provenance, and material conflicts constrain every skill conclusion.
 - Freshness-sensitive requests split structural view from current-action view; current action requires current timestamped sources.
@@ -79,7 +79,7 @@ Boundary: Not an IC Action. Method output only. IC synthesis uses the separate g
 | P5-SKL-01-01 | Skill visibility | Integrated output by default; skill-level detail only on request or audit/debug mode. |
 | P5-SKL-01-02 | Missing data | Block only decision-critical gaps; otherwise produce Preliminary/Limited scoped output with visible missing inputs. |
 | P5-SKL-01-03 | Compact contracts | Skill contracts and runtime adapters stay concise; deep method detail remains supporting reference material. |
-| P5-SKL-01-04 | Buy/sell/hold | Direct skills may give scoped Preliminary implications only when explicitly invoked or when the user asks for Quick Take; in Full Cycle, skills produce IC-ready structured handoffs and never final IC Action. |
+| P5-SKL-01-04 | Buy/sell/hold | Direct skills may give scoped Preliminary implications only when explicitly invoked or when the user asks for Quick Take; in internal full workflow, skills produce IC-ready structured handoffs and never final IC Action. |
 | P5-SKL-01-05 | Freshness | Separate structural view from current-action view and require current timestamped sources for current claims. |
 | P5-SKL-01-06 | Direct skill call | Allowed only as scoped method output with boundary and missing IC gates. |
 | P5-SKL-01-07 | User files | Treat as source material requiring provenance and sanity checks. |
@@ -88,7 +88,7 @@ Boundary: Not an IC Action. Method output only. IC synthesis uses the separate g
 | P5-SKL-01-10 | Evidence conflict | Evidence status constrains conclusions; skills may challenge but not override readiness. |
 | P5-SKL-01-11 | Output layers | Every skill output has human summary plus structured handoff. |
 | P5-SKL-01-12 | Known gaps | Technical defaults from canonical docs are allowed; product/UX ambiguity is pending decision. |
-| P5-SKL-01-13 | Workflow depth | Run minimum sufficient relevant skills by default for non-action or explicitly scoped work; concrete-asset investment action requests default to Full Cycle unless explicitly requested as short / fast / quick take / no full cycle / preliminary. |
+| P5-SKL-01-13 | Workflow depth | Run minimum sufficient relevant skills by default for non-action or explicitly scoped work; concrete-asset investment action requests route to `AGENT:` / the internal full workflow unless explicitly requested as `QUICK:` / short / fast / quick take / preliminary. |
 | P5-SKL-01-14 | Sizing | Only illustrative or Portfolio Fit ranges; exact allocation instructions prohibited. |
 | P5-SKL-01-15 | Complex products | Explainers allowed; positive action blocked until enhanced product gate. |
 | P5-SKL-01-16 | Ownership | Agents own role/boundary/status/handoff; skills own method; references own deep detail. |
@@ -187,7 +187,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: evidence is partial/stale/proxy-heavy.
 - Blocked when: decision-critical support is unavailable.
 
@@ -275,7 +275,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: company/financial evidence is partial.
 - Blocked when: identity or core business evidence is missing.
 
@@ -365,7 +365,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: history is partial.
 - Blocked when: core financial data is unavailable.
 
@@ -454,7 +454,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: inputs are partial/proxy.
 - Blocked when: core price/financial/capital-structure inputs are missing.
 
@@ -545,7 +545,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: thesis/evidence exists but valuation/risk detail is incomplete.
 - Blocked when: core thesis is undefined.
 
@@ -641,7 +641,7 @@ Keep the method output scoped to the Investment Committee Agent and selected wor
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: useful but constrained.
 - Blocked when: required evidence/valuation/risk/lead analysis is missing.
 
@@ -730,7 +730,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: issuer data is stale/partial.
 - Blocked when: identity/holdings/methodology cannot be verified.
 
@@ -819,7 +819,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: market/credit data is partial.
 - Blocked when: terms or pricing/credit evidence are missing.
 
@@ -909,7 +909,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: physical data is delayed/proxy-heavy.
 - Blocked when: identity or decision-critical balance data is unavailable.
 
@@ -998,7 +998,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: data is partial/fast-moving.
 - Blocked when: identity/tokenomics/security/liquidity evidence is unverifiable.
 
@@ -1084,7 +1084,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: data is stale/partial.
 - Blocked when: decision-critical current data is unavailable.
 
@@ -1170,7 +1170,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: reporting is partial/low-confidence.
 - Blocked when: requested event cannot be verified.
 
@@ -1256,7 +1256,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: evidence is indirect/incomplete.
 - Blocked when: no usable positioning evidence exists.
 
@@ -1341,7 +1341,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: user portfolio context is missing.
 - Blocked when: user-specific answer is required but context is unavailable.
 
@@ -1433,7 +1433,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: boundaries/data are partial.
 - Blocked when: scope/evidence is too weak.
 
@@ -1523,7 +1523,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: universe/evidence is partial.
 - Blocked when: theme cannot define a universe.
 
@@ -1612,7 +1612,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: hypotheses are plausible but not confirmed.
 - Blocked when: price move/context is unavailable.
 
@@ -1698,7 +1698,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: hypotheses are plausible but evidence is weak.
 - Blocked when: observation cannot be defined.
 
@@ -1782,7 +1782,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: source coverage is partial.
 - Blocked when: no reliable current sources are available.
 
@@ -1799,7 +1799,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 
 - All 19 planned method skills are present with Template v2 metadata and UX blocks.
 - Every skill defines required inputs, step sequence, output contract, guardrails, failure states, and quality checks.
-- Every skill output uses human summary plus structured handoff; Full Cycle handoffs use the controlled fields in `workflows/handoff_artifact_standard.md`.
+- Every skill output uses human summary plus structured handoff; large-workflow handoffs use the controlled fields in `workflows/handoff_artifact_standard.md`.
 - Non-IC skills cannot issue final `IC Action` or use `Action Box`.
 - `Complete` for a skill means `Complete for scoped method` and does not imply Complete IC Action.
 - Runtime `.agents/skills/*/SKILL.md` adapters remain concise and synchronized to this canonical document.

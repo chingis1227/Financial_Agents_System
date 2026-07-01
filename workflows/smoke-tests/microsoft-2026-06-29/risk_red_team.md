@@ -1,4 +1,4 @@
-﻿# risk_red_team.md - Microsoft / MSFT
+# risk_red_team.md - Microsoft / MSFT
 
 ## Handoff metadata
 - Artifact: `risk_red_team.md`
@@ -6,8 +6,8 @@
 - Scope: scoped risk and red-team gate input
 - Owner: Risk / Red Team Agent
 - Producing agent/skill/workflow: Risk / Red Team Agent / `risk-red-team` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest runtime context
 - Output status: Limited
 - Evidence status: Limited public-data risk review; sufficient for scoped risk mapping, not sufficient for final IC Action
@@ -40,7 +40,7 @@ Risk Gate status: Limited / Conditional Risk Gate. Public evidence does not forc
 The risk work supports continued analysis, not a final action. A final IC memo would need quantified downside scenarios and a clear statement that the thesis still works under adverse capex, margin, growth, and multiple assumptions.
 ## Scope note
 
-This file is a structured handoff artifact for the delegated smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
+This file is a structured handoff artifact for the spawned-subagent smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
 
 ## Structured handoff
 
@@ -49,8 +49,8 @@ This file is a structured handoff artifact for the delegated smoke test, not a f
 - Scope: scoped risk and red-team gate input
 - Owner: Risk / Red Team Agent
 - Producing agent/skill/workflow: Risk / Red Team Agent / `risk-red-team` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest runtime context
 - Output status: Limited
 - Evidence status: Limited public-data risk review; sufficient for scoped risk mapping, not sufficient for final IC Action

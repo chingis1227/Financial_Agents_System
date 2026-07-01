@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Market Positioning Agent
 - Producing agent/skill/workflow: Market Positioning Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; public sources, current holdings, partial flow evidence, survey-based crowding proxies
@@ -30,8 +30,8 @@ Crowding risk is elevated for both funds because both sit inside the mega-cap gr
 - Scope: Crowding, flows, mega-cap growth positioning, narrative saturation, event bar
 - Owner: Market Positioning Agent
 - Producing agent/skill/workflow: Market Positioning Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; public sources, current holdings, partial flow evidence, survey-based crowding proxies

@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Market Intelligence Agent
 - Producing agent/skill/workflow: Market Intelligence Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; current public price/context checked, no full ETF flow tape
@@ -30,8 +30,8 @@ Market backdrop is constructive but momentum-sensitive. QQQ is the more concentr
 - Scope: Market backdrop and context needs
 - Owner: Market Intelligence Agent
 - Producing agent/skill/workflow: Market Intelligence Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; current public price/context checked, no full ETF flow tape

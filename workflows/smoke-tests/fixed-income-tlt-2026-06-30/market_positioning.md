@@ -5,13 +5,13 @@
 - Subject: TLT as bond ETF / long-duration U.S. Treasury exposure smoke test
 - Owner: Market Positioning Agent
 - Producing agent/skill/workflow: Market Positioning Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited public-data positioning read; source and lag limits remain
 - Freshness status: Recent; ETF flow and CFTC positioning are delayed/revisable
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: ETF flows are delayed; CFTC data lag and are not DV01-normalized; no options/dealer/premium data.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Missing gates: Fresh ETF flows, next CFTC report, options/dealer data, portfolio and IC gates
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the TLT delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the TLT spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -33,13 +33,13 @@ Public evidence points to recent TLT ETF demand but not definitive all-investor 
 - Scope: Treasury duration positioning, ETF flows, futures/spec positioning, curve/term-premium narrative, crowding, source limits
 - Owner: Market Positioning Agent
 - Producing agent/skill/workflow: Market Positioning Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited public-data positioning read; source and lag limits remain
 - Freshness status: Recent; ETF flow and CFTC positioning are delayed/revisable
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: ETF flows are delayed; CFTC data lag and are not DV01-normalized; no options/dealer/premium data.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Key findings: Public evidence points to recent TLT ETF demand but not definitive all-investor duration crowding; futures positioning is split between asset managers and leveraged funds.

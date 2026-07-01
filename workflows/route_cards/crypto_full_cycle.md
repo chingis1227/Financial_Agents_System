@@ -1,4 +1,4 @@
-﻿# Crypto Full Cycle Route Card
+# Crypto AGENT Workflow Route Card
 
 Status: Runtime route card
 Authority: Subordinate to `workflows/crypto_full_cycle.md` and canonical implementation documents.
@@ -37,4 +37,4 @@ If the user requests yield, staking, leverage, custody, or complex crypto produc
 
 ## Validation expectations
 
-BTC 3-year investment prompt must map to crypto Full Cycle and require 5 questions.
+BTC 3-year investment prompt must map to crypto AGENT workflow and require 5 questions.

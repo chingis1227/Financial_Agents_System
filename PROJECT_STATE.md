@@ -5,30 +5,54 @@ Last updated: 2026-06-30
 
 ## Purpose
 
-This file is the short current-state entrypoint for Codex runtime work in the Financial Agent System. It is intentionally compact. Historical task logs and audit reports do not override this file or the canonical implementation documents.
+This file is the short current-state entrypoint for Codex runtime work in the Financial Agent System. Historical task logs and audit reports do not override this file or the canonical implementation documents.
 
 ## Current operating model
 
 - Runtime style: Codex-native first; no OpenAI API / Agents SDK orchestrator is required for the current version.
 - Daily runtime path: `PROJECT_STATE.md` -> `AGENTS.md` -> `workflows/route_cards/investment_request_router.md` -> selected route card -> validators.
-- Concrete-asset investment-action requests default to Full Cycle unless the user explicitly asks for a short / fast / quick / preliminary answer.
-- Quick Take is chat-only, asks exactly 3 relevant questions first, and must not create `investment_report.md` or an `audit` folder.
-- Full Cycle asks exactly 5 relevant questions first, then writes `investment_report.md` plus `audit/` when the workflow runs.
-- Subagents are counted as used only when they are actually spawned; in validator terms, subagents were actually spawned. If no subagents are spawned, audit metadata must use `Single-agent Full Cycle`, not `Delegated Full Agent Workflow`; do not claim delegated execution without a real spawn record.
+- User-facing command model: `AGENT:` for the large agent workflow, `QUICK:` for a short preliminary answer, and specialist prefixes for one analyst.
+- Ordinary investment-action prompts without a prefix still route through the router, but recommended UX is `AGENT:` or `QUICK:`.
+- `AGENT:` asks exactly 5 relevant questions first, then uses relevant spawned subagents when available. Do not claim an agent workflow unless subagents were actually spawned.
+- If subagents cannot be spawned after `AGENT:`, record the fallback only in audit metadata and mark the user-facing output Limited; do not advertise the fallback as a selectable user mode.
+- `QUICK:` is chat-only, asks exactly 3 relevant questions first, and must not create `investment_report.md` or an `audit` folder.
 - Final IC Actions remain owned by Investment Committee synthesis only; specialist outputs are scoped handoffs and must not use final buy/sell/hold/add/trim/exit labels.
+
+## Command shortcuts
+
+| Command | Runtime meaning | Target |
+|---|---|---|
+| `AGENT:` | Large agent workflow with relevant spawned subagents | Router-selected asset workflow + IC synthesis |
+| `QUICK:` | Short preliminary answer | Quick Take route |
+| `RISK:` | One specialist only | `risk-red-team-agent` |
+| `VAL:` | One specialist only | `valuation-expectations-agent` |
+| `MACRO:` | One specialist only | `macro-agent` |
+| `NEWS:` | One specialist only | `news-catalysts-agent` |
+| `PORTFOLIO:` | One specialist only | `portfolio-fit-agent` |
+| `SECTOR:` | One specialist only | `sector-industry-analysis-agent` |
+| `EVIDENCE:` | One specialist only | `evidence-collector` |
+| `POSITIONING:` | One specialist only | `market-positioning-agent` |
+| `INTEL:` | One specialist only | `market-intelligence-agent` |
+| `EQUITY:` | One specialist only | `equity-agent` |
+| `ETF:` | One specialist only | `etf-agent` |
+| `COMMODITY:` | One specialist only | `commodity-agent` |
+| `CRYPTO:` | One specialist only | `crypto-agent` |
+| `FI:` | One specialist only | `fixed-income-agent` |
+| `WINNERS:` | One specialist only | `structural-winners-discovery-agent` |
+| `IC:` | One specialist only; committee-prep handoff, not final action | `investment-committee-agent` |
 
 ## Current ready routes
 
 | Route | Current status | Runtime entrypoint |
 |---|---|---|
-| Quick Take | Ready for preliminary chat-only use | `workflows/route_cards/quick_take.md` |
-| Equity Full Cycle | Ready for regular use | `workflows/route_cards/equity_full_cycle.md` |
-| ETF / fund Full Cycle | Ready after non-equity Level 2 hardening | `workflows/route_cards/etf_full_cycle.md` |
-| Commodity Full Cycle | Ready after non-equity Level 2 hardening | `workflows/route_cards/commodity_full_cycle.md` |
-| Crypto Full Cycle | Ready after non-equity Level 2 hardening | `workflows/route_cards/crypto_full_cycle.md` |
-| Fixed Income Full Cycle | Ready after non-equity Level 2 hardening | `workflows/route_cards/fixed_income_full_cycle.md` |
-| Multi-asset comparison | Ready after non-equity Level 2 hardening | `workflows/route_cards/multi_asset_comparison.md` |
-| Direct specialist request | Ready with IC boundary | `workflows/route_cards/direct_specialist.md` |
+| `QUICK:` | Ready for preliminary chat-only use | `workflows/route_cards/quick_take.md` |
+| `AGENT:` equity workflow | Ready for regular use | `workflows/route_cards/equity_full_cycle.md` |
+| `AGENT:` ETF / fund workflow | Ready; Level 2 hardening complete | `workflows/route_cards/etf_full_cycle.md` |
+| `AGENT:` commodity workflow | Ready; Level 2 hardening complete | `workflows/route_cards/commodity_full_cycle.md` |
+| `AGENT:` crypto workflow | Ready; Level 2 hardening complete | `workflows/route_cards/crypto_full_cycle.md` |
+| `AGENT:` fixed-income workflow | Ready; Level 2 hardening complete | `workflows/route_cards/fixed_income_full_cycle.md` |
+| `AGENT:` multi-asset comparison | Ready; Level 2 hardening complete | `workflows/route_cards/multi_asset_comparison.md` |
+| Specialist command | Ready with analyst boundary | `workflows/route_cards/direct_specialist.md` |
 
 ## Active documents
 

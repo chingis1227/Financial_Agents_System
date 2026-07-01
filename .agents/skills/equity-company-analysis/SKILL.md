@@ -36,7 +36,7 @@ Read only the canonical documents needed for the task. Default required set:
 - `implementation/04-evidence-layer.md`
 - `implementation/06-agent-contracts.md` for owning agent boundaries
 - `implementation/11-skill-contracts.md` for this skill contract
-- `workflows/handoff_artifact_standard.md` when producing Full Cycle or Full Agent Workflow handoffs
+- `workflows/handoff_artifact_standard.md` when producing large workflow or spawned-subagent workflow handoffs
 
 Conditional references:
 
@@ -80,13 +80,13 @@ Every output must include:
 - Missing IC Gates
 - Boundary
 - `## Structured handoff` using the controlled fields from `workflows/handoff_artifact_standard.md`
-- Full Cycle / Full Agent Workflow handoff must also include `## Handoff metadata` and use the exact `## Structured handoff` block and field names from `workflows/handoff_artifact_standard.md`; do not rename or omit required fields
+- large workflow / spawned-subagent workflow handoff must also include `## Handoff metadata` and use the exact `## Structured handoff` block and field names from `workflows/handoff_artifact_standard.md`; do not rename or omit required fields
 
 Boundary wording: `Boundary: Not an IC Action. Method output only.`
 
 ## Cross-skill guardrails
 
-- Direct skill calls are allowed only as scoped method outputs with boundary and missing IC gates; Full Cycle handoffs must use the controlled handoff fields.
+- Direct skill calls are allowed only as scoped method outputs with boundary and missing IC gates; large-workflow handoffs must use the controlled handoff fields.
 - Non-IC outputs must not issue final `IC Action`, use `Action Box`, or provide exact allocation instructions.
 - Evidence status, freshness, source restrictions, user-file provenance, and material conflicts constrain conclusions.
 - Freshness-sensitive requests split structural view from current-action view.
@@ -100,21 +100,21 @@ Boundary wording: `Boundary: Not an IC Action. Method output only.`
 ## Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in large workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: company/financial evidence is partial.
 - Blocked when: identity or core business evidence is missing.
 
 
-## Full Cycle behavior
+## Large workflow behavior
 
-Expected Full Cycle artifact: `equity_company_analysis.md`. The skill remains the method layer; the owning agent or workflow owns role, boundary, status, and handoff publication.
+Expected large-workflow artifact: `equity_company_analysis.md`. The skill remains the method layer; the owning agent or workflow owns role, boundary, status, and handoff publication.
 
-When this skill runs as part of an equity Full Cycle, it provides the business-quality and thesis-durability method handoff for the Equity Agent and IC. It must separate business quality from stock attractiveness and must not issue final action language. If financial, sector, or news inputs are incomplete, mark the method output `Limited` and name the missing downstream gates.
+When this skill runs as part of an equity large workflow, it provides the business-quality and thesis-durability method handoff for the Equity Agent and IC. It must separate business quality from stock attractiveness and must not issue final action language. If financial, sector, or news inputs are incomplete, mark the method output `Limited` and name the missing downstream gates.
 
 ## Quality checks
 
 - Output follows the canonical skill contract in `implementation/11-skill-contracts.md`.
-- Output uses the required output core and structured handoff; for Full Cycle / Full Agent Workflow, it also includes `## Handoff metadata` and the controlled handoff fields from `workflows/handoff_artifact_standard.md`.
+- Output uses the required output core and structured handoff; for large workflow / spawned-subagent workflow, it also includes `## Handoff metadata` and the controlled handoff fields from `workflows/handoff_artifact_standard.md`.
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.

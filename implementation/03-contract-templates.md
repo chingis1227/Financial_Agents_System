@@ -357,7 +357,7 @@ Every contract must define `Complete`, `Preliminary`, `Limited`, and `Blocked` b
 | Status | Template meaning |
 |---|---|
 | Complete | Required inputs and gates are sufficient for the stated scope. Complete specialist output does not imply complete IC action. |
-| Preliminary | Early or narrow output that may improve with further workflow steps. Quick Takes are always Preliminary or Limited and never final IC Actions; if full gates are being completed, route or upgrade to Full Cycle / IC synthesis. |
+| Preliminary | Early or narrow output that may improve with further workflow steps. Quick Takes are always Preliminary or Limited and never final IC Actions; if full gates are being completed, route or upgrade to internal full workflow / IC synthesis. |
 | Limited | Output can proceed, but source scope, evidence quality, freshness, workflow exclusions, or missing gates constrain conclusion strength. |
 | Blocked | The requested conclusion must not be made until required input, evidence, clarification, or gate resolution is available. |
 
@@ -397,7 +397,7 @@ Handoffs must be structured artifacts, not uncontrolled agent-to-agent chat.
 - Required follow-up:
 ```
 
-For Full Cycle and Full Agent Workflow runs, `workflows/handoff_artifact_standard.md` provides the executable field standard and compatibility mapping. New handoffs should use these controlled field names rather than aliases such as `Status`, `Limitations`, or `Downstream relevance`.
+For large workflow / spawned-subagent workflow runs, `workflows/handoff_artifact_standard.md` provides the executable field standard and compatibility mapping. New handoffs should use these controlled field names rather than aliases such as `Status`, `Limitations`, or `Downstream relevance`.
 
 ## 12. Decision label permissions
 

@@ -5,13 +5,13 @@
 - Subject: BTC over a 3-year horizon for crypto decision-prep smoke test
 - Owner: Evidence Collector Agent
 - Producing agent/skill/workflow: Evidence Collector Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited for downstream IC use; pre-IC evidence lock not granted
 - Freshness status: Current snapshot for market/on-chain; event-driven refresh required
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No paid on-chain data, own-node validation, full venue-depth review, global regulatory scan, or user custody context.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Missing gates: Crypto, valuation-equivalent, macro, positioning, risk, portfolio fit, implementation, final freshness check
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the BTC delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the BTC spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -43,13 +43,13 @@ BTC identity is clear; current market, on-chain, and liquidity snapshots exist; 
 - Scope: Evidence readiness for BTC crypto route
 - Owner: Evidence Collector Agent
 - Producing agent/skill/workflow: Evidence Collector Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited for downstream IC use; pre-IC evidence lock not granted
 - Freshness status: Current snapshot for market/on-chain; event-driven refresh required
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No paid on-chain data, own-node validation, full venue-depth review, global regulatory scan, or user custody context.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Key findings: BTC identity is clear; current market, on-chain, and liquidity snapshots exist; evidence is not sufficient for final decision support.

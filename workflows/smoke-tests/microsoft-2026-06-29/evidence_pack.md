@@ -1,13 +1,13 @@
-﻿# evidence_pack.md - Microsoft / MSFT
+# evidence_pack.md - Microsoft / MSFT
 
 ## Handoff metadata
 - Artifact: `evidence_pack.md`
 - Subject: Microsoft Corporation (`MSFT`), Nasdaq common stock, USD
-- Scope: public evidence pack for the delegated Microsoft equity full-cycle smoke test
+- Scope: public evidence pack for the spawned-subagent Microsoft equity full-cycle smoke test
 - Owner: Evidence Collector Agent
-- Producing agent/skill/workflow: Evidence Collector Agent / `evidence-collection` skill / Equity Full Cycle
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Producing agent/skill/workflow: Evidence Collector Agent / `evidence-collection` skill / Equity internal full workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: price snapshot 2026-06-29 21:57:01 UTC; evidence review 2026-06-30 Europe/Budapest runtime context
 - Output status: Limited
 - Evidence status: Limited; usable for downstream public-data analysis but not for final IC Action
@@ -15,7 +15,7 @@
 - Source scope: public data only; Microsoft IR FY26 Q3 materials, SEC Form 10-Q reference, market quote snapshot, public news/risk checks
 - Evidence limits: no paid consensus; no full 10-Q note extraction; market data may vary by provider timestamp; news review is not exhaustive; no user files
 - Key limitations: evidence supports downstream analysis only; it does not support a valuation conclusion, risk verdict, portfolio recommendation, or IC Action
-- Key findings: public evidence is sufficient to route MSFT through the delegated workflow and support scoped downstream modules
+- Key findings: public evidence is sufficient to route MSFT through the spawned-subagent workflow and support scoped downstream modules
 - Missing gates: Equity analysis, Financial Statement Analysis, Valuation, Risk / Red Team, Portfolio Fit, IC synthesis, final evidence/freshness lock
 - Decision boundary: Boundary: Not an IC Action. Evidence input only.
 - Decision constraints: No valuation conclusion, risk verdict, portfolio recommendation, sizing, or final action language.
@@ -24,14 +24,14 @@
 
 ## Evidence summary
 
-The evidence base supports a delegated workflow smoke test for Microsoft. The market snapshot used by the run was price about $368.57, market capitalization about $2.744T, and P/E about 21.94 as of 2026-06-29 21:57:01 UTC. Official FY26 Q3 materials released on 2026-04-29 support the main financial claims: revenue $82.9B, operating income $38.4B, net income $31.8B, diluted EPS $4.27, Microsoft Cloud revenue $54.5B (+29%), and Azure and other cloud services growth of +40%.
+The evidence base supports a spawned-subagent workflow smoke test for Microsoft. The market snapshot used by the run was price about $368.57, market capitalization about $2.744T, and P/E about 21.94 as of 2026-06-29 21:57:01 UTC. Official FY26 Q3 materials released on 2026-04-29 support the main financial claims: revenue $82.9B, operating income $38.4B, net income $31.8B, diluted EPS $4.27, Microsoft Cloud revenue $54.5B (+29%), and Azure and other cloud services growth of +40%.
 
 The same evidence shows the central follow-up issue for the thesis: operating cash flow was large at $46.7B, but property and equipment additions were also large at $30.9B. That makes AI infrastructure return on invested capital, free-cash-flow conversion, cloud margins, and valuation compression the key gates for downstream analysis.
 
 
 ## Pre-IC evidence lock status
 
-Pre-IC evidence lock status: **Limited / not final**. The pack is adequate for delegated downstream analysis, but it is not a final evidence lock for an IC Action. Before a final IC-stage artifact, the system must refresh the market quote, check the latest Microsoft filings/earnings, re-check material news, and reconcile any source conflicts.
+Pre-IC evidence lock status: **Limited / not final**. The pack is adequate for spawned-subagent downstream analysis, but it is not a final evidence lock for an IC Action. Before a final IC-stage artifact, the system must refresh the market quote, check the latest Microsoft filings/earnings, re-check material news, and reconcile any source conflicts.
 
 ## Claim-support map
 
@@ -83,11 +83,11 @@ The market quote came from the runtime finance feed snapshot, not from a durable
 
 - Artifact: `evidence_pack.md`
 - Subject: Microsoft Corporation (`MSFT`), Nasdaq common stock, USD
-- Scope: public evidence pack for the delegated Microsoft equity full-cycle smoke test
+- Scope: public evidence pack for the spawned-subagent Microsoft equity full-cycle smoke test
 - Owner: Evidence Collector Agent
-- Producing agent/skill/workflow: Evidence Collector Agent / `evidence-collection` skill / Equity Full Cycle
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Producing agent/skill/workflow: Evidence Collector Agent / `evidence-collection` skill / Equity internal full workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: price snapshot 2026-06-29 21:57:01 UTC; evidence review 2026-06-30 Europe/Budapest runtime context
 - Output status: Limited
 - Evidence status: Limited; usable for downstream public-data analysis but not for final IC Action
@@ -95,7 +95,7 @@ The market quote came from the runtime finance feed snapshot, not from a durable
 - Source scope: public data only; Microsoft IR FY26 Q3 materials, SEC Form 10-Q reference, market quote snapshot, public news/risk checks
 - Evidence limits: no paid consensus; no full 10-Q note extraction; market data may vary by provider timestamp; news review is not exhaustive; no user files
 - Key limitations: evidence supports downstream analysis only; it does not support a valuation conclusion, risk verdict, portfolio recommendation, or IC Action
-- Key findings: public evidence is sufficient to route MSFT through the delegated workflow and support scoped downstream modules
+- Key findings: public evidence is sufficient to route MSFT through the spawned-subagent workflow and support scoped downstream modules
 - Missing gates: Equity analysis, Financial Statement Analysis, Valuation, Risk / Red Team, Portfolio Fit, IC synthesis, final evidence/freshness lock
 - Decision boundary: Boundary: Not an IC Action. Evidence input only.
 - Decision constraints: No valuation conclusion, risk verdict, portfolio recommendation, sizing, or final action language.

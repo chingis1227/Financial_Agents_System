@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Valuation & Expectations Agent
 - Producing agent/skill/workflow: Valuation & Expectations Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; valuation uses proxy ETF and growth-equity metrics
@@ -37,8 +37,8 @@ Both QQQ and SCHG depend on strong U.S. large-cap growth earnings, especially AI
 - Scope: ETF/growth-exposure valuation expectations
 - Owner: Valuation & Expectations Agent
 - Producing agent/skill/workflow: Valuation & Expectations Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; valuation uses proxy ETF and growth-equity metrics

@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Portfolio Fit Agent
 - Producing agent/skill/workflow: Portfolio Fit Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; structural portfolio-role evidence only
 - Freshness status: Structural only; no current-data gate closed
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No portfolio exposures, objectives, constraints, risk tolerance, tax/custody situation, or chosen instrument.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Portfolio context; instrument choice; evidence refresh; valuation; risk; implementation; IC synthesis
@@ -33,13 +33,13 @@ Gold can be a non-income diversifier and hedge sleeve, but effectiveness is regi
 - Scope: Generic 3-5 year portfolio role, diversification/hedge framing, and instrument caveats
 - Owner: Portfolio Fit Agent
 - Producing agent/skill/workflow: Portfolio Fit Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; structural portfolio-role evidence only
 - Freshness status: Structural only; no current-data gate closed
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No portfolio exposures, objectives, constraints, risk tolerance, tax/custody situation, or chosen instrument.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: Gold can be a non-income diversifier and hedge sleeve, but effectiveness is regime-dependent and exact sizing is blocked without portfolio context.

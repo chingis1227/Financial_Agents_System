@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Macro Agent
 - Producing agent/skill/workflow: Macro Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; structural mechanism view without full live macro refresh
@@ -30,8 +30,8 @@ Both funds are sensitive to discount rates and liquidity because large-cap growt
 - Scope: Rates, real yields, liquidity, dollar, and growth-regime transmission
 - Owner: Macro Agent
 - Producing agent/skill/workflow: Macro Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; structural mechanism view without full live macro refresh

@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Commodity Agent
 - Producing agent/skill/workflow: Commodity Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; gold supply/demand and official-sector context are partly supported, but live physical balance and vehicle details are not locked
 - Freshness status: Mixed; official-sector and ETF evidence lag current trading conditions
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No complete live physical-demand, refinery, bar/coin premium, futures-curve, or vehicle implementation pack.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Physical balance; official-sector refresh; ETF/futures flows; curve/carry; vehicle selection; risk and IC synthesis
@@ -33,13 +33,13 @@ Gold is driven less by industrial balance and more by reserve demand, real rates
 - Scope: Commodity setup, physical balance, curve, policy, and instrument context for gold
 - Owner: Commodity Agent
 - Producing agent/skill/workflow: Commodity Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; gold supply/demand and official-sector context are partly supported, but live physical balance and vehicle details are not locked
 - Freshness status: Mixed; official-sector and ETF evidence lag current trading conditions
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No complete live physical-demand, refinery, bar/coin premium, futures-curve, or vehicle implementation pack.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: Gold is driven less by industrial balance and more by reserve demand, real rates, USD, inflation/geopolitical hedging, ETF/futures flows, and vehicle implementation.

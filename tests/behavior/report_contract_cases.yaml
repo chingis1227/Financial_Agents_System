@@ -1,7 +1,8 @@
 [
   {
-    "id": "quick_take_contract",
+    "id": "quick_contract",
     "route": "quick_take",
+    "command": "QUICK",
     "must_not_create": [
       "investment_report.md",
       "audit/"
@@ -24,28 +25,48 @@
     ]
   },
   {
-    "id": "full_cycle_contract",
-    "route": "full_cycle",
+    "id": "agent_workflow_contract",
+    "route": "agent_workflow",
+    "command": "AGENT",
     "must_create": [
       "investment_report.md",
       "audit/run_metadata.md"
     ],
     "required_questions": 5,
+    "requires_spawned_subagents_or_limited_fallback": true,
     "required_audit_fields": [
       "Execution mode",
       "Included modules",
-      "Module status table"
+      "Module status table",
+      "Spawn record or fallback note"
     ]
   },
   {
-    "id": "direct_specialist_contract",
+    "id": "specialist_contract",
     "route": "direct_specialist",
     "required_boundary": "Boundary: Not an IC Action",
     "forbidden": [
       "Action Box",
       "IC Action: Buy",
       "IC Action: Sell",
-      "IC Action: Hold"
+      "IC Action: Hold",
+      "IC Action: Add",
+      "IC Action: Trim",
+      "IC Action: Exit"
+    ],
+    "required_boundary_line_prefix": "Boundary: Not an IC Action",
+    "required_visible_boundary_line": true,
+    "ic_shortcut_forbidden": [
+      "Action Box",
+      "IC Action: Buy",
+      "IC Action: Sell",
+      "IC Action: Hold",
+      "IC Action: Add",
+      "IC Action: Trim",
+      "IC Action: Exit",
+      "Buy recommendation",
+      "Sell recommendation",
+      "Hold recommendation"
     ]
   }
 ]

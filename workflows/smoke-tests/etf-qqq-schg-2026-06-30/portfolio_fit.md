@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Portfolio Fit Agent
 - Producing agent/skill/workflow: Portfolio Fit Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; no user portfolio data and no personalized holdings analysis
@@ -34,8 +34,8 @@ Current holdings, existing U.S. equity/growth/tech exposure, risk tolerance, obj
 - Scope: Generic portfolio role and overlap framing
 - Owner: Portfolio Fit Agent
 - Producing agent/skill/workflow: Portfolio Fit Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; no user portfolio data and no personalized holdings analysis

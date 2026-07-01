@@ -5,13 +5,13 @@
 - Subject: TLT as bond ETF / long-duration U.S. Treasury exposure smoke test
 - Owner: Portfolio Fit Agent
 - Producing agent/skill/workflow: Portfolio Fit Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited official fund data; no portfolio file or IC evidence lock
 - Freshness status: Recent official fund characteristics; no full evidence lock
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No user portfolio context; no complete risk/valuation/implementation package.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Missing gates: Portfolio context, risk, valuation/expectations, ETF implementation, IC synthesis
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the TLT delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the TLT spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -33,13 +33,13 @@ TLT can serve as duration hedge, income, and risk-off exposure; drawdown and equ
 - Scope: Generic portfolio role and personalization gate
 - Owner: Portfolio Fit Agent
 - Producing agent/skill/workflow: Portfolio Fit Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited official fund data; no portfolio file or IC evidence lock
 - Freshness status: Recent official fund characteristics; no full evidence lock
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No user portfolio context; no complete risk/valuation/implementation package.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Key findings: TLT can serve as duration hedge, income, and risk-off exposure; drawdown and equity-correlation behavior are regime-dependent.

@@ -1,4 +1,4 @@
-# Full Agent Workflow Handoff Artifact Standard
+# spawned-subagent workflow Handoff Artifact Standard
 
 ```yaml
 contract_type: Runtime Standard
@@ -8,9 +8,9 @@ version: 1.0
 authority_level: Subordinate to canonical implementation documents
 owner: Codex Runtime Architecture / Investment Committee Agent
 used_by:
-  - Single-agent Full Cycle workflows
-  - Delegated Full Agent Workflow runs
-  - Equity Full Cycle workflow
+  - Non-delegated audit fallback workflows
+  - Agent workflow with spawned subagents runs
+  - Equity large-workflow workflow
 produces:
   - structured_handoff_artifacts
 consumes:
@@ -27,9 +27,9 @@ Authority: this runtime standard is assembled from `implementation/00-master-rul
 
 ## Purpose
 
-Every Full Cycle or delegated workflow module must leave an auditable `.md` handoff artifact or artifact-equivalent `.md` handoff summary before downstream synthesis uses it. The Investment Committee may synthesize only from validated handoff artifacts, artifact-equivalent handoff summaries, the runtime execution plan, and the pre-IC evidence lock. Unstructured agent-to-agent chat is not valid IC input.
+Every internal full workflow or spawned-subagent workflow module must leave an auditable `.md` handoff artifact or artifact-equivalent `.md` handoff summary before downstream synthesis uses it. The Investment Committee may synthesize only from validated handoff artifacts, artifact-equivalent handoff summaries, the runtime execution plan, and the pre-IC evidence lock. Unstructured agent-to-agent chat is not valid IC input.
 
-In `Single-agent Full Cycle`, the main Codex session may create artifact-equivalent handoff summaries instead of spawned-agent files, but each included module must still be saved under `audit\` as its own clearly named `.md` handoff/report or module handoff file with the controlled artifact name and required fields below. In `Delegated Full Agent Workflow`, spawned subagents must return separate structured handoff artifacts or clearly labeled artifact-equivalent summaries with the same fields, saved into the audit package before IC synthesis consumes them.
+In `Non-delegated audit fallback`, the main Codex session may create artifact-equivalent handoff summaries instead of spawned-agent files, but each included module must still be saved under `audit\` as its own clearly named `.md` handoff/report or module handoff file with the controlled artifact name and required fields below. If an `AGENT:` request cannot actually spawn relevant subagents, the user-facing saved report or chat output must be marked `Limited` and must not claim agent workflow execution. In `Agent workflow with spawned subagents`, spawned subagents must return separate structured handoff artifacts or clearly labeled artifact-equivalent summaries with the same fields, saved into the audit package before IC synthesis consumes them.
 
 ## Universal required fields
 
@@ -78,7 +78,7 @@ C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-d
 Required package contents:
 
 - `investment_report.md` — the exact reader-facing report reproduced in chat.
-- `audit\run_metadata.md` — execution mode, runtime plan, included/excluded modules, actually spawned agents, fallback reason if not delegated, canonical internal artifact type, module statuses, and gate status.
+- `audit\run_metadata.md` — execution mode, runtime plan, included/excluded modules, actually spawned agents, fallback reason if no subagents were spawned, canonical internal artifact type, module statuses, and gate status.
 - `audit\sources.md` — full source list and source/freshness notes when available.
 - `audit\intake.md` — questions, answers, unanswered questions, and approved baseline assumptions used.
 - one `.md` handoff/report for every actually run subagent or module.
@@ -130,11 +130,11 @@ Non-IC artifacts that could be mistaken for final decision support must include:
 Boundary: Not an IC Action.
 ```
 
-## Mandatory Equity Full Cycle artifacts
+## Mandatory Equity large-workflow artifacts
 
-These artifacts are the minimum handoff set for an Equity Full Cycle or delegated public-equity Full Agent Workflow. Conditional modules may add more artifacts, but they do not replace the mandatory set when their gates are material.
+These artifacts are the minimum handoff set for an Equity internal full workflow or public-equity spawned-subagent workflow. Conditional modules may add more artifacts, but they do not replace the mandatory set when their gates are material.
 
-`decision_prep_memo.md` is the default IC-stage handoff artifact when the Full Cycle is otherwise usable but final action gates are not closed because portfolio context is missing. If evidence/freshness or other IC gates are the primary limitation, the required IC-stage handoff is the appropriate gate-aware IC artifact from `implementation/07-investment-committee-and-report-schemas.md`: `limited_ic_draft.md` or `evidence_gap_memo.md`. `final_investment_memo.md` is allowed only when canonical IC gates pass.
+`decision_prep_memo.md` is the default IC-stage handoff artifact when the internal full workflow is otherwise usable but final action gates are not closed because portfolio context is missing. If evidence/freshness or other IC gates are the primary limitation, the required IC-stage handoff is the appropriate gate-aware IC artifact from `implementation/07-investment-committee-and-report-schemas.md`: `limited_ic_draft.md` or `evidence_gap_memo.md`. `final_investment_memo.md` is allowed only when canonical IC gates pass.
 
 | Artifact | Owner | Required status and evidence fields | Required limitations and missing gates | Downstream handoff |
 |---|---|---|---|---|
@@ -166,7 +166,7 @@ Evidence, asset, financial statement, valuation, risk, and portfolio artifacts a
 
 ## Artifact naming alignment
 
-Use these controlled names for the mandatory Equity Full Cycle handoff set. Macro and sector / industry handoffs are mandatory equity defaults unless audit records a justified `Not material` or `Skipped with reason`:
+Use these controlled names for the mandatory Equity large-workflow handoff set. Macro and sector / industry handoffs are mandatory equity defaults unless audit records a justified `Not material` or `Skipped with reason`:
 
 - `evidence_pack.md`
 - `macro_sensitivity.md` / `macro_context.md`
@@ -201,13 +201,13 @@ Before IC synthesis or final user-facing output, verify:
 
 ## Non-equity and multi-asset route-specific smoke-test artifact sets
 
-The mandatory Equity Full Cycle set remains the reference pattern. The following route-specific smoke-test sets extend the same standard to ETF, commodity, crypto, fixed income, and multi-asset workflows. They are QA coverage fixtures, not permission to run irrelevant agents in ordinary workflows. Runtime routing still delegates only relevant modules, while macro remains a default full-asset-workflow module and any included module must leave an audit handoff before IC consumption.
+The mandatory Equity internal full workflow set remains the reference pattern. The following route-specific smoke-test sets extend the same standard to ETF, commodity, crypto, fixed income, and multi-asset workflows. They are QA coverage fixtures, not permission to run irrelevant agents in ordinary workflows. Runtime routing still spawns only relevant modules, while macro remains a default full-asset-workflow module and any included module must leave an audit handoff before IC consumption.
 
-### ETF Full Cycle artifacts
+### ETF large-workflow artifacts
 
 Minimum smoke-test set for an ETF comparison such as QQQ vs SCHG:
 
-- `delegated_workflow_audit.md`
+- `agent_workflow_audit.md`
 - `evidence_pack.md`
 - `etf_analysis.md`
 - `valuation_expectations.md`
@@ -223,11 +223,11 @@ Minimum smoke-test set for an ETF comparison such as QQQ vs SCHG:
 
 The ETF handoff must cover wrapper identity, methodology/index exposure, holdings, concentration, fees, liquidity, tracking, overlap, implementation limits, and whether the output is exposure analysis or a personal portfolio action.
 
-### Commodity Full Cycle artifacts
+### Commodity large-workflow artifacts
 
 Minimum smoke-test set for a commodity setup such as gold:
 
-- `delegated_workflow_audit.md`
+- `agent_workflow_audit.md`
 - `evidence_pack.md`
 - `commodity_analysis.md`
 - `macro_sensitivity.md`
@@ -242,11 +242,11 @@ Minimum smoke-test set for a commodity setup such as gold:
 
 The commodity handoff must cover physical balance, supply/demand, inventories, curve/term structure when relevant, macro transmission, policy, positioning, instrument choice, and implementation constraints.
 
-### Crypto Full Cycle artifacts
+### Crypto large-workflow artifacts
 
 Minimum smoke-test set for a crypto asset such as BTC:
 
-- `delegated_workflow_audit.md`
+- `agent_workflow_audit.md`
 - `evidence_pack.md`
 - `crypto_analysis.md`
 - `valuation_expectations.md`
@@ -261,11 +261,11 @@ Minimum smoke-test set for a crypto asset such as BTC:
 
 The crypto handoff must cover network use, token economics, liquidity, regulation, custody/security, implementation quality, protocol or exchange risks, drawdown behavior, and crypto-native valuation or expectations.
 
-### Fixed Income Full Cycle artifacts
+### Fixed Income large-workflow artifacts
 
 Minimum smoke-test set for a bond ETF or fixed-income exposure such as TLT:
 
-- `delegated_workflow_audit.md`
+- `agent_workflow_audit.md`
 - `evidence_pack.md`
 - `etf_analysis.md` when the instrument is an ETF or fund wrapper
 - `fixed_income_analysis.md`
@@ -285,7 +285,7 @@ The fixed-income handoff must separate wrapper quality from underlying yield, du
 
 Minimum set for a cross-asset comparison such as BTC vs gold vs QQQ vs TLT:
 
-- `delegated_workflow_audit.md`
+- `agent_workflow_audit.md`
 - `evidence_pack.md`
 - every relevant asset-class lead artifact
 - `valuation_expectations.md` or asset-class-equivalent expectations handoffs
@@ -298,9 +298,9 @@ Minimum set for a cross-asset comparison such as BTC vs gold vs QQQ vs TLT:
 
 The multi-asset handoff must use common criteria and asset-specific criteria. It must not declare an unconditional winner without the user's objective, portfolio context, and IC gates.
 
-## Delegated smoke-test audit requirements
+## Spawned-subagent smoke-test audit requirements
 
-`delegated_workflow_audit.md` is an operational audit artifact rather than a specialist handoff, but every smoke-test folder must include it. It must show:
+`agent_workflow_audit.md` is an operational audit artifact rather than a specialist handoff, but every smoke-test folder must include it. It must show:
 
 - smoke-test subject and date;
 - execution mode;
@@ -311,5 +311,5 @@ The multi-asset handoff must use common criteria and asset-specific criteria. It
 - blocking issues and fixes attempted;
 - final smoke-test result.
 
-A delegated smoke test is not passed if a required agent was unavailable, a required artifact is missing, or an IC-stage artifact consumes unstructured chat instead of validated handoffs.
+A spawned-subagent smoke test is not passed if a required agent was unavailable, a required artifact is missing, or an IC-stage artifact consumes unstructured chat instead of validated handoffs.
 

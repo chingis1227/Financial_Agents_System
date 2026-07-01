@@ -1,15 +1,36 @@
-﻿# Direct Specialist Route Card
+# Direct Specialist Route Card
 
 Status: Runtime route card
 Authority: Subordinate to master rules and agent/skill contracts.
 
 ## Trigger
 
-Use when the user explicitly asks for a scoped specialist output, such as risk review, valuation only, evidence check, macro sensitivity, portfolio fit, or catalyst review.
+Use when the user explicitly asks for one specialist command, such as `RISK:`, `VAL:`, `MACRO:`, `NEWS:`, `PORTFOLIO:`, `SECTOR:`, `EVIDENCE:`, `POSITIONING:`, `INTEL:`, `EQUITY:`, `ETF:`, `COMMODITY:`, `CRYPTO:`, `FI:`, `WINNERS:`, or `IC:`.
 
 ## Required first action
 
-Confirm scope if ambiguous. Do not expand to Full Cycle unless the user asks for investment action or IC synthesis.
+Map the prefix to exactly one target agent. Confirm scope only if ambiguous. Do not expand to `AGENT:` unless the user asks for the large agent workflow.
+
+## Specialist command mapping
+
+| Prefix | Target agent |
+|---|---|
+| `RISK:` | `risk-red-team-agent` |
+| `VAL:` | `valuation-expectations-agent` |
+| `MACRO:` | `macro-agent` |
+| `NEWS:` | `news-catalysts-agent` |
+| `PORTFOLIO:` | `portfolio-fit-agent` |
+| `SECTOR:` | `sector-industry-analysis-agent` |
+| `EVIDENCE:` | `evidence-collector` |
+| `POSITIONING:` | `market-positioning-agent` |
+| `INTEL:` | `market-intelligence-agent` |
+| `EQUITY:` | `equity-agent` |
+| `ETF:` | `etf-agent` |
+| `COMMODITY:` | `commodity-agent` |
+| `CRYPTO:` | `crypto-agent` |
+| `FI:` | `fixed-income-agent` |
+| `WINNERS:` | `structural-winners-discovery-agent` |
+| `IC:` | `investment-committee-agent` |
 
 ## Required modules
 
@@ -17,13 +38,18 @@ Only the requested specialist method plus evidence/source limitations needed for
 
 ## Allowed output
 
-Specialist Verdict, Risk Box, Valuation Box, Evidence Gap Memo, or scoped specialist summary with `Boundary: Not an IC Action`.
+Specialist Verdict, Risk Box, Valuation Box, Evidence Gap Memo, market brief, committee-prep handoff, or scoped specialist summary. Every direct specialist output must include a visible boundary line that begins exactly:
+
+```text
+Boundary: Not an IC Action
+```
 
 ## Forbidden output
 
 - No `Action Box`.
-- No final `IC Action`.
-- No final buy/sell/hold/add/trim/exit recommendation.
+- No final `IC Action` from any specialist command, including `IC:`.
+- No final buy/sell/hold/add/trim/exit recommendation from any specialist command, including `IC:`.
+- No expansion into the large agent workflow without `AGENT:` or an explicit user request.
 
 ## Downgrade rules
 
@@ -31,4 +57,4 @@ If the specialist cannot support the requested conclusion, return Limited / Bloc
 
 ## Validation expectations
 
-Direct risk review prompt must produce specialist boundary and forbid IC Action.
+Every specialist command prefix must map to exactly one target agent, remain specialist-scoped, and forbid final action language, including for `IC:`.

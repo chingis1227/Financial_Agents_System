@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: News & Catalysts Agent
 - Producing agent/skill/workflow: News & Catalysts Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited public-data monitoring evidence; enough for catalyst triage, not final decision support
 - Freshness status: Current for major public releases; several gold-specific datasets lag
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No premium consensus feed; no full evidence lock; no official June ETF or central-bank totals.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: June ETF flows; official reserve updates; current Fed pricing; DXY; real yields; CPI/PCE; futures positioning
@@ -33,13 +33,13 @@ Material catalysts are Fed/real-rate repricing, USD, inflation prints, ETF-flow 
 - Scope: Recent catalyst triage for central-bank demand, ETF flows, Fed/real-rate path, geopolitics, inflation surprises, and freshness limits
 - Owner: News & Catalysts Agent
 - Producing agent/skill/workflow: News & Catalysts Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited public-data monitoring evidence; enough for catalyst triage, not final decision support
 - Freshness status: Current for major public releases; several gold-specific datasets lag
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No premium consensus feed; no full evidence lock; no official June ETF or central-bank totals.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: Material catalysts are Fed/real-rate repricing, USD, inflation prints, ETF-flow confirmation, official-sector reserve data, and geopolitical stress or de-escalation.

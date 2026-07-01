@@ -1,4 +1,4 @@
-﻿# Multi-Asset Comparison Route Card
+# Multi-Asset AGENT Comparison Route Card
 
 Status: Runtime route card
 Authority: Subordinate to `workflows/multi_asset_full_agent_workflow.md` and canonical implementation documents.

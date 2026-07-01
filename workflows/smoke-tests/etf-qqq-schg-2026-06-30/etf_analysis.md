@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: ETF Agent
 - Producing agent/skill/workflow: ETF Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; public issuer/index pages and broker holdings snapshot, not final evidence lock
@@ -39,8 +39,8 @@ Both wrappers are high-quality for their stated exposures. The comparison is a r
 - Scope: ETF wrapper, exposure purity, methodology, fees, concentration, liquidity, overlap, implementation risks
 - Owner: ETF Agent
 - Producing agent/skill/workflow: ETF Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; public issuer/index pages and broker holdings snapshot, not final evidence lock

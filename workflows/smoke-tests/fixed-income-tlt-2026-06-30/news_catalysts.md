@@ -5,13 +5,13 @@
 - Subject: TLT as bond ETF / long-duration U.S. Treasury exposure smoke test
 - Owner: News & Catalysts Agent
 - Producing agent/skill/workflow: News & Catalysts Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Official macro/rates data current through available releases; ETF flows third-party and revision-prone
 - Freshness status: June 30 close/flows not fully available
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: ETF flow evidence is third-party; June 30 close/NAV/rates incomplete.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Missing gates: Full fixed-income/ETF analysis, valuation, risk, portfolio fit, implementation, evidence lock
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the TLT delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the TLT spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -33,13 +33,13 @@ Fed remains restrictive; inflation is still a headwind; Treasury supply/debt is 
 - Scope: Fed, inflation, Treasury supply, fiscal/debt, growth, flows, curve catalysts
 - Owner: News & Catalysts Agent
 - Producing agent/skill/workflow: News & Catalysts Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Official macro/rates data current through available releases; ETF flows third-party and revision-prone
 - Freshness status: June 30 close/flows not fully available
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: ETF flow evidence is third-party; June 30 close/NAV/rates incomplete.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Key findings: Fed remains restrictive; inflation is still a headwind; Treasury supply/debt is a term-premium watch item; no confirmed growth-shock tailwind yet.

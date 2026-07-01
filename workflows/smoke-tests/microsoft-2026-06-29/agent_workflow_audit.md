@@ -1,8 +1,8 @@
-﻿# Delegated workflow audit - Microsoft smoke test
+# Spawned-subagent workflow audit - Microsoft smoke test
 
-Artifact: `delegated_workflow_audit.md`  
+Artifact: `agent_workflow_audit.md`  
 Language: English internal project artifact  
-Workflow: Equity Full Cycle / Delegated Full Agent Workflow  
+Workflow: Equity internal full workflow / Agent workflow with spawned subagents  
 Subject: Microsoft Corporation (`MSFT`)  
 Request: evaluate whether Microsoft merits investment consideration for a user with no current position and a 3+ year horizon  
 As-of date/time: 2026-06-30 Europe/Budapest runtime context  
@@ -10,9 +10,9 @@ Output status: Complete
 
 ## Audit metadata
 
-- Artifact: `delegated_workflow_audit.md`
+- Artifact: `agent_workflow_audit.md`
 - Owner: Codex Runtime / Investment Committee Agent
-- Execution mode: Delegated Full Agent Workflow
+- Execution mode: Agent workflow with spawned subagents
 - Output status: Complete
 - Evidence status: Runtime audit evidence from spawned subagent IDs and returned artifact files
 - Decision boundary: Audit record only; not an IC Action
@@ -22,7 +22,7 @@ Output status: Complete
 
 | Item | Value |
 |---|---|
-| Execution mode | Delegated Full Agent Workflow |
+| Execution mode | Agent workflow with spawned subagents |
 | Model request for spawned agents | GPT-5.5 where tool-supported; reasoning high; token speed STANDARD, NOT FAST requested in prompt |
 | Final artifact | `decision_prep_memo.md` |
 | Final IC Action | Not authorized |

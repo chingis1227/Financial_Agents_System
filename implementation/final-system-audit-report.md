@@ -8,11 +8,11 @@ Authority: Supporting historical audit record subordinate to current canonical i
 
 ## 1. Executive result
 
-The Financial Agent System is connected enough for regular Equity Full Cycle use, including Microsoft-like concrete public-equity investment-action requests.
+The Financial Agent System is connected enough for regular Equity internal full workflow use, including Microsoft-like concrete public-equity investment-action requests.
 
 Session 11 result:
 
-- Blocking issues for Equity Full Cycle: 0.
+- Blocking issues for Equity internal full workflow: 0.
 - Safety failures found in the structural audit: 0.
 - Root cleanup status: Pass.
 - Workflow documentation status: Pass.
@@ -26,8 +26,8 @@ Session 11 result:
 The system is ready for a new chat to run:
 
 - `Quick Take` when the user explicitly asks for short / fast / preliminary output.
-- `Single-agent Full Cycle` for ordinary concrete-asset investment-action requests.
-- Superseded runtime note: current state allows `Delegated Full Agent Workflow` when relevant subagents actually ran, either through Codex spawning or a real orchestrator; otherwise use `Single-agent Full Cycle` and do not claim delegation.
+- `Non-delegated audit fallback` for ordinary concrete-asset investment-action requests.
+- Superseded runtime note: current state allows `Agent workflow with spawned subagents` when relevant subagents actually ran, either through Codex spawning or a real orchestrator; otherwise use `Non-delegated audit fallback` and do not claim subagent execution.
 
 ## 2. Audit method
 
@@ -41,7 +41,7 @@ The audit checked the repository state and runtime contract linkage across these
 6. Handoff artifacts.
 7. README prompts.
 8. QA coverage.
-9. Microsoft delegated smoke-test artifacts.
+9. Microsoft spawned-subagent smoke-test artifacts.
 10. Git working-tree status.
 
 Structural checks were run against required files, runtime text invariants, TOML validity, skill front matter, root legacy-file cleanup, archive/reference locations, and Microsoft smoke-test artifacts.
@@ -64,9 +64,9 @@ Two validation passes are recorded:
 | Root cleanup | Pass | No legacy PRD/framework Markdown remains at project root. |
 | Archive migration | Pass | `archive/legacy-prd/` exists with 44 archived Markdown files. |
 | Reference migration | Pass | `references/` exists with 30 top-level supporting reference files plus 8 split files under `references/market-patterns/`. |
-| Equity Full Cycle runbook | Pass | Contains execution-mode split, Runtime Execution Plan, module status discipline, handoff rules, and `decision_prep_memo.md` default. |
-| Handoff standard | Pass | `workflows/handoff_artifact_standard.md` defines required artifact fields and mandatory Equity Full Cycle handoffs. |
-| README prompts | Pass | Explains `Quick Take`, `Full Cycle`, and `Delegated Full Agent Workflow`; includes Russian templates for Microsoft, ETF comparison, gold, BTC, and fixed income. |
+| Equity internal full workflow runbook | Pass | Contains execution-mode split, Runtime Execution Plan, module status discipline, handoff rules, and `decision_prep_memo.md` default. |
+| Handoff standard | Pass | `workflows/handoff_artifact_standard.md` defines required artifact fields and mandatory Equity large-workflow handoffs. |
+| README prompts | Pass | Explains `Quick Take`, `internal full workflow`, and `Agent workflow with spawned subagents`; includes Russian templates for Microsoft, ETF comparison, gold, BTC, and fixed income. |
 | QA coverage | Pass | `implementation/09-system-acceptance-qa.md` includes Session 09 runtime fixtures and failure fixtures. |
 | QA execution report | Pass | `implementation/p10-qa-execution-report.md` records runtime and live-smoke validation. |
 | Microsoft smoke-test artifacts | Pass | 8 artifacts present under `workflows/smoke-tests/microsoft-2026-06-29/`. |
@@ -97,8 +97,8 @@ Result: Pass.
 
 - public listed equity action-intent routing;
 - Microsoft-like request handling;
-- `Execution mode: Single-agent Full Cycle`;
-- `Execution mode: Delegated Full Agent Workflow`;
+- `Execution mode: Non-delegated audit fallback`;
+- `Execution mode: Agent workflow with spawned subagents`;
 - Runtime Execution Plan requirement;
 - included/excluded module visibility;
 - module status vocabulary;
@@ -112,7 +112,7 @@ Result: Pass.
 
 - universal handoff fields;
 - required owner, status, evidence, freshness, limitations, missing gates, decision boundary, downstream handoff, and follow-up fields;
-- mandatory Equity Full Cycle handoff artifacts;
+- mandatory Equity internal full workflow handoff artifacts;
 - IC consumption rule for structured artifacts or artifact-equivalent summaries;
 - non-IC boundary language.
 
@@ -126,7 +126,7 @@ Observed state:
 
 - 20 project-scoped custom-agent TOML files exist under `.codex/agents/`.
 - All TOML files parse successfully.
-- Runtime-relevant agents reference the Equity Full Cycle, evidence, handoff, and IC boundary model.
+- Runtime-relevant agents reference the Equity internal full workflow, evidence, handoff, and IC boundary model.
 - Agents remain thin role adapters rather than full PRD copies.
 - Non-IC agents are constrained from final IC Action language.
 
@@ -160,19 +160,19 @@ Result: Pass.
 `README.md` now gives a user-readable operating model:
 
 - `Quick Take` for explicit short/preliminary output.
-- `Full Cycle` / ordinary action-intent requests as `Single-agent Full Cycle`.
-- Superseded runtime note: current state allows `Delegated Full Agent Workflow` when real relevant subagents actually ran; otherwise use `Single-agent Full Cycle` and do not claim delegation.
+- `internal full workflow` / ordinary action-intent requests as `Non-delegated audit fallback`.
+- Superseded runtime note: current state allows `Agent workflow with spawned subagents` when real relevant subagents actually ran; otherwise use `Non-delegated audit fallback` and do not claim subagent execution.
 
 Russian prompt templates are present for:
 
 - Microsoft Quick Take.
-- Microsoft Full Cycle.
-- Microsoft delegated multi-agent run.
+- Microsoft internal full workflow.
+- Microsoft spawned-subagent run.
 - QQQ vs SCHG ETF comparison.
 - Gold setup.
 - BTC 3-year view.
 - Fixed-income instrument review.
-- Generic delegated full-agent request.
+- Generic spawned-subagent workflow request.
 
 No README/prompt blocker was found.
 
@@ -182,7 +182,7 @@ Result: Pass.
 
 QA coverage includes:
 
-- Single-agent and delegated runtime modes.
+- `Non-delegated audit fallback` and `Agent workflow with spawned subagents` runtime modes.
 - Microsoft 3+ year no-current-position fixture.
 - QQQ vs SCHG.
 - Gold setup now.
@@ -201,7 +201,7 @@ Microsoft smoke-test artifacts exist under:
 
 Artifacts:
 
-- `delegated_workflow_audit.md`
+- `agent_workflow_audit.md`
 - `evidence_pack.md`
 - `equity_company_analysis.md`
 - `financial_statement_analysis.md`
@@ -216,28 +216,28 @@ No QA or smoke-test blocker was found.
 
 ## 10. Remaining warnings
 
-These are non-blocking for Equity Full Cycle regular use:
+These are non-blocking for Equity internal full workflow regular use:
 
 1. The working tree has many uncommitted changes from the implementation sessions. This is expected because the plan says not to commit, but the operator should preserve or commit the completed state later.
 2. Microsoft smoke-test market data is timestamped to 2026-06-29 / 2026-06-30. Any new live investment run must refresh current prices, filings, news, and source timestamps.
-3. Equity Full Cycle is the most hardened runtime path. ETF, commodity, crypto, and fixed-income routes have canonical contracts and QA fixtures, but they have not received the same dedicated live delegated smoke-test artifact set as Microsoft.
+3. Equity internal full workflow is the most hardened runtime path. ETF, commodity, crypto, and fixed-income routes have canonical contracts and QA fixtures, but they have not received the same dedicated live spawned-subagent smoke-test artifact set as Microsoft.
 4. `decision_prep_memo.md` remains the default artifact when portfolio context is missing; users may still need a short intake prompt for portfolio size bucket, objectives, holdings, concentration limits, tax/currency constraints, and risk tolerance before a final memo.
 5. Supporting references are governed and indexed, but future maintenance should continue splitting or refreshing large references when they become hard to navigate.
-6. The tracked operator reminder file `НАПОМИНАНИЕ.md` is absent from the current working tree. It is intentionally excluded from source-of-truth use, so this is not an Equity Full Cycle blocker, but the operator should restore or intentionally retire it before preserving the repository state.
+6. The tracked operator reminder file `НАПОМИНАНИЕ.md` is absent from the current working tree. It is intentionally excluded from source-of-truth use, so this is not an Equity internal full workflow blocker, but the operator should restore or intentionally retire it before preserving the repository state.
 
 ## 11. Residual tasks
 
-No residual task blocks Equity Full Cycle use.
+No residual task blocks Equity internal full workflow use.
 
 Recommended follow-ups:
 
 1. Commit or otherwise snapshot the completed implementation state.
-2. Add live delegated smoke-test artifact sets for ETF, commodity/gold, BTC, and one fixed-income instrument after Equity/Microsoft is stable in normal use.
+2. Add live spawned-subagent smoke-test artifact sets for ETF, commodity/gold, BTC, and one fixed-income instrument after Equity/Microsoft is stable in normal use.
 3. Periodically rerun the structural validation checks after changing custom agents, skills, workflow runbooks, or QA fixtures.
 4. Before any real final IC memo, refresh evidence and close the user portfolio-context gate.
 
 ## 12. Final readiness statement
 
-Financial Agent System is ready for regular Equity Full Cycle use.
+Financial Agent System is ready for regular Equity internal full workflow use.
 
 A user can open a new chat and run a Microsoft-like request without guessing the workflow. The runtime should show `Execution mode`, produce a Runtime Execution Plan, expose module statuses, preserve handoff artifacts or artifact-equivalent summaries, constrain stale/current evidence, limit Portfolio Fit when personal context is missing, and avoid final positive IC Action until IC gates are closed.

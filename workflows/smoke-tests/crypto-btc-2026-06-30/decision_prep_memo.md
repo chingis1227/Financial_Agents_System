@@ -5,13 +5,13 @@
 - Subject: BTC over a 3-year horizon for crypto decision-prep smoke test
 - Owner: Investment Committee Agent
 - Producing agent/skill/workflow: Investment Committee Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
-- Evidence status: Limited; delegated module artifacts exist, but final evidence freshness and portfolio context remain open
+- Evidence status: Limited; spawned-subagent module artifacts exist, but final evidence freshness and portfolio context remain open
 - Freshness status: Needs refresh for market-sensitive inputs before any final memo
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No personalized portfolio context; no final evidence lock; BTC vehicle/custody path unspecified.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Missing gates: Current evidence lock, custody/vehicle review, portfolio context, final IC synthesis
@@ -21,11 +21,11 @@
 
 ## Module summary
 
-This artifact records the BTC delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the BTC spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
-BTC routes cleanly to Crypto Full Cycle. The decision question depends on adoption, liquidity, ETF flows, regulation, custody/security, miner economics, macro regime, risk, and portfolio role.
+BTC routes cleanly to Crypto internal full workflow. The decision question depends on adoption, liquidity, ETF flows, regulation, custody/security, miner economics, macro regime, risk, and portfolio role.
 
 ## Decision-prep scenario logic
 
@@ -50,16 +50,16 @@ BTC routes cleanly to Crypto Full Cycle. The decision question depends on adopti
 - Scope: IC decision-prep synthesis for BTC smoke test
 - Owner: Investment Committee Agent
 - Producing agent/skill/workflow: Investment Committee Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
-- Evidence status: Limited; delegated module artifacts exist, but final evidence freshness and portfolio context remain open
+- Evidence status: Limited; spawned-subagent module artifacts exist, but final evidence freshness and portfolio context remain open
 - Freshness status: Needs refresh for market-sensitive inputs before any final memo
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No personalized portfolio context; no final evidence lock; BTC vehicle/custody path unspecified.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
-- Key findings: BTC routes cleanly to Crypto Full Cycle. The decision question depends on adoption, liquidity, ETF flows, regulation, custody/security, miner economics, macro regime, risk, and portfolio role.
+- Key findings: BTC routes cleanly to Crypto internal full workflow. The decision question depends on adoption, liquidity, ETF flows, regulation, custody/security, miner economics, macro regime, risk, and portfolio role.
 - Missing gates: Current evidence lock, custody/vehicle review, portfolio context, final IC synthesis
 - Decision boundary: Decision-prep synthesis only; no final IC Action
 - Decision constraints: No final buy/sell/hold/add/trim/exit; no exact allocation, custody instruction, or trade instruction.

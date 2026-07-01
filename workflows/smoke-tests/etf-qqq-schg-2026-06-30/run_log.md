@@ -1,8 +1,8 @@
-    # Delegated run log - etf-qqq-schg-2026-06-30
+    # Spawned-subagent run log - etf-qqq-schg-2026-06-30
 
     Artifact: `run_log.md`  
     Date: 2026-06-30  
-    Execution mode: `Delegated Full Agent Workflow`  
+    Execution mode: `Agent workflow with spawned subagents`  
     Purpose: durable operational provenance for the smoke-test run.  
 
     ## Spawn record

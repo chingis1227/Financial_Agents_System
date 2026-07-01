@@ -1,13 +1,13 @@
-﻿# decision_prep_memo.md - Microsoft / MSFT
+# decision_prep_memo.md - Microsoft / MSFT
 
 ## Handoff metadata
 - Artifact: `decision_prep_memo.md`
 - Subject: Microsoft Corporation (`MSFT`), Nasdaq common stock
 - Scope: IC-stage gate-aware decision preparation for MSFT; non-final because portfolio, valuation, risk, and freshness gates remain Limited
 - Owner: Investment Committee Agent
-- Producing agent/skill/workflow: Investment Committee Agent / Investment Committee Synthesis / Equity Full Cycle
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Producing agent/skill/workflow: Investment Committee Agent / Investment Committee Synthesis / Equity internal full workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: price snapshot 2026-06-29 21:57:01 UTC; synthesis 2026-06-30 Europe/Budapest runtime context
 - Output status: Limited
 - Evidence status: Limited; public evidence is usable for decision preparation but not sufficient for final IC Action
@@ -24,20 +24,20 @@
 
 ## IC metadata
 
-- Request type: Delegated Full Agent Workflow live smoke test.
+- Request type: Agent workflow with spawned subagents live smoke test.
 - Produced by: Investment Committee Agent / Investment Committee Synthesis.
 - Analysis Status: Limited.
 - IC Action Status: Limited.
 - Decision Confidence: Medium for non-final decision preparation; not a forecast certainty.
 - Time Horizon: 3+ years.
 - Decision mode assumptions: new potential `MSFT` exposure, no current position, missing portfolio details.
-- Consumed handoff artifacts: `evidence_pack.md`; `equity_company_analysis.md`; `financial_statement_analysis.md`; `valuation_expectations.md`; `risk_red_team.md`; `portfolio_fit.md`; `delegated_workflow_audit.md`.
+- Consumed handoff artifacts: `evidence_pack.md`; `equity_company_analysis.md`; `financial_statement_analysis.md`; `valuation_expectations.md`; `risk_red_team.md`; `portfolio_fit.md`; `agent_workflow_audit.md`.
 
-Execution mode: Delegated Full Agent Workflow
+Execution mode: Agent workflow with spawned subagents
 
 ## Runtime Execution Plan
 
-The request was classified as a concrete public-equity investment-action request for Microsoft with no current position and a 3+ year horizon. The user explicitly requested a delegated subagent workflow, so `Delegated Full Agent Workflow` was permitted and actually used. The final artifact is `decision_prep_memo.md`: the analysis is sufficient for decision preparation, but not for a final IC Action.
+The request was classified as a concrete public-equity investment-action request for Microsoft with no current position and a 3+ year horizon. The user explicitly requested a spawned-subagent workflow, so `Agent workflow with spawned subagents` was permitted and actually used. The final artifact is `decision_prep_memo.md`: the analysis is sufficient for decision preparation, but not for a final IC Action.
 
 ### Actually spawned and consumed subagents
 
@@ -51,14 +51,14 @@ The request was classified as a concrete public-equity investment-action request
 | Portfolio Fit Agent | Dirac / `019f1568-a840-78c1-b523-ceaf6eb101fd` | `portfolio_fit.md` | Limited |
 | Investment Committee Agent | James / `019f156e-5b8c-7301-824e-efc7f8420c4e` | `decision_prep_memo.md` synthesis | Limited |
 
-The run audit is stored in `delegated_workflow_audit.md`.
+The run audit is stored in `agent_workflow_audit.md`.
 
 ### Module status table
 
 | Module | Status | Reason / limitation |
 |---|---:|---|
-| Master Intake Router | Complete | Request: `MSFT`, possible new position, 3+ year horizon, explicit delegated workflow. |
-| Asset Intake Router | Complete | `MSFT` identified as Nasdaq common stock; route is Equity Full Cycle. |
+| Master Intake Router | Complete | Request: `MSFT`, possible new position, 3+ year horizon, explicit spawned-subagent workflow. |
+| Asset Intake Router | Complete | `MSFT` identified as Nasdaq common stock; route is Equity internal full workflow. |
 | Evidence Collector | Limited | Public evidence usable; no paid consensus, no full 10-Q note extraction, no final evidence lock. |
 | Equity Company Analysis | Complete | Business quality and thesis durability assessed; stock attractiveness not decided. |
 | Financial Statement Analysis | Complete | FY26 Q3 shows strong growth; capex/FCF and lease/tax watch items passed downstream. |
@@ -134,9 +134,9 @@ The run audit is stored in `delegated_workflow_audit.md`.
 - Subject: Microsoft Corporation (`MSFT`), Nasdaq common stock
 - Scope: IC-stage gate-aware decision preparation for MSFT; non-final because portfolio, valuation, risk, and freshness gates remain Limited
 - Owner: Investment Committee Agent
-- Producing agent/skill/workflow: Investment Committee Agent / Investment Committee Synthesis / Equity Full Cycle
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Producing agent/skill/workflow: Investment Committee Agent / Investment Committee Synthesis / Equity internal full workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: price snapshot 2026-06-29 21:57:01 UTC; synthesis 2026-06-30 Europe/Budapest runtime context
 - Output status: Limited
 - Evidence status: Limited; public evidence is usable for decision preparation but not sufficient for final IC Action

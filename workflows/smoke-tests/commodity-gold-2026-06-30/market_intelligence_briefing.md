@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Market Intelligence Agent
 - Producing agent/skill/workflow: Market Intelligence Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited but usable for situational routing
 - Freshness status: Mixed; spot and dollar are current/recent, while rates, ETF flows, CFTC, and official-sector data lag
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No June month-end ETF flow confirmation; no June official-sector reserve-flow data; no vehicle review; no IC evidence lock.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: June ETF flows; official-sector reserve data; physical demand/premia; curve/liquidity; vehicle implementation; risk; portfolio fit
@@ -33,13 +33,13 @@ Market intelligence frames gold as correcting from highs while still supported b
 - Scope: Market backdrop, official-sector demand, ETF flows, positioning, macro context, source limits, and IC routing notes
 - Owner: Market Intelligence Agent
 - Producing agent/skill/workflow: Market Intelligence Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited but usable for situational routing
 - Freshness status: Mixed; spot and dollar are current/recent, while rates, ETF flows, CFTC, and official-sector data lag
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No June month-end ETF flow confirmation; no June official-sector reserve-flow data; no vehicle review; no IC evidence lock.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: Market intelligence frames gold as correcting from highs while still supported by reserve diversification; near-term pressure depends on real rates, USD, and flow confirmation.

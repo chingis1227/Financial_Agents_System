@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: News & Catalysts Agent
 - Producing agent/skill/workflow: News & Catalysts Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Complete
 - Evidence status: Current public-data view; no full evidence lock
@@ -32,8 +32,8 @@ Unconfirmed future index changes, vendor partnership speculation, and autonomy h
 - Scope: ETF/index changes, mega-cap earnings/catalysts, confirmed vs unconfirmed items
 - Owner: News & Catalysts Agent
 - Producing agent/skill/workflow: News & Catalysts Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Complete
 - Evidence status: Current public-data view; no full evidence lock

@@ -36,7 +36,7 @@ Read only the canonical documents needed for the task. Default required set:
 - `implementation/04-evidence-layer.md`
 - `implementation/06-agent-contracts.md` for owning agent boundaries
 - `implementation/11-skill-contracts.md` for this skill contract
-- `workflows/handoff_artifact_standard.md` when producing Full Cycle or Full Agent Workflow handoffs
+- `workflows/handoff_artifact_standard.md` when producing large workflow or spawned-subagent workflow handoffs
 
 Conditional references:
 
@@ -77,14 +77,14 @@ Every output must include:
 - Limitations
 - Missing IC Gates
 - Boundary
-- Structured Handoff using the controlled fields from `workflows/handoff_artifact_standard.md` when part of Full Cycle / Full Agent Workflow
-- Full Cycle handoff must include owner, output status, evidence status, evidence limits, missing gates, decision boundary, downstream handoff, and required follow-up
+- Structured Handoff using the controlled fields from `workflows/handoff_artifact_standard.md` when part of large workflow / spawned-subagent workflow
+- large-workflow handoff must include owner, output status, evidence status, evidence limits, missing gates, decision boundary, downstream handoff, and required follow-up
 
-Boundary wording: `Boundary: Method output only; not an IC Action.`
+Boundary wording: `Boundary: Not an IC Action. Method output only.`
 
 ## Cross-skill guardrails
 
-- Direct skill calls are allowed only as scoped method outputs with boundary and missing IC gates; Full Cycle handoffs must use the controlled handoff fields.
+- Direct skill calls are allowed only as scoped method outputs with boundary and missing IC gates; large-workflow handoffs must use the controlled handoff fields.
 - Non-IC outputs must not issue final `IC Action`, use `Action Box`, or provide exact allocation instructions.
 - Evidence status, freshness, source restrictions, user-file provenance, and material conflicts constrain conclusions.
 - Freshness-sensitive requests split structural view from current-action view.
@@ -95,23 +95,23 @@ Boundary wording: `Boundary: Method output only; not an IC Action.`
 
 - Do not replace IC or issue final investment decision.
 
-## Full Cycle behavior
+## Large workflow behavior
 
-- In a Full Cycle, this skill produces a sourced market-development handoff only: confirmed developments, relevance, freshness, source confidence, unresolved items, and module status.
+- In a large workflow, this skill produces a sourced market-development handoff only: confirmed developments, relevance, freshness, source confidence, unresolved items, and module status.
 - It must not replace Evidence Collector readiness, lead asset analysis, or IC synthesis.
 - If sources are partial, stale, or conflicting, mark the module `Limited` or `Blocked` and identify the evidence gap.
 
 ## Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
-- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in Full Cycle, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
+- Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in large workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
 - Limited when: source coverage is partial.
 - Blocked when: no reliable current sources are available.
 
 ## Quality checks
 
 - Output follows the canonical skill contract in `implementation/11-skill-contracts.md`.
-- Output uses the required output core and, for Full Cycle, the controlled handoff fields from `workflows/handoff_artifact_standard.md`.
+- Output uses the required output core and, for large workflow, the controlled handoff fields from `workflows/handoff_artifact_standard.md`.
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.

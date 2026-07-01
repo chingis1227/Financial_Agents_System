@@ -5,11 +5,11 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Investment Committee Agent
 - Producing agent/skill/workflow: Investment Committee Agent / investment-committee-synthesis skill
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
-- Evidence status: Limited; public sources and delegated handoffs support decision preparation but not final IC Action
+- Evidence status: Limited; public sources and spawned-subagent handoffs support decision preparation but not final IC Action
 - Freshness status: Mixed; enough for smoke-test decision preparation, not final evidence lock
 - Source scope: Public sources only
 - Evidence limits: No user portfolio, incomplete current QQQ holdings export, no full valuation bridge, no complete flow/positioning dataset, no tax/access review
@@ -26,7 +26,7 @@
 
 ## Runtime Execution Plan
 
-Execution mode: `Delegated Full Agent Workflow`.
+Execution mode: `Agent workflow with spawned subagents`.
 
 The ETF smoke test actually spawned route-relevant subagents and consumed their handoff summaries. The final artifact is `decision_prep_memo.md` because the smoke test has no portfolio context and several IC gates remain Limited.
 
@@ -105,11 +105,11 @@ The dominant shared risk is that both exposures remain concentrated in the same 
 - Scope: IC-stage decision preparation for ETF smoke-test route
 - Owner: Investment Committee Agent
 - Producing agent/skill/workflow: Investment Committee Agent / investment-committee-synthesis skill
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
-- Evidence status: Limited; public sources and delegated handoffs support decision preparation but not final IC Action
+- Evidence status: Limited; public sources and spawned-subagent handoffs support decision preparation but not final IC Action
 - Freshness status: Mixed; enough for smoke-test decision preparation, not final evidence lock
 - Source scope: Public sources only
 - Evidence limits: No user portfolio, incomplete current QQQ holdings export, no full valuation bridge, no complete flow/positioning dataset, no tax/access review

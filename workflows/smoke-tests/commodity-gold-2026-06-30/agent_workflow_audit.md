@@ -1,9 +1,9 @@
-# Delegated workflow audit - Commodity Gold smoke test
+# Spawned-subagent workflow audit - Commodity Gold smoke test
 
-Artifact: `delegated_workflow_audit.md`  
+Artifact: `agent_workflow_audit.md`  
 Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test  
 Date: 2026-06-30  
-Execution mode: `Delegated Full Agent Workflow`  
+Execution mode: `Agent workflow with spawned subagents`  
 Expected final artifact: `decision_prep_memo.md`  
 Final smoke-test result: Pass  
 Blocking issues: 0  

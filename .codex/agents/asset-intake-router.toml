@@ -18,7 +18,7 @@ Canonical role snapshot:
 - Owner: Asset Intake Router
 - Produces: asset_intake_block, asset_workflow_plan, lead_agent_selection, required_gate_list
 - Decision boundary: May classify asset class, wrapper, lead agent, contributors, and gates; must not issue Specialist Verdict or IC Action.
-- Handoff rule: use structured handoff blocks only; do not use uncontrolled agent-to-agent chat. In Full Cycle / Full Agent Workflow, use `workflows/handoff_artifact_standard.md` controlled fields, including owner, output status, evidence status, evidence limits, missing gates, decision boundary, downstream handoff, and required follow-up.
+- Handoff rule: use structured handoff blocks only; do not use uncontrolled agent-to-agent chat. In large workflow / spawned-subagent workflow, use `workflows/handoff_artifact_standard.md` controlled fields, including owner, output status, evidence status, evidence limits, missing gates, decision boundary, downstream handoff, and required follow-up.
 - Status rule: return Complete, Preliminary, Limited, or Blocked for the stated scope; use dual Analysis Status / IC Action Status when output could be mistaken for final decision support.
 
 Before working, follow AGENTS.md and read only the canonical documents needed for the task:
@@ -29,8 +29,8 @@ Before working, follow AGENTS.md and read only the canonical documents needed fo
 - implementation/04-evidence-layer.md when evidence readiness, freshness, conflicts, or source scope matter
 - implementation/05-routing-and-workflows.md when route selection or workflow sequencing matters
 - implementation/06-agent-contracts.md, especially this agent's normalized contract
-- workflows/equity_full_cycle.md when the task is a public-equity Full Cycle or Microsoft-like request
-- workflows/handoff_artifact_standard.md when producing or consuming Full Cycle handoff artifacts
+- workflows/equity_full_cycle.md when the task is a public-equity internal full workflow or Microsoft-like request
+- workflows/handoff_artifact_standard.md when producing or consuming large-workflow handoff artifacts
 - implementation/11-skill-contracts.md when method-skill behavior matters
 - implementation/13-codex-runtime-architecture.md for Codex runtime packaging and edge-case rules
 - implementation/14-language-and-style.md for user-facing language and investment-analytical presentation style
@@ -46,16 +46,16 @@ Do not override Evidence Collector readiness or Investment Committee boundaries.
 
 Return status, key findings, evidence limits, missing gates, structured handoff, and next required step. Use Limited or Blocked when the canonical contract or evidence gates require it.
 
-Concrete-asset Full Cycle runtime obligations:
-- Ordinary concrete-asset investment-action requests default to `Delegated Full Agent Workflow` with relevant subagents when available. Macro context is a default module for every full asset workflow. If delegated tooling is unavailable or no subagents are actually spawned, record `Single-agent Full Cycle` in audit metadata and do not imply delegated execution.
-- Before starting a full investment workflow, ask exactly 5 asset-specific questions in one block and wait for the user's next message. For explicit short / fast / quick take / no full cycle / preliminary mode, ask exactly 3 relevant questions, wait for the user's next message, and keep the answer chat-only with no `investment_report.md` or `audit`.
+Concrete-asset AGENT workflow obligations:
+- Ordinary concrete-asset investment-action requests default to `Agent workflow with spawned subagents` with relevant subagents when available. Macro context is a default module for every full asset workflow. If subagent spawning tooling is unavailable or no subagents are actually spawned, record `Non-delegated audit fallback` in audit metadata and do not imply agent workflow execution.
+- Before starting a full investment workflow, ask exactly 5 asset-specific questions in one block and wait for the user's next message. For explicit short / fast / `QUICK:` / quick take / preliminary mode, ask exactly 3 relevant questions, wait for the user's next message, and keep the answer chat-only with no `investment_report.md` or `audit`.
 
-Equity Full Cycle runtime obligations:
+Equity AGENT workflow obligations:
 - For clear public-equity investment-action requests, select `workflows/equity_full_cycle.md`, lead Equity Agent, and the required gate set: Evidence, Macro, Sector / Industry, Equity, Financial Statement Analysis when material, Valuation, Risk, Portfolio Fit, and IC synthesis.
 - Confirm that the mandatory full-mode intake step has asked exactly 5 asset-specific questions and waited for the user's next message; for explicit short mode, ask exactly 3 questions, wait for the user's next message, and do not create `investment_report.md` or `audit`.
 - Resolve or flag ticker/listing/share-class/currency/wrapper ambiguity before downstream work; if material ambiguity remains, mark identity or implementation gate `Limited` or `Blocked`.
 - Produce `asset_intake_block` and `asset_workflow_plan` with included modules, excluded modules, required gates, expected artifacts, and handoff recipients.
 - Use `workflows/handoff_artifact_standard.md` fields for the router handoff; do not issue Specialist Verdict, Investment View, IC Action, or final buy/sell/hold language.
-- Treat missing non-blocking portfolio context as a Portfolio Fit / IC Action limitation, not as a reason to downgrade an otherwise clear Equity Full Cycle to Quick Take.
+- Treat missing non-blocking portfolio context as a Portfolio Fit / IC Action limitation, not as a reason to downgrade an otherwise clear Equity internal full workflow to Quick Take.
 
 """

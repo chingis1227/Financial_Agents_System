@@ -5,7 +5,7 @@ Authority: Subordinate to master rules and report schemas.
 
 ## Trigger
 
-Use only when the user explicitly asks for short, quick, fast, preliminary, no full cycle, or similar limited output.
+Use only when the user uses `QUICK:` or explicitly asks for short, quick, fast, preliminary, or similar limited output.
 
 ## Required first action
 
@@ -23,10 +23,10 @@ Chat-only Preliminary or Limited view with status, evidence limits, missing gate
 
 ## Forbidden output
 
-- Quick Take never issues final IC Action; if final gates are being completed, route or upgrade to Full Cycle / IC synthesis instead of Quick Take.
+- Quick Take never issues final IC Action; if final gates are being completed, route or upgrade to `AGENT:` / IC synthesis instead of Quick Take.
 - No `investment_report.md`.
 - No `audit/` folder.
-- No final `IC Action`, `Action Box`, or buy/sell/hold/add/trim/exit conclusion. If final gates are being completed, route or upgrade to Full Cycle / IC synthesis instead of Quick Take.
+- No final `IC Action`, `Action Box`, or buy/sell/hold/add/trim/exit conclusion. If final gates are being completed, route or upgrade to `AGENT:` / IC synthesis instead of Quick Take.
 - No exact position sizing or exact trade instruction.
 
 ## Downgrade rules
@@ -35,4 +35,4 @@ If freshness, identity, or evidence is insufficient, use Limited / Blocked rathe
 
 ## Validation expectations
 
-Explicit quick Microsoft prompt must map to `quick_take`, require 3 questions, and forbid saved report / audit.
+`QUICK: Microsoft` prompt must map to `quick_take`, require 3 questions, and forbid saved report / audit.

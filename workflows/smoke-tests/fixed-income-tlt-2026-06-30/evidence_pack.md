@@ -5,13 +5,13 @@
 - Subject: TLT as bond ETF / long-duration U.S. Treasury exposure smoke test
 - Owner: Evidence Collector Agent
 - Producing agent/skill/workflow: Evidence Collector Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; issuer and Treasury sources support core claims, but current-day rates and full holdings remain missing
 - Freshness status: Recent, with refresh required for 2026-06-30 Treasury curve and close-of-day TLT data
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: Fund data lags by one to four days; line-item holdings not extracted; no risk/valuation/portfolio work.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Missing gates: Full holdings file, same-day rate refresh, fixed-income/ETF analysis, macro, valuation, risk, portfolio fit, IC synthesis
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the TLT delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the TLT spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -43,13 +43,13 @@ TLT identity, fund scale, long-duration Treasury exposure, yield/duration metric
 - Scope: ETF identity, Treasury duration/yield evidence, holdings/fund data, rates/freshness limits
 - Owner: Evidence Collector Agent
 - Producing agent/skill/workflow: Evidence Collector Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; issuer and Treasury sources support core claims, but current-day rates and full holdings remain missing
 - Freshness status: Recent, with refresh required for 2026-06-30 Treasury curve and close-of-day TLT data
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: Fund data lags by one to four days; line-item holdings not extracted; no risk/valuation/portfolio work.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Key findings: TLT identity, fund scale, long-duration Treasury exposure, yield/duration metrics, and latest available long-end Treasury rates are supported at summary level.

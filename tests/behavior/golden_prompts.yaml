@@ -1,18 +1,20 @@
 [
   {
-    "id": "golden_microsoft_full_cycle",
-    "prompt": "Проанализируй Microsoft и скажи, стоит ли в неё инвестировать на горизонт 3+ года.",
+    "id": "golden_agent_microsoft",
+    "prompt": "AGENT: Microsoft for a 3+ year horizon, no current position.",
+    "command": "AGENT",
     "expected_route": "equity_full_cycle",
     "required_questions": 5,
-    "explicit_quick": false,
+    "requires_spawned_subagents": true,
     "forbidden": [
       "quick_take_without_explicit_request",
-      "final_ic_action_before_gates"
+      "agent_workflow_claim_without_spawn"
     ]
   },
   {
-    "id": "golden_microsoft_quick",
-    "prompt": "Quick Take: дай краткий предварительный вывод по Microsoft.",
+    "id": "golden_quick_microsoft",
+    "prompt": "QUICK: give a short preliminary view on Microsoft.",
+    "command": "QUICK",
     "expected_route": "quick_take",
     "required_questions": 3,
     "explicit_quick": true,
@@ -23,56 +25,246 @@
     ]
   },
   {
-    "id": "golden_btc_three_year",
-    "prompt": "BTC на 3 года, стоит ли инвестировать?",
+    "id": "golden_ordinary_microsoft_router",
+    "prompt": "I am considering Microsoft and want to know if I should invest for 3+ years.",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "final_ic_action_before_gates"
+    ]
+  },
+  {
+    "id": "golden_agent_btc_three_year",
+    "prompt": "AGENT: BTC for 3 years, should I invest?",
+    "command": "AGENT",
     "expected_route": "crypto_full_cycle",
     "required_questions": 5,
-    "explicit_quick": false
+    "requires_spawned_subagents": true
   },
   {
-    "id": "golden_qqq_schg",
-    "prompt": "QQQ vs SCHG: что лучше на 3 года?",
+    "id": "golden_agent_qqq_schg",
+    "prompt": "AGENT: QQQ vs SCHG: which is better for 3 years?",
+    "command": "AGENT",
     "expected_route": "multi_asset_comparison",
     "required_questions": 5,
-    "explicit_quick": false
+    "requires_spawned_subagents": true
   },
   {
-    "id": "golden_gold_latest",
-    "prompt": "Золото: свежий расклад и инвестиционный сетап.",
+    "id": "golden_agent_gold_latest",
+    "prompt": "AGENT: gold, latest price action and investment setup.",
+    "command": "AGENT",
     "expected_route": "commodity_full_cycle",
     "required_questions": 5,
+    "requires_spawned_subagents": true,
     "freshness_required": true
   },
   {
-    "id": "golden_tlt",
-    "prompt": "Стоит ли покупать TLT как bond ETF на текущем уровне ставок?",
+    "id": "golden_agent_tlt",
+    "prompt": "AGENT: should I buy TLT as a bond ETF in the current rate cycle?",
+    "command": "AGENT",
     "expected_route": "fixed_income_full_cycle",
     "required_questions": 5,
-    "explicit_quick": false
+    "requires_spawned_subagents": true
   },
   {
-    "id": "golden_nvda_today",
-    "prompt": "Почему Nvidia сегодня выросла?",
-    "expected_route": "quick_take_or_market_reaction",
+    "id": "golden_nvda_today_quick_reaction",
+    "prompt": "QUICK: why did Nvidia rise today?",
+    "command": "QUICK",
+    "expected_route": "quick_take",
     "required_questions": 3,
     "freshness_required": true
   },
   {
-    "id": "golden_risk_only",
-    "prompt": "Сделай только risk review по Microsoft.",
-    "expected_route": "direct_specialist",
-    "required_boundary": "Boundary: Not an IC Action",
-    "required_questions": 0
-  },
-  {
     "id": "golden_premature_final_memo",
-    "prompt": "Дай final memo сейчас, без evidence и valuation.",
+    "prompt": "IC: give final memo now, without evidence and valuation.",
+    "command": "IC",
     "expected_route": "direct_specialist",
+    "expected_agent": "investment-committee-agent",
     "required_artifact": "gate_aware_non_final",
     "forbidden": [
       "final_investment_memo.md",
       "Action Box"
     ],
-    "required_questions": 0
+    "required_questions": 0,
+    "required_boundary": "Boundary: Not an IC Action",
+    "specialist_only": true
+  },
+  {
+    "id": "golden_command_risk",
+    "prompt": "RISK: Microsoft",
+    "command": "RISK",
+    "expected_route": "direct_specialist",
+    "expected_agent": "risk-red-team-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_val",
+    "prompt": "VAL: Nvidia",
+    "command": "VAL",
+    "expected_route": "direct_specialist",
+    "expected_agent": "valuation-expectations-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_macro",
+    "prompt": "MACRO: S&P 500 under higher-for-longer rates",
+    "command": "MACRO",
+    "expected_route": "direct_specialist",
+    "expected_agent": "macro-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_news",
+    "prompt": "NEWS: why did Nvidia rise today?",
+    "command": "NEWS",
+    "expected_route": "direct_specialist",
+    "expected_agent": "news-catalysts-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": true
+  },
+  {
+    "id": "golden_command_portfolio",
+    "prompt": "PORTFOLIO: QQQ in a growth portfolio",
+    "command": "PORTFOLIO",
+    "expected_route": "direct_specialist",
+    "expected_agent": "portfolio-fit-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_sector",
+    "prompt": "SECTOR: semiconductors",
+    "command": "SECTOR",
+    "expected_route": "direct_specialist",
+    "expected_agent": "sector-industry-analysis-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_evidence",
+    "prompt": "EVIDENCE: Microsoft",
+    "command": "EVIDENCE",
+    "expected_route": "direct_specialist",
+    "expected_agent": "evidence-collector",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_positioning",
+    "prompt": "POSITIONING: Nvidia",
+    "command": "POSITIONING",
+    "expected_route": "direct_specialist",
+    "expected_agent": "market-positioning-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_intel",
+    "prompt": "INTEL: semiconductor market",
+    "command": "INTEL",
+    "expected_route": "direct_specialist",
+    "expected_agent": "market-intelligence-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_equity",
+    "prompt": "EQUITY: Microsoft",
+    "command": "EQUITY",
+    "expected_route": "direct_specialist",
+    "expected_agent": "equity-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_etf",
+    "prompt": "ETF: QQQ fund wrapper review",
+    "command": "ETF",
+    "expected_route": "direct_specialist",
+    "expected_agent": "etf-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_commodity",
+    "prompt": "COMMODITY: gold",
+    "command": "COMMODITY",
+    "expected_route": "direct_specialist",
+    "expected_agent": "commodity-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_crypto",
+    "prompt": "CRYPTO: BTC",
+    "command": "CRYPTO",
+    "expected_route": "direct_specialist",
+    "expected_agent": "crypto-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_fi",
+    "prompt": "FI: TLT duration exposure review",
+    "command": "FI",
+    "expected_route": "direct_specialist",
+    "expected_agent": "fixed-income-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_winners",
+    "prompt": "WINNERS: AI infrastructure beneficiaries",
+    "command": "WINNERS",
+    "expected_route": "direct_specialist",
+    "expected_agent": "structural-winners-discovery-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
+  },
+  {
+    "id": "golden_command_ic",
+    "prompt": "IC: Microsoft",
+    "command": "IC",
+    "expected_route": "direct_specialist",
+    "expected_agent": "investment-committee-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": false
   }
 ]

@@ -1,4 +1,4 @@
-# Multi-Asset Full Agent Workflow Runbook
+# Multi-Asset spawned-subagent workflow Runbook
 
 ```yaml
 contract_type: Workflow
@@ -9,7 +9,7 @@ route: Cross-asset comparison
 used_by:
   - Cross-asset comparisons such as BTC vs gold vs QQQ vs TLT
 produces:
-  - delegated_workflow_audit.md
+  - agent_workflow_audit.md
   - evidence_pack.md
   - asset-class-specific handoff artifacts
   - cross_asset_comparison.md
@@ -30,10 +30,10 @@ Audit/run metadata must record exactly one controlled execution mode before the 
 
 | Execution mode | Meaning | Requirement |
 |---|---|---|
-| `Single-agent Full Cycle` | The main Codex session executes the full workflow modules itself. | Do not claim that subagents ran. Use artifact-equivalent handoff summaries when separate files are not produced. |
-| `Delegated Full Agent Workflow` | Relevant subagents are actually spawned and return structured handoff artifacts or artifact-equivalent summaries. | List spawned agents, skipped agents with reasons, consumed handoffs, and delegation limitations. |
+| `Non-delegated audit fallback` | The main Codex session executes the full workflow modules itself. | Do not claim that subagents ran. Use artifact-equivalent handoff summaries when separate files are not produced. |
+| `Agent workflow with spawned subagents` | Relevant subagents are actually spawned and return structured handoff artifacts or artifact-equivalent summaries. | List spawned agents, skipped agents with reasons, consumed handoffs, and spawn limitations. |
 
-A Full Cycle is the analytical route. A delegated workflow is the runtime mode. They are not synonyms.
+An internal full workflow is the analytical route. `Agent workflow with spawned subagents` is the controlled execution mode when subagents actually run. They are not synonyms.
 
 ## Artifact selection
 
@@ -87,7 +87,7 @@ A normalized comparison that combines common criteria with asset-specific criter
 
 ## Mandatory artifacts
 
-- `delegated_workflow_audit.md`
+- `agent_workflow_audit.md`
 - `evidence_pack.md`
 - route-specific lead artifacts for every compared asset class
 - `valuation_expectations.md` or asset-class-equivalent expectations handoff

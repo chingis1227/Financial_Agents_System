@@ -2,7 +2,7 @@
 
 Status: Supporting operational baseline record  
 Date: 2026-06-29  
-Scope: Session 1 only - baseline audit before later Full Agent Workflow sessions.
+Scope: Session 1 only - baseline audit before later spawned-subagent workflow sessions.
 
 ## Baseline identity
 
@@ -28,13 +28,13 @@ The current working tree already contains a large uncommitted runtime/QA change 
 | Runtime readiness report | 1 | Existing `.codex/runtime-readiness-report.md` change. |
 | Historical root navigation/task files | 2 | Existing `AGENTS.md` changes and former task-register changes now preserved under `archive/project-history/TASKS.md` for provenance only. |
 
-## P11 / Full Cycle / Microsoft baseline classification
+## P11 / internal full workflow / Microsoft baseline classification
 
 | Theme | Observed files | Baseline meaning |
 |---|---|---|
-| P11 runtime hardening | `archive/project-history/TASKS.md`, `implementation/12-decision-log.md`, `.codex/runtime-readiness-report.md` | Concrete-asset Full Cycle hardening record is historical/provenance only and already in the working tree. |
-| Full Cycle routing/gates | `AGENTS.md`, `implementation/00-master-rules.md`, `implementation/05-routing-and-workflows.md`, `implementation/07-investment-committee-and-report-schemas.md`, `implementation/13-codex-runtime-architecture.md` | Runtime Execution Plan, module statuses, gate-aware artifacts, and no final positive `IC Action` without gates are already present. `implementation/05-routing-and-workflows.md` is an existing modified canonical workflow doc, not a new Session 1 runbook. |
-| Agent/skill runtime behavior | `.codex/agents/*.toml`, `.agents/skills/*/SKILL.md`, `implementation/06-agent-contracts.md`, `implementation/11-skill-contracts.md` | Existing adapters/skills already include Full Cycle, handoff, and Limited/Blocked behavior. |
+| P11 runtime hardening | `archive/project-history/TASKS.md`, `implementation/12-decision-log.md`, `.codex/runtime-readiness-report.md` | Concrete-asset internal full workflow hardening record is historical/provenance only and already in the working tree. |
+| internal full workflow routing/gates | `AGENTS.md`, `implementation/00-master-rules.md`, `implementation/05-routing-and-workflows.md`, `implementation/07-investment-committee-and-report-schemas.md`, `implementation/13-codex-runtime-architecture.md` | Runtime Execution Plan, module statuses, gate-aware artifacts, and no final positive `IC Action` without gates are already present. `implementation/05-routing-and-workflows.md` is an existing modified canonical workflow doc, not a new Session 1 runbook. |
+| Agent/skill runtime behavior | `.codex/agents/*.toml`, `.agents/skills/*/SKILL.md`, `implementation/06-agent-contracts.md`, `implementation/11-skill-contracts.md` | Existing adapters/skills already include internal full workflow, handoff, and Limited/Blocked behavior. |
 | Microsoft fixture / QA | `implementation/09-system-acceptance-qa.md`, `implementation/p10-qa-execution-report.md` | Microsoft 3+ year Russian prompt, expected `decision_prep_memo.md`, Portfolio Fit limitation, and no final positive `IC Action` are already represented. |
 
 ## Negative check for Session 1 scope
@@ -171,6 +171,6 @@ M .agents/skills/commodity-analysis/SKILL.md
 
 - Baseline report exists.
 - Current uncommitted runtime/QA/agent/skill changes are visible.
-- P11 / Full Cycle / Microsoft changes are separated.
+- P11 / internal full workflow / Microsoft changes are separated.
 - Only this baseline report is intentionally added by Session 1.
 - Future sessions know to preserve the current working tree as the baseline.

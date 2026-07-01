@@ -1,0 +1,82 @@
+[
+  {
+    "command": "RISK",
+    "agent": "risk-red-team-agent",
+    "skill": "risk-red-team"
+  },
+  {
+    "command": "VAL",
+    "agent": "valuation-expectations-agent",
+    "skill": "valuation-expectations"
+  },
+  {
+    "command": "MACRO",
+    "agent": "macro-agent",
+    "skill": "macro-analysis"
+  },
+  {
+    "command": "NEWS",
+    "agent": "news-catalysts-agent",
+    "skill": "news-catalysts"
+  },
+  {
+    "command": "PORTFOLIO",
+    "agent": "portfolio-fit-agent",
+    "skill": "portfolio-fit"
+  },
+  {
+    "command": "SECTOR",
+    "agent": "sector-industry-analysis-agent",
+    "skill": "sector-industry-analysis"
+  },
+  {
+    "command": "EVIDENCE",
+    "agent": "evidence-collector",
+    "skill": "evidence-collection"
+  },
+  {
+    "command": "POSITIONING",
+    "agent": "market-positioning-agent",
+    "skill": "market-positioning"
+  },
+  {
+    "command": "INTEL",
+    "agent": "market-intelligence-agent",
+    "skill": "market-intelligence-briefing"
+  },
+  {
+    "command": "EQUITY",
+    "agent": "equity-agent",
+    "skill": "equity-company-analysis"
+  },
+  {
+    "command": "ETF",
+    "agent": "etf-agent",
+    "skill": "etf-analysis"
+  },
+  {
+    "command": "COMMODITY",
+    "agent": "commodity-agent",
+    "skill": "commodity-analysis"
+  },
+  {
+    "command": "CRYPTO",
+    "agent": "crypto-agent",
+    "skill": "crypto-analysis"
+  },
+  {
+    "command": "FI",
+    "agent": "fixed-income-agent",
+    "skill": "fixed-income-analysis"
+  },
+  {
+    "command": "WINNERS",
+    "agent": "structural-winners-discovery-agent",
+    "skill": "structural-winner-discovery"
+  },
+  {
+    "command": "IC",
+    "agent": "investment-committee-agent",
+    "skill": "investment-committee-synthesis"
+  }
+]

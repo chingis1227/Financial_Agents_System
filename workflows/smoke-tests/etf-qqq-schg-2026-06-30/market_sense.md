@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Market Sense Agent
 - Producing agent/skill/workflow: Market Sense Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Partial; official ETF/index data plus limited current market snapshot
@@ -30,8 +30,8 @@ Likely driver cluster for QQQ/SCHG moves is mega-cap growth, AI/semiconductors, 
 - Scope: Driver hypotheses, alternatives, and cross-checks for growth ETF moves
 - Owner: Market Sense Agent
 - Producing agent/skill/workflow: Market Sense Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Partial; official ETF/index data plus limited current market snapshot

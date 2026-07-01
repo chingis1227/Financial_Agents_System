@@ -1,4 +1,4 @@
-﻿# portfolio_fit.md - Microsoft / MSFT
+# portfolio_fit.md - Microsoft / MSFT
 
 ## Handoff metadata
 - Artifact: `portfolio_fit.md`
@@ -6,8 +6,8 @@
 - Scope: limited portfolio-fit input without personal portfolio data
 - Owner: Portfolio Fit Agent
 - Producing agent/skill/workflow: Portfolio Fit Agent / `portfolio-fit` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest runtime context
 - Output status: Limited
 - Evidence status: Limited; no personal portfolio data and no personalized holdings analysis
@@ -40,7 +40,7 @@ Microsoft generally functions as a large-cap U.S. quality/growth equity exposure
 The portfolio gate is not failed. It is not closed. Therefore the IC artifact should remain a Decision-Prep Memo, not a final investment memo with an Action Box.
 ## Scope note
 
-This file is a structured handoff artifact for the delegated smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
+This file is a structured handoff artifact for the spawned-subagent smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
 
 ## Structured handoff
 
@@ -49,8 +49,8 @@ This file is a structured handoff artifact for the delegated smoke test, not a f
 - Scope: limited portfolio-fit input without personal portfolio data
 - Owner: Portfolio Fit Agent
 - Producing agent/skill/workflow: Portfolio Fit Agent / `portfolio-fit` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest runtime context
 - Output status: Limited
 - Evidence status: Limited; no personal portfolio data and no personalized holdings analysis

@@ -5,13 +5,13 @@
 - Subject: BTC over a 3-year horizon for crypto decision-prep smoke test
 - Owner: Market Positioning Agent
 - Producing agent/skill/workflow: Market Positioning Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited but usable public-data evidence
 - Freshness status: Current for most market data; ETF flow latest close 2026-06-29
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: Binance/Deribit are venue proxies; ETF data automated; exchange-balance methodology mutable.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Missing gates: Crypto analysis, valuation, macro, risk, portfolio fit, implementation/custody
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the BTC delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the BTC spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -33,13 +33,13 @@ Weak ETF/sentiment read, mild long leverage, defensive options skew, and mixed c
 - Scope: ETF flows, futures basis/funding, leverage, options/skew, sentiment, exchange balances, crowding
 - Owner: Market Positioning Agent
 - Producing agent/skill/workflow: Market Positioning Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited but usable public-data evidence
 - Freshness status: Current for most market data; ETF flow latest close 2026-06-29
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: Binance/Deribit are venue proxies; ETF data automated; exchange-balance methodology mutable.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Key findings: Weak ETF/sentiment read, mild long leverage, defensive options skew, and mixed crowding.

@@ -5,13 +5,13 @@
 - Subject: TLT as bond ETF / long-duration U.S. Treasury exposure smoke test
 - Owner: Investment Committee Agent
 - Producing agent/skill/workflow: Investment Committee Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
-- Evidence status: Limited; delegated module artifacts exist, but final freshness and portfolio context remain open
+- Evidence status: Limited; spawned-subagent module artifacts exist, but final freshness and portfolio context remain open
 - Freshness status: Needs refresh for June 30 close, curve, flows, and positioning before final memo
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No personalized portfolio context; no final evidence lock; same-day rate/flow data incomplete.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
 - Missing gates: Current evidence lock, portfolio context, scenario stress, final IC synthesis
@@ -21,11 +21,11 @@
 
 ## Module summary
 
-This artifact records the TLT delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the TLT spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
-TLT routes cleanly to Fixed Income Full Cycle plus ETF wrapper analysis. The decision question depends on long real yields, term premium, Fed path, inflation, fiscal supply, duration risk, wrapper quality, and portfolio role.
+TLT routes cleanly to Fixed Income internal full workflow plus ETF wrapper analysis. The decision question depends on long real yields, term premium, Fed path, inflation, fiscal supply, duration risk, wrapper quality, and portfolio role.
 
 ## Decision-prep scenario logic
 
@@ -50,16 +50,16 @@ TLT routes cleanly to Fixed Income Full Cycle plus ETF wrapper analysis. The dec
 - Scope: IC decision-prep synthesis for TLT bond ETF smoke test
 - Owner: Investment Committee Agent
 - Producing agent/skill/workflow: Investment Committee Agent / smoke-test handoff
-- Workflow: Fixed Income Full Cycle smoke-test with ETF wrapper route
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Fixed Income internal full workflow smoke test with ETF wrapper route
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
-- Evidence status: Limited; delegated module artifacts exist, but final freshness and portfolio context remain open
+- Evidence status: Limited; spawned-subagent module artifacts exist, but final freshness and portfolio context remain open
 - Freshness status: Needs refresh for June 30 close, curve, flows, and positioning before final memo
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No personalized portfolio context; no final evidence lock; same-day rate/flow data incomplete.
 - Key limitations: Public-source smoke test; no full line-item holdings file; no June 30 closing curve lock; no personalized portfolio context.
-- Key findings: TLT routes cleanly to Fixed Income Full Cycle plus ETF wrapper analysis. The decision question depends on long real yields, term premium, Fed path, inflation, fiscal supply, duration risk, wrapper quality, and portfolio role.
+- Key findings: TLT routes cleanly to Fixed Income internal full workflow plus ETF wrapper analysis. The decision question depends on long real yields, term premium, Fed path, inflation, fiscal supply, duration risk, wrapper quality, and portfolio role.
 - Missing gates: Current evidence lock, portfolio context, scenario stress, final IC synthesis
 - Decision boundary: Decision-prep synthesis only; no final IC Action
 - Decision constraints: No final buy/sell/hold/add/trim/exit; no exact allocation, execution, or trade instruction.

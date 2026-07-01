@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Evidence Collector Agent
 - Producing agent/skill/workflow: Evidence Collector Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; official identity and fees supported; QQQ detailed holdings and current liquidity require refresh
@@ -49,8 +49,8 @@ The evidence handoff supports route identity and high-level comparison only. QQQ
 - Scope: Official ETF-page evidence intake
 - Owner: Evidence Collector Agent
 - Producing agent/skill/workflow: Evidence Collector Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; official identity and fees supported; QQQ detailed holdings and current liquidity require refresh

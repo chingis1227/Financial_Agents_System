@@ -8,46 +8,59 @@ The current state is summarized in `PROJECT_STATE.md`. Historical build trackers
 
 Start Codex from the project root. For investment requests, Codex should route through `workflows/route_cards/investment_request_router.md` before answering.
 
-| Mode | Use when | What happens | Boundary |
+| Command | Use when | What happens | Boundary |
 |---|---|---|---|
-| `Quick Take` | You explicitly ask for short, quick, fast, or preliminary output. | Codex asks exactly 3 relevant questions, then gives a chat-only Preliminary / Limited view. | No saved report, no audit, no final IC Action. |
-| `Full Cycle` | You ask whether to buy, invest, hold, sell, add, or evaluate a concrete asset for a capital decision. | Codex asks exactly 5 relevant questions, then runs the selected Full Cycle route card. | Gate-aware report. Missing portfolio context keeps Portfolio Fit / IC Action limited. |
-| `Delegated Full Agent Workflow` | A Full Cycle route uses relevant subagents and they actually ran, either through Codex spawning or a real orchestrator. | Codex records the agents actually spawned and consumes structured handoffs. If no subagents actually ran, use `Single-agent Full Cycle`. | Do not claim delegation unless subagents actually ran. |
+| `AGENT:` | You want the large agent workflow for an asset, comparison, or capital-allocation decision. | Codex asks exactly 5 relevant questions, then uses relevant spawned subagents when available and saves report/audit artifacts. | Do not claim an agent workflow unless subagents actually ran; if they cannot run, fallback is audit-only and the user-facing output is Limited. |
+| `QUICK:` | You want a short preliminary answer. | Codex asks exactly 3 relevant questions, then gives a chat-only Preliminary / Limited view. | No saved report, no audit, no final IC Action. |
+| Specialist command | You want one analyst only, such as risk, valuation, macro, news, portfolio fit, or committee-prep review. | Codex routes to one specialist agent/method and keeps the output scoped. | Boundary: Not an IC Action, including `IC:`. |
+
+## Command shortcuts
+
+| Command | Runtime meaning | Target |
+|---|---|---|
+| `AGENT:` | Large agent workflow with relevant spawned subagents | Router-selected asset workflow + IC synthesis |
+| `QUICK:` | Short preliminary answer | Quick Take route |
+| `RISK:` | One specialist only | `risk-red-team-agent` |
+| `VAL:` | One specialist only | `valuation-expectations-agent` |
+| `MACRO:` | One specialist only | `macro-agent` |
+| `NEWS:` | One specialist only | `news-catalysts-agent` |
+| `PORTFOLIO:` | One specialist only | `portfolio-fit-agent` |
+| `SECTOR:` | One specialist only | `sector-industry-analysis-agent` |
+| `EVIDENCE:` | One specialist only | `evidence-collector` |
+| `POSITIONING:` | One specialist only | `market-positioning-agent` |
+| `INTEL:` | One specialist only | `market-intelligence-agent` |
+| `EQUITY:` | One specialist only | `equity-agent` |
+| `ETF:` | One specialist only | `etf-agent` |
+| `COMMODITY:` | One specialist only | `commodity-agent` |
+| `CRYPTO:` | One specialist only | `crypto-agent` |
+| `FI:` | One specialist only | `fixed-income-agent` |
+| `WINNERS:` | One specialist only | `structural-winners-discovery-agent` |
+| `IC:` | One specialist only; committee-prep handoff, not final action | `investment-committee-agent` |
 
 ## Prompt examples
 
 ```text
-Quick Take: дай быстрый предварительный взгляд на Microsoft.
+AGENT: Microsoft for 3 years, no current position
 ```
 
 ```text
-Full Cycle: стоит ли инвестировать в Microsoft на горизонт 3+ лет?
+QUICK: Microsoft
 ```
 
 ```text
-Полный многоагентный запуск: QQQ vs SCHG. Без финального buy/sell/hold, если IC gates не закрыты.
+RISK: Microsoft
 ```
 
 ```text
-Почему Nvidia выросла сегодня? Используй свежие источники с timestamp или пометь вывод Limited / Blocked.
-```
-
-Additional routing examples to keep behavior explicit:
-
-```text
-Дай быстрый предварительный вывод по BTC.
+VAL: Nvidia
 ```
 
 ```text
-Нужен полный анализ в одной сессии по TLT.
+NEWS: why did Nvidia rise today?
 ```
 
 ```text
-Сделай мемо для подготовки решения по золоту; если свежих источников нет, пометь результат Limited.
-```
-
-```text
-Проверь маршрутизацию для BTC, золото, QQQ и TLT.
+ETF: QQQ vs SCHG
 ```
 
 ## Current runtime files
@@ -57,7 +70,7 @@ Additional routing examples to keep behavior explicit:
 | `PROJECT_STATE.md` | Short current-state entrypoint. |
 | `AGENTS.md` | Compact Codex runtime instructions. |
 | `workflows/route_cards/` | Daily route selection and workflow contracts. |
-| `.agents/skills/investment-workflow-router/` | First skill for investment-action and comparison prompts. |
+| `.agents/skills/investment-workflow-router/` | First skill for command shortcut, investment-action, and comparison prompts. |
 | `implementation/` | Canonical reference layer and supporting operational records. |
 | `references/` | Advisory playbooks and source overlays. |
 | `archive/project-history/` | Historical task and backlog records. |

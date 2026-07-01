@@ -1,4 +1,4 @@
-# Crypto Full Cycle Workflow Runbook
+# Crypto internal full workflow Workflow Runbook
 
 ```yaml
 contract_type: Workflow
@@ -9,7 +9,7 @@ route: Crypto asset / crypto-linked exposure
 used_by:
   - the user asks whether BTC, ETH, or another crypto asset is investable, attractive, suitable, or worth holding over a stated horizon
 produces:
-  - delegated_workflow_audit.md
+  - agent_workflow_audit.md
   - evidence_pack.md
   - crypto_analysis.md
   - valuation_expectations.md
@@ -36,10 +36,10 @@ Audit/run metadata must record exactly one controlled execution mode before the 
 
 | Execution mode | Meaning | Requirement |
 |---|---|---|
-| `Single-agent Full Cycle` | The main Codex session executes the full workflow modules itself. | Do not claim that subagents ran. Use artifact-equivalent handoff summaries when separate files are not produced. |
-| `Delegated Full Agent Workflow` | Relevant subagents are actually spawned and return structured handoff artifacts or artifact-equivalent summaries. | List spawned agents, skipped agents with reasons, consumed handoffs, and delegation limitations. |
+| `Non-delegated audit fallback` | The main Codex session executes the full workflow modules itself. | Do not claim that subagents ran. Use artifact-equivalent handoff summaries when separate files are not produced. |
+| `Agent workflow with spawned subagents` | Relevant subagents are actually spawned and return structured handoff artifacts or artifact-equivalent summaries. | List spawned agents, skipped agents with reasons, consumed handoffs, and spawn limitations. |
 
-A Full Cycle is the analytical route. A delegated workflow is the runtime mode. They are not synonyms.
+An internal full workflow is the analytical route. `Agent workflow with spawned subagents` is the controlled execution mode when subagents actually run. They are not synonyms.
 
 ## Artifact selection
 
@@ -67,7 +67,7 @@ Use this workflow when the user asks whether BTC, ETH, or another crypto asset i
 
 ## What you get
 
-A controlled Crypto asset / crypto-linked exposure workflow from intake through evidence, lead route analysis, relevant specialists, portfolio fit, and Investment Committee synthesis. For concrete-asset Full Cycle work, delegated execution with relevant subagents is the canonical default when those subagents are available and actually spawned; if no subagents actually run, record `Single-agent Full Cycle` instead.
+A controlled Crypto asset / crypto-linked exposure workflow from intake through evidence, lead route analysis, relevant specialists, portfolio fit, and Investment Committee synthesis. For concrete-asset large-workflow work, `Agent workflow with spawned subagents` with relevant subagents is the canonical default when those subagents are available and actually spawned; if no subagents actually run, record `Non-delegated audit fallback` instead.
 
 ## Required agents and modules
 
@@ -99,7 +99,7 @@ A controlled Crypto asset / crypto-linked exposure workflow from intake through 
 
 ## Mandatory artifacts
 
-- `delegated_workflow_audit.md`
+- `agent_workflow_audit.md`
 - `evidence_pack.md`
 - `crypto_analysis.md`
 - `valuation_expectations.md`
@@ -123,7 +123,7 @@ A controlled Crypto asset / crypto-linked exposure workflow from intake through 
 7. Portfolio Fit marks personal fit `Limited` when portfolio context is missing.
 8. Investment Committee consumes only validated handoffs and produces the correct gate-aware IC-stage artifact.
 
-## Delegated smoke-test fixture
+## Spawned-subagent smoke-test fixture
 
 Primary fixture: BTC over a 3-year horizon.
 
@@ -143,7 +143,7 @@ Required spawned agents for the smoke test:
 - `market-intelligence-agent`
 - `investment-committee-agent`
 
-The delegated smoke test must include both `Spawned agents` and `Skipped agents with reason`. Skipped agents are acceptable only when they are not relevant to the route, not because an obligatory handoff failed. If a required agent cannot start or does not return the required artifact, the smoke test is blocked until the cause is fixed and the workflow is rerun.
+The spawned-subagent smoke test must include both `Spawned agents` and `Skipped agents with reason`. Skipped agents are acceptable only when they are not relevant to the route, not because an obligatory handoff failed. If a required agent cannot start or does not return the required artifact, the smoke test is blocked until the cause is fixed and the workflow is rerun.
 
 ## Route-specific notes
 

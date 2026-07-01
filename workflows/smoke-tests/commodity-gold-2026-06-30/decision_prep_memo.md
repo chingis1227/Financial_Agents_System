@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Investment Committee Agent
 - Producing agent/skill/workflow: Investment Committee Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
-- Evidence status: Limited; delegated module artifacts exist, but final evidence freshness and portfolio context remain open
+- Evidence status: Limited; spawned-subagent module artifacts exist, but final evidence freshness and portfolio context remain open
 - Freshness status: Needs refresh for market-sensitive inputs before any final memo
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No personalized portfolio context; no final evidence lock; gold vehicle unspecified.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Current evidence lock; vehicle review; portfolio context; final IC synthesis
@@ -21,11 +21,11 @@
 
 ## Module summary
 
-This is the final smoke-test artifact by design. It proves the delegated route can produce a gate-aware decision-preparation memo without forcing a final action.
+This is the final smoke-test artifact by design. It proves the spawned-subagent route can produce a gate-aware decision-preparation memo without forcing a final action.
 
 ## Smoke-test findings
 
-Gold routes cleanly to a Commodity Full Cycle. The decision question should focus on real yields, USD, inflation/geopolitical hedging, central-bank demand, ETF/futures flows, vehicle implementation, and portfolio role.
+Gold routes cleanly to a Commodity internal full workflow. The decision question should focus on real yields, USD, inflation/geopolitical hedging, central-bank demand, ETF/futures flows, vehicle implementation, and portfolio role.
 
 ## Decision-prep scenario logic
 
@@ -49,16 +49,16 @@ Gold routes cleanly to a Commodity Full Cycle. The decision question should focu
 - Scope: IC decision-prep synthesis for the gold commodity smoke test
 - Owner: Investment Committee Agent
 - Producing agent/skill/workflow: Investment Committee Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
-- Evidence status: Limited; delegated module artifacts exist, but final evidence freshness and portfolio context remain open
+- Evidence status: Limited; spawned-subagent module artifacts exist, but final evidence freshness and portfolio context remain open
 - Freshness status: Needs refresh for market-sensitive inputs before any final memo
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No personalized portfolio context; no final evidence lock; gold vehicle unspecified.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
-- Key findings: Gold routes cleanly to a Commodity Full Cycle. The decision question should focus on real yields, USD, inflation/geopolitical hedging, central-bank demand, ETF/futures flows, vehicle implementation, and portfolio role.
+- Key findings: Gold routes cleanly to a Commodity internal full workflow. The decision question should focus on real yields, USD, inflation/geopolitical hedging, central-bank demand, ETF/futures flows, vehicle implementation, and portfolio role.
 - Missing gates: Current evidence lock; vehicle review; portfolio context; final IC synthesis
 - Decision boundary: Decision-prep synthesis only; no final IC Action
 - Decision constraints: No final buy/sell/hold/add/trim/exit; no exact allocation or trade instruction.

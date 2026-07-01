@@ -1,4 +1,4 @@
-﻿# Documentation Sync Contract
+# Documentation Sync Contract
 
 Status: Canonical documentation-sync contract
 
@@ -30,7 +30,7 @@ This contract follows official OpenAI / Codex best practices: keep `AGENTS.md` p
 
 ## Fixture rule
 
-Any new behavior rule that affects routing, question count, output boundary, freshness, delegation, report packaging, or IC gates must have a fixture under `tests/behavior/` before the work is complete.
+Any new behavior rule that affects routing, question count, output boundary, freshness, subagent spawning, report packaging, or IC gates must have a fixture under `tests/behavior/` before the work is complete.
 
 ## Validation rule
 

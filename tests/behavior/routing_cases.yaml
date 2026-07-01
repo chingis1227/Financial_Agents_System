@@ -1,51 +1,218 @@
 [
   {
-    "id": "microsoft_full_cycle_default",
-    "prompt": "Стоит ли инвестировать в Microsoft на 3 года?",
+    "id": "agent_microsoft_equity",
+    "prompt": "AGENT: Microsoft for 3 years, no current position",
+    "command": "AGENT",
     "expected_route": "equity_full_cycle",
     "required_questions": 5,
-    "explicit_quick": false
+    "requires_spawned_subagents": true
   },
   {
-    "id": "microsoft_quick_take",
-    "prompt": "Дай быстрый взгляд на Microsoft.",
+    "id": "quick_microsoft",
+    "prompt": "QUICK: Microsoft",
+    "command": "QUICK",
     "expected_route": "quick_take",
     "required_questions": 3,
     "explicit_quick": true
   },
   {
-    "id": "btc_three_year_full_cycle",
-    "prompt": "BTC на 3 года, стоит ли инвестировать?",
+    "id": "ordinary_microsoft_router",
+    "prompt": "Should I invest in Microsoft for 3 years?",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5
+  },
+  {
+    "id": "agent_btc_three_year",
+    "prompt": "AGENT: BTC for 3 years, should I invest?",
+    "command": "AGENT",
     "expected_route": "crypto_full_cycle",
     "required_questions": 5,
-    "explicit_quick": false
+    "requires_spawned_subagents": true
   },
   {
-    "id": "qqq_schg_comparison",
-    "prompt": "QQQ vs SCHG на 3 года: что выбрать?",
+    "id": "agent_qqq_schg_comparison",
+    "prompt": "AGENT: QQQ vs SCHG for 3 years",
+    "command": "AGENT",
     "expected_route": "multi_asset_comparison",
     "required_questions": 5,
-    "explicit_quick": false
+    "requires_spawned_subagents": true
   },
   {
-    "id": "gold_latest_setup",
-    "prompt": "Золото: свежий расклад и инвестиционный сетап.",
+    "id": "agent_gold_latest_setup",
+    "prompt": "AGENT: latest gold investment setup",
+    "command": "AGENT",
     "expected_route": "commodity_full_cycle",
     "required_questions": 5,
+    "requires_spawned_subagents": true,
     "freshness_required": true
   },
   {
-    "id": "tlt_fixed_income",
-    "prompt": "Стоит ли покупать TLT как bond ETF?",
+    "id": "agent_tlt_fixed_income",
+    "prompt": "AGENT: should I buy TLT as a bond ETF?",
+    "command": "AGENT",
     "expected_route": "fixed_income_full_cycle",
     "required_questions": 5,
-    "explicit_quick": false
+    "requires_spawned_subagents": true
   },
   {
-    "id": "direct_risk_review",
-    "prompt": "Сделай только risk review по Microsoft.",
+    "id": "command_risk",
+    "prompt": "RISK: Microsoft",
+    "command": "RISK",
     "expected_route": "direct_specialist",
+    "expected_agent": "risk-red-team-agent",
     "required_questions": 0,
-    "specialist_only": true
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_val",
+    "prompt": "VAL: Nvidia",
+    "command": "VAL",
+    "expected_route": "direct_specialist",
+    "expected_agent": "valuation-expectations-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_macro",
+    "prompt": "MACRO: S&P 500 under higher-for-longer rates",
+    "command": "MACRO",
+    "expected_route": "direct_specialist",
+    "expected_agent": "macro-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_news",
+    "prompt": "NEWS: why did Nvidia rise today?",
+    "command": "NEWS",
+    "expected_route": "direct_specialist",
+    "expected_agent": "news-catalysts-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": true
+  },
+  {
+    "id": "command_portfolio",
+    "prompt": "PORTFOLIO: QQQ in a growth portfolio",
+    "command": "PORTFOLIO",
+    "expected_route": "direct_specialist",
+    "expected_agent": "portfolio-fit-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_sector",
+    "prompt": "SECTOR: semiconductors",
+    "command": "SECTOR",
+    "expected_route": "direct_specialist",
+    "expected_agent": "sector-industry-analysis-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_evidence",
+    "prompt": "EVIDENCE: Microsoft",
+    "command": "EVIDENCE",
+    "expected_route": "direct_specialist",
+    "expected_agent": "evidence-collector",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_positioning",
+    "prompt": "POSITIONING: Nvidia",
+    "command": "POSITIONING",
+    "expected_route": "direct_specialist",
+    "expected_agent": "market-positioning-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_intel",
+    "prompt": "INTEL: semiconductor market",
+    "command": "INTEL",
+    "expected_route": "direct_specialist",
+    "expected_agent": "market-intelligence-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_equity",
+    "prompt": "EQUITY: Microsoft",
+    "command": "EQUITY",
+    "expected_route": "direct_specialist",
+    "expected_agent": "equity-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_etf",
+    "prompt": "ETF: QQQ fund wrapper review",
+    "command": "ETF",
+    "expected_route": "direct_specialist",
+    "expected_agent": "etf-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_commodity",
+    "prompt": "COMMODITY: gold",
+    "command": "COMMODITY",
+    "expected_route": "direct_specialist",
+    "expected_agent": "commodity-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_crypto",
+    "prompt": "CRYPTO: BTC",
+    "command": "CRYPTO",
+    "expected_route": "direct_specialist",
+    "expected_agent": "crypto-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_fi",
+    "prompt": "FI: TLT duration exposure review",
+    "command": "FI",
+    "expected_route": "direct_specialist",
+    "expected_agent": "fixed-income-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_winners",
+    "prompt": "WINNERS: AI infrastructure beneficiaries",
+    "command": "WINNERS",
+    "expected_route": "direct_specialist",
+    "expected_agent": "structural-winners-discovery-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
+  },
+  {
+    "id": "command_ic",
+    "prompt": "IC: Microsoft",
+    "command": "IC",
+    "expected_route": "direct_specialist",
+    "expected_agent": "investment-committee-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "freshness_required": false
   }
 ]

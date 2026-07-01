@@ -6,6 +6,9 @@
       "IC Action: Buy",
       "IC Action: Sell",
       "IC Action: Hold",
+      "IC Action: Add",
+      "IC Action: Trim",
+      "IC Action: Exit",
       "Action Box",
       "Buy recommendation",
       "Sell recommendation",
@@ -13,9 +16,14 @@
     ]
   },
   {
-    "id": "delegated_requires_spawn",
+    "id": "agent_requires_spawn_or_limited_fallback",
+    "scope": "AGENT",
+    "rule": "agent_workflow_claim_valid_only_with_spawned_agents_else_limited_audit_fallback"
+  },
+  {
+    "id": "spawned_subagent_workflow_requires_actual_spawn",
     "scope": "execution_mode",
-    "rule": "delegated_valid_only_with_spawned_agents"
+    "rule": "spawned_subagent_workflow_valid_only_with_spawned_agents"
   },
   {
     "id": "freshness_requires_timestamp_or_limited",
@@ -29,7 +37,7 @@
   },
   {
     "id": "quick_take_no_final_action_escape_hatch",
-    "scope": "quick_take",
+    "scope": "QUICK",
     "rule": "quick_take_never_issues_final_ic_action_even_if_gates_pass",
     "forbidden_patterns": [
       "No final IC Action unless",

@@ -1,4 +1,4 @@
-﻿# Equity Full Cycle Workflow Runbook
+# Equity internal full workflow Workflow Runbook
 
 ```yaml
 contract_type: Workflow
@@ -8,7 +8,7 @@ authority_level: Subordinate to canonical implementation documents
 owner: Asset Intake Router / Investment Committee Agent
 used_by:
   - Concrete public-equity investment-action requests
-  - Equity Full Cycle analysis
+  - Equity large-workflow analysis
 produces:
   - evidence_pack.md
   - macro_sensitivity.md
@@ -31,7 +31,7 @@ consumes:
   - upstream_handoff_artifacts
 evidence_required: true
 final_output_owner: Investment Committee Agent
-decision_boundary: This runbook orchestrates the Equity Full Cycle. It does not create new decision rules, does not let non-IC agents issue IC Action, does not allow final positive IC Action unless all required gates pass, and does not allow personalized final IC Action when portfolio context is not closed.
+decision_boundary: This runbook orchestrates the Equity internal full workflow. It does not create new decision rules, does not let non-IC agents issue IC Action, does not allow final positive IC Action unless all required gates pass, and does not allow personalized final IC Action when portfolio context is not closed.
 known_gaps:
   - none
 ```
@@ -40,7 +40,7 @@ Authority: this is an executable runtime runbook assembled from `implementation/
 
 ## Trigger
 
-Use this workflow for a public listed equity when the user asks whether to invest, buy, add, hold, sell, start exposure, or evaluate the stock for a capital-allocation horizon, unless the user explicitly requests a short / fast / quick take / no full cycle / preliminary output. The default execution mode is `Delegated Full Agent Workflow` with relevant subagents when available. If subagents are unavailable or not actually spawned, record `Single-agent Full Cycle` as the audit fallback and do not imply delegated execution.
+Use this workflow for a public listed equity when the user asks whether to invest, buy, add, hold, sell, start exposure, or evaluate the stock for a capital-allocation horizon, unless the user explicitly requests a short / fast / `QUICK:` / quick take / preliminary output. The default execution mode is `Agent workflow with spawned subagents` with relevant subagents when available. If subagents are unavailable or not actually spawned, record `Non-delegated audit fallback` as the audit fallback and do not imply agent workflow execution.
 
 Microsoft-like request routing example:
 
@@ -48,7 +48,7 @@ Microsoft-like request routing example:
 "Should I invest in Microsoft if I do not own it, horizon 3+ years?"
 ```
 
-Route: Master Intake Router -> Asset Intake Router -> Equity Full Cycle. Treat Microsoft as a public listed equity unless the instrument is ambiguous. Because the user says they do not own it and gives a 3+ year horizon, this is a concrete equity investment-action request, not a Quick Take. If the user does not provide portfolio composition, risk tolerance, objective, or exposure limits, continue the Full Cycle but mark Portfolio Fit and IC Action Status as Limited and use `decision_prep_memo.md` by default if portfolio context is the only missing final-action gate.
+Route: Master Intake Router -> Asset Intake Router -> Equity internal full workflow. Treat Microsoft as a public listed equity unless the instrument is ambiguous. Because the user says they do not own it and gives a 3+ year horizon, this is a concrete equity investment-action request, not a Quick Take. If the user does not provide portfolio composition, risk tolerance, objective, or exposure limits, continue the internal full workflow but mark Portfolio Fit and IC Action Status as Limited and use `decision_prep_memo.md` by default if portfolio context is the only missing final-action gate.
 
 ## When to use
 
@@ -56,7 +56,7 @@ Use when the request requires IC-level decision preparation or final decision su
 
 ## What you get
 
-A controlled sequence from intake through evidence, macro, sector / industry, equity analysis, financial statement analysis, valuation, risk review, portfolio fit, and IC synthesis. The sequence can run in two modes: `Delegated Full Agent Workflow` when relevant subagents are actually spawned and return structured handoffs, or `Single-agent Full Cycle` when the main session executes the modules itself as a fallback. The internal IC-stage artifact is selected by gate state; saved user-facing Full Cycle output remains `investment_report.md`:
+A controlled sequence from intake through evidence, macro, sector / industry, equity analysis, financial statement analysis, valuation, risk review, portfolio fit, and IC synthesis. The sequence can run in two modes: `Agent workflow with spawned subagents` when relevant subagents are actually spawned and return structured handoffs, or `Non-delegated audit fallback` when the main session executes the modules itself as a fallback. The internal IC-stage artifact is selected by gate state; saved user-facing large-workflow output remains `investment_report.md`:
 
 - `final_investment_memo.md` only when evidence and all required gates are sufficient, or when canonical IC rules independently allow a supported final negative / cautionary action.
 - `decision_prep_memo.md` when the workflow is otherwise usable but user portfolio context is the missing final-action gate.
@@ -73,18 +73,18 @@ A controlled sequence from intake through evidence, macro, sector / industry, eq
 
 ## Saved output package
 
-Full Equity Cycle saves the user-facing report outside the project repository as `investment_report.md` and creates an `audit\` folder with runtime metadata, sources, intake questions/answers, assumptions, and one `.md` handoff per actually run subagent or module. Ordinary chat reproduces `investment_report.md` exactly and ends only with the saved report path.
+Equity large workflow saves the user-facing report outside the project repository as `investment_report.md` and creates an `audit\` folder with runtime metadata, sources, intake questions/answers, assumptions, and one `.md` handoff per actually run subagent or module. Ordinary chat reproduces `investment_report.md` exactly and ends only with the saved report path.
 
 ## Execution modes
 
-Every Equity Full Cycle records one of these controlled values in `audit\run_metadata.md`; ordinary chat does not show the execution mode or Runtime Execution Plan unless explicitly requested:
+Every Equity internal full workflow records one of these controlled values in `audit\run_metadata.md`; ordinary chat does not show the execution mode or Runtime Execution Plan unless explicitly requested:
 
 | Execution mode | Use when | Runtime behavior | Required visibility |
 |---|---|---|---|
-| `Delegated Full Agent Workflow` | Default for ordinary Microsoft-like or other public-equity investment-action requests when relevant subagents are available and actually spawned. | Spawn only relevant subagents/custom-agent sessions, collect structured handoff artifacts or summaries, then synthesize through IC. | Record spawned agents, skipped relevant agents with reasons, handoff artifacts/summaries, and any delegation limitations in audit. |
-| `Single-agent Full Cycle` | Fallback when delegated tooling is unavailable, blocked, or no subagents are actually spawned. | The main Codex session executes the workflow modules using canonical documents, repo skills, and structured handoff summaries. | Record fallback reason in audit; do not write as if Evidence Collector, Equity Agent, Valuation, Risk, Portfolio Fit, or IC ran as independent subagents. |
+| `Agent workflow with spawned subagents` | Default for ordinary Microsoft-like or other public-equity investment-action requests when relevant subagents are available and actually spawned. | Spawn only relevant subagents/custom-agent sessions, collect structured handoff artifacts or summaries, then synthesize through IC. | Record spawned agents, skipped relevant agents with reasons, handoff artifacts/summaries, and any spawn limitations in audit. |
+| `Non-delegated audit fallback` | Fallback when subagent spawning tooling is unavailable, blocked, or no subagents are actually spawned. | The main Codex session executes the workflow modules using canonical documents, repo skills, and structured handoff summaries. | Record fallback reason in audit; do not write as if Evidence Collector, Equity Agent, Valuation, Risk, Portfolio Fit, or IC ran as independent subagents. |
 
-If the user says "run all agents", run only all relevant Equity Full Cycle agents/modules, not literally every configured agent. The mere presence of unrelated agent names in this runbook does not authorize spawning them.
+If the user says "run all agents", run only all relevant Equity internal full workflow agents/modules, not literally every configured agent. The mere presence of unrelated agent names in this runbook does not authorize spawning them.
 
 ## Entry conditions
 
@@ -100,8 +100,8 @@ If the user says "run all agents", run only all relevant Equity Full Cycle agent
 |---|---|---|---|---|
 | Master Intake Router | Master Intake Router | Raw user request, user context if available, source-scope constraints | `intake_block`, selected route, missing context, evidence profile | Status must reflect route confidence. Handoff route, intent, horizon, source scope, and missing context to Asset Intake and Evidence Collector. |
 | Asset Intake Router | Asset Intake Router | `intake_block`, asset identifier, user intent, horizon, portfolio context when available | `asset_intake_block`, equity lead selection, required gate list | Must choose Equity route, identify required valuation/risk/portfolio gates, and not issue investment decisions. |
-| Execution mode | Orchestrating runtime / router | User request wording, selected route, delegation availability, actual spawned subagents or fallback reason | `Execution mode: Single-agent Full Cycle` or `Execution mode: Delegated Full Agent Workflow` | Required in `audit\run_metadata.md`. Delegated mode is valid only when relevant subagents are actually spawned. |
-| Runtime Execution Plan | Orchestrating runtime / router | Selected Equity Full Cycle route, execution mode, and required gate list | Audit plan with included modules, excluded modules, rationale, and module status table | Required in audit before Full Cycle analysis. Every included module must have `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`. |
+| Execution mode | Orchestrating runtime / router | User request wording, selected route, subagent-spawning availability, actual spawned subagents or fallback reason | `Execution mode: Non-delegated audit fallback` or `Execution mode: Agent workflow with spawned subagents` | Required in `audit\run_metadata.md`. Spawned-subagent mode is valid only when relevant subagents are actually spawned. |
+| Runtime Execution Plan | Orchestrating runtime / router | Selected Equity large-workflow route, execution mode, and required gate list | Audit plan with included modules, excluded modules, rationale, and module status table | Required in audit before large-workflow analysis. Every included module must have `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`. |
 | Evidence Collector | Evidence Collector Agent / Evidence Collection skill | Intake, workflow plan, evidence profile, source scope, user materials | `evidence_pack.md`, readiness matrix, evidence requests, pre-IC evidence lock | Must classify claim support, source quality, freshness, conflicts, proxy evidence, and allowed IC artifact. No valuation, risk, portfolio, or IC conclusions. |
 | Equity Agent | Equity Agent / Equity Company Analysis skill | `asset_intake_block`, `evidence_pack.md`, financial statement output when available, macro context, sector / industry context, and news context when material | `equity_company_analysis.md`, equity structured handoff | Produces business-quality and company-thesis analysis only. Must include `Boundary: Not an IC Action` if action language could be inferred. |
 | Financial Statement Analysis | Financial Statement Analysis skill / equity workflow contributor | Evidence pack, filings/financial history, company model context | `financial_statement_analysis.md`, financial quality handoff | Required when financial quality, durability, accounting, cash flow, balance sheet, dilution, or capital allocation is decision-relevant. Must hand off to Equity, Valuation, Risk, and IC. |
@@ -120,7 +120,7 @@ These modules follow the audit Runtime Execution Plan and module status discipli
 | News & Catalysts | News & Catalysts Agent / skill | Request depends on latest, today, earnings, price action, recent events, or catalyst path | Evidence pack, recent events, filings/releases, market reaction context | `news_catalysts.md` with event status, source confidence, price/thesis relevance, and handoff | If freshness is material and not refreshed, mark `Limited` or `Blocked`; IC Action Status must be Limited or Blocked. |
 | Market Positioning | Market Positioning Agent / skill | Consensus, crowding, flows, event bar, or revision momentum is material | Evidence pack, price/volume context, consensus or positioning proxies where available | `market_positioning.md` with expectations, crowding/neglect, event bar, and handoff | If included with weak data, mark `Limited`; if excluded, mark `Not material` or source-limited. |
 | Driver Dominance | Driver Dominance Analysis skill / Market Sense contributor | Thesis or market reaction depends on one or a few dominant drivers, or competing drivers could change conclusion strength | Evidence pack, driver map, asset move or thesis-driver context, news/macro/positioning inputs where material | `driver_dominance_analysis.md` or driver-dominance handoff | If included, separate dominant, supporting, opposing, and ignored drivers. If excluded, mark `Not material` or `Skipped with reason`. |
-| Macro Sensitivity | Macro Agent / Macro Analysis skill | Default module for every equity Full Cycle; rates, FX, liquidity, inflation, policy, or economic cycle may affect valuation, demand, discount rates, or risk appetite | Evidence pack, macro variables, transmission hypothesis, sector/company sensitivity | `macro_sensitivity.md` with transmission mechanism, scenarios, freshness caveats, and handoff | At least a short macro handoff is required unless explicit source scope or route rationale justifies limitation/skipping in audit; status follows evidence freshness and transmission confidence. |
+| Macro Sensitivity | Macro Agent / Macro Analysis skill | Default module for every equity internal full workflow; rates, FX, liquidity, inflation, policy, or economic cycle may affect valuation, demand, discount rates, or risk appetite | Evidence pack, macro variables, transmission hypothesis, sector/company sensitivity | `macro_sensitivity.md` with transmission mechanism, scenarios, freshness caveats, and handoff | At least a short macro handoff is required unless explicit source scope or route rationale justifies limitation/skipping in audit; status follows evidence freshness and transmission confidence. |
 | Implementation / vehicle quality | Asset Intake Router plus relevant wrapper / implementation review | The user asks through a wrapper, ADR, fund, option, illiquid listing, or structure where access/liquidity/fees/custody/tax can affect the result | Instrument identity, wrapper terms, liquidity/spread/fee/access data, custody/tax constraints where material | Implementation-quality handoff or appropriate asset/wrapper review | If material and unchecked, mark `Limited` or `Blocked`; positive IC Action is prohibited until resolved. |
 
 Artifact naming note: `sector_context.md` follows the routing and workflow contract for embedded equity context. When a fuller sector artifact is produced, use the report-schema names such as `sector_industry_memo.md`; if canonical naming appears inconsistent in a future task, record it as a documentation-control source issue rather than resolving it inside this runbook.
@@ -129,7 +129,7 @@ Artifact naming note: `sector_context.md` follows the routing and workflow contr
 
 1. **Classify the request.** Master Intake identifies request family, subject, instrument, action intent, time horizon, evidence profile, freshness needs, and missing context.
 2. **Route the asset.** Asset Intake confirms the Equity route, the lead Equity Agent, required specialists, and any identity or implementation gates.
-3. **Ask workflow intake questions.** Before starting the full workflow, ask exactly 5 equity-specific questions in one block and wait for the user's next message. If the user explicitly requested short / fast / quick take / no full cycle / preliminary mode, ask exactly 3 relevant questions and stay chat-only with no `investment_report.md` or `audit`.
+3. **Ask workflow intake questions.** Before starting the full workflow, ask exactly 5 equity-specific questions in one block and wait for the user's next message. If the user explicitly requested short / fast / `QUICK:` / quick take / preliminary mode, ask exactly 3 relevant questions and stay chat-only with no `investment_report.md` or `audit`.
 4. **Record execution mode and the Runtime Execution Plan.** Before analysis, write `Execution mode`, included modules, excluded modules, route rationale, actual spawned subagents or fallback reason, and a module status table to `audit\run_metadata.md`. Ordinary chat hides this unless requested.
 5. **Open evidence collection.** Evidence Collector builds `evidence_pack.md`, including source inventory, material claim map, freshness map, conflicts, missing data, source-scope limits, and readiness matrix.
 6. **Run default context modules.** Run macro and sector / industry by default for equities after the evidence pack is opened. These modules may run in parallel with financial statement analysis, but Equity Agent must either consume their handoffs or record an audit-limited reason before relying on company-thesis conclusions.
@@ -145,9 +145,9 @@ Artifact naming note: `sector_context.md` follows the routing and workflow contr
 
 Mandatory handoff behavior is governed by `workflows/handoff_artifact_standard.md`. Use the exact universal fields and structured handoff block from that file; do not create workflow-local aliases such as `Status`, `Downstream relevance`, or `Downstream consumers`.
 
-In `Single-agent Full Cycle`, mandatory artifacts may be written by the main session as artifact-equivalent summaries, but each included module must still be saved under `audit\` as its own clearly named `.md` handoff/report or module handoff file with the controlled artifact name and required fields. They must not be embedded as technical blocks in ordinary chat. In `Delegated Full Agent Workflow`, spawned subagents must return the structured artifact or artifact-equivalent summary before IC synthesis consumes it.
+In `Non-delegated audit fallback`, mandatory artifacts may be written by the main session as artifact-equivalent summaries, but each included module must still be saved under `audit\` as its own clearly named `.md` handoff/report or module handoff file with the controlled artifact name and required fields. They must not be embedded as technical blocks in ordinary chat. In `Agent workflow with spawned subagents`, spawned subagents must return the structured artifact or artifact-equivalent summary before IC synthesis consumes it.
 
-Minimum mandatory Equity Full Cycle handoff set:
+Minimum mandatory Equity large-workflow handoff set:
 
 ```text
 evidence_pack.md
@@ -175,7 +175,7 @@ Use these status tokens exactly in module status tables: `Complete`, `Limited`, 
 - `Not material`: the module was considered and does not materially affect the stated decision route.
 - `Skipped with reason`: the module was not run because the user scoped it out, data was unavailable, or another explicit workflow reason applies.
 
-A Full Cycle output is not valid unless every included module appears in the module status table with one of these statuses.
+A large-workflow output is not valid unless every included module appears in the module status table with one of these statuses.
 
 
 ## Portfolio context gate
@@ -184,7 +184,7 @@ If portfolio context is not closed, the workflow must not issue a personalized f
 
 Portfolio context is treated as closed only when the information needed for the requested decision is available, usually including current position state, approximate exposure or portfolio weight when relevant, time horizon, risk tolerance or objective, and any material constraints. If those inputs are missing but the equity identity and investment-action route are clear:
 
-- continue the Equity Full Cycle rather than downgrading silently to Quick Take;
+- continue the Equity internal full workflow rather than downgrading silently to Quick Take;
 - mark Portfolio Fit as `Limited` or not personalized;
 - mark `IC Action Status` as `Limited` or `Blocked`;
 - use `decision_prep_memo.md` by default when this is the only remaining final-action gate;
@@ -195,7 +195,7 @@ Portfolio context is treated as closed only when the information needed for the 
 | Gate state | IC artifact | Allowed decision language | Required boundary |
 |---|---|---|---|
 | Evidence, lead analysis, valuation, risk, material context, implementation, and portfolio/user context are sufficient for the stated scope; or a narrow final negative/cautionary IC treatment is independently allowed by canonical IC rules | `final_investment_memo.md` | Controlled `IC Action` labels only; `Action Box` allowed. No personalized final action when portfolio context is not closed. | Must include Analysis Status, IC Action Status, Decision Confidence, Time Horizon, evidence/freshness notes, and view-change triggers. |
-| Public-data Full Cycle is otherwise useful, but portfolio context is the missing final-action gate | `decision_prep_memo.md` | Working view only; no personalized final IC Action and no final positive IC Action; no `Action Box` | Must use Decision-Prep Box, mark IC Action Status Limited or Blocked, and list minimum portfolio context needed. |
+| Public-data internal full workflow is otherwise useful, but portfolio context is the missing final-action gate | `decision_prep_memo.md` | Working view only; no personalized final IC Action and no final positive IC Action; no `Action Box` | Must use Decision-Prep Box, mark IC Action Status Limited or Blocked, and list minimum portfolio context needed. |
 | Useful IC synthesis is possible, but valuation, risk, implementation, specialist, or workflow gates remain incomplete for reasons other than primary evidence/freshness gaps | `limited_ic_draft.md` | Limited IC view only; no final positive IC Action; no `Action Box` | Must list missing gates, prohibited conclusions, and what would upgrade the memo. |
 | Decision-critical evidence, freshness, source access, provenance, contradictions, or upstream evidence are missing or unreliable | `evidence_gap_memo.md` | Gap explanation and allowed interim view only; no final positive IC Action; no `Action Box` | Must identify missing evidence, why it matters, impact on Analysis Status and IC Action Status, and minimum evidence needed. |
 
@@ -204,8 +204,8 @@ Portfolio context is treated as closed only when the information needed for the 
 For a request like `Should I invest in Microsoft, if I do not own it, horizon 3+ years?`:
 
 1. Classify as a concrete public-equity investment-action request.
-2. Select Equity Full Cycle, not Quick Take, unless the user explicitly asks for a short or preliminary answer.
-3. Use `Delegated Full Agent Workflow` by default when relevant subagents are available and actually spawned; otherwise record `Single-agent Full Cycle` fallback in audit and do not imply delegated execution.
+2. Select Equity internal full workflow, not Quick Take, unless the user explicitly asks for a short or preliminary answer.
+3. Use `Agent workflow with spawned subagents` by default when relevant subagents are available and actually spawned; otherwise record `Non-delegated audit fallback` fallback in audit and do not imply agent workflow execution.
 4. Include Master Intake, Asset Intake, Evidence Collector, Macro, Sector / Industry Analysis, Equity Agent, Financial Statement Analysis, Valuation, Risk Red Team, Portfolio Fit, and IC synthesis.
 5. Treat missing portfolio composition, risk tolerance, objective, and exposure limits as non-blocking for the analytical workflow but blocking for personalized final IC Action and any ordinary final positive IC Action.
 6. Produce `decision_prep_memo.md` by default if public evidence, valuation, risk, and lead analysis are sufficient but portfolio context is the remaining final-action gate.
@@ -214,19 +214,19 @@ For a request like `Should I invest in Microsoft, if I do not own it, horizon 3+
 
 ## Completion rules
 
-- **Complete Full Cycle / Final Memo allowed:** all included modules have valid status; evidence lock allows final memo; lead equity, financial statement analysis when material, valuation, risk, portfolio/implementation gates, and material context are sufficient; IC uses `final_investment_memo.md`.
-- **Limited Full Cycle / Decision preparation:** all included modules have valid status, but at least one final-action gate is limited; IC uses `decision_prep_memo.md` or `limited_ic_draft.md`.
+- **Complete internal full workflow / Final Memo allowed:** all included modules have valid status; evidence lock allows final memo; lead equity, financial statement analysis when material, valuation, risk, portfolio/implementation gates, and material context are sufficient; IC uses `final_investment_memo.md`.
+- **Limited internal full workflow / Decision preparation:** all included modules have valid status, but at least one final-action gate is limited; IC uses `decision_prep_memo.md` or `limited_ic_draft.md`.
 - **Evidence-constrained workflow:** evidence or freshness is decision-critical and insufficient; IC uses `evidence_gap_memo.md`.
 - **Blocked workflow:** asset identity, source access, evidence reliability, or required upstream analysis is missing enough that even a bounded view would be unsafe; return only blocking issues, minimum next steps, and allowed interim scope.
-- **Preliminary workflow:** only allowed when the user explicitly asks for Quick Take / preliminary / short / fast / no full cycle or when the output is a direct specialist early read.
+- **Preliminary workflow:** only allowed when the user explicitly asks for Quick Take / preliminary / short / fast / `QUICK:` or when the output is a direct specialist early read.
 
 ## Runtime Execution Plan checklist
 
-Before presenting an Equity Full Cycle output, verify:
+Before presenting an Equity large-workflow output, verify:
 
-- `audit\run_metadata.md` records `Execution mode` as `Single-agent Full Cycle` or `Delegated Full Agent Workflow`.
-- Delegated mode is the default if relevant subagents are available and actually spawned; otherwise audit records `Single-agent Full Cycle` fallback.
-- Audit records the selected route and why Equity Full Cycle was chosen; ordinary chat hides this unless requested.
+- `audit\run_metadata.md` records `Execution mode` as `Non-delegated audit fallback` or `Agent workflow with spawned subagents`.
+- Spawned-subagent mode is the default if relevant subagents are available and actually spawned; otherwise audit records `Non-delegated audit fallback` fallback.
+- Audit records the selected route and why Equity internal full workflow was chosen; ordinary chat hides this unless requested.
 - Included modules and excluded modules are listed in audit.
 - Every included module has one valid status: `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
 - Evidence Collector status and freshness treatment are recorded in audit and summarized in reader-facing prose when material.
@@ -241,13 +241,13 @@ Before presenting an Equity Full Cycle output, verify:
 This runbook is ready when:
 
 - A Microsoft-like public-equity investment-action request routes into this workflow.
-- The workflow distinguishes audit-recorded `Single-agent Full Cycle` fallback from actual `Delegated Full Agent Workflow`.
-- Ordinary Microsoft-like requests default to relevant delegated subagents when available; if no subagents ran, the workflow records `Single-agent Full Cycle` fallback and does not pretend subagents ran.
-- Delegated workflows spawn only relevant subagents by default for full equity workflows and expose structured handoffs in audit.
+- The workflow distinguishes audit-recorded `Non-delegated audit fallback` fallback from actual `Agent workflow with spawned subagents`.
+- Ordinary Microsoft-like requests default to relevant spawned subagents when available; if no subagents ran, the workflow records `Non-delegated audit fallback` fallback and does not pretend subagents ran.
+- Spawned-subagent workflows spawn only relevant subagents by default for full equity workflows and expose structured handoffs in audit.
 - Module order is visible from Router to IC synthesis.
 - Each module declares inputs, outputs, status treatment, and handoff requirement.
 - The workflow distinguishes `decision_prep_memo.md`, `limited_ic_draft.md`, `evidence_gap_memo.md`, and `final_investment_memo.md`.
-- Missing user portfolio context prevents personalized final IC Action and ordinary final positive IC Action, but does not stop the analytical Full Cycle.
+- Missing user portfolio context prevents personalized final IC Action and ordinary final positive IC Action, but does not stop the analytical internal full workflow.
 - Evidence/freshness gaps route to `evidence_gap_memo.md`, not to a false final memo.
 - Non-IC modules remain scoped and cannot issue final IC Action.
 

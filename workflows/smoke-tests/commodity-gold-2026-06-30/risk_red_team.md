@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Risk / Red Team Agent
 - Producing agent/skill/workflow: Risk / Red Team Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; structural risk map is usable but not evidence-locked
 - Freshness status: Refresh required for spot price, real yields, USD, flows, positioning, curve, and news
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No current crowding model, macro scenario model, vehicle file, or liquidity stress test.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Evidence pack; macro; positioning; valuation; implementation; portfolio; news; IC synthesis
@@ -33,13 +33,13 @@ Main failure paths are higher real yields, stronger USD, fading hedge demand, of
 - Scope: Challenge the gold thesis, failure paths, crowded hedge risk, real-rate/dollar shocks, no-cash-flow valuation limits, and instrument risks
 - Owner: Risk / Red Team Agent
 - Producing agent/skill/workflow: Risk / Red Team Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; structural risk map is usable but not evidence-locked
 - Freshness status: Refresh required for spot price, real yields, USD, flows, positioning, curve, and news
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No current crowding model, macro scenario model, vehicle file, or liquidity stress test.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: Main failure paths are higher real yields, stronger USD, fading hedge demand, official-sector slowdown, ETF/futures outflows, liquidity liquidation, and unsuitable vehicle selection.

@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Macro Agent
 - Producing agent/skill/workflow: Macro Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; scenario map is usable but needs synchronized macro data for final decision support
 - Freshness status: Refresh required for real yields, nominal yields, DXY, breakevens, Fed pricing, liquidity, and risk-stress indicators
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No full scenario model; no synchronized market close dataset; no current Fed-pricing lock.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Real-rate scenario table; USD path; Fed pricing; inflation surprise analysis; liquidity/stress check; IC synthesis
@@ -33,13 +33,13 @@ Gold sensitivity is dominated by real yields, USD, inflation volatility, monetar
 - Scope: Real-rate, dollar, inflation, liquidity, Fed, and geopolitical transmission to gold
 - Owner: Macro Agent
 - Producing agent/skill/workflow: Macro Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; scenario map is usable but needs synchronized macro data for final decision support
 - Freshness status: Refresh required for real yields, nominal yields, DXY, breakevens, Fed pricing, liquidity, and risk-stress indicators
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No full scenario model; no synchronized market close dataset; no current Fed-pricing lock.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: Gold sensitivity is dominated by real yields, USD, inflation volatility, monetary credibility, liquidity stress, and geopolitical risk; these forces can conflict.

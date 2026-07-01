@@ -5,13 +5,13 @@
 - Subject: Gold commodity exposure for a 3-5 year decision-prep smoke test
 - Owner: Evidence Collector Agent
 - Producing agent/skill/workflow: Evidence Collector Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; public current/recent sources are usable for smoke testing but not a final IC evidence lock
 - Freshness status: Mixed; market-sensitive gold, real-rate, dollar, ETF-flow, CFTC, and official-sector data require refresh before final use
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: Gold price and dollar proxies are current/recent; WGC official-sector and ETF data are lagged; CFTC positioning is lagged; no final evidence lock.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Missing gates: Updated gold price; real yields; DXY; WGC ETF flows; central-bank data; CFTC positioning; vehicle review; IC synthesis
@@ -43,13 +43,13 @@ Gold evidence map identifies real yields, USD, official-sector demand, ETF flows
 - Scope: Evidence readiness for gold commodity route
 - Owner: Evidence Collector Agent
 - Producing agent/skill/workflow: Evidence Collector Agent / smoke-test handoff
-- Workflow: Commodity Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Commodity internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited; public current/recent sources are usable for smoke testing but not a final IC evidence lock
 - Freshness status: Mixed; market-sensitive gold, real-rate, dollar, ETF-flow, CFTC, and official-sector data require refresh before final use
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: Gold price and dollar proxies are current/recent; WGC official-sector and ETF data are lagged; CFTC positioning is lagged; no final evidence lock.
 - Key limitations: Public-source smoke test; no paid flow tape; no intraday evidence lock; no personalized portfolio context.
 - Key findings: Gold evidence map identifies real yields, USD, official-sector demand, ETF flows, futures positioning, inflation, and geopolitics as required evidence channels.

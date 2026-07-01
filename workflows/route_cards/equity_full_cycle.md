@@ -1,4 +1,4 @@
-﻿# Equity Full Cycle Route Card
+# Equity AGENT Workflow Route Card
 
 Status: Runtime route card
 Authority: Subordinate to `workflows/equity_full_cycle.md` and canonical implementation documents.
@@ -30,9 +30,9 @@ Saved `investment_report.md` plus `audit/`, or a gate-aware Limited / Blocked ar
 
 ## Forbidden output
 
-- No Quick Take unless explicitly requested.
+- No `QUICK:` route unless explicitly requested.
 - No final buy/sell/hold/add/trim/exit language outside IC synthesis.
-- No `Delegated Full Agent Workflow` claim unless subagents actually spawned.
+- No agent workflow execution claim unless subagents actually spawned.
 
 ## Downgrade rules
 

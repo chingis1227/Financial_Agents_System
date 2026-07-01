@@ -1,4 +1,4 @@
-﻿# valuation_expectations.md - Microsoft / MSFT
+# valuation_expectations.md - Microsoft / MSFT
 
 ## Handoff metadata
 - Artifact: `valuation_expectations.md`
@@ -6,8 +6,8 @@
 - Scope: scoped valuation and expectations input
 - Owner: Valuation & Expectations Agent
 - Producing agent/skill/workflow: Valuation & Expectations Agent / `valuation-expectations` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest; market price as of 2026-06-29 U.S. close
 - Output status: Limited
 - Evidence status: Limited; based on public market data, official FY26 Q3 financials, and third-party estimates without full evidence lock
@@ -41,7 +41,7 @@ A positive final IC pathway would need evidence that Microsoft can sustain stron
 - AI capex ROI lag or disappointment.
 ## Scope note
 
-This file is a structured handoff artifact for the delegated smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
+This file is a structured handoff artifact for the spawned-subagent smoke test, not a full production standalone specialist report. Its conclusions are intentionally scoped and must be consumed with the evidence pack, valuation, risk, portfolio, and IC gates.
 
 ## Structured handoff
 
@@ -50,8 +50,8 @@ This file is a structured handoff artifact for the delegated smoke test, not a f
 - Scope: scoped valuation and expectations input
 - Owner: Valuation & Expectations Agent
 - Producing agent/skill/workflow: Valuation & Expectations Agent / `valuation-expectations` skill
-- Workflow: Equity Full Cycle / Delegated Full Agent Workflow
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Equity internal full workflow / Agent workflow with spawned subagents
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30 Europe/Budapest; market price as of 2026-06-29 U.S. close
 - Output status: Limited
 - Evidence status: Limited; based on public market data, official FY26 Q3 financials, and third-party estimates without full evidence lock

@@ -1,4 +1,4 @@
-﻿# Financial Agent System - Codex Instructions
+# Financial Agent System - Codex Instructions
 
 ## Purpose
 
@@ -24,34 +24,57 @@ This project follows official OpenAI / Codex best practices: keep `AGENTS.md` pr
 6. Supporting references under `references/` only when routed by registry/traceability and non-conflicting.
 7. Archive material only as provenance; never as active source of truth.
 
+## User command model
+
+| Command | Runtime meaning | Target |
+|---|---|---|
+| `AGENT:` | Large agent workflow with relevant spawned subagents | Router-selected asset workflow + IC synthesis |
+| `QUICK:` | Short preliminary answer | Quick Take route |
+| `RISK:` | One specialist only | `risk-red-team-agent` |
+| `VAL:` | One specialist only | `valuation-expectations-agent` |
+| `MACRO:` | One specialist only | `macro-agent` |
+| `NEWS:` | One specialist only | `news-catalysts-agent` |
+| `PORTFOLIO:` | One specialist only | `portfolio-fit-agent` |
+| `SECTOR:` | One specialist only | `sector-industry-analysis-agent` |
+| `EVIDENCE:` | One specialist only | `evidence-collector` |
+| `POSITIONING:` | One specialist only | `market-positioning-agent` |
+| `INTEL:` | One specialist only | `market-intelligence-agent` |
+| `EQUITY:` | One specialist only | `equity-agent` |
+| `ETF:` | One specialist only | `etf-agent` |
+| `COMMODITY:` | One specialist only | `commodity-agent` |
+| `CRYPTO:` | One specialist only | `crypto-agent` |
+| `FI:` | One specialist only | `fixed-income-agent` |
+| `WINNERS:` | One specialist only | `structural-winners-discovery-agent` |
+| `IC:` | One specialist only; committee-prep handoff, not final action | `investment-committee-agent` |
+
 ## Non-negotiable runtime rules
 
 - Do not use archive files as active source of truth.
+- `AGENT:` is the user-facing command for the large agent workflow. It asks exactly 5 relevant questions first, then uses relevant spawned subagents when available.
+- Do not claim an agent workflow unless subagents were actually spawned. If subagents cannot be spawned, record fallback only in audit metadata and mark the user-facing output Limited.
+- `QUICK:` is only Preliminary or Limited, asks exactly 3 relevant questions first, stays chat-only, and never creates report/audit files.
+- Specialist commands, including `IC:`, route to one analyst only, must show `Boundary: Not an IC Action`, and must not issue final `IC Action`.
 - Do not issue final `IC Action` outside Investment Committee synthesis.
-- Concrete-asset buy/invest/hold/sell/add requests default to Full Cycle unless the user explicitly asks for short / fast / quick / preliminary output.
-- Quick Take is only Preliminary or Limited, asks exactly 3 relevant questions first, and stays chat-only.
-- Full Cycle asks exactly 5 relevant questions first, then uses the selected route card.
 - Freshness-dependent requests such as today, now, latest, earnings, price action, or news require current timestamped sources or must be Limited / Blocked.
-- Do not claim `Delegated Full Agent Workflow` unless subagents were actually spawned. If no subagents were spawned, record `Single-agent Full Cycle`.
-- Full workflow reports are saved outside the repo under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-dd hhmm\` as `investment_report.md` plus `audit/`.
+- Large workflow reports are saved outside the repo under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-dd hhmm\` as `investment_report.md` plus `audit/`.
 - Ordinary chat after a saved workflow should show the reader-facing report and saved-report path, not runtime/debug tables, unless explicitly requested.
 
 ## Runtime route map
 
 | User intent | Required route |
 |---|---|
-| short / quick / fast / preliminary | `workflows/route_cards/quick_take.md` |
-| buy / invest / hold / sell / add concrete asset | selected Full Cycle route card |
-| compare assets or wrappers | `workflows/route_cards/multi_asset_comparison.md` or ETF route |
-| direct specialist review | `workflows/route_cards/direct_specialist.md`; no final IC Action |
+| `QUICK:` or explicit short / quick / fast / preliminary | `workflows/route_cards/quick_take.md` |
+| `AGENT:` with a concrete asset or comparison | `workflows/route_cards/investment_request_router.md` -> selected asset/comparison route card |
+| buy / invest / hold / sell / add concrete asset without prefix | route through router; recommended UX is `AGENT:` |
+| specialist command | `workflows/route_cards/direct_specialist.md`; one analyst only; no final IC Action |
 | docs/runtime maintenance | `implementation/15-documentation-sync-contract.md` |
 
 ## Skills and agents
 
-- Use `.agents/skills/investment-workflow-router/` first for investment-action, comparison, or portfolio-decision prompts.
+- Use `.agents/skills/investment-workflow-router/` first for investment-action, comparison, command shortcut, or portfolio-decision prompts.
 - Custom agents in `.codex/agents/` are thin profiles for spawned sessions, not always-on workers.
 - Skills own reusable method steps; agents own role, boundary, status, and handoff.
-- Non-IC skills and agents must not use `Action Box` or final buy/sell/hold/add/trim/exit language.
+- Direct specialist skills and agents must not use `Action Box` or final buy/sell/hold/add/trim/exit language. Final IC action is available only through the gated large workflow, not the `IC:` shortcut.
 
 ## Required validation after changes
 

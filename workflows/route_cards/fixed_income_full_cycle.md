@@ -1,4 +1,4 @@
-﻿# Fixed Income Full Cycle Route Card
+# Fixed Income AGENT Workflow Route Card
 
 Status: Runtime route card
 Authority: Subordinate to `workflows/fixed_income_full_cycle.md` and canonical implementation documents.
@@ -37,4 +37,4 @@ If instrument terms or rate/credit data are stale or ambiguous, use Limited / Bl
 
 ## Validation expectations
 
-TLT prompt must route to fixed-income / bond ETF Full Cycle and require 5 questions.
+TLT prompt must route to fixed-income / bond ETF AGENT workflow and require 5 questions.

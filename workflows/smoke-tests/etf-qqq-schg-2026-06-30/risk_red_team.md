@@ -5,8 +5,8 @@
 - Subject: QQQ vs SCHG for long-term U.S. growth exposure
 - Owner: Risk / Red Team Agent
 - Producing agent/skill/workflow: Risk / Red Team Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited public-data risk review; no full evidence pack or portfolio context
@@ -38,8 +38,8 @@ Risk gate is Limited. The wrapper/liquidity case does not fail, but positive IC 
 - Scope: Risk challenge for ETF comparison
 - Owner: Risk / Red Team Agent
 - Producing agent/skill/workflow: Risk / Red Team Agent / smoke-test handoff
-- Workflow: ETF Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: ETF internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Limited
 - Evidence status: Limited public-data risk review; no full evidence pack or portfolio context

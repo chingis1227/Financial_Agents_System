@@ -5,13 +5,13 @@
 - Subject: BTC over a 3-year horizon for crypto decision-prep smoke test
 - Owner: Crypto Agent
 - Producing agent/skill/workflow: Crypto Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Complete for scoped handoff
 - Evidence status: Limited but usable for scope; no deep on-chain/derivatives review
 - Freshness status: Current for cited public market/regulatory pages; deep on-chain pack not run
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No paid on-chain dataset, full ETF-flow history, derivatives/leverage pack, legal or custody review.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Missing gates: Evidence pack, valuation/expectations, risk, macro, positioning, portfolio fit, implementation, IC synthesis
@@ -21,7 +21,7 @@
 
 ## Module summary
 
-This artifact records the BTC delegated smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
+This artifact records the BTC spawned-subagent smoke-test module output in the canonical handoff format. It is a runtime readiness artifact, not a final investment recommendation.
 
 ## Smoke-test findings
 
@@ -33,13 +33,13 @@ BTC is viable for further crypto-domain review; liquidity/adoption are strong; v
 - Scope: Crypto asset viability, monetary/network thesis, adoption, liquidity, regulation, custody/security, token/economic risks
 - Owner: Crypto Agent
 - Producing agent/skill/workflow: Crypto Agent / smoke-test handoff
-- Workflow: Crypto Full Cycle smoke-test
-- Execution mode: Delegated Full Agent Workflow
+- Workflow: Crypto internal full workflow smoke test
+- Execution mode: Agent workflow with spawned subagents
 - As-of date/time: 2026-06-30
 - Output status: Complete for scoped handoff
 - Evidence status: Limited but usable for scope; no deep on-chain/derivatives review
 - Freshness status: Current for cited public market/regulatory pages; deep on-chain pack not run
-- Source scope: Public sources and delegated smoke-test subagent handoffs only
+- Source scope: Public sources and spawned-subagent smoke-test handoffs only
 - Evidence limits: No paid on-chain dataset, full ETF-flow history, derivatives/leverage pack, legal or custody review.
 - Key limitations: Public-source smoke test; no paid on-chain pack; no intraday evidence lock; no personalized portfolio context; implementation vehicle unspecified.
 - Key findings: BTC is viable for further crypto-domain review; liquidity/adoption are strong; volatility, regulation, custody, and no-cash-flow valuation remain core constraints.
