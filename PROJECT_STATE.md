@@ -1,7 +1,7 @@
 # Project State
 
 Status: Current runtime state
-Last updated: 2026-07-02
+Last updated: 2026-07-03
 
 ## Purpose
 
@@ -58,15 +58,15 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 
 | Python LangGraph runtime | Available for dry-run routing, equity full-cycle artifacts, direct specialist/Quick Take boundaries, missing-context interrupts, evidence-gate blocking, and live OpenAI API adapter gated on `OPENAI_API_KEY` | `langgraph_runtime/financial_agent_graph.py` |
 
-## External Automation Lab live acceptance
+## Integrated Automation Lab live acceptance
 
-Financial Agent Automation Lab is the execution/orchestration layer, not the canonical investment-rule source. As of 2026-07-03, its supported live acceptance matrix has passed with real Codex SDK `sdk_thread_id` evidence for:
+The integrated `automation_lab/` directory is the execution/orchestration layer inside this repository, not the canonical investment-rule source. The former separate local folder was merged into the main repository layout so there is one GitHub source of truth. As of 2026-07-03, its supported live acceptance matrix has passed with real Codex SDK `sdk_thread_id` evidence for:
 
 - QUICK live/public validation;
 - full AGENT live packages for equity, ETF/fund, fixed income, crypto, commodity, and multi-asset comparison;
 - all direct specialist prefixes: RISK, VAL, MACRO, NEWS, PORTFOLIO, SECTOR, EVIDENCE, POSITIONING, INTEL, EQUITY, ETF, COMMODITY, CRYPTO, FI, WINNERS, and IC.
 
-Latest Automation Lab acceptance status: `live-acceptance --require-live` passes with no smoke gaps, no live gaps, and no usage-limit gaps. Detailed execution artifacts remain outside this repository under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\`.
+Latest Automation Lab acceptance status: `live-acceptance --require-live` passes with no smoke gaps, no live gaps, and no usage-limit gaps. The Lab code now lives under `automation_lab/`; generated execution artifacts remain outside the repository under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\` or in ignored local `automation_lab/runs/` and `automation_lab/data_runs/` folders.
 
 ## Active documents
 
@@ -106,6 +106,9 @@ py -3 tools\validate_project_consistency.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
 py -3 -m unittest discover -s tests\langgraph_runtime -v
+cd automation_lab
+..\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
+cd ..
 ```
 
 After changing the Codex SDK control layer, also run:

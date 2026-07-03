@@ -41,3 +41,12 @@ build/
 .cache/
 .pytest_cache/
 .coverage
+
+# Integrated Automation Lab generated artifacts
+automation_lab/.venv/
+automation_lab/venv/
+automation_lab/runs/
+automation_lab/data_runs/
+automation_lab/.pytest_cache/
+automation_lab/**/__pycache__/
+automation_lab/**/*.py[cod]

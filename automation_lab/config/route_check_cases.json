@@ -1,0 +1,32 @@
+﻿[
+  {
+    "case_id": "microsoft_equity",
+    "prompt": "AGENT: Microsoft for 3 years, no current position",
+    "expected_route": "equity_full_cycle"
+  },
+  {
+    "case_id": "btc_crypto",
+    "prompt": "AGENT: BTC for 3 years, should I invest?",
+    "expected_route": "crypto_full_cycle"
+  },
+  {
+    "case_id": "qqq_etf",
+    "prompt": "AGENT: QQQ fund review",
+    "expected_route": "etf_full_cycle"
+  },
+  {
+    "case_id": "gold_commodity",
+    "prompt": "AGENT: latest gold investment setup",
+    "expected_route": "commodity_full_cycle"
+  },
+  {
+    "case_id": "tlt_fixed_income",
+    "prompt": "AGENT: should I buy TLT as a bond ETF?",
+    "expected_route": "fixed_income_full_cycle"
+  },
+  {
+    "case_id": "qqq_schg_comparison",
+    "prompt": "AGENT: QQQ vs SCHG for 3 years",
+    "expected_route": "multi_asset_comparison"
+  }
+]

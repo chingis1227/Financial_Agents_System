@@ -108,9 +108,9 @@ npm.cmd run codex:resume -- --thread-id "<id>" --prompt "continue" --live
 Default SDK mode is `--dry-run`; live Codex execution requires explicit `--live`. Dry-runs print to stdout only and do not create run-log files. Live SDK service logs are written outside the repository under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\_sdk_runs\`.
 Use `--prompt-file` for Automation Lab or other long prompts so Windows command-line limits and prompt leakage in process arguments are avoided.
 
-## Automation Lab live acceptance
+## Integrated Automation Lab live acceptance
 
-`C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Automation Lab` is the execution/orchestration layer. It does not replace this repository's route cards, skills, evidence policy, or IC gates.
+`automation_lab/` is the integrated execution/orchestration layer inside this repository. It does not replace this repository's route cards, skills, evidence policy, or IC gates; those remain owned by the Financial Agent System canonical docs and route cards.
 
 As of 2026-07-03, Automation Lab has passed `live-acceptance --require-live` for the supported runtime matrix:
 
@@ -118,7 +118,16 @@ As of 2026-07-03, Automation Lab has passed `live-acceptance --require-live` for
 - full AGENT live packages for equity, ETF/fund, fixed income, crypto, commodity, and multi-asset comparison;
 - direct specialist prefixes: RISK, VAL, MACRO, NEWS, PORTFOLIO, SECTOR, EVIDENCE, POSITIONING, INTEL, EQUITY, ETF, COMMODITY, CRYPTO, FI, WINNERS, and IC.
 
-Reports and audit packages are saved outside both repositories under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\`.
+Run it from the unified repository:
+
+```powershell
+cd "C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent System\automation_lab"
+..\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
+..\.venv\Scripts\python.exe fa_automation.py live-doctor
+..\.venv\Scripts\python.exe fa_automation.py live-acceptance --require-live
+```
+
+Reports and audit packages are saved outside the repository under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\`. Local Lab run caches under `automation_lab/runs/` and `automation_lab/data_runs/` are ignored by Git.
 
 ## Current runtime files
 
@@ -128,6 +137,7 @@ Reports and audit packages are saved outside both repositories under `C:\Users\S
 | `AGENTS.md` | Compact Codex runtime instructions. |
 | `workflows/route_cards/` | Daily route selection and workflow contracts. |
 | `.agents/skills/investment-workflow-router/` | First skill for command shortcut, investment-action, and comparison prompts. |
+| `automation_lab/` | Integrated execution/orchestration Lab for QUICK, AGENT, specialist, live-doctor, and live-acceptance runs; generated artifacts are ignored or saved outside the repo. |
 | `implementation/` | Canonical reference layer and supporting operational records. |
 | `references/` | Advisory playbooks and source overlays. |
 | `archive/project-history/` | Historical task and backlog records. |
@@ -141,6 +151,9 @@ Run these after changing docs, route cards, agents, skills, workflow behavior, t
 py -3 tools\validate_project_consistency.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
+cd automation_lab
+..\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
+cd ..
 ```
 
 After changing the Codex SDK control layer, also run:

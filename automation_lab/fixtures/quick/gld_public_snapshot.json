@@ -1,0 +1,69 @@
+{
+  "filings": null,
+  "price": {
+    "ticker": "GLD",
+    "date": "2026-06-30",
+    "close": "289.40",
+    "currency": "USD",
+    "source": "Mock public price fixture",
+    "source_identifier": "fixtures/quick/gld_public_snapshot.json"
+  },
+  "recent_events": [
+    {
+      "type": "public market context",
+      "date": "2026-06-30",
+      "description": "Gold ETF context marker from mock fixture.",
+      "source_identifier": "Mock GLD public-data fixture"
+    }
+  ],
+  "asset_context": {
+    "summary": "GLD is a gold exposure vehicle and commodity proxy, not an operating business with cash-flow fundamentals.",
+    "source": "Mock GLD public-data fixture"
+  },
+  "valuation_context": {
+    "summary": "Fast context only: gold exposure and public price reference; no commodity balance or macro model was run.",
+    "source": "Mock GLD public-data fixture"
+  },
+  "risk_signal": {
+    "summary": "Main limit: GLD has gold price volatility and no operating-business cash-flow anchor; real-rate sensitivity needs full analysis.",
+    "source": "Mock GLD public-data fixture"
+  },
+  "sources": [
+    {
+      "component": "identity",
+      "name": "Automation Lab GLD seed",
+      "status": "ok",
+      "detail": "TASK-008 mock identity"
+    },
+    {
+      "component": "price",
+      "name": "Mock public price",
+      "status": "ok",
+      "detail": "Fixture for stable tests"
+    },
+    {
+      "component": "recent_events",
+      "name": "Mock public context",
+      "status": "ok",
+      "detail": "Fixture for stable tests"
+    },
+    {
+      "component": "valuation_context",
+      "name": "Mock quick context",
+      "status": "ok",
+      "detail": "No model"
+    },
+    {
+      "component": "risk_signal",
+      "name": "Mock quick risk signal",
+      "status": "ok",
+      "detail": "Narrow quick limitation"
+    },
+    {
+      "component": "asset_context",
+      "name": "Mock asset-specific context",
+      "status": "ok",
+      "detail": "TASK-008 pilot"
+    }
+  ]
+}

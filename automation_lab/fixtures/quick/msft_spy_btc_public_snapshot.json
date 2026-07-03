@@ -1,0 +1,113 @@
+{
+  "components": [
+    {
+      "ticker": "MSFT",
+      "company_name": "Microsoft Corporation",
+      "security_type": "equity",
+      "currency": "USD",
+      "source": "Automation Lab comparison fixture"
+    },
+    {
+      "ticker": "SPY",
+      "company_name": "SPDR S&P 500 ETF Trust",
+      "security_type": "etf",
+      "currency": "USD",
+      "source": "Automation Lab comparison fixture"
+    },
+    {
+      "ticker": "BTC",
+      "company_name": "Bitcoin",
+      "security_type": "crypto",
+      "currency": "USD",
+      "source": "Automation Lab comparison fixture"
+    }
+  ],
+  "filings": null,
+  "price": {
+    "components": [
+      {
+        "ticker": "MSFT",
+        "price": {
+          "ticker": "MSFT",
+          "date": "2026-06-30",
+          "close": "497.45",
+          "currency": "USD",
+          "source": "Mock public price fixture"
+        }
+      },
+      {
+        "ticker": "SPY",
+        "price": {
+          "ticker": "SPY",
+          "date": "2026-06-30",
+          "close": "621.00",
+          "currency": "USD",
+          "source": "Mock public price fixture"
+        }
+      },
+      {
+        "ticker": "BTC",
+        "price": {
+          "ticker": "BTC",
+          "date": "2026-06-30",
+          "close": "107500.00",
+          "currency": "USD",
+          "source": "Mock public price fixture"
+        }
+      }
+    ],
+    "source": "Mock public price fixture"
+  },
+  "recent_events": [
+    {
+      "type": "comparison context",
+      "date": "2026-06-30",
+      "description": "Comparison context marker from mock fixture",
+      "source_identifier": "Mock comparison fixture"
+    }
+  ],
+  "comparison_context": {
+    "summary": "MSFT is company-specific equity risk; SPY is broad U.S. equity beta; BTC is high-volatility crypto exposure.",
+    "source": "Mock comparison fixture"
+  },
+  "valuation_context": {
+    "summary": "Fast comparison only: no full valuation, fund, crypto, or portfolio model was run.",
+    "source": "Mock comparison fixture"
+  },
+  "risk_signal": {
+    "summary": "Main limit: this comparison is preliminary and not portfolio-personalized; cross-asset risk needs full workflow review.",
+    "source": "Mock comparison fixture"
+  },
+  "sources": [
+    {
+      "component": "identity",
+      "name": "Automation Lab comparison seed",
+      "status": "ok",
+      "detail": "TASK-008 mock comparison identity"
+    },
+    {
+      "component": "components",
+      "name": "Mock component identities",
+      "status": "ok",
+      "detail": "MSFT, SPY, BTC"
+    },
+    {
+      "component": "price",
+      "name": "Mock component public prices",
+      "status": "ok",
+      "detail": "Fixture for stable tests"
+    },
+    {
+      "component": "comparison_context",
+      "name": "Mock comparison context",
+      "status": "ok",
+      "detail": "Preliminary trade-off context"
+    },
+    {
+      "component": "risk_signal",
+      "name": "Mock comparison risk signal",
+      "status": "ok",
+      "detail": "No portfolio personalization"
+    }
+  ]
+}

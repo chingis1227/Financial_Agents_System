@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This repo defines a Codex-native financial analysis runtime. Codex should use the short current-state and route-card layer first, then consult canonical implementation documents only when the selected task needs deeper rules.
+This repo defines a Codex-native financial analysis runtime. The integrated `automation_lab/` directory is the execution/orchestration layer and must not redefine canonical investment rules. Codex should use the short current-state and route-card layer first, then consult canonical implementation documents only when the selected task needs deeper rules.
 
 This project follows official OpenAI / Codex best practices: keep `AGENTS.md` practical and concise, make repeated workflows into skills, use explicit validation, and never claim subagents ran unless they were actually spawned.
 
@@ -88,6 +88,9 @@ py -3 tools\validate_project_consistency.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
 py -3 -m unittest discover -s tests\langgraph_runtime -v
+cd automation_lab
+..\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
+cd ..
 ```
 
 After changing the Codex SDK control layer, also run:

@@ -1,0 +1,87 @@
+﻿{
+  "filings": [
+    {
+      "form": "10-K",
+      "filing_date": "2025-07-30",
+      "accession_number": "0000950170-25-104365",
+      "primary_document": "msft-20250630.htm",
+      "source_identifier": "SEC CIK0000789019"
+    },
+    {
+      "form": "10-Q",
+      "filing_date": "2026-04-29",
+      "accession_number": "0000950170-26-052649",
+      "primary_document": "msft-20260331.htm",
+      "source_identifier": "SEC CIK0000789019"
+    },
+    {
+      "form": "8-K",
+      "filing_date": "2026-04-29",
+      "accession_number": "0001193125-26-111111",
+      "primary_document": "d8k.htm",
+      "source_identifier": "SEC CIK0000789019"
+    }
+  ],
+  "price": {
+    "ticker": "MSFT",
+    "date": "2026-06-30",
+    "close": "497.45",
+    "currency": "USD",
+    "source": "Mock public price fixture",
+    "source_identifier": "fixtures/quick/msft_public_snapshot.json"
+  },
+  "recent_events": [
+    {
+      "type": "SEC filing",
+      "date": "2026-04-29",
+      "description": "Recent quarterly filing marker from mock fixture",
+      "source_identifier": "SEC CIK0000789019"
+    }
+  ],
+  "valuation_context": {
+    "summary": "Fast context only: public price fixture is present; no model was run.",
+    "source": "Mock public-data fixture"
+  },
+  "risk_signal": {
+    "summary": "Main limitation: this quick pass is narrow and does not complete valuation, risk, portfolio, or committee gates.",
+    "source": "Mock public-data fixture"
+  },
+  "sources": [
+    {
+      "component": "identity",
+      "name": "Automation Lab MSFT seed",
+      "status": "ok",
+      "detail": "MSFT pilot identity"
+    },
+    {
+      "component": "filings",
+      "name": "Mock SEC submissions",
+      "status": "ok",
+      "detail": "Fixture for stable tests"
+    },
+    {
+      "component": "price",
+      "name": "Mock public price",
+      "status": "ok",
+      "detail": "Fixture for stable tests"
+    },
+    {
+      "component": "recent_events",
+      "name": "Mock recent public events",
+      "status": "ok",
+      "detail": "Fixture for stable tests"
+    },
+    {
+      "component": "valuation_context",
+      "name": "Mock quick valuation context",
+      "status": "ok",
+      "detail": "No model"
+    },
+    {
+      "component": "risk_signal",
+      "name": "Mock quick risk signal",
+      "status": "ok",
+      "detail": "Narrow quick limitation"
+    }
+  ]
+}

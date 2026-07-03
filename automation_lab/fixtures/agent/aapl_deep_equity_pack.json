@@ -1,0 +1,351 @@
+{
+  "subject_identity": {
+    "ticker": "AAPL",
+    "company_name": "Apple Inc.",
+    "cik": "0000320193",
+    "exchange": "NASDAQ",
+    "currency": "USD",
+    "security_type": "equity"
+  },
+  "source_records": [
+    {
+      "source_id": "identity",
+      "name": "Public equity identity",
+      "category": "identity",
+      "importance": "required",
+      "status": "ok",
+      "primary": "static identity seed + SEC CIK",
+      "fallbacks": [
+        "NASDAQ symbol reference"
+      ],
+      "fallback_used": null,
+      "url": "https://www.sec.gov/edgar/browse/?CIK=320193",
+      "source_date": "2026-07-01",
+      "freshness_rule": "structural",
+      "access_status": "Available",
+      "source_tier": "Tier 1",
+      "data": {
+        "ticker": "AAPL",
+        "company_name": "Apple Inc.",
+        "cik": "0000320193",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "security_type": "equity"
+      }
+    },
+    {
+      "source_id": "sec_submissions",
+      "name": "SEC company submissions",
+      "category": "filings",
+      "importance": "required",
+      "status": "ok",
+      "primary": "SEC submissions API",
+      "fallbacks": [
+        "SEC company filing page"
+      ],
+      "fallback_used": null,
+      "url": "https://data.sec.gov/submissions/CIK0000320193.json",
+      "source_date": "2026-06-30",
+      "freshness_rule": "retrieved_at required",
+      "access_status": "Available",
+      "source_tier": "Tier 1",
+      "data": {
+        "records": [
+          {
+            "form": "10-K",
+            "filing_date": "2025-10-31",
+            "accession_number": "0000320193-25-000079",
+            "document_url": "https://www.sec.gov/Archives/edgar/data/320193/mock-10k.htm"
+          },
+          {
+            "form": "10-Q",
+            "filing_date": "2026-05-01",
+            "accession_number": "0000320193-26-000050",
+            "document_url": "https://www.sec.gov/Archives/edgar/data/320193/mock-10q.htm"
+          },
+          {
+            "form": "8-K",
+            "filing_date": "2026-06-28",
+            "accession_number": "0000320193-26-000060",
+            "document_url": "https://www.sec.gov/Archives/edgar/data/320193/mock-8k.htm"
+          }
+        ]
+      }
+    },
+    {
+      "source_id": "latest_10k",
+      "name": "Latest Form 10-K",
+      "category": "filings",
+      "importance": "required",
+      "status": "ok",
+      "primary": "SEC submissions recent filings",
+      "fallbacks": [
+        "SEC filing detail page"
+      ],
+      "fallback_used": null,
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/mock-10k.htm",
+      "source_date": "2025-10-31",
+      "freshness_rule": "latest available annual filing",
+      "access_status": "Available",
+      "source_tier": "Tier 1",
+      "data": {
+        "form": "10-K",
+        "filing_date": "2025-10-31"
+      }
+    },
+    {
+      "source_id": "latest_10q",
+      "name": "Latest Form 10-Q",
+      "category": "filings",
+      "importance": "required",
+      "status": "ok",
+      "primary": "SEC submissions recent filings",
+      "fallbacks": [
+        "SEC filing detail page"
+      ],
+      "fallback_used": null,
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/mock-10q.htm",
+      "source_date": "2026-05-01",
+      "freshness_rule": "latest available quarterly filing",
+      "access_status": "Available",
+      "source_tier": "Tier 1",
+      "data": {
+        "form": "10-Q",
+        "filing_date": "2026-05-01"
+      }
+    },
+    {
+      "source_id": "recent_8k",
+      "name": "Recent Form 8-K",
+      "category": "events",
+      "importance": "required",
+      "status": "ok",
+      "primary": "SEC submissions recent filings",
+      "fallbacks": [
+        "issuer investor relations news"
+      ],
+      "fallback_used": null,
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/mock-8k.htm",
+      "source_date": "2026-06-28",
+      "freshness_rule": "recent filing-driven event",
+      "access_status": "Available",
+      "source_tier": "Tier 1",
+      "data": {
+        "form": "8-K",
+        "filing_date": "2026-06-28"
+      }
+    },
+    {
+      "source_id": "company_facts",
+      "name": "SEC company facts / XBRL",
+      "category": "fundamentals",
+      "importance": "required",
+      "status": "ok",
+      "primary": "SEC companyfacts API",
+      "fallbacks": [
+        "latest filing text"
+      ],
+      "fallback_used": null,
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
+      "source_date": "2026-05-01",
+      "freshness_rule": "retrieved_at required",
+      "access_status": "Available",
+      "source_tier": "Tier 1",
+      "data": {
+        "metrics": {
+          "revenue_trend": "services growth offsets device cyclicality",
+          "fcf_conversion": "strong",
+          "cash_debt": "large cash balance with capital returns"
+        }
+      }
+    },
+    {
+      "source_id": "current_price",
+      "name": "Current/recent public price",
+      "category": "market_data",
+      "importance": "required",
+      "status": "ok",
+      "primary": "Yahoo public chart",
+      "fallbacks": [
+        "Stooq public CSV"
+      ],
+      "fallback_used": null,
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=5d&interval=1d",
+      "source_date": "2026-07-01",
+      "freshness_rule": "latest market close for current/latest prompts",
+      "access_status": "Available",
+      "source_tier": "Tier 2",
+      "data": {
+        "date": "2026-07-01",
+        "close": 214.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "source_id": "historical_price",
+      "name": "Historical public price series",
+      "category": "market_data",
+      "importance": "required",
+      "status": "ok",
+      "primary": "Yahoo public chart range",
+      "fallbacks": [
+        "Stooq historical CSV"
+      ],
+      "fallback_used": null,
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=1y&interval=1d",
+      "source_date": "2026-07-01",
+      "freshness_rule": "dated public history",
+      "access_status": "Available",
+      "source_tier": "Tier 2",
+      "data": {
+        "points": [
+          {
+            "date": "2025-07-01",
+            "close": 195.0
+          },
+          {
+            "date": "2026-07-01",
+            "close": 214.0
+          }
+        ]
+      }
+    },
+    {
+      "source_id": "filing_text",
+      "name": "Full filing text / HTML",
+      "category": "filings",
+      "importance": "important",
+      "status": "ok",
+      "primary": "SEC primary document URL",
+      "fallbacks": [
+        "SEC filing detail page"
+      ],
+      "fallback_used": null,
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/mock-10k.htm",
+      "source_date": "2025-10-31",
+      "freshness_rule": "document date",
+      "access_status": "Available",
+      "source_tier": "Tier 1",
+      "data": {
+        "document_available": true
+      }
+    },
+    {
+      "source_id": "ir_news",
+      "name": "Company IR / news / events",
+      "category": "events",
+      "importance": "important",
+      "status": "ok",
+      "primary": "issuer investor relations",
+      "fallbacks": [
+        "SEC 8-K"
+      ],
+      "fallback_used": "SEC 8-K",
+      "url": "https://investor.apple.com/",
+      "source_date": "2026-06-28",
+      "freshness_rule": "event-driven",
+      "access_status": "Available",
+      "source_tier": "Tier 3",
+      "data": {
+        "latest_event": "recent public filing/event marker"
+      }
+    },
+    {
+      "source_id": "public_news",
+      "name": "Recent public news/event scan",
+      "category": "events",
+      "importance": "important",
+      "status": "ok",
+      "primary": "issuer/public releases",
+      "fallbacks": [
+        "SEC 8-K"
+      ],
+      "fallback_used": "SEC 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/mock-8k.htm",
+      "source_date": "2026-06-28",
+      "freshness_rule": "lookback recorded",
+      "access_status": "Available",
+      "source_tier": "Tier 3",
+      "data": {
+        "scan_basis": "issuer events and SEC 8-K"
+      }
+    },
+    {
+      "source_id": "peer_context",
+      "name": "Peer / competitor context",
+      "category": "context",
+      "importance": "important",
+      "status": "ok",
+      "primary": "public mega-cap equity peer set",
+      "fallbacks": [
+        "static peer context"
+      ],
+      "fallback_used": "static peer context",
+      "url": "static://agent/aapl/peer_context",
+      "source_date": "2026-07-01",
+      "freshness_rule": "structural",
+      "access_status": "Available",
+      "source_tier": "Tier 2",
+      "data": {
+        "peers": [
+          "MSFT",
+          "GOOGL",
+          "AMZN",
+          "META",
+          "Samsung"
+        ],
+        "basis": "large-cap consumer technology, platform, device, services, and ecosystem peer context"
+      }
+    },
+    {
+      "source_id": "sector_context",
+      "name": "Sector / industry context",
+      "category": "context",
+      "importance": "important",
+      "status": "ok",
+      "primary": "public sector context",
+      "fallbacks": [
+        "static sector context"
+      ],
+      "fallback_used": "static sector context",
+      "url": "static://agent/aapl/sector_context",
+      "source_date": "2026-07-01",
+      "freshness_rule": "structural",
+      "access_status": "Available",
+      "source_tier": "Tier 2",
+      "data": {
+        "sector": "Information Technology",
+        "themes": [
+          "consumer devices",
+          "services ecosystem",
+          "platform monetization",
+          "AI-enabled devices"
+        ]
+      }
+    },
+    {
+      "source_id": "macro_rates",
+      "name": "Macro / rates context",
+      "category": "macro",
+      "importance": "important",
+      "status": "ok",
+      "primary": "Treasury/Fed public pages",
+      "fallbacks": [
+        "static rates context"
+      ],
+      "fallback_used": "static rates context",
+      "url": "https://home.treasury.gov/",
+      "source_date": "2026-07-01",
+      "freshness_rule": "latest available public macro context",
+      "access_status": "Available",
+      "source_tier": "Tier 2",
+      "data": {
+        "drivers": [
+          "consumer demand",
+          "USD",
+          "rates-sensitive mega-cap equity multiples"
+        ]
+      }
+    }
+  ]
+}

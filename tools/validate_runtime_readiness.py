@@ -371,6 +371,83 @@ if readme.exists():
 else:
     add("README exists", False)
 
+# Integrated Automation Lab
+automation_lab = ROOT / "automation_lab"
+add("integrated Automation Lab directory exists", automation_lab.exists(), str(automation_lab))
+if automation_lab.exists():
+    required_lab_files = [
+        "fa_automation.py",
+        "README.md",
+        "ROADMAP.md",
+        "MERGE_READINESS.md",
+        "requirements-live.txt",
+        "config/route_check_cases.json",
+        "quick_data/__init__.py",
+        "agent_data/__init__.py",
+        "data_sources/README.md",
+        "tests/test_route_check_cli.py",
+        "tests/test_quick_answer_cli.py",
+        "tests/test_agent_run_cli.py",
+    ]
+    for rel in required_lab_files:
+        add(f"Automation Lab file exists: {rel}", (automation_lab / rel).exists(), rel)
+
+    add(
+        "Automation Lab has no nested Git repository",
+        not (automation_lab / ".git").exists(),
+        str(automation_lab / ".git"),
+    )
+
+    lab_cli = automation_lab / "fa_automation.py"
+    if lab_cli.exists():
+        txt = read(lab_cli)
+        add("Automation Lab resolves project root from env or parent", 'FA_AUTOMATION_PROJECT_ROOT' in txt and "LAB_ROOT.parent" in txt)
+        add("Automation Lab does not hard-code separate project root", 'Path(r"C:\\Users\\ShumeikoYe\\OneDrive\\Documents\\Financial Agent System")' not in txt)
+
+    merge_doc = automation_lab / "MERGE_READINESS.md"
+    if merge_doc.exists():
+        txt = read(merge_doc)
+        for token in ["one GitHub repository", "must not contain a nested `.git/`", "live-acceptance --require-live", "Financial Agent Reports"]:
+            add(f"Automation Lab merge readiness contains {token}", token in txt)
+
+    lab_readme = automation_lab / "README.md"
+    if lab_readme.exists():
+        txt = read(lab_readme)
+        add("Automation Lab README documents unified repository location", "Unified repository location" in txt and "Financial Agent System\\automation_lab" in txt)
+        add("Automation Lab README uses parent venv commands", "..\\.venv\\Scripts\\python.exe" in txt)
+
+    gitignore = ROOT / ".gitignore"
+    add("root .gitignore exists for Automation Lab ignores", gitignore.exists(), str(gitignore))
+    if gitignore.exists():
+        txt = read(gitignore)
+        for token in ["automation_lab/runs/", "automation_lab/data_runs/", "automation_lab/.venv/", "automation_lab/**/__pycache__/"]:
+            add(f"root .gitignore ignores {token}", token in txt)
+
+    try:
+        import subprocess
+
+        tracked_generated = subprocess.run(
+            ["git", "ls-files", "automation_lab/runs", "automation_lab/data_runs", "automation_lab/.venv", "automation_lab/**/__pycache__"],
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        tracked_paths = [line.strip() for line in tracked_generated.stdout.splitlines() if line.strip()]
+        add(
+            "Automation Lab generated/local artifacts are not tracked",
+            tracked_generated.returncode == 0 and not tracked_paths,
+            ", ".join(tracked_paths[:10]),
+        )
+    except Exception as exc:
+        add("Automation Lab generated/local tracking check runs", False, str(exc))
+
+if project_state.exists():
+    add("project state documents integrated Automation Lab", "Integrated Automation Lab live acceptance" in ps_txt and "automation_lab/" in ps_txt)
+if readme.exists():
+    add("README documents integrated Automation Lab", "Integrated Automation Lab live acceptance" in read(readme) and "automation_lab/" in read(readme))
+
 # Hardening report
 report = ROOT / "implementation" / "non_equity_production_hardening_report.md"
 add("hardening report exists", report.exists())
