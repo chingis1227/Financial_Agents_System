@@ -78,6 +78,8 @@ class NormalizedNumber:
     unit: str
     original_text: str
     ambiguous: bool = False
+    start: int | None = None
+    end: int | None = None
 
 
 @dataclass(frozen=True)
@@ -160,19 +162,19 @@ def _candidate_allowed(candidate: NumberCandidate, metric: str) -> bool:
 
 def _normalize_candidate(candidate: NumberCandidate, metric: str) -> NormalizedNumber:
     if candidate.kind == "percent":
-        return NormalizedNumber(candidate.raw_number, "percent", candidate.original_text)
+        return NormalizedNumber(candidate.raw_number, "percent", candidate.original_text, start=candidate.start, end=candidate.end)
     if candidate.kind == "money":
         currency = candidate.currency or "currency"
         if metric in {"EPS", "Adjusted EPS"}:
-            return NormalizedNumber(candidate.raw_number, f"{currency} per share", candidate.original_text)
+            return NormalizedNumber(candidate.raw_number, f"{currency} per share", candidate.original_text, start=candidate.start, end=candidate.end)
         if candidate.scale:
-            return NormalizedNumber(round(candidate.raw_number * SCALE_MAP.get(candidate.scale, 1.0), 6), f"{currency} billions", candidate.original_text)
-        return NormalizedNumber(candidate.raw_number, currency, candidate.original_text, ambiguous=True)
+            return NormalizedNumber(round(candidate.raw_number * SCALE_MAP.get(candidate.scale, 1.0), 6), f"{currency} billions", candidate.original_text, start=candidate.start, end=candidate.end)
+        return NormalizedNumber(candidate.raw_number, currency, candidate.original_text, ambiguous=True, start=candidate.start, end=candidate.end)
     if candidate.kind == "scaled":
         scale = candidate.scale or ""
         if metric == "Users":
-            return NormalizedNumber(candidate.raw_number, f"count {scale}", candidate.original_text)
-        return NormalizedNumber(round(candidate.raw_number * SCALE_MAP.get(scale, 1.0), 6), "billions", candidate.original_text, ambiguous=True)
+            return NormalizedNumber(candidate.raw_number, f"count {scale}", candidate.original_text, start=candidate.start, end=candidate.end)
+        return NormalizedNumber(round(candidate.raw_number * SCALE_MAP.get(scale, 1.0), 6), "billions", candidate.original_text, ambiguous=True, start=candidate.start, end=candidate.end)
     raise ValueError(f"Unsupported number candidate kind: {candidate.kind}")
 
 
@@ -227,6 +229,63 @@ def _claim_type(sentence: str, default: str) -> str:
     return default
 
 
+def _basis_limitations(
+    sentence: str,
+    metric_match: MetricMatch,
+    normalized: NormalizedNumber,
+    next_metric_start: int | None = None,
+    first_metric_start: int | None = None,
+    has_previous_metric: bool = False,
+) -> list[str]:
+    if "Adjusted" in metric_match.metric:
+        return []
+    sentence_preamble_end = first_metric_start if first_metric_start is not None else metric_match.start
+    sentence_preamble = sentence[:sentence_preamble_end]
+    if re.search(
+        r"\b(following\s+non-gaap|non-gaap\s+measures?)\b",
+        sentence_preamble,
+        re.IGNORECASE,
+    ):
+        return ["Adjusted/non-GAAP basis applies to this metric in source text"]
+    if not has_previous_metric:
+        prefix = sentence[: metric_match.start]
+        if re.search(
+            r"\b(on\s+(?:an?\s+)?non-gaap\s+basis|on\s+(?:an?\s+)?adjusted\s+basis|adjusted\s+basis)\b",
+            prefix,
+            re.IGNORECASE,
+        ):
+            return ["Adjusted/non-GAAP basis applies to this metric in source text"]
+    if has_previous_metric:
+        before_window = sentence[max(0, metric_match.start - 15) : metric_match.start]
+        after_window = sentence[metric_match.start : min(len(sentence), metric_match.end + 25)]
+        local_basis = bool(re.search(r"\b(adjusted|non-gaap)\s*$", before_window, re.IGNORECASE)) or bool(
+            re.search(r"\badjusted|non-gaap\b", after_window, re.IGNORECASE)
+        )
+    else:
+        window = sentence[max(0, metric_match.start - 25) : min(len(sentence), metric_match.end + 25)]
+        local_basis = bool(re.search(r"\badjusted|non-gaap\b", window, re.IGNORECASE))
+    if local_basis:
+        return ["Adjusted/non-GAAP basis detected near metric in source text"]
+    claim_scope_end = next_metric_start if next_metric_start is not None and next_metric_start > metric_match.start else len(sentence)
+    claim_scope = sentence[metric_match.start : claim_scope_end]
+    if re.search(
+        r"\b("
+        r"(?:on|under|using|presented\s+on|presents?\s+on|management\s+presents?\s+on)\s+(?:an?\s+)?non-gaap\s+basis|"
+        r"(?:on|under|using|presented\s+on|presents?\s+on|management\s+presents?\s+on)\s+(?:an?\s+)?adjusted\s+basis|"
+        r"non-gaap\s+basis|adjusted\s+basis"
+        r")\b",
+        claim_scope,
+        re.IGNORECASE,
+    ):
+        return ["Adjusted/non-GAAP basis applies to this metric in source text"]
+    if normalized.end is not None:
+        value_window_end = min(claim_scope_end, normalized.end + 35)
+        value_window = sentence[normalized.end : value_window_end]
+        if re.search(r"\bnon-gaap\b", value_window, re.IGNORECASE):
+            return ["Adjusted/non-GAAP basis detected near metric value in source text"]
+    return []
+
+
 def _location(block: dict[str, Any]) -> dict[str, Any]:
     return {
         "page": block.get("page"),
@@ -254,8 +313,11 @@ def extract_financial_claims(
             metric_matches = _detect_metric_matches(sentence)
             if not metric_matches:
                 continue
-            for metric_match in metric_matches:
+            metric_matches_by_position = sorted(metric_matches, key=lambda match: match.start)
+            first_metric_start = metric_matches_by_position[0].start if metric_matches_by_position else None
+            for index, metric_match in enumerate(metric_matches_by_position):
                 metric = metric_match.metric
+                next_metric_start = metric_matches_by_position[index + 1].start if index + 1 < len(metric_matches_by_position) else None
                 normalized = _normalize_number(sentence, metric, metric_match.start, metric_match.end)
                 if not normalized:
                     continue
@@ -269,8 +331,16 @@ def extract_financial_claims(
                 if normalized.ambiguous:
                     limitations.append("Unit or currency scale is ambiguous")
                     confidence = "Low" if period == "Unknown" else "Medium"
-                if re.search(r"\badjusted|non-gaap\b", sentence, re.IGNORECASE) and "Adjusted" not in metric:
-                    limitations.append("Adjusted/non-GAAP basis detected in source text")
+                limitations.extend(
+                    _basis_limitations(
+                        sentence,
+                        metric_match,
+                        normalized,
+                        next_metric_start,
+                        first_metric_start,
+                        has_previous_metric=index > 0,
+                    )
+                )
                 key = (metric, normalized.value, normalized.unit, period)
                 if key in seen:
                     continue

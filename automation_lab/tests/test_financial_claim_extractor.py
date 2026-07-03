@@ -64,6 +64,7 @@ class FinancialClaimExtractorTests(unittest.TestCase):
         self.assertEqual(revenue["unit"], "USD billions")
         self.assertEqual(eps["value"], 2.31)
         self.assertEqual(eps["unit"], "USD per share")
+        self.assertNotIn("Adjusted/non-GAAP basis detected near metric in source text", revenue["limitations"])
 
     def test_revenue_guidance_sentence_can_support_both_metrics(self) -> None:
         claims, warnings = extract_financial_claims(
@@ -76,6 +77,50 @@ class FinancialClaimExtractorTests(unittest.TestCase):
         self.assertEqual(revenue["value"], 16.0)
         self.assertEqual(guidance["value"], 16.0)
         self.assertEqual(guidance["claim_type"], "Official Guidance")
+
+    def test_sentence_wide_non_gaap_preamble_marks_revenue_limitation(self) -> None:
+        claims, warnings = extract_financial_claims(
+            [{"text": "The following non-GAAP measures are presented for comparability: revenue was $15.2 billion in Q2 FY2026."}],
+            source_tier="Tier 1",
+        )
+        self.assertFalse(warnings)
+        revenue = next(claim for claim in claims if claim["metric"] == "Revenue")
+        self.assertIn("Adjusted/non-GAAP basis applies to this metric in source text", revenue["limitations"])
+
+    def test_non_gaap_basis_after_metric_or_value_marks_revenue_limitation(self) -> None:
+        examples = [
+            "Revenue was $15.2 billion in Q2 FY2026 on a non-GAAP basis.",
+            "Revenue for Q2 FY2026, which management presents on a non-GAAP basis, was $15.2 billion.",
+        ]
+        for text in examples:
+            with self.subTest(text=text):
+                claims, warnings = extract_financial_claims([{"text": text}], source_tier="Tier 1")
+                self.assertFalse(warnings)
+                revenue = next(claim for claim in claims if claim["metric"] == "Revenue")
+                self.assertIn("Adjusted/non-GAAP basis applies to this metric in source text", revenue["limitations"])
+
+    def test_non_gaap_suffix_on_later_adjusted_eps_does_not_taint_revenue(self) -> None:
+        claims, warnings = extract_financial_claims(
+            [{"text": "Revenue was $15.2 billion in Q2 FY2026 and adjusted EPS was $2.31 on a non-GAAP basis."}],
+            source_tier="Tier 1",
+        )
+        self.assertFalse(warnings)
+        revenue = next(claim for claim in claims if claim["metric"] == "Revenue")
+        eps = next(claim for claim in claims if claim["metric"] == "Adjusted EPS")
+        self.assertFalse(revenue["limitations"])
+        self.assertEqual(eps["value"], 2.31)
+
+    def test_prior_adjusted_metric_non_gaap_suffix_does_not_taint_later_revenue(self) -> None:
+        examples = [
+            "Adjusted EPS was $2.31 on a non-GAAP basis and revenue was $15.2 billion in Q2 FY2026.",
+            "Adjusted EBITDA was $4.0 billion on a non-GAAP basis and revenue was $15.2 billion in Q2 FY2026.",
+        ]
+        for text in examples:
+            with self.subTest(text=text):
+                claims, warnings = extract_financial_claims([{"text": text}], source_tier="Tier 1")
+                self.assertFalse(warnings)
+                revenue = next(claim for claim in claims if claim["metric"] == "Revenue")
+                self.assertFalse(revenue["limitations"])
 
     def test_ambiguous_units_lower_confidence_and_add_limitation(self) -> None:
         claims, warnings = extract_financial_claims(
