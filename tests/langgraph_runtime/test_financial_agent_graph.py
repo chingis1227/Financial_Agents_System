@@ -3,13 +3,32 @@ from __future__ import annotations
 import os
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 from langgraph_runtime.financial_agent_graph import build_graph, run_financial_agent
 from langgraph_runtime.routing import classify_request
 
 
+class _FakeOpenAIAdapter:
+    def __init__(self, settings):
+        self.settings = settings
+
+    def responses_text(self, *, system: str, user: str) -> str:
+        return "Live evidence-scope note from patched test adapter."
+
+
 class LangGraphRuntimeTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self._env_patch = mock.patch.dict(os.environ, {"OPENAI_API_KEY": "test-live-key"})
+        self._adapter_patch = mock.patch("langgraph_runtime.nodes.OpenAIAdapter", _FakeOpenAIAdapter)
+        self._env_patch.start()
+        self._adapter_patch.start()
+
+    def tearDown(self) -> None:
+        self._adapter_patch.stop()
+        self._env_patch.stop()
+
     def test_natural_language_intake_routing_examples(self) -> None:
         cases = [
             ("Проанализируй Microsoft на 3 года, позиции нет", "full_agent_workflow", "equity_full_cycle", "Microsoft", "equity"),
@@ -62,11 +81,11 @@ class LangGraphRuntimeTests(unittest.TestCase):
         self.assertEqual(decision.detected_intent, "blocked")
         self.assertEqual(decision.route, "blocked")
 
-    def test_equity_full_cycle_dry_run_creates_artifacts(self) -> None:
+    def test_equity_full_cycle_live_creates_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             result = run_financial_agent(
                 "AGENT: Microsoft for 3 years, no current position",
-                dry_run=True,
+                live=True,
                 output_dir=tmp,
                 allow_interrupts=False,
             )
@@ -133,7 +152,7 @@ class LangGraphRuntimeTests(unittest.TestCase):
         ]
         for prompt, route, expected_key in prompts:
             with self.subTest(prompt=prompt), tempfile.TemporaryDirectory() as tmp:
-                result = run_financial_agent(prompt, dry_run=True, output_dir=tmp, allow_interrupts=False)
+                result = run_financial_agent(prompt, live=True, output_dir=tmp, allow_interrupts=False)
                 self.assertEqual(result["route"], route)
                 self.assertIn(expected_key, result["specialist_outputs"])
                 self.assertNotIn("equity_company_analysis", result["specialist_outputs"])
@@ -143,7 +162,7 @@ class LangGraphRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             result = run_financial_agent(
                 "Проанализируй Microsoft на 3 года, позиции нет",
-                dry_run=True,
+                live=True,
                 output_dir=tmp,
                 allow_interrupts=False,
             )
@@ -178,7 +197,7 @@ class LangGraphRuntimeTests(unittest.TestCase):
                 self.assertNotIn(forbidden, report_text)
 
     def test_missing_context_interrupt(self) -> None:
-        result = run_financial_agent("Стоит ли покупать Nvidia?", dry_run=True, allow_interrupts=True)
+        result = run_financial_agent("Стоит ли покупать Nvidia?", live=True, allow_interrupts=True)
         self.assertIn("__interrupt__", result)
         self.assertEqual(result["route"], "equity_full_cycle")
         payload = result["__interrupt__"][0].value
@@ -189,7 +208,7 @@ class LangGraphRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             result = run_financial_agent(
                 "AGENT: Microsoft for 3 years, no current position, without evidence",
-                dry_run=True,
+                live=True,
                 output_dir=tmp,
                 allow_interrupts=False,
             )
@@ -207,7 +226,7 @@ class LangGraphRuntimeTests(unittest.TestCase):
     def test_risk_gate_interrupt_when_enabled(self) -> None:
         result = run_financial_agent(
             "AGENT: Microsoft for 3 years, no current position",
-            dry_run=True,
+            live=True,
             allow_interrupts=True,
         )
         self.assertIn("__interrupt__", result)
@@ -218,7 +237,7 @@ class LangGraphRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             result = run_financial_agent(
                 "AGENT: Microsoft for 3 years, no current position",
-                dry_run=True,
+                live=True,
                 output_dir=tmp,
                 allow_interrupts=False,
             )
@@ -233,13 +252,13 @@ class LangGraphRuntimeTests(unittest.TestCase):
         self.assertIsNotNone(graph)
 
     def test_live_mode_requires_key_before_api_call(self) -> None:
-        old_key = os.environ.pop("OPENAI_API_KEY", None)
-        try:
+        with mock.patch.dict(os.environ, {}, clear=True):
             with self.assertRaisesRegex(RuntimeError, "OPENAI_API_KEY is required"):
                 run_financial_agent("AGENT: Microsoft for 3 years, no current position", live=True)
-        finally:
-            if old_key is not None:
-                os.environ["OPENAI_API_KEY"] = old_key
+
+    def test_dry_run_is_disabled(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "live-only"):
+            run_financial_agent("AGENT: Microsoft for 3 years, no current position", dry_run=True, live=False)
 
 
 if __name__ == "__main__":

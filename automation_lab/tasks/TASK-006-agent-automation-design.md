@@ -23,7 +23,7 @@ Implemented in Automation Lab only:
 
 - new `agent-design` CLI command;
 - `AGENT:` prefix normalization;
-- deterministic mock route selection for the design plan;
+- deterministic historical fixture route selection for the design plan;
 - route-card mapping for AGENT full-cycle routes;
 - route-specific five-question intake planning;
 - planned subagent list by selected route;
@@ -49,7 +49,7 @@ Implemented in Automation Lab only:
 
 ## Implementation summary
 
-`agent-design` creates a design-only plan for the large AGENT workflow. The command adds the `AGENT:` prefix when omitted, selects the expected full-cycle route in mock mode, generates exactly five route-specific intake questions, lists planned subagents, records that no subagents have executed, and validates the required workflow gates before writing a JSON run log.
+`agent-design` creates a design-only plan for the large AGENT workflow. The command adds the `AGENT:` prefix when omitted, selects the expected full-cycle route in historical fixture path, generates exactly five route-specific intake questions, lists planned subagents, records that no subagents have executed, and validates the required workflow gates before writing a JSON run log.
 
 The design deliberately separates planned subagents from actual subagents. `actual_subagents_run` must remain empty in design mode, and validation rejects text that claims subagents already executed.
 
@@ -77,22 +77,22 @@ Run Automation Lab tests:
 .\.venv\Scripts\python.exe -m unittest discover -s tests
 ```
 
-Run mock route check:
+Run historical fixture route check:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py route-check --mode mock
+.\.venv\Scripts\python.exe fa_automation.py route-check --mode live
 ```
 
-Run mock QUICK launch:
+Run historical fixture QUICK launch:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py quick-run --prompt "Microsoft for 3 years" --mode mock
+.\.venv\Scripts\python.exe fa_automation.py quick-run --prompt "Microsoft for 3 years" --mode live
 ```
 
-Run mock AGENT design:
+Run historical fixture AGENT design:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py agent-design --prompt "Microsoft for 3 years" --mode mock
+.\.venv\Scripts\python.exe fa_automation.py agent-design --prompt "Microsoft for 3 years" --mode live
 ```
 
 ## Docs synchronization note
@@ -131,6 +131,6 @@ TASK-006 is complete when:
 
 - deterministic AGENT automation design is implemented;
 - unit tests cover CLI output, five-question intake, gate validation, subagent truthfulness, and route-specific design;
-- mock route-check and QUICK behavior still pass;
+- historical fixture route-check and QUICK behavior still pass;
 - README and ROADMAP reflect TASK-006;
 - Git status contains only intended Automation Lab changes before commit.

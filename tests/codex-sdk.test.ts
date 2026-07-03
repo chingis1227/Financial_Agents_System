@@ -7,10 +7,10 @@ import test from "node:test";
 import { parseArgs, runDoctor } from "../src/codex-sdk/cli.js";
 import { buildThreadOptions, getDefaultLogRoot, runCodex } from "../src/codex-sdk/runner.js";
 
-test("parseArgs defaults to dry-run and preserves prompt", () => {
+test("parseArgs defaults to live and preserves prompt", () => {
   const parsed = parseArgs(["run", "--prompt", "AGENT: Microsoft for 3 years"]);
   assert.equal(parsed.command, "run");
-  assert.equal(parsed.request?.live, false);
+  assert.equal(parsed.request?.live, true);
   assert.equal(parsed.request?.prompt, "AGENT: Microsoft for 3 years");
 });
 
@@ -19,9 +19,9 @@ test("parseArgs reads prompt from file", async () => {
   try {
     const promptPath = path.join(tempDir, "prompt.txt");
     await writeFile(promptPath, "AGENT: Microsoft for 3 years\n", "utf8");
-    const parsed = parseArgs(["run", "--prompt-file", promptPath, "--dry-run"]);
+    const parsed = parseArgs(["run", "--prompt-file", promptPath]);
     assert.equal(parsed.request?.prompt, "AGENT: Microsoft for 3 years\n");
-    assert.equal(parsed.request?.live, false);
+    assert.equal(parsed.request?.live, true);
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
@@ -32,7 +32,7 @@ test("parseArgs strips UTF-8 BOM from prompt file", async () => {
   try {
     const promptPath = path.join(tempDir, "prompt-with-bom.txt");
     await writeFile(promptPath, "\ufeffQUICK: Microsoft", "utf8");
-    const parsed = parseArgs(["run", "--prompt-file", promptPath, "--dry-run"]);
+    const parsed = parseArgs(["run", "--prompt-file", promptPath]);
     assert.equal(parsed.request?.prompt, "QUICK: Microsoft");
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -57,19 +57,18 @@ test("parseArgs rejects thread id on run", () => {
   );
 });
 
-test("dry-run does not create a Codex SDK client", async () => {
-  const result = await runCodex(
-    { mode: "run", prompt: "QUICK: Microsoft", live: false },
-    {
-      createCodexClient: async () => {
-        throw new Error("Codex SDK should not be loaded during dry-run.");
-      },
-    },
-  );
-  assert.equal(result.status, "dry_run");
+test("non-live Codex SDK request is rejected", async () => {
+  const result = await runCodex({ mode: "run", prompt: "QUICK: Microsoft", live: false });
+  assert.equal(result.status, "failed");
+  assert.match(result.error ?? "", /live-only/);
   assert.equal(result.logDir, undefined);
-  assert.match(result.finalResponse ?? "", /No Codex SDK thread was started/);
-  assert.doesNotMatch(result.finalResponse ?? "", /investment_report\.md|audit\//);
+});
+
+test("parseArgs rejects disabled dry-run flag", () => {
+  assert.throws(
+    () => parseArgs(["run", "--prompt", "QUICK: Microsoft", "--dry-run"]),
+    /dry-run is disabled/,
+  );
 });
 
 test("live run starts a new thread and passes prompt without changing it", async () => {

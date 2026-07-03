@@ -1,4 +1,4 @@
-export type CodexRunStatus = "dry_run" | "completed" | "failed";
+export type CodexRunStatus = "completed" | "failed";
 
 export type CodexSandbox = "read_only" | "workspace_write" | "full_access";
 

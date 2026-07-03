@@ -33,12 +33,12 @@
       "audit/run_metadata.md"
     ],
     "required_questions": 5,
-    "requires_spawned_subagents_or_limited_fallback": true,
+    "requires_spawned_subagents_or_blocked": true,
     "required_audit_fields": [
       "Execution mode",
       "Included modules",
       "Module status table",
-      "Spawn record or fallback note",
+      "Spawn record or blocked production issue note",
       "Decision Mode",
       "Materiality Gate",
       "Thesis Spine",

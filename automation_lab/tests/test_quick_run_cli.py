@@ -21,6 +21,7 @@ EXPECTED_PROJECT_ROOT = r"C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent
 class QuickRunCliTests(unittest.TestCase):
     def run_cli(self, args: list[str], runs_dir: Path) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()
+        env["FA_AUTOMATION_UNIT_LIVE_STUB"] = "1"
         env["FA_AUTOMATION_QUICK_RUNS_DIR"] = str(runs_dir)
         return subprocess.run(
             [sys.executable, "fa_automation.py", *args],
@@ -35,7 +36,7 @@ class QuickRunCliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             runs_dir = Path(temp_dir)
             completed = self.run_cli(
-                ["quick-run", "--prompt", "Microsoft for 3 years", "--mode", "mock"],
+                ["quick-run", "--prompt", "Microsoft for 3 years", "--mode", "live"],
                 runs_dir,
             )
 
@@ -44,7 +45,7 @@ class QuickRunCliTests(unittest.TestCase):
             self.assertEqual(len(created), 1, "Expected exactly one QUICK JSON log")
 
             payload = json.loads(created[-1].read_text(encoding="utf-8"))
-            self.assertEqual(payload["mode"], "mock")
+            self.assertEqual(payload["mode"], "live")
             self.assertEqual(payload["workflow"], "quick_take")
             self.assertEqual(payload["project_root"], EXPECTED_PROJECT_ROOT)
             self.assertEqual(payload["prompt"], "Microsoft for 3 years")
@@ -72,7 +73,7 @@ class QuickRunCliTests(unittest.TestCase):
     def test_quick_stdout_does_not_echo_final_action_prompt(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             completed = self.run_cli(
-                ["quick-run", "--prompt", "Should I buy MSFT", "--mode", "mock"],
+                ["quick-run", "--prompt", "Should I buy MSFT", "--mode", "live"],
                 Path(temp_dir),
             )
 

@@ -86,7 +86,7 @@ Project authority order:
 Runtime audit plan template:
 
 ```text
-Execution mode: [Agent workflow with spawned subagents | Non-delegated audit fallback]
+Execution mode: Agent workflow with spawned subagents
 Subject: [asset]
 Route: Master Intake -> Asset Intake -> [asset workflow]
 Included modules:
@@ -105,7 +105,7 @@ Included modules:
 Actually spawned subagents when spawned-subagent mode is used:
 - [agent name -> handoff artifact]
 Fallback reason when no subagents were spawned:
-- [only if non-delegated audit fallback is used]
+- [only if production blocked state when subagents are unavailable is used]
 Excluded modules:
 - [module -> reason]
 Module status table:
@@ -147,7 +147,7 @@ The runtime should preserve the canonical system sequence:
 2. Concrete-asset investment action requests route through `AGENT:` / the internal full workflow unless the user explicitly asks for `QUICK:` / short / fast / quick take / preliminary answer.
 3. Large workflow runs record `Execution mode` and a Runtime Execution Plan in audit before analysis, including included modules, excluded modules, and rationale.
 4. Evidence Collector establishes source readiness.
-5. Relevant asset, specialist, discovery, or market modules run according to the workflow contract. When subagents are actually spawned, they perform spawned-subagent modules and return structured handoffs; otherwise the main session records a non-delegated audit fallback without advertising it as a user mode.
+5. Relevant asset, specialist, discovery, or market modules run according to the workflow contract. When subagents are actually spawned, they perform spawned-subagent modules and return structured handoffs; otherwise the main session records a production blocked state when subagents are unavailable without advertising it as a user mode.
 6. Reusable analytical methods are executed through repo skills.
 7. Specialist outputs produce handoff artifacts or handoff summaries.
 8. Investment Committee synthesizes only after evidence and required specialist gates are satisfied, or produces a gate-aware non-final artifact when gates are incomplete.
@@ -156,15 +156,15 @@ The runtime should preserve the canonical system sequence:
 
 ### AGENT workflow runtime plan and completion check
 
-For concrete-asset investment action requests, such as asking whether to invest, buy, add, hold, sell, start exposure, or evaluate an asset for a multi-year horizon, the runtime routes through `AGENT:` / the internal full workflow unless the user explicitly requests `QUICK:` / short / fast / quick take / preliminary output. `AGENT:` uses relevant spawned subagents when available, and must not claim agent workflow execution unless subagents were actually spawned.
+For concrete-asset investment action requests, such as asking whether to invest, buy, add, hold, sell, start exposure, or evaluate an asset for a multi-year horizon, the runtime routes through `AGENT:` / the internal full workflow unless the user explicitly requests `QUICK:` / short / fast / quick take / preliminary output. `AGENT:` automatically spawns all route-relevant subagents without requiring explicit user delegation wording, and must not claim agent workflow execution unless subagents were actually spawned.
 
-The audit pack must record `Execution mode` and a compact Runtime Execution Plan before analysis. The plan lists analytical modules executed by the main session and, only when spawned-subagent work actually occurred, the subagents spawned and the handoffs they must return. Non-spawned-subagent fallback is audit-only and not a selectable user mode. Ordinary chat does not show this block unless explicitly requested:
+The audit pack must record `Execution mode` and a compact Runtime Execution Plan before analysis. The plan lists analytical modules executed by the main session and, only when spawned-subagent work actually occurred, the subagents spawned and the handoffs they must return. Non-spawned-subagent blocked production issue is audit-only and not a selectable user mode. Ordinary chat does not show this block unless explicitly requested:
 
 Runtime Execution Plan required fields are audit metadata: execution mode, subject / asset, included modules, excluded modules, reason for route, actually spawned subagents when spawned-subagent mode is used, fallback reason when no subagents were spawned, and module status for every included module using `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
 
 ```text
 # audit\run_metadata.md snippet; not ordinary chat
-Execution mode: [Agent workflow with spawned subagents | Non-delegated audit fallback]
+Execution mode: Agent workflow with spawned subagents
 Subject: [asset]
 Route: Master Intake -> Asset Intake -> Equity internal full workflow
 Included modules:
@@ -183,7 +183,7 @@ Included modules:
 Actually spawned subagents when spawned-subagent mode is used:
 - [agent name -> handoff artifact]
 Fallback reason when no subagents were spawned:
-- [only if non-delegated audit fallback is used]
+- [only if production blocked state when subagents are unavailable is used]
 Excluded modules:
 - [module -> reason]
 Module status table:
@@ -209,7 +209,7 @@ Status tokens `Complete`, `Limited`, `Blocked`, `Not material`, and `Skipped wit
 
 Before calling the result a complete large workflow, the runtime must verify that every item listed under Included Modules appears in a Module Status table with one valid status. Conditional modules such as financial statements, news/catalysts, valuation, risk, and Portfolio Fit must be included with status or excluded with reason. Macro is a default module for every asset class; sector / industry is a default module for equity. If any listed module has no valid status, complete the missing work, record a valid module status, or downgrade to `Preliminary`, `Limited`, `Evidence Gap Memo`, or another gate-aware non-final artifact. A Limited large workflow remains valid only when every included module has an audit-recorded valid status and the artifact is gate-aware.
 
-Subagents should be used for `AGENT:` concrete-asset investment workflows when relevant and available. Custom agents are configuration layers for spawned Codex sessions, not permanently running independent agents. They should not create uncontrolled agent-to-agent chat. Handoffs must use structured artifacts and workflow rules. If no subagents were spawned, record a non-spawned-subagent fallback only in audit metadata; do not present the output as an agent workflow with spawned subagents.
+Subagents should be used for `AGENT:` concrete-asset investment workflows when relevant and available. Custom agents are configuration layers for spawned Codex sessions, not permanently running independent agents. They should not create uncontrolled agent-to-agent chat. Handoffs must use structured artifacts and workflow rules. If no subagents were spawned, record a production blocked state when subagents are unavailable only in audit metadata; do not present the output as an agent workflow with spawned subagents.
 
 ### Intake questions and report packaging
 
@@ -330,7 +330,7 @@ The Codex runtime architecture layer is ready when:
 - the project-root discovery rule is documented;
 - the 20 planned custom-agent files are mapped to canonical agent/router contracts;
 - planned repo skills are mapped to canonical method-skill contracts;
-- `AGENT:` / full concrete-asset investment workflows use relevant spawned subagents when available; if no subagents are actually spawned, audit records a non-spawned-subagent fallback and output must not imply subagent spawning;
+- `AGENT:` / full concrete-asset investment workflows use relevant spawned subagents by default; if no subagents are actually spawned, audit records a production blocked state when subagents are unavailable and output must not imply subagent spawning;
 - validation checks for future custom-agent TOML files are documented;
 - legacy PRDs remain routed through the registry and traceability matrix.
 - this document contains stable runtime edge-case rules `P1A-CODEX-01-01` through `P1A-CODEX-01-35`;
@@ -382,7 +382,7 @@ Runtime files:
 - `langgraph_runtime/IMPLEMENTATION_MAP.md` records the inventory-to-runtime mapping and exact created files.
 - `langgraph_runtime/state.py` defines the typed graph state fields required by the runtime objective.
 - `langgraph_runtime/routing.py` implements natural-language and explicit-prefix routing.
-- `langgraph_runtime/nodes.py` implements required graph node functions, dry-run module outputs, gates, interrupts, and artifact handoff boundaries.
+- `langgraph_runtime/nodes.py` implements required graph node functions, live module outputs, gates, interrupts, and artifact handoff boundaries.
 - `langgraph_runtime/financial_agent_graph.py` builds the `StateGraph`, conditional edges, equity subgraph, checkpointer, streaming helper, and CLI.
 - `.env.example` documents `OPENAI_API_KEY`, `OPENAI_MODEL`, and `OPENAI_REASONING_EFFORT`.
 
@@ -393,3 +393,8 @@ Runtime rules:
 - Ordinary natural-language investment requests route through `intake_router_node`; explicit prefixes remain shortcuts.
 - Missing decision-critical context, evidence readiness failure, risk gate failure, and final IC confirmation points use LangGraph interrupt-capable nodes where applicable.
 - Reports are idempotently written as reader-facing `investment_report.md` plus technical `audit/` only for full workflows. Quick Take and direct specialist routes remain Preliminary / Not an IC Action and do not create full report/audit artifacts. Portfolio Fit technical status stays in audit; missing portfolio context appears in the report as general Portfolio role.
+
+
+## Production live AGENT execution rule
+
+For user-requested investment analysis, the Codex-native runtime is live-first and agent-first. A prompt such as "analyze this company" is sufficient to trigger the route-relevant AGENT workflow; the user does not need to write "use agents", "delegate", or "run in parallel". The parent workflow must spawn all route-relevant custom agents, collect their structured handoffs, and only then perform IC synthesis. Historical fixture/non-production fixture/live paths are not production analysis paths. No fixed wall-clock timeout may stop a production live workflow; subprocess and full-run timeout environment variables are deprecated for production and must not cap specialist execution.

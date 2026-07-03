@@ -108,7 +108,7 @@ for case in all_prompt_cases:
     )
     if command == "AGENT":
         add(f"{cid} AGENT command asks 5 questions", rq == 5, str(rq))
-        add(f"{cid} AGENT command requires spawned subagents or Limited fallback", case.get("requires_spawned_subagents") is True, str(case))
+        add(f"{cid} AGENT command requires automatic spawned subagents or Blocked production issue", case.get("requires_spawned_subagents") is True, str(case))
         add(f"{cid} AGENT prompt starts with prefix", prompt_raw.upper().startswith("AGENT:"), prompt_raw)
     if command == "QUICK" or route == "quick_take":
         add(f"{cid} QUICK command asks 3 questions", rq == 3, str(rq))
@@ -178,8 +178,8 @@ for cmd in ["AGENT", "QUICK", *COMMAND_AGENT_MAP.keys()]:
 # Guardrail fixture coverage.
 required_guardrails = {
     "non_ic_no_final_action",
-    "agent_requires_spawn_or_limited_fallback",
-    "spawned_subagent_workflow_requires_actual_spawn",
+    "agent_requires_spawn_or_blocked",
+    "agent_workflow_requires_actual_spawn",
     "freshness_requires_timestamp_or_limited",
     "missing_context_not_hard_avoid",
     "quick_take_no_final_action_escape_hatch",
@@ -199,7 +199,7 @@ quick_forbidden = set(quick_contract.get("forbidden", []))
 for token in ["Action Box", "IC Action: Buy", "IC Action: Sell", "IC Action: Hold", "final_investment_memo.md"]:
     add(f"QUICK contract forbids final action artifact/wording: {token}", token in quick_forbidden, token)
 agent_contract = next((c for c in reports if c.get("id") == "agent_workflow_contract"), {})
-add("AGENT contract requires spawned subagents or Limited fallback", agent_contract.get("requires_spawned_subagents_or_limited_fallback") is True)
+add("AGENT contract requires automatic spawned subagents or Blocked production issue", agent_contract.get("requires_spawned_subagents_or_blocked") is True)
 reader_report_contract = next((c for c in reports if c.get("id") == "reader_facing_report_contract"), {})
 reader_forbidden = set(reader_report_contract.get("investment_report_forbidden", []))
 for token in ["Artifact Type", "Analysis Status", "IC Action Status", "Gate status", "Mode:", "Route:", "Boundary: Not an IC Action", "Portfolio Fit is Limited", "Missing gates", "Limited", "Blocked", "module status", "handoff", "gate failed", "not personalized gate", "agent", "evidence pack", "source tier", "provider failed", "not found", "paywall", "premium data", "runtime"]:

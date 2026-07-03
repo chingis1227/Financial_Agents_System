@@ -24,7 +24,7 @@ Implemented in Automation Lab only:
 - Supported equity identity layer for MSFT and AAPL.
 - Generic supported-equity `agent-run`, `agent-intake`, and `validate-agent-run` behavior.
 - Asset-parametric source preflight using selected ticker and CIK.
-- AAPL mock evidence fixture.
+- AAPL historical fixture evidence fixture.
 - Generic evidence pack claims and reader report generation by subject.
 - Validation that checks selected subject identity instead of MSFT-only identity.
 - Tests for MSFT regression, AAPL execution, latest supported-equity validation, unsupported-asset rejection, source freshness, evidence gaps, and mock-subagent boundaries.
@@ -34,7 +34,7 @@ Implemented in Automation Lab only:
 - ETF, crypto, fixed income, commodity, or multi-asset full AGENT execution.
 - Paid/API-key provider integration.
 - Moving canonical investment rules from the main Financial Agent System into the Automation Lab.
-- Treating mock specialist outputs as production real subagent execution.
+- Treating historical fixture specialist outputs as production real subagent execution.
 
 ## Implementation plan
 
@@ -44,7 +44,7 @@ Implemented in Automation Lab only:
 4. Update AGENT CLI runtime to detect supported equity ticker, create ticker-specific report folders, and generate subject-specific report/audit artifacts.
 5. Update validators to check selected subject identity and supported-equity latest-run discovery.
 6. Synchronize README, ROADMAP, and this task document.
-7. Run deterministic tests, mock smokes, live/public smoke attempt, final repository checks, and sub-agent review loop.
+7. Run deterministic tests, historical fixture smokes, live/public smoke attempt, final repository checks, and sub-agent review loop.
 
 ## Test plan
 
@@ -52,9 +52,9 @@ Required checks:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests
-.\.venv\Scripts\python.exe fa_automation.py agent-run --prompt "MSFT for 3 years" --answer "3 years" --answer "No current position" --answer "Quality compounder and valuation entry" --answer "Use latest public data if available" --answer "No portfolio context provided" --mode mock
+.\.venv\Scripts\python.exe fa_automation.py agent-run --prompt "MSFT for 3 years" --answer "3 years" --answer "No current position" --answer "Quality compounder and valuation entry" --answer "Use latest public data if available" --answer "No portfolio context provided" --mode live
 .\.venv\Scripts\python.exe fa_automation.py validate-agent-run
-.\.venv\Scripts\python.exe fa_automation.py agent-run --prompt "AAPL for 3 years" --answer "3 years" --answer "No current position" --answer "Quality compounder and valuation entry" --answer "Use latest public data if available" --answer "No portfolio context provided" --mode mock
+.\.venv\Scripts\python.exe fa_automation.py agent-run --prompt "AAPL for 3 years" --answer "3 years" --answer "No current position" --answer "Quality compounder and valuation entry" --answer "Use latest public data if available" --answer "No portfolio context provided" --mode live
 .\.venv\Scripts\python.exe fa_automation.py validate-agent-run
 ```
 
@@ -73,7 +73,7 @@ README and ROADMAP are synchronized for TASK-012. The main Financial Agent Syste
 - [x] AAPL fixture exists and tests pass.
 - [x] Reader report is subject-specific and avoids hardcoded MSFT narrative for AAPL.
 - [x] Technical labels and runtime details remain in `audit/`.
-- [x] Mock mode does not count as production real subagents.
+- [x] Historical fixture path does not count as production real subagents.
 - [x] README and ROADMAP are synchronized.
 - [x] Final sub-agent review loop reached >=9.0. Final reviewer score: 9/10; no must-fix issues.
 
@@ -82,19 +82,19 @@ README and ROADMAP are synchronized for TASK-012. The main Financial Agent Syste
 Latest local validation after second-review fixes:
 
 - Unit tests: `126 tests OK` via `.\.venv\Scripts\python.exe -m unittest discover -s tests`.
-- MSFT mock smoke: `agent-run` plus `validate-agent-run` passed.
-- AAPL mock smoke: `agent-run` plus `validate-agent-run` passed.
-- AAPL Russian mock smoke: `agent-run` plus `validate-agent-run` passed, with natural Russian reader-facing report headings and no mojibake.
+- MSFT historical fixture smoke: `agent-run` plus `validate-agent-run` passed.
+- AAPL historical fixture smoke: `agent-run` plus `validate-agent-run` passed.
+- AAPL Russian historical fixture smoke: `agent-run` plus `validate-agent-run` passed, with natural Russian reader-facing report headings and no mojibake.
 - AAPL live/public smoke: attempted; stopped before normal report generation because required source preflight marked the latest AAPL 8-K stale under the current 45-day freshness hard gate. This was not claimed as a successful live run.
 - `git diff --check`: no whitespace errors; Git reported only a CRLF normalization warning for `fa_automation.py`.
 - Main Financial Agent System: unchanged / clean git status, so its three validators were not required.
 
 Sub-agent review loop:
 
-- Review 1: 8/10. Must-fix: mock freshness would age out. Addressed by current-date stamping of mock freshness-sensitive source records and added regression test.
+- Review 1: 8/10. Must-fix: historical fixture freshness would age out. Addressed by current-date stamping of historical fixture freshness-sensitive source records and added regression test.
 - Review 2: 8/10. Must-fix: Russian report mojibake and pending task-doc evidence. Addressed by Unicode-safe Russian report template, Russian AAPL validation test, and this evidence update.
 - Review 3: 9/10. No must-fix issues. Done conditional only on recording this score in this task document; recorded here.
 
 ## Definition of Done
 
-TASK-012 is complete when tests pass, MSFT and AAPL mock smokes validate, live/public AAPL smoke is attempted or limitation-recorded, docs are synchronized, final repository checks pass, and final sub-agent review reaches >=9.0 with no must-fix issues.
+TASK-012 is complete when tests pass, MSFT and AAPL historical fixture smokes validate, live/public AAPL smoke is attempted or limitation-recorded, docs are synchronized, final repository checks pass, and final sub-agent review reaches >=9.0 with no must-fix issues.

@@ -21,7 +21,7 @@ The Automation Lab can now run the same production-like package pattern beyond e
 - Extend `agent-run` and `agent-intake` beyond public equities to supported smoke identities: SPY/ETF, TLT/fixed income, BTC/crypto, GLD/commodity, and MSFT-SPY-BTC/multi-asset comparison.
 - Create route-specific specialist sets and required-specialist gates.
 - Create public/no-key source preflight records for non-equity workflows.
-- Keep Complete semantics truthful: mock is deterministic regression only; live requires real Codex SDK thread metadata for completed live specialists.
+- Keep Complete semantics truthful: historical fixture is deterministic regression only; live requires real Codex SDK thread metadata for completed live specialists.
 - Add unittest coverage for non-equity report/audit/validation packages.
 
 ## Out of scope
@@ -40,7 +40,7 @@ The Automation Lab can now run the same production-like package pattern beyond e
 
 ## Definition of Done
 
-- ETF/fund, fixed income, crypto, commodity, and multi-asset mock AGENT runs create `investment_report.md` plus `audit/`.
+- ETF/fund, fixed income, crypto, commodity, and multi-asset historical fixture AGENT runs create `investment_report.md` plus `audit/`.
 - Each package includes source preflight, provider results, evidence pack, specialist handoffs, run manifest, and validation files.
 - `validate-agent-run` passes for the generated packages.
 - README and ROADMAP document the new execution paths and limitations.

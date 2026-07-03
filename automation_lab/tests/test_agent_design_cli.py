@@ -20,6 +20,7 @@ EXPECTED_REPORTS_ROOT = r"C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent
 class AgentDesignCliTests(unittest.TestCase):
     def run_cli(self, args: list[str], runs_dir: Path) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()
+        env["FA_AUTOMATION_UNIT_LIVE_STUB"] = "1"
         env["FA_AUTOMATION_AGENT_DESIGN_RUNS_DIR"] = str(runs_dir)
         return subprocess.run(
             [sys.executable, "fa_automation.py", *args],
@@ -34,7 +35,7 @@ class AgentDesignCliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             runs_dir = Path(temp_dir)
             completed = self.run_cli(
-                ["agent-design", "--prompt", "Microsoft for 3 years", "--mode", "mock"],
+                ["agent-design", "--prompt", "Microsoft for 3 years", "--mode", "live"],
                 runs_dir,
             )
 
@@ -43,7 +44,7 @@ class AgentDesignCliTests(unittest.TestCase):
             self.assertEqual(len(created), 1, "Expected exactly one AGENT design JSON log")
 
             payload = json.loads(created[-1].read_text(encoding="utf-8"))
-            self.assertEqual(payload["mode"], "mock")
+            self.assertEqual(payload["mode"], "live")
             self.assertEqual(payload["workflow"], "agent_automation_design")
             self.assertEqual(payload["project_root"], EXPECTED_PROJECT_ROOT)
             self.assertEqual(payload["prompt"], "Microsoft for 3 years")

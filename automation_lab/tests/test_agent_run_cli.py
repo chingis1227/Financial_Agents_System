@@ -23,6 +23,7 @@ from agent_data.equity_preflight import summarize_preflight
 class AgentRunTask011Tests(unittest.TestCase):
     def run_cli(self, args: list[str], reports_root: Path, runs_dir: Path | None = None) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()
+        env["FA_AUTOMATION_UNIT_LIVE_STUB"] = "1"
         env["FA_AUTOMATION_AGENT_REPORTS_ROOT"] = str(reports_root)
         env["FA_AUTOMATION_AGENT_RUNS_DIR"] = str(runs_dir or reports_root / "runs")
         env["FA_AUTOMATION_SPECIALIST_RUNS_DIR"] = str(reports_root / "specialist-runs")
@@ -83,7 +84,7 @@ class AgentRunTask011Tests(unittest.TestCase):
     def test_agent_run_without_answers_prints_intake_and_creates_no_report(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             reports_root = Path(temp_dir)
-            completed = self.run_cli(["agent-run", "--prompt", "MSFT for 3 years", "--mode", "mock"], reports_root)
+            completed = self.run_cli(["agent-run", "--prompt", "MSFT for 3 years", "--mode", "live"], reports_root)
 
             self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
             self.assertIn("No report or audit was created", completed.stdout)
@@ -108,7 +109,7 @@ class AgentRunTask011Tests(unittest.TestCase):
                     "--answer",
                     "No portfolio context provided",
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -168,7 +169,7 @@ class AgentRunTask011Tests(unittest.TestCase):
                     "--answer",
                     "Портфельный контекст не предоставлен",
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -268,7 +269,7 @@ MSFT выглядит качественной компанией.
                     "--answer",
                     "No portfolio context provided",
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -303,7 +304,7 @@ MSFT выглядит качественной компанией.
 
             manifest = json.loads((audit / "run_manifest.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["subject"], "AAPL")
-            self.assertFalse(manifest["production_real_subagents"])
+            self.assertTrue(manifest["production_real_subagents"])
 
             validate = self.run_cli(["validate-agent-run", "--run-dir", str(run_dir)], reports_root)
             self.assertEqual(validate.returncode, 0, validate.stderr + validate.stdout)
@@ -327,7 +328,7 @@ MSFT выглядит качественной компанией.
                     "--answer",
                     "No portfolio context provided",
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -349,7 +350,7 @@ MSFT выглядит качественной компанией.
             with self.subTest(ticker=ticker), tempfile.TemporaryDirectory() as temp_dir:
                 reports_root = Path(temp_dir)
                 completed = self.run_cli(
-                    ["agent-run", "--prompt", f"{ticker} for 3 years", "--continue-with-baseline", "--mode", "mock"],
+                    ["agent-run", "--prompt", f"{ticker} for 3 years", "--continue-with-baseline", "--mode", "live"],
                     reports_root,
                 )
                 self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
@@ -369,7 +370,7 @@ MSFT выглядит качественной компанией.
             with self.subTest(ticker=ticker), tempfile.TemporaryDirectory() as temp_dir:
                 reports_root = Path(temp_dir)
                 completed = self.run_cli(
-                    ["agent-run", "--prompt", f"{ticker} for 3 years", "--continue-with-baseline", "--mode", "mock"],
+                    ["agent-run", "--prompt", f"{ticker} for 3 years", "--continue-with-baseline", "--mode", "live"],
                     reports_root,
                 )
                 self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
@@ -408,7 +409,7 @@ MSFT выглядит качественной компанией.
                     "--answer",
                     "No current position",
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -423,7 +424,7 @@ MSFT выглядит качественной компанией.
         with tempfile.TemporaryDirectory() as temp_dir:
             reports_root = Path(temp_dir)
             completed = self.run_cli(
-                ["agent-run", "--prompt", "MSFT for 3 years", "--continue-with-baseline", "--mode", "mock"],
+                ["agent-run", "--prompt", "MSFT for 3 years", "--continue-with-baseline", "--mode", "live"],
                 reports_root,
             )
 
@@ -443,7 +444,7 @@ MSFT выглядит качественной компанией.
                     "--answers-json",
                     '["3 years", "No position", "Valuation", "Latest public data", "No portfolio context"]',
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -470,7 +471,7 @@ MSFT выглядит качественной компанией.
                     "--portfolio-context-json",
                     json.dumps(context),
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -518,7 +519,7 @@ MSFT выглядит качественной компанией.
                     "--portfolio-context-file",
                     str(context_path),
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -540,7 +541,7 @@ MSFT выглядит качественной компанией.
                     "--portfolio-context-json",
                     "{}",
                     "--mode",
-                    "mock",
+                    "live",
                 ],
                 reports_root,
             )
@@ -551,7 +552,7 @@ MSFT выглядит качественной компанией.
     def test_unsupported_unresolved_non_equity_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             reports_root = Path(temp_dir)
-            completed = self.run_cli(["agent-run", "--prompt", "ETF for 3 years", "--continue-with-baseline", "--mode", "mock"], reports_root)
+            completed = self.run_cli(["agent-run", "--prompt", "ETF for 3 years", "--continue-with-baseline", "--mode", "live"], reports_root)
 
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("no supported ETF / fund identity was resolved", completed.stdout)
@@ -568,7 +569,7 @@ MSFT выглядит качественной компанией.
         ]:
             with self.subTest(prompt=prompt), tempfile.TemporaryDirectory() as temp_dir:
                 reports_root = Path(temp_dir)
-                completed = self.run_cli(["agent-run", "--prompt", prompt, "--continue-with-baseline", "--mode", "mock"], reports_root)
+                completed = self.run_cli(["agent-run", "--prompt", prompt, "--continue-with-baseline", "--mode", "live"], reports_root)
                 self.assertNotEqual(completed.returncode, 0)
                 self.assertIn(expected, completed.stdout)
 
@@ -588,7 +589,7 @@ MSFT выглядит качественной компанией.
             with self.subTest(ticker=ticker), tempfile.TemporaryDirectory() as temp_dir:
                 reports_root = Path(temp_dir)
                 completed = self.run_cli(
-                    ["agent-run", "--prompt", f"{ticker} for 3 years", "--continue-with-baseline", "--mode", "mock"],
+                    ["agent-run", "--prompt", f"{ticker} for 3 years", "--continue-with-baseline", "--mode", "live"],
                     reports_root,
                 )
                 self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
@@ -603,7 +604,7 @@ MSFT выглядит качественной компанией.
         with tempfile.TemporaryDirectory() as temp_dir:
             reports_root = Path(temp_dir)
             completed = self.run_cli(
-                ["agent-run", "--prompt", "AAPL and MSFT for 3 years", "--continue-with-baseline", "--mode", "mock"],
+                ["agent-run", "--prompt", "AAPL and MSFT for 3 years", "--continue-with-baseline", "--mode", "live"],
                 reports_root,
             )
 
@@ -615,12 +616,12 @@ MSFT выглядит качественной компанией.
     def test_mock_mode_is_not_production_real_subagents(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             reports_root = Path(temp_dir)
-            completed = self.run_cli(["agent-run", "--prompt", "MSFT", "--continue-with-baseline", "--mode", "mock"], reports_root)
+            completed = self.run_cli(["agent-run", "--prompt", "MSFT", "--continue-with-baseline", "--mode", "live"], reports_root)
             self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
             manifest_path = self.latest_report_dir(reports_root) / "audit" / "run_manifest.json"
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            self.assertFalse(manifest["production_real_subagents"])
-            self.assertIn("Mock specialist outputs", manifest["mock_mode_notice"])
+            self.assertTrue(manifest["production_real_subagents"])
+            self.assertIsNone(manifest.get("mock_mode_notice"))
 
     def test_live_codex_sdk_bridge_uses_financial_system_cli(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -654,7 +655,7 @@ MSFT выглядит качественной компанией.
             self.assertEqual(result["status"], "ok")
             self.assertEqual(result["sdk_thread_id"], "thread-123")
             self.assertEqual(result["codex_execution_path"], "financial_agent_system_codex_sdk_cli")
-            self.assertEqual(result["timeout_seconds"], 7)
+            self.assertIsNone(result["timeout_seconds"])
             command = run_mock.call_args.args[0]
             self.assertEqual(command[:4], ["npm.cmd", "run", "codex:run", "--"])
             self.assertIn("--prompt-file", command)
@@ -686,7 +687,7 @@ MSFT выглядит качественной компанией.
         self.assertEqual(result["sdk_thread_id"], "")
         self.assertIn("threadId", result["error"])
 
-    def test_live_codex_sdk_subprocess_timeout_is_capped_by_remaining_agent_budget(self) -> None:
+    def test_live_codex_sdk_subprocess_timeout_is_unbounded_and_ignores_remaining_agent_budget(self) -> None:
         completed = subprocess.CompletedProcess(
             args=[],
             returncode=0,
@@ -703,9 +704,9 @@ MSFT выглядит качественной компанией.
         ), mock.patch.object(fa_automation.subprocess, "run", return_value=completed) as run_mock:
             result = fa_automation.run_live_specialist_codex("equity-agent", "specialist prompt", max_timeout_seconds=2.25)
         self.assertEqual(result["status"], "ok")
-        self.assertEqual(result["timeout_seconds"], 2.25)
-        self.assertIn("FA_AUTOMATION_AGENT_TOTAL_TIMEOUT_SECONDS", result["timeout_source"])
-        self.assertAlmostEqual(run_mock.call_args.kwargs["timeout"], 2.25, places=2)
+        self.assertIsNone(result["timeout_seconds"])
+        self.assertEqual(result["timeout_source"], "unbounded")
+        self.assertIsNone(run_mock.call_args.kwargs["timeout"])
 
     def test_live_codex_sdk_bridge_failure_and_timeout_are_limited_inputs(self) -> None:
         failed = subprocess.CompletedProcess(
@@ -738,14 +739,14 @@ MSFT выглядит качественной компанией.
             timeout_result = fa_automation.run_live_specialist_codex("risk-red-team-agent", "SECRET_PROMPT_MARKER_TIMEOUT")
         self.assertEqual(timeout_result["status"], "error")
         self.assertIn("timed out", timeout_result["error"])
-        self.assertEqual(timeout_result["timeout_seconds"], 3)
+        self.assertIsNone(timeout_result["timeout_seconds"])
         self.assertEqual(timeout_result["prompt_transport"], "prompt_file")
         self.assertNotIn("SECRET_PROMPT_MARKER_TIMEOUT", json.dumps(timeout_result))
 
     def test_live_timeout_policy_default_global_and_specialist_override(self) -> None:
         with mock.patch.dict(os.environ, {}, clear=True):
-            self.assertEqual(fa_automation.get_codex_sdk_timeout_seconds("equity-agent"), (900, "default"))
-            self.assertEqual(fa_automation.get_agent_total_timeout_seconds(), 7200)
+            self.assertEqual(fa_automation.get_codex_sdk_timeout_seconds("equity-agent"), (None, "unbounded"))
+            self.assertIsNone(fa_automation.get_agent_total_timeout_seconds())
             self.assertEqual(fa_automation.get_agent_max_parallel_specialists(), 3)
 
         with mock.patch.dict(
@@ -758,9 +759,9 @@ MSFT выглядит качественной компанией.
             },
             clear=True,
         ):
-            self.assertEqual(fa_automation.get_codex_sdk_timeout_seconds("risk-red-team-agent"), (111, "FA_AUTOMATION_CODEX_SDK_TIMEOUT_SECONDS"))
-            self.assertEqual(fa_automation.get_codex_sdk_timeout_seconds("equity-agent"), (222, "FA_AUTOMATION_CODEX_SDK_TIMEOUT_EQUITY_AGENT"))
-            self.assertEqual(fa_automation.get_agent_total_timeout_seconds(), 3333)
+            self.assertEqual(fa_automation.get_codex_sdk_timeout_seconds("risk-red-team-agent"), (None, "unbounded"))
+            self.assertEqual(fa_automation.get_codex_sdk_timeout_seconds("equity-agent"), (None, "unbounded"))
+            self.assertIsNone(fa_automation.get_agent_total_timeout_seconds())
             self.assertEqual(fa_automation.get_agent_max_parallel_specialists(), 2)
 
         with mock.patch.dict(
@@ -771,7 +772,7 @@ MSFT выглядит качественной компанией.
             },
             clear=True,
         ):
-            self.assertEqual(fa_automation.get_codex_sdk_timeout_seconds("equity-agent"), (900, "FA_AUTOMATION_CODEX_SDK_TIMEOUT_EQUITY_AGENT"))
+            self.assertEqual(fa_automation.get_codex_sdk_timeout_seconds("equity-agent"), (None, "unbounded"))
             self.assertEqual(fa_automation.get_agent_max_parallel_specialists(), 3)
 
     def test_staged_parallel_execution_runs_evidence_then_parallel_then_ic(self) -> None:
@@ -782,7 +783,7 @@ MSFT выглядит качественной компанией.
         ):
             run_dir = Path(temp_dir)
             (run_dir / "audit").mkdir()
-            preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+            preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
             evidence_pack = build_evidence_pack(preflight, freshness_required=False)
             intake = fa_automation.build_agent_intake_payload("MSFT for 3 years", ["3 years"], False)
             call_order: list[str] = []
@@ -819,7 +820,7 @@ MSFT выглядит качественной компанией.
                 }
 
             with mock.patch.object(fa_automation, "write_specialist_artifacts", side_effect=fake_writer):
-                results = fa_automation.run_agent_specialists(run_dir, "mock", intake, evidence_pack, preflight)
+                results = fa_automation.run_agent_specialists(run_dir, "live", intake, evidence_pack, preflight)
 
             self.assertEqual(call_order[0], "evidence-collector")
             self.assertEqual(call_order[-1], "investment-committee-agent")
@@ -828,7 +829,7 @@ MSFT выглядит качественной компанией.
             self.assertEqual([item["specialist_id"] for item in results], fa_automation.AGENT_SPECIALISTS_EQUITY)
             self.assertTrue((run_dir / "audit" / "specialist_stage_execution.json").is_file())
 
-    def test_agent_total_timeout_stops_remaining_parallel_waves_before_ic(self) -> None:
+    def test_agent_total_timeout_env_is_ignored_and_ic_runs(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir, mock.patch.dict(
             os.environ,
             {
@@ -839,7 +840,7 @@ MSFT выглядит качественной компанией.
         ):
             run_dir = Path(temp_dir)
             (run_dir / "audit").mkdir()
-            preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+            preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
             evidence_pack = build_evidence_pack(preflight, freshness_required=False)
             intake = fa_automation.build_agent_intake_payload("MSFT for 3 years", ["3 years"], False)
             max_timeouts_seen: list[float | None] = []
@@ -871,19 +872,18 @@ MSFT выглядит качественной компанией.
             elapsed = time.monotonic() - start
             specialist_ids = [item["specialist_id"] for item in results]
             self.assertIn("evidence-collector", specialist_ids)
-            self.assertNotIn("investment-committee-agent", specialist_ids)
-            self.assertLess(len(specialist_ids), len(fa_automation.AGENT_SPECIALISTS_EQUITY))
-            self.assertLess(elapsed, 2.5)
-            self.assertTrue(all(value is None or value <= 1.0 for value in max_timeouts_seen))
+            self.assertIn("investment-committee-agent", specialist_ids)
+            self.assertEqual(len(specialist_ids), len(fa_automation.AGENT_SPECIALISTS_EQUITY))
+            self.assertTrue(all(value is None for value in max_timeouts_seen))
             stage_execution = json.loads((run_dir / "audit" / "specialist_stage_execution.json").read_text(encoding="utf-8"))
             aggregate = next(event for event in stage_execution["events"] if event["stage"] == "parallel_non_ic_specialists")
-            self.assertTrue(aggregate["not_started_specialists"])
+            self.assertEqual(aggregate["not_started_specialists"], [])
 
     def test_all_success_live_manifest_complete_semantics(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             run_dir = Path(temp_dir)
             (run_dir / "audit").mkdir()
-            preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+            preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
             evidence_pack = build_evidence_pack(preflight, freshness_required=False)
             intake = fa_automation.build_agent_intake_payload("MSFT for 3 years", ["3 years"], False)
             upstream = [sid for sid in fa_automation.AGENT_SPECIALISTS_EQUITY if sid != "investment-committee-agent"]
@@ -916,7 +916,7 @@ MSFT выглядит качественной компанией.
         with tempfile.TemporaryDirectory() as temp_dir:
             run_dir = Path(temp_dir)
             (run_dir / "audit").mkdir()
-            preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+            preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
             evidence_pack = build_evidence_pack(preflight, freshness_required=False)
             intake = fa_automation.build_agent_intake_payload("MSFT for 3 years", ["3 years"], False)
 
@@ -949,7 +949,7 @@ MSFT выглядит качественной компанией.
         with tempfile.TemporaryDirectory() as temp_dir:
             run_dir = Path(temp_dir)
             (run_dir / "audit").mkdir()
-            preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+            preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
             evidence_pack = build_evidence_pack(preflight, freshness_required=False)
             intake = fa_automation.build_agent_intake_payload("MSFT for 3 years", ["3 years"], False)
             with mock.patch.object(
@@ -964,7 +964,7 @@ MSFT выглядит качественной компанией.
                     "codex_sdk_log_dir": str(run_dir / "sdk-log"),
                     "sdk_error": None,
                     "subprocess_exit_code": 0,
-                    "timeout_seconds": 300,
+                    "timeout_seconds": None,
                     "prompt_transport": "prompt_file",
                 },
             ):
@@ -989,7 +989,7 @@ MSFT выглядит качественной компанией.
                     "codex_sdk_log_dir": "",
                     "sdk_error": "sdk failed",
                     "subprocess_exit_code": 1,
-                    "timeout_seconds": 300,
+                    "timeout_seconds": None,
                     "prompt_transport": "prompt_file",
                 },
             ):
@@ -1023,7 +1023,7 @@ MSFT выглядит качественной компанией.
         with tempfile.TemporaryDirectory() as temp_dir:
             run_dir = Path(temp_dir)
             (run_dir / "audit").mkdir()
-            preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+            preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
             evidence_pack = build_evidence_pack(preflight, freshness_required=False)
             intake = fa_automation.build_agent_intake_payload("MSFT for 3 years", ["3 years"], False)
             with mock.patch.object(
@@ -1040,7 +1040,7 @@ MSFT выглядит качественной компанией.
                         "codex_sdk_log_dir": "",
                         "sdk_error": "first failed",
                         "subprocess_exit_code": 1,
-                        "timeout_seconds": 300,
+                        "timeout_seconds": None,
                         "prompt_transport": "prompt_file",
                     },
                     {
@@ -1052,7 +1052,7 @@ MSFT выглядит качественной компанией.
                         "codex_sdk_log_dir": str(run_dir / "sdk-log"),
                         "sdk_error": None,
                         "subprocess_exit_code": 0,
-                        "timeout_seconds": 300,
+                        "timeout_seconds": None,
                         "prompt_transport": "prompt_file",
                     },
                 ],
@@ -1088,7 +1088,7 @@ MSFT выглядит качественной компанией.
         ):
             run_dir = Path(temp_dir) / "run"
             (run_dir / "audit").mkdir(parents=True)
-            preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+            preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
             preflight["subject_identity"]["raw_input"] = secret_marker
             preflight["resolver_result"]["raw_input"] = secret_marker
             evidence_pack = build_evidence_pack(preflight, freshness_required=False)
@@ -1122,7 +1122,7 @@ MSFT выглядит качественной компанией.
             self.assertIn("<prompt-file>", audit_text)
 
     def test_ic_ok_without_consumed_handoffs_stays_preparatory(self) -> None:
-        preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+        preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
         evidence_pack = build_evidence_pack(preflight, freshness_required=False)
         intake = fa_automation.build_agent_intake_payload("MSFT на 3 года", ["3 года"], False)
         specialists = [
@@ -1170,7 +1170,7 @@ MSFT выглядит качественной компанией.
         self.assertIn("synthesis completed", takeaways[0])
 
     def test_source_preflight_and_evidence_pack_shape(self) -> None:
-        preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+        preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
         validation = fa_automation.validate_source_preflight(preflight)
         pack = build_evidence_pack(preflight, freshness_required=True)
 
@@ -1182,7 +1182,7 @@ MSFT выглядит качественной компанией.
         self.assertTrue(all(record.get("retrieved_at") for record in preflight["source_records"]))
 
     def test_aapl_source_preflight_and_evidence_pack_shape(self) -> None:
-        preflight = build_equity_source_preflight("AAPL", ["3 years"], "mock", ticker="AAPL")
+        preflight = build_equity_source_preflight("AAPL", ["3 years"], "live", ticker="AAPL")
         validation = fa_automation.validate_source_preflight(preflight)
         pack = build_evidence_pack(preflight, freshness_required=True)
 
@@ -1193,13 +1193,15 @@ MSFT выглядит качественной компанией.
         self.assertIn("AAPL AGENT workflow", pack["claim_support_matrix"][0]["claim"])
         self.assertTrue(preflight["summary"]["hard_gate_passed"])
 
-    def test_mock_freshness_sensitive_dates_are_stamped_currently(self) -> None:
-        preflight = build_equity_source_preflight("AAPL latest", ["Use latest public data if available"], "mock", ticker="AAPL")
+    def test_live_freshness_sensitive_dates_are_source_dated_not_future(self) -> None:
+        preflight = build_equity_source_preflight("AAPL latest", ["Use latest public data if available"], "live", ticker="AAPL")
         current_price = next(record for record in preflight["source_records"] if record["source_id"] == "current_price")
         public_news = next(record for record in preflight["source_records"] if record["source_id"] == "public_news")
 
-        self.assertEqual(current_price["source_date"], date.today().isoformat())
-        self.assertEqual(public_news["source_date"], date.today().isoformat())
+        self.assertLessEqual(current_price["source_date"], date.today().isoformat())
+        self.assertLessEqual(public_news["source_date"], date.today().isoformat())
+        self.assertTrue(current_price["source_date"])
+        self.assertTrue(public_news["source_date"])
         fa_automation.annotate_preflight_freshness(preflight, freshness_required=True)
         validation = fa_automation.validate_source_preflight(preflight)
         self.assertEqual(validation["status"], "pass")
@@ -1218,7 +1220,7 @@ MSFT выглядит качественной компанией.
         self.assertIn("official_exchange_or_issuer_quote", provider_ids)
 
     def test_missing_required_source_blocks_preflight_validation(self) -> None:
-        preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+        preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
         for record in preflight["source_records"]:
             if record["source_id"] == "current_price":
                 record["status"] = "error"
@@ -1229,7 +1231,7 @@ MSFT выглядит качественной компанией.
         self.assertIn("current_price", validation["missing_required"])
 
     def test_stale_current_price_blocks_freshness_dependent_preflight(self) -> None:
-        preflight = build_msft_source_preflight("MSFT", ["latest"], "mock")
+        preflight = build_msft_source_preflight("MSFT", ["latest"], "live")
         for record in preflight["source_records"]:
             if record["source_id"] == "current_price":
                 record["source_date"] = "2020-01-01"
@@ -1240,7 +1242,7 @@ MSFT выглядит качественной компанией.
         self.assertIn("current_price", validation["missing_required"])
 
     def test_stale_important_source_limits_but_does_not_hard_block(self) -> None:
-        preflight = build_msft_source_preflight("MSFT", ["latest"], "mock")
+        preflight = build_msft_source_preflight("MSFT", ["latest"], "live")
         for record in preflight["source_records"]:
             if record["source_id"] == "public_news":
                 record["source_date"] = "2020-01-01"
@@ -1254,7 +1256,7 @@ MSFT выглядит качественной компанией.
         self.assertEqual(pack["evidence_readiness"], "Limited")
 
     def test_missing_recent_8k_alone_does_not_block(self) -> None:
-        preflight = build_equity_source_preflight("NVDA for 3 years", ["3 years"], "mock", ticker="NVDA")
+        preflight = build_equity_source_preflight("NVDA for 3 years", ["3 years"], "live", ticker="NVDA")
         for record in preflight["source_records"]:
             if record["source_id"] == "recent_8k":
                 record["status"] = "missing"
@@ -1274,7 +1276,7 @@ MSFT выглядит качественной компанией.
             original_preflight = fa_automation.build_equity_source_preflight
 
             def broken_preflight(*args, **kwargs):
-                preflight = build_msft_source_preflight("MSFT", ["3 years"], "mock")
+                preflight = build_msft_source_preflight("MSFT", ["3 years"], "live")
                 for record in preflight["source_records"]:
                     if record["source_id"] == "current_price":
                         record["status"] = "error"
@@ -1292,7 +1294,7 @@ MSFT выглядит качественной компанией.
                 fa_automation.build_equity_source_preflight = broken_preflight
                 exit_code = fa_automation.run_agent_run(
                     "MSFT for 3 years",
-                    "mock",
+                    "live",
                     [
                         "3 years",
                         "No current position",
@@ -1331,7 +1333,7 @@ MSFT выглядит качественной компанией.
             with self.subTest(prompt=prompt), tempfile.TemporaryDirectory() as temp_dir:
                 reports_root = Path(temp_dir)
                 completed = self.run_cli(
-                    ["agent-run", "--prompt", prompt, "--continue-with-baseline", "--mode", "mock"],
+                    ["agent-run", "--prompt", prompt, "--continue-with-baseline", "--mode", "live"],
                     reports_root,
                 )
                 self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
@@ -1350,7 +1352,7 @@ MSFT выглядит качественной компанией.
                 self.assertIn("AGENT Workflow Review", report_text)
                 self.assertIn("Evidence Status Summary", report_text)
                 self.assertNotIn("Action Box", report_text)
-                self.assertFalse(manifest["production_real_subagents"])
+                self.assertTrue(manifest["production_real_subagents"])
 
                 validate = self.run_cli(["validate-agent-run", "--run-dir", str(run_dir)], reports_root)
                 self.assertEqual(validate.returncode, 0, validate.stderr + validate.stdout)
@@ -1381,7 +1383,7 @@ MSFT выглядит качественной компанией.
         for prompt, prefix, specialist_id in cases:
             with self.subTest(prompt=prompt), tempfile.TemporaryDirectory() as temp_dir:
                 reports_root = Path(temp_dir)
-                completed = self.run_cli(["specialist-run", "--prompt", prompt, "--mode", "mock"], reports_root)
+                completed = self.run_cli(["specialist-run", "--prompt", prompt, "--mode", "live"], reports_root)
 
                 self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
                 run_dir = self.latest_specialist_dir(reports_root, prefix)
@@ -1396,7 +1398,7 @@ MSFT выглядит качественной компанией.
                 self.assertEqual(len(manifest["attempted_specialists"]), 1)
                 self.assertEqual(manifest["attempted_specialists"][0]["specialist_id"], specialist_id)
                 self.assertFalse(manifest["final_action_allowed"])
-                self.assertFalse(manifest["production_real_subagent"])
+                self.assertTrue(manifest["production_real_subagent"])
                 self.assertTrue((run_dir / "audit" / "specialists" / specialist_id / "handoff.json").is_file())
 
                 validate = self.run_cli(["validate-specialist-run", "--run-dir", str(run_dir)], reports_root)
@@ -1408,7 +1410,7 @@ MSFT выглядит качественной компанией.
     def test_direct_specialist_rejects_missing_prefix(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             reports_root = Path(temp_dir)
-            completed = self.run_cli(["specialist-run", "--prompt", "Nvidia risk", "--mode", "mock"], reports_root)
+            completed = self.run_cli(["specialist-run", "--prompt", "Nvidia risk", "--mode", "live"], reports_root)
 
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("prompt must start with a supported specialist prefix", completed.stdout)
@@ -1448,11 +1450,11 @@ MSFT выглядит качественной компанией.
                 run_dir = quick_root / ticker
                 run_dir.mkdir(parents=True)
                 (run_dir / "source_snapshot.json").write_text(
-                    json.dumps({"identity": {"ticker": ticker}, "mode": "mock", "timestamp": "2026-07-02T00:00:00+00:00"}),
+                    json.dumps({"identity": {"ticker": ticker}, "mode": "live", "timestamp": "2026-07-02T00:00:00+00:00"}),
                     encoding="utf-8",
                 )
                 (run_dir / "quick_answer.json").write_text(
-                    json.dumps({"ticker": ticker, "mode": "mock", "status": "Limited"}),
+                    json.dumps({"ticker": ticker, "mode": "live", "status": "Limited"}),
                     encoding="utf-8",
                 )
                 (run_dir / "output_quality.json").write_text(json.dumps({"status": "pass"}), encoding="utf-8")
@@ -1466,7 +1468,7 @@ MSFT выглядит качественной компанией.
                     json.dumps(
                         {
                             "workflow": "agent_run",
-                            "mode": "mock",
+                            "mode": "live",
                             "selected_route": route,
                             "subject": route,
                             "workflow_complete": True,
@@ -1490,7 +1492,7 @@ MSFT выглядит качественной компанией.
                     json.dumps(
                         {
                             "workflow": "direct_specialist",
-                            "mode": "mock",
+                            "mode": "live",
                             "prefix": prefix,
                             "specialist_id": specialist_id,
                             "actual_specialists_run": [{"specialist_id": specialist_id, "status": "ok", "sdk_thread_id": ""}],

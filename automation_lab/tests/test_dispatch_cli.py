@@ -58,7 +58,7 @@ class DispatchClassificationTests(unittest.TestCase):
     def test_equity_resolver_does_not_treat_horizon_range_as_ticker(self) -> None:
         for prompt in ["AGENT: Проанализируй на 3-5 лет", "AGENT: Analyze on 3–5 years"]:
             with self.subTest(prompt=prompt):
-                resolved = resolve_equity_request(prompt, mode="mock")
+                resolved = resolve_equity_request(prompt, mode="live")
                 self.assertEqual(resolved["ticker"], "UNRESOLVED")
                 self.assertNotIn(resolved["ticker"], {"3-5", "3", "5"})
 
@@ -108,6 +108,7 @@ class DispatchClassificationTests(unittest.TestCase):
 class DispatchCliTests(unittest.TestCase):
     def run_cli(self, args: list[str], base: Path) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()
+        env["FA_AUTOMATION_UNIT_LIVE_STUB"] = "1"
         env["FA_AUTOMATION_AGENT_REPORTS_ROOT"] = str(base / "reports")
         env["FA_AUTOMATION_AGENT_RUNS_DIR"] = str(base / "agent-runs")
         env["FA_AUTOMATION_SPECIALIST_RUNS_DIR"] = str(base / "specialist-runs")
@@ -131,21 +132,21 @@ class DispatchCliTests(unittest.TestCase):
     def test_dispatch_cli_agent_intake_writes_required_log(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             base = Path(temp_dir)
-            completed = self.run_cli(["dispatch", "--prompt", RU_ANALYZE_MSFT, "--mode", "mock"], base)
+            completed = self.run_cli(["dispatch", "--prompt", RU_ANALYZE_MSFT, "--mode", "live"], base)
             self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
             self.assertIn("AGENT intake", completed.stdout)
             payload = self.latest_dispatch_log(base)
             self.assertEqual(payload["selected_dispatch"], "AGENT")
             self.assertEqual(payload["selected_route"], "equity_full_cycle")
             self.assertEqual(payload["target_command"], "agent-intake")
-            self.assertEqual(payload["mode"], "mock")
+            self.assertEqual(payload["mode"], "live")
             self.assertFalse(payload["executed"])
             self.assertEqual(payload["validation_status"], "pass")
 
     def test_dispatch_cli_quick_does_not_create_report_or_audit(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             base = Path(temp_dir)
-            completed = self.run_cli(["dispatch", "--prompt", RU_QUICK_MSFT, "--mode", "mock"], base)
+            completed = self.run_cli(["dispatch", "--prompt", RU_QUICK_MSFT, "--mode", "live"], base)
             self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
             self.assertIn("QUICK", completed.stdout)
             self.assertFalse(list((base / "reports").glob("**/investment_report.md")))
@@ -158,7 +159,7 @@ class DispatchCliTests(unittest.TestCase):
     def test_dispatch_cli_risk_only_runs_one_specialist_with_boundary(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             base = Path(temp_dir)
-            completed = self.run_cli(["dispatch", "--prompt", RU_RISK_MSFT, "--mode", "mock"], base)
+            completed = self.run_cli(["dispatch", "--prompt", RU_RISK_MSFT, "--mode", "live"], base)
             self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
             reports = list((base / "reports" / "_specialists").glob("*/specialist_report.md"))
             self.assertEqual(len(reports), 1)
@@ -172,7 +173,7 @@ class DispatchCliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             base = Path(temp_dir)
             completed = self.run_cli(
-                ["dispatch", "--prompt", "Should I buy UnknownAssetXYZ for 3 years?", "--mode", "mock"],
+                ["dispatch", "--prompt", "Should I buy UnknownAssetXYZ for 3 years?", "--mode", "live"],
                 base,
             )
             self.assertNotEqual(completed.returncode, 0)
@@ -186,7 +187,7 @@ class DispatchCliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             base = Path(temp_dir)
             completed = self.run_cli(
-                ["dispatch", "--prompt", RU_MSFT_3Y, "--mode", "mock", "--execute", "--continue-with-baseline"],
+                ["dispatch", "--prompt", RU_MSFT_3Y, "--mode", "live", "--execute", "--continue-with-baseline"],
                 base,
             )
             self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
@@ -196,8 +197,8 @@ class DispatchCliTests(unittest.TestCase):
             self.assertTrue(payload["report_path"])
             manifest_path = Path(str(payload["report_path"])).parent / "audit" / "run_manifest.json"
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            self.assertFalse(manifest["production_real_subagents"])
-            self.assertIn("Mock specialist outputs", manifest["mock_mode_notice"])
+            self.assertTrue(manifest["production_real_subagents"])
+            self.assertIsNone(manifest.get("mock_mode_notice"))
 
 
 if __name__ == "__main__":

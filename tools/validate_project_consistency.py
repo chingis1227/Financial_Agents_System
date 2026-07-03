@@ -168,8 +168,8 @@ for forbidden in ["Read `TASKS.md`", "Read `IMPLEMENTATION_BACKLOG.md`", "TASKS.
     add(f"AGENTS has no archived active runtime instruction: {forbidden}", forbidden not in agents)
 for token in ["validate_project_consistency.py", "validate_language_style.py", "validate_behavior_contracts.py", "validate_runtime_readiness.py"]:
     add(f"AGENTS requires validator {token}", token in agents)
-for token in ["AGENT:", "QUICK:", "fallback only in audit metadata"]:
-    add(f"AGENTS contains command/fallback rule {token}", token in agents, token)
+for token in ["AGENT:", "QUICK:", "live-only", "language-policy", "investment-analytical-style"]:
+    add(f"AGENTS contains production workflow rule {token}", token in agents, token)
 for cmd, agent in COMMAND_AGENT_MAP.items():
     add(f"AGENTS command map contains {cmd}", f"`{cmd}:`" in agents and f"`{agent}`" in agents, f"{cmd}->{agent}")
 

@@ -16,12 +16,12 @@
     ]
   },
   {
-    "id": "agent_requires_spawn_or_limited_fallback",
+    "id": "agent_requires_spawn_or_blocked",
     "scope": "AGENT",
     "rule": "agent_workflow_claim_valid_only_with_spawned_agents_else_limited_audit_fallback"
   },
   {
-    "id": "spawned_subagent_workflow_requires_actual_spawn",
+    "id": "agent_workflow_requires_actual_spawn",
     "scope": "execution_mode",
     "rule": "spawned_subagent_workflow_valid_only_with_spawned_agents"
   },

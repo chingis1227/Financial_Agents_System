@@ -45,7 +45,7 @@ py -3 tools\validate_runtime_readiness.py
 npm.cmd run build
 npm.cmd test
 npm.cmd run codex:doctor
-npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
+npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --live
 cd automation_lab
 ..\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
 ..\.venv\Scripts\python.exe fa_automation.py live-acceptance --require-live
@@ -57,7 +57,7 @@ cd ..
 The merged repository is ready when:
 
 1. Financial Agent System validators pass.
-2. Codex SDK build/test/doctor/dry-run checks pass.
+2. Codex SDK build/test/doctor/live-only checks pass.
 3. Automation Lab unit tests pass from `automation_lab/` using the main repository virtual environment.
 4. `live-acceptance --require-live` passes or, if current live artifacts have been intentionally cleaned, the gap is reported honestly rather than downgraded silently.
 5. `README.md`, `PROJECT_STATE.md`, and this file all point to `automation_lab/` as the integrated execution layer.

@@ -28,7 +28,7 @@ Implemented in Automation Lab only:
 - Deep MSFT source preflight with Required / Important / Nice-to-have source classes.
 - Public/no-key baseline sources plus optional future API-compatible architecture.
 - Evidence pack with claim support matrix, freshness, source tiers, missing/weak evidence, and pre-IC lock.
-- Mock specialist handoffs for deterministic tests and live Codex SDK specialist-run contract for production use.
+- Historical fixture specialist handoffs for deterministic tests and live Codex SDK specialist-run contract for production use.
 - Reader-facing `investment_report.md` plus technical `audit/` outside both repositories.
 
 ## Out of scope
@@ -38,7 +38,7 @@ Implemented in Automation Lab only:
 - Full DCF spreadsheet model.
 - Paid/paywalled scraping.
 - Moving canonical rules from the main Financial Agent System into Automation Lab.
-- Treating mock specialist outputs as production real subagent execution.
+- Treating historical fixture specialist outputs as production real subagent execution.
 
 ## Implementation plan
 
@@ -60,7 +60,7 @@ Run:
 Smoke:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py agent-run --prompt "MSFT for 3 years" --answer "3 years" --answer "No current position" --answer "Quality compounder and valuation entry" --answer "Use latest public data if available" --answer "No portfolio context provided" --mode mock
+.\.venv\Scripts\python.exe fa_automation.py agent-run --prompt "MSFT for 3 years" --answer "3 years" --answer "No current position" --answer "Quality compounder and valuation entry" --answer "Use latest public data if available" --answer "No portfolio context provided" --mode live
 .\.venv\Scripts\python.exe fa_automation.py validate-agent-run
 ```
 
@@ -75,11 +75,11 @@ README and ROADMAP document TASK-011 commands, report location, and audit bounda
 - [x] `agent-run` records answered, unanswered, baseline assumptions, and portfolio-context limits.
 - [x] Source preflight distinguishes required, important, and nice-to-have sources.
 - [x] Evidence pack is not a QUICK snapshot.
-- [x] Mock mode does not count as production real subagents.
+- [x] Historical fixture path does not count as production real subagents.
 - [x] Reader report hides runtime/debug labels.
 - [x] Audit preserves technical statuses and raw outputs.
 - [x] Validators and tests cover the run.
 
 ## Definition of Done
 
-TASK-011 is complete when `agent-run` creates a validated MSFT `investment_report.md` and `audit/` outside both repositories, deterministic tests pass, mock smoke passes, live/public smoke is attempted or documented, and final review reaches >=9.0 with no must-fix items.
+TASK-011 is complete when `agent-run` creates a validated MSFT `investment_report.md` and `audit/` outside both repositories, deterministic tests pass, historical fixture smoke passes, live/public smoke is attempted or documented, and final review reaches >=9.0 with no must-fix items.

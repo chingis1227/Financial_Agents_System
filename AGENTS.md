@@ -54,8 +54,8 @@ This project follows official OpenAI / Codex best practices: keep `AGENTS.md` pr
 
 - Do not use archive files as active source of truth.
 - Any ordinary user request about an investment decision, buy/sell/hold/add/trim/exit, asset comparison, or asset analysis for a stated horizon must enter auto-dispatch first; do not answer with chat-only analysis in bypass of the router.
-- `AGENT:` is the user-facing command for the large agent workflow. It asks exactly 5 relevant questions first, then uses relevant spawned subagents when available.
-- Do not claim an agent workflow unless subagents were actually spawned. If subagents cannot be spawned, record fallback only in audit metadata and mark the user-facing output Limited.
+- `AGENT:` is the user-facing command for the large agent workflow. It asks exactly 5 relevant questions first, then automatically spawns all route-relevant subagents without requiring the user to ask for agents, delegation, or parallel work.
+- Do not claim an agent workflow unless subagents were actually spawned. If subagents cannot be spawned, production live workflow is Blocked; do not replace it with historical fixture or non-delegated analysis.
 - `QUICK:` is only Preliminary or Limited, asks exactly 3 relevant questions first, stays chat-only, and never creates report/audit files.
 - Specialist commands, including `IC:`, route to one analyst only, must show `Boundary: Not an IC Action`, and must not issue final `IC Action`.
 - Do not issue final `IC Action` outside Investment Committee synthesis.
@@ -103,7 +103,7 @@ After changing the Codex SDK control layer, also run:
 npm.cmd run build
 npm.cmd test
 npm.cmd run codex:doctor
-npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
+npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --live
 ```
 
 Do not mark work complete if validation fails. Fix the inconsistency or report it as a source issue.
@@ -119,3 +119,11 @@ Internal project Markdown is English unless explicitly requested otherwise. User
 - "Run all agents" means all relevant agents for the decision mode, not literally every profile.
 - Structural Winners is discovery-only.
 - Large saved reports include Quality vs Entry, Key Internal Conflicts, What Would Change Our Mind, and Monitoring Triggers.
+
+
+## Live production workflow override
+
+- Investment reports, investment memos, saved `investment_report.md`, and user-facing investment analysis must always apply `.agents/skills/language-policy/` when the user/report language is Russian and `.agents/skills/investment-analytical-style/` for all investment report prose before saving or answering.
+- Ordinary concrete-asset investment prompts automatically launch the route-relevant AGENT workflow and subagents; the user does not need to explicitly request agents, delegation, or parallel work.
+- Production investment workflows are live-only. Do not use non-production fixture/live outputs for user-requested analysis.
+- Do not impose fixed workflow or specialist timeouts. A live AGENT workflow runs until required agents complete or an external hard failure occurs.

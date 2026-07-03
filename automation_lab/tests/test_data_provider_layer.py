@@ -146,7 +146,7 @@ class DataProviderIntegrationTests(unittest.TestCase):
         except ImportError:  # pragma: no cover
             from automation_lab.quick_data.snapshot import build_quick_source_snapshot
 
-        snapshot = build_quick_source_snapshot("QUICK: Microsoft", ["3-5 years", "no position", "latest price"], "mock")
+        snapshot = build_quick_source_snapshot("QUICK: Microsoft", ["3-5 years", "no position", "latest price"], "live")
         self.assertTrue(snapshot["data_provider_plan"])
 
     def test_agent_tlt_preflight_attempts_fixed_income_provider_set(self) -> None:
@@ -156,7 +156,7 @@ class DataProviderIntegrationTests(unittest.TestCase):
         from fa_automation import AGENT_NON_EQUITY_IDENTITIES, build_agent_source_preflight
 
         identity = dict(AGENT_NON_EQUITY_IDENTITIES["TLT"])
-        preflight = build_agent_source_preflight("AGENT: TLT", ["a", "b", "c", "d", "e"], "mock", "fixed_income_full_cycle", identity)
+        preflight = build_agent_source_preflight("AGENT: TLT", ["a", "b", "c", "d", "e"], "live", "fixed_income_full_cycle", identity)
         provider_ids = {result["provider_id"] for result in preflight["data_provider_results"]}
         self.assertTrue({"etf_issuer_provider", "treasury_provider", "fred_provider", "public_price_provider"}.issubset(provider_ids))
 
@@ -170,8 +170,8 @@ class DataProviderIntegrationTests(unittest.TestCase):
         except ImportError:  # pragma: no cover
             from automation_lab.data_providers import run_provider_registry_for_preflight
 
-        identity = resolve_agent_request("AGENT: MSFT vs TLT vs BTC", mode="mock")
-        output = run_provider_registry_for_preflight(route="multi_asset_comparison", identity=identity, mode="mock")
+        identity = resolve_agent_request("AGENT: MSFT vs TLT vs BTC", mode="live")
+        output = run_provider_registry_for_preflight(route="multi_asset_comparison", identity=identity, mode="live")
         components = {
             result.get("metadata", {}).get("comparison_component", {}).get("ticker")
             for result in output.get("provider_results", [])

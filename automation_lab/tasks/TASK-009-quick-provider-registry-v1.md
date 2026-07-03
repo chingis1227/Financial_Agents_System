@@ -83,7 +83,7 @@ The QUICK provider registry aligns with Evidence Collector concepts by labeling 
 - Verify new provider fields are present.
 - Verify CLI UX remains unchanged.
 - Verify no report/audit artifacts are created.
-- Run mock smoke scenarios for MSFT and MSFT-SPY-BTC.
+- Run historical fixture smoke scenarios for MSFT and MSFT-SPY-BTC.
 - Run live/public smoke without API keys.
 
 ## Docs synchronization note
@@ -111,4 +111,4 @@ README documents the provider registry, unchanged CLI, public/no-key behavior, d
 
 ## Definition of Done
 
-TASK-009 is done when all tests pass, QUICK mock and live smoke checks work without API keys, provider registry metadata and provider results are saved in snapshots, validator checks the new fields, docs are synchronized, no final action/report/audit boundaries are violated, and review sub-agent score is at least 9.0/10 after agreed fixes.
+TASK-009 is done when all tests pass, QUICK historical fixture and live smoke checks work without API keys, provider registry metadata and provider results are saved in snapshots, validator checks the new fields, docs are synchronized, no final action/report/audit boundaries are violated, and review sub-agent score is at least 9.0/10 after agreed fixes.

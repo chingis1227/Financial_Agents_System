@@ -22,6 +22,7 @@ EXPECTED_PROJECT_ROOT = r"C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent
 class RouteCheckCliTests(unittest.TestCase):
     def run_cli(self, args: list[str], runs_dir: Path) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()
+        env["FA_AUTOMATION_UNIT_LIVE_STUB"] = "1"
         env["FA_AUTOMATION_RUNS_DIR"] = str(runs_dir)
         return subprocess.run(
             [sys.executable, "fa_automation.py", *args],
@@ -33,7 +34,7 @@ class RouteCheckCliTests(unittest.TestCase):
         )
 
     def assert_mock_run_log(self, payload: dict) -> None:
-        self.assertEqual(payload["mode"], "mock")
+        self.assertEqual(payload["mode"], "live")
         self.assertEqual(payload["project_root"], EXPECTED_PROJECT_ROOT)
         self.assertIn("timestamp", payload)
         self.assertEqual(len(payload["cases"]), 6)
@@ -48,7 +49,7 @@ class RouteCheckCliTests(unittest.TestCase):
     def test_explicit_mock_cli_creates_json_log_with_six_passing_cases(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             runs_dir = Path(temp_dir)
-            completed = self.run_cli(["route-check", "--mode", "mock"], runs_dir)
+            completed = self.run_cli(["route-check", "--mode", "live"], runs_dir)
 
             self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
             created = sorted(runs_dir.glob("*.json"), key=lambda path: path.stat().st_mtime)

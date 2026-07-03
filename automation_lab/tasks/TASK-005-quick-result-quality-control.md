@@ -30,7 +30,7 @@ Implemented in Automation Lab only:
 - freshness-dependent QUICK outputs must ask an explicit freshness/current-source question;
 - extra forbidden markers block subagent claims and analysis/recommendation sections;
 - JSON logs include `quality_checks` with individual pass/fail dimensions;
-- mock QUICK output uses `Status: Limited` when the prompt is freshness-dependent.
+- historical fixture QUICK output uses `Status: Limited` when the prompt is freshness-dependent.
 
 ## Out of scope
 
@@ -65,22 +65,22 @@ Run Automation Lab tests:
 .\.venv\Scripts\python.exe -m unittest discover -s tests
 ```
 
-Run mock route check:
+Run historical fixture route check:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py route-check --mode mock
+.\.venv\Scripts\python.exe fa_automation.py route-check --mode live
 ```
 
-Run mock QUICK launch:
+Run historical fixture QUICK launch:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py quick-run --prompt "Microsoft for 3 years" --mode mock
+.\.venv\Scripts\python.exe fa_automation.py quick-run --prompt "Microsoft for 3 years" --mode live
 ```
 
-Run mock freshness QUICK launch:
+Run historical fixture freshness QUICK launch:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py quick-run --prompt "latest Microsoft news" --mode mock
+.\.venv\Scripts\python.exe fa_automation.py quick-run --prompt "latest Microsoft news" --mode live
 ```
 
 ## Docs synchronization note
@@ -113,7 +113,7 @@ TASK-005 is complete when:
 
 - deterministic QUICK QC checks are implemented;
 - unit tests cover structure, freshness, and forbidden marker failures;
-- mock QUICK logs include quality checks;
+- historical fixture QUICK logs include quality checks;
 - existing route-check behavior still passes;
 - README and ROADMAP reflect TASK-005;
 - Git status contains only intended Automation Lab changes before commit.

@@ -12,11 +12,11 @@ from .config import RuntimeSettings
 class OpenAIAdapter:
     """Minimal OpenAI Responses API adapter.
 
-    The adapter is only constructed in live mode after the caller has verified
-    `OPENAI_API_KEY`. Dry-run code paths never instantiate it and never make API calls.
+    The adapter is only constructed in live production mode after the caller has verified
+    `OPENAI_API_KEY`.
     """
 
-    def __init__(self, settings: RuntimeSettings, *, max_retries: int = 2, timeout_seconds: int = 60) -> None:
+    def __init__(self, settings: RuntimeSettings, *, max_retries: int = 2, timeout_seconds: int | None = None) -> None:
         if not settings.openai_api_key:
             raise RuntimeError("OPENAI_API_KEY is required for live OpenAI calls.")
         self.settings = settings
@@ -45,7 +45,11 @@ class OpenAIAdapter:
         last_error: Exception | None = None
         for attempt in range(self.max_retries + 1):
             try:
-                with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:
+                if self.timeout_seconds is None:
+                    response_cm = urllib.request.urlopen(request)
+                else:
+                    response_cm = urllib.request.urlopen(request, timeout=self.timeout_seconds)
+                with response_cm as response:
                     body = json.loads(response.read().decode("utf-8"))
                 return self._extract_text(body)
             except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:

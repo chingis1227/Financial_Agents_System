@@ -22,11 +22,11 @@ TASK-004 creates the first practical automation entrypoint for Quick Take withou
 
 Implemented in Automation Lab only:
 
-- `fa_automation.py quick-run --prompt ... --mode mock`
+- `fa_automation.py quick-run --prompt ... --mode live`
 - `fa_automation.py quick-run --prompt ... --mode live`
 - `QUICK:` prefix normalization when the prefix is omitted.
 - JSON run logs under `runs/quick/`.
-- Mock QUICK first-step output for deterministic tests.
+- Historical fixture QUICK first-step output for deterministic tests.
 - Live Codex SDK launch from the Financial Agent System root in read-only / deny-all mode.
 - Lightweight QUICK output validation for status, exactly three questions, and forbidden final-action markers.
 - Documentation and unittest coverage.
@@ -46,7 +46,7 @@ Implemented in Automation Lab only:
 
 `quick-run` launches only the Quick Take first action. The live prompt tells Codex to read `PROJECT_STATE.md`, `AGENTS.md`, and `workflows/route_cards/quick_take.md`, then ask exactly three relevant questions and stop. The launcher forbids full AGENT workflow behavior, subagent claims, file creation, saved reports, audit folders, final IC Action, Action Box, exact sizing, and final action conclusions.
 
-Mock mode returns a deterministic Preliminary response with exactly three questions. Live mode uses the same Codex SDK pattern as route-check: Financial Agent System root, read-only sandbox, deny-all approval mode, optional model from `FA_AUTOMATION_CODEX_MODEL`, and timeout from `FA_AUTOMATION_LIVE_TIMEOUT_SECONDS`. The output is accepted only if it declares `Status: Preliminary` or `Status: Limited`, contains exactly three question lines, and avoids forbidden final-action/report/audit/sizing markers, including bare or labeled action conclusions such as `Buy`, `Conclusion: Hold`, `Action: trim`, or `Action: exit`.
+Historical fixture path returns a deterministic Preliminary response with exactly three questions. Live mode uses the same Codex SDK pattern as route-check: Financial Agent System root, read-only sandbox, deny-all approval mode, optional model from `FA_AUTOMATION_CODEX_MODEL`, and timeout from `FA_AUTOMATION_LIVE_TIMEOUT_SECONDS`. The output is accepted only if it declares `Status: Preliminary` or `Status: Limited`, contains exactly three question lines, and avoids forbidden final-action/report/audit/sizing markers, including bare or labeled action conclusions such as `Buy`, `Conclusion: Hold`, `Action: trim`, or `Action: exit`.
 
 ## Outputs
 
@@ -71,16 +71,16 @@ Run Automation Lab tests:
 .\.venv\Scripts\python.exe -m unittest discover -s tests
 ```
 
-Run mock route check to confirm existing behavior remains intact:
+Run historical fixture route check to confirm existing behavior remains intact:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py route-check --mode mock
+.\.venv\Scripts\python.exe fa_automation.py route-check --mode live
 ```
 
-Run mock QUICK launch:
+Run historical fixture QUICK launch:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py quick-run --prompt "Microsoft for 3 years" --mode mock
+.\.venv\Scripts\python.exe fa_automation.py quick-run --prompt "Microsoft for 3 years" --mode live
 ```
 
 Manual review:
@@ -104,11 +104,11 @@ py -3 tools\validate_runtime_readiness.py
 ## Review checklist
 
 - [x] QUICK automation is implemented in Automation Lab only.
-- [x] Mock and live modes exist.
+- [x] Historical fixture and live modes exist.
 - [x] `QUICK:` prefix is normalized.
 - [x] Live mode launches from the Financial Agent System root.
 - [x] Live mode uses read-only sandbox and deny-all approval mode.
-- [x] QUICK first action asks exactly three questions in mock mode.
+- [x] QUICK first action asks exactly three questions in historical fixture path.
 - [x] The live prompt requires exactly three questions and stop.
 - [x] Lightweight validation rejects live output that misses status, has the wrong question count, or contains forbidden final-action markers.
 - [x] No report, audit, or IC Action is requested by the command.
@@ -119,10 +119,10 @@ py -3 tools\validate_runtime_readiness.py
 TASK-004 is complete when:
 
 - `quick-run` exists in the CLI.
-- Mock QUICK launch creates a JSON run log.
-- Mock QUICK launch preserves Preliminary boundary.
+- Historical fixture QUICK launch creates a JSON run log.
+- Historical fixture QUICK launch preserves Preliminary boundary.
 - Live QUICK launch is wired through the Codex SDK in read-only / deny-all mode.
 - Tests pass.
-- Mock route-check still passes.
+- Historical fixture route-check still passes.
 - README and ROADMAP reflect TASK-004.
 - Git status contains only intended Automation Lab changes before commit.

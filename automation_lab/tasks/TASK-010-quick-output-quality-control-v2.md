@@ -58,7 +58,7 @@ TASK-010 reduces the risk that QUICK sounds like a final investment recommendati
 ```
 
 - Smoke `quick-run` mock.
-- Smoke `quick-answer` mock for MSFT, SPY, BTC, TLT, GLD, and MSFT-SPY-BTC.
+- Smoke `quick-answer` historical fixture for MSFT, SPY, BTC, TLT, GLD, and MSFT-SPY-BTC.
 - Smoke `validate-quick-answer` on a generated run.
 - Smoke live/public MSFT with current-data answer and verify no API keys are required.
 
@@ -75,7 +75,7 @@ README documents `output_quality.json`, new Quick Take notes, quality-fail behav
 - [ ] `validate-quick-answer` requires output quality.
 - [ ] Hidden action phrases are rejected.
 - [ ] Overconfidence is detected.
-- [ ] Generic mock risks fail output quality.
+- [ ] Generic historical fixture risks fail output quality.
 - [ ] Live mode accepts asset-class-specific risk.
 - [ ] Soft quality failures are saved but not printed as normal Quick Takes.
 - [ ] Hard violations fail.
@@ -86,4 +86,4 @@ README documents `output_quality.json`, new Quick Take notes, quality-fail behav
 
 ## Definition of Done
 
-TASK-010 is done when all unit tests pass, mock and live smoke checks work, output-quality files and validator checks are in place, QUICK remains free of final action language and exact sizing, report/audit artifacts are not created, docs are synchronized, and review sub-agent score is at least 9.0/10 after agreed fixes.
+TASK-010 is done when all unit tests pass, historical fixture and live smoke checks work, output-quality files and validator checks are in place, QUICK remains free of final action language and exact sizing, report/audit artifacts are not created, docs are synchronized, and review sub-agent score is at least 9.0/10 after agreed fixes.

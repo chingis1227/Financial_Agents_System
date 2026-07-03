@@ -37,7 +37,7 @@ Audit/run metadata must record exactly one controlled execution mode before the 
 
 | Execution mode | Meaning | Requirement |
 |---|---|---|
-| `Non-delegated audit fallback` | The main Codex session executes the full workflow modules itself. | Do not claim that subagents ran. Use artifact-equivalent handoff summaries when separate files are not produced. |
+| `Production Blocked - subagents unavailable` | The main Codex session executes the full workflow modules itself. | Do not claim that subagents ran. Use artifact-equivalent handoff summaries when separate files are not produced. |
 | `Agent workflow with spawned subagents` | Relevant subagents are actually spawned and return structured handoff artifacts or artifact-equivalent summaries. | List spawned agents, skipped agents with reasons, consumed handoffs, and spawn limitations. |
 
 An internal full workflow is the analytical route. `Agent workflow with spawned subagents` is the controlled execution mode when subagents actually run. They are not synonyms.
@@ -68,7 +68,7 @@ Use this workflow when the user asks about a bond, bond ETF, Treasury duration e
 
 ## What you get
 
-A controlled Fixed income / bond ETF / rates or credit exposure workflow from intake through evidence, lead route analysis, relevant specialists, portfolio fit, and Investment Committee synthesis. For concrete-asset large-workflow work, `Agent workflow with spawned subagents` with relevant subagents is the canonical default when those subagents are available and actually spawned; if no subagents actually run, record `Non-delegated audit fallback` instead.
+A controlled Fixed income / bond ETF / rates or credit exposure workflow from intake through evidence, lead route analysis, relevant specialists, portfolio fit, and Investment Committee synthesis. For concrete-asset large-workflow work, `Agent workflow with spawned subagents` with relevant subagents is the canonical default as a production requirement; if route-relevant subagents cannot run, block the production workflow instead.
 
 ## Required agents and modules
 

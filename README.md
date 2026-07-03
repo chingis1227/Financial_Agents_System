@@ -12,7 +12,7 @@ Start Codex from the project root. For investment requests, Codex should route t
 
 | Command | Use when | What happens | Boundary |
 |---|---|---|---|
-| `AGENT:` | You want the large agent workflow for an asset, comparison, or capital-allocation decision. | Codex asks exactly 5 relevant questions, then uses relevant spawned subagents when available and saves report/audit artifacts. | Do not claim an agent workflow unless subagents actually ran; if they cannot run, fallback is audit-only and the user-facing output is Limited. |
+| `AGENT:` | You want the large agent workflow for an asset, comparison, or capital-allocation decision. | Codex asks exactly 5 relevant questions, then automatically spawns all route-relevant subagents without requiring the user to ask for agents, delegation, or parallel work and saves report/audit artifacts. | Do not claim an agent workflow unless subagents actually ran; if they cannot run, blocked production issue is audit-only and the user-facing output is Limited. |
 | `QUICK:` | You want a short preliminary answer. | Codex asks exactly 3 relevant questions, then gives a chat-only Preliminary / Limited view. | No saved report, no audit, no final IC Action. |
 | Specialist command | You want one analyst only, such as risk, valuation, macro, news, portfolio fit, or committee-prep review. | Codex routes to one specialist agent/method and keeps the output scoped. | Boundary: Not an IC Action, including `IC:`. |
 
@@ -68,12 +68,12 @@ ETF: QQQ vs SCHG
 
 ## Run through Python LangGraph runtime
 
-The additive Python LangGraph runtime lives in `langgraph_runtime/`. It preserves the existing route cards, skills, evidence gates, validation rules, and report boundaries while providing a live/dry-run graph entrypoint. It does not delete or replace the Codex-native layer, and it is not an OpenAI Agents SDK runtime.
+The additive Python LangGraph runtime lives in `langgraph_runtime/`. It preserves the existing route cards, skills, evidence gates, validation rules, and report boundaries while providing a live/live graph entrypoint. It does not delete or replace the Codex-native layer, and it is not an OpenAI Agents SDK runtime.
 
 Dry-run mode never calls the OpenAI API and can be used for routing, gate, report, and audit validation:
 
 ```powershell
-py -3 -m langgraph_runtime.financial_agent_graph run --prompt "????????????? Microsoft ?? 3 ????, ??????? ???" --dry-run
+py -3 -m langgraph_runtime.financial_agent_graph run --prompt "????????????? Microsoft ?? 3 ????, ??????? ???" --live
 ```
 
 Live mode requires `OPENAI_API_KEY` from the environment or `.env` and uses configurable model settings from `.env.example`:
@@ -89,7 +89,7 @@ Configurable settings:
 - `OPENAI_MODEL` (default: `gpt-5.3-codex`)
 - `OPENAI_REASONING_EFFORT` (default: `low`)
 
-Current LangGraph MVP routes natural-language and prefix prompts through `intake_router_node`, supports equity full-cycle dry-run artifacts, direct specialist and Quick Take boundaries, missing-context interrupts, evidence-readiness gate failure handling, and idempotent reader-facing `investment_report.md` plus technical `audit/` artifact writing. When portfolio context is missing, the saved report shows a general Portfolio role section while Portfolio Fit status remains in audit.
+Current LangGraph MVP routes natural-language and prefix prompts through `intake_router_node`, supports equity full-cycle live artifacts, direct specialist and Quick Take boundaries, missing-context interrupts, evidence-readiness gate failure handling, and idempotent reader-facing `investment_report.md` plus technical `audit/` artifact writing. When portfolio context is missing, the saved report shows a general Portfolio role section while Portfolio Fit status remains in audit.
 
 ## Run through Codex SDK
 
@@ -102,13 +102,13 @@ npm.cmd install
 npm.cmd run build
 npm.cmd test
 npm.cmd run codex:doctor
-npm.cmd run codex:run -- --prompt "AGENT: Microsoft for 3 years, no current position" --dry-run
+npm.cmd run codex:run -- --prompt "AGENT: Microsoft for 3 years, no current position" --live
 npm.cmd run codex:run -- --prompt-file ".\prompt.txt" --live
 npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --live
 npm.cmd run codex:resume -- --thread-id "<id>" --prompt "continue" --live
 ```
 
-Default SDK mode is `--dry-run`; live Codex execution requires explicit `--live`. Dry-runs print to stdout only and do not create run-log files. Live SDK service logs are written outside the repository under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\_sdk_runs\`.
+Production SDK execution is live-first; investment workflows must use `--live`. Dry-run behavior is not a production investment workflow. Live SDK service logs are written outside the repository under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\_sdk_runs\`.
 Use `--prompt-file` for Automation Lab or other long prompts so Windows command-line limits and prompt leakage in process arguments are avoided.
 
 ## Integrated Automation Lab live acceptance
@@ -166,7 +166,7 @@ After changing the Codex SDK control layer, also run:
 npm.cmd run build
 npm.cmd test
 npm.cmd run codex:doctor
-npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
+npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --live
 ```
 
 Validation is the TDD-like gate for this documentation-driven system: behavior rules must have fixtures, fixtures must be checked by validators, and project state must stay synchronized with the registry.
@@ -196,3 +196,6 @@ Saved large-workflow output uses `investment_report.md` for the clean reader-fac
 - Structural Winners is discovery-only: it returns candidates and review priority, not a buy list.
 - Saved large-workflow reports include Quality vs Entry, Key Internal Conflicts, What Would Change Our Mind, and Monitoring Triggers.
 - Example: `SENSE: why did BTC fall today?` routes to `market-sense-agent` as a scoped specialist handoff.
+
+
+Production note: investment workflows are live-only and automatically spawn route-relevant agents after intake.

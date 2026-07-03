@@ -28,7 +28,7 @@ Implementation rule: complete one task at a time. Do not add adjacent features "
 ## Roadmap
 
 1. TASK-001 — Codex SDK route check scaffold — Complete
-   - Mock route check.
+   - Historical fixture route check.
    - Live mode placeholder.
    - CLI.
    - JSON logs.
@@ -59,7 +59,7 @@ Implementation rule: complete one task at a time. Do not add adjacent features "
 7. TASK-007 — QUICK answer public data v1 — Complete
    - Second QUICK step implemented as `quick-answer`.
    - MSFT/equity pilot.
-   - Mock fixture mode plus live/public mode without API keys.
+   - Historical fixture fixture mode plus live/public mode without API keys.
    - `data_runs/quick/[timestamp]-MSFT/` snapshot with source, quality, and answer JSON files.
    - `validate-quick-answer` validator.
    - README, roadmap, and task document synchronized.
@@ -67,7 +67,7 @@ Implementation rule: complete one task at a time. Do not add adjacent features "
 8. TASK-008 - QUICK answer asset expansion v1 - Complete
    - Expanded `quick-answer` beyond MSFT/equity.
    - Pilots: ETF/SPY, crypto/BTC, bond ETF/TLT, commodity ETF/GLD, and comparison/MSFT-SPY-BTC.
-   - Mock fixtures are required and tested; live mode is best-effort without API keys.
+   - Historical fixture fixtures are required and tested; live mode is best-effort without API keys.
    - Asset-specific Quick Take context added while preserving one common QUICK template.
    - Provider registry remains deferred to TASK-009.
 
@@ -83,7 +83,7 @@ Implementation rule: complete one task at a time. Do not add adjacent features "
 11. TASK-011 - AGENT equity/MSFT pilot - Complete
     - Adds `agent-intake`, `agent-run`, and `validate-agent-run`.
     - Implements the first full MSFT/equity vertical slice with intake, source preflight, evidence pack, specialist handoffs, reader-facing `investment_report.md`, and `audit/`.
-    - Mock mode is fixture-first for deterministic tests; live mode uses public/no-key source preflight and separate Codex SDK specialist runs.
+    - Historical fixture path is fixture-first for deterministic tests; live mode uses public/no-key source preflight and separate Codex SDK specialist runs.
     - Live specialist execution now uses the Financial Agent System TypeScript Codex SDK CLI through `npm.cmd`, not the unavailable Python `openai_codex` bridge.
 
 12. TASK-012 - Generalize full equity AGENT beyond MSFT - Complete
@@ -96,7 +96,7 @@ Implementation rule: complete one task at a time. Do not add adjacent features "
    - Supports US common equities, US share classes, ADRs / foreign-issuer US listings, and direct non-US listings where public sources are sufficient.
    - Blocks private companies and complex instruments as ordinary equity.
    - Uses public/no-key sources only, with Stooq first for price/history and Yahoo/public chart fallback.
-   - Adds global-equity validators, mock regression coverage, live-smoke recording, and mandatory review-loop evidence.
+   - Adds global-equity validators, historical fixture regression coverage, live-smoke recording, and mandatory review-loop evidence.
 
 14. Full live AGENT Complete hardening - Complete
    - Production live specialist timeout default is `900` seconds per Codex SDK subprocess attempt; full run hard wall-clock budget default is `7200` seconds and caps remaining specialist attempts/retries.
@@ -110,7 +110,7 @@ Implementation rule: complete one task at a time. Do not add adjacent features "
    - Adds validated AGENT smoke paths for ETF/fund, fixed income, crypto, commodity, and multi-asset comparison.
    - Each path creates `investment_report.md`, `audit/`, source preflight, provider results, evidence pack, specialist handoffs, run manifest, and validation files.
    - Preserves Financial Agent System route cards as the source of truth; Automation Lab remains execution/orchestration only.
-   - Mock mode is deterministic for regression; live mode uses the existing staged Codex SDK specialist launcher and stays Limited when live specialists or source gates fail.
+   - Historical fixture path is deterministic for regression; live mode uses the existing staged Codex SDK specialist launcher and stays Limited when live specialists or source gates fail.
 
 
 16. TASK-015 - Direct specialist execution - Complete
@@ -157,7 +157,7 @@ TASK-004 did not change the Financial Agent System repository. QUICK automation 
 
 TASK-005 did not change the Financial Agent System repository. QUICK quality control now validates first-line status, numbered three-question structure, freshness-dependent Limited status, freshness/current-source intake visibility, and forbidden final-action/report/audit/subagent markers.
 
-TASK-006 did not change the Financial Agent System repository. AGENT automation design now exists as a design-only mock command that validates five-question intake, source-of-truth boundary, route-card existence, planned-versus-actual subagent truthfulness, evidence/freshness, lead-asset, material-context, valuation, risk, implementation/vehicle-quality, portfolio-fit, audit, and IC synthesis gates before any future implementation.
+TASK-006 did not change the Financial Agent System repository. AGENT automation design now exists as a design-only historical fixture command that validates five-question intake, source-of-truth boundary, route-card existence, planned-versus-actual subagent truthfulness, evidence/freshness, lead-asset, material-context, valuation, risk, implementation/vehicle-quality, portfolio-fit, audit, and IC synthesis gates before any future implementation.
 
 TASK-007 did not change the Financial Agent System repository. QUICK answer execution now lives in this lab: `quick-run` remains the three-question intake, while `quick-answer` consumes the prompt plus answers, collects a minimal public MSFT/equity snapshot, writes source and quality JSON files, validates the answer boundary, and keeps final IC decisions locked.
 
@@ -182,7 +182,7 @@ TASK-015 does not move canonical investment logic out of the Financial Agent Sys
 
 TASK-016 does not execute investment analysis. It is a live-readiness guardrail that proves the local execution layer can reach the Financial Agent System Codex SDK doctor and write audited readiness logs before long live specialist runs.
 
-TASK-017 does not run analysis or upgrade mock evidence to live evidence. It records an acceptance manifest that makes the remaining live gaps explicit by route and specialist prefix, including missing `sdk_thread_id` evidence.
+TASK-017 does not run analysis or upgrade historical fixture evidence to live evidence. It records an acceptance manifest that makes the remaining live gaps explicit by route and specialist prefix, including missing `sdk_thread_id` evidence.
 
 TASK-018 does not fabricate portfolio context and does not unlock personal final action. It gives Portfolio Fit a structured input path when the user provides holdings/cash/risk/objective data, and keeps reports Limited/preparatory when context or IC gates remain incomplete.
 

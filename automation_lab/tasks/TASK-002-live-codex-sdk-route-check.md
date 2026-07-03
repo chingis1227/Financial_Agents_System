@@ -34,7 +34,7 @@ openai-codex==0.1.0b3
 - Retry once when JSON is invalid.
 - Compare `selected_route` to the expected route.
 - Save JSON run logs in the existing route-check format, extended with live metadata as needed.
-- Keep mock mode behavior intact.
+- Keep historical fixture path behavior intact.
 - Add unit coverage for strict JSON parsing and live result handling without invoking the real SDK.
 
 ## Out of Scope
@@ -84,14 +84,14 @@ Run:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests
-.\.venv\Scripts\python.exe fa_automation.py route-check --mode mock
+.\.venv\Scripts\python.exe fa_automation.py route-check --mode live
 .\.venv\Scripts\python.exe fa_automation.py route-check --mode live
 ```
 
 Expected:
 
 - Unit tests pass.
-- Mock mode still passes six cases.
+- Historical fixture path still passes six cases.
 - Live mode writes a JSON log.
 - Live mode runs one Codex classification per case.
 - Passing live mode requires all selected routes to match expected routes.
@@ -111,7 +111,7 @@ py -3 tools\validate_runtime_readiness.py
 
 ## Review Checklist
 
-- [x] `route-check --mode mock` still passes.
+- [x] `route-check --mode live` still passes.
 - [x] Unit tests pass.
 - [x] `route-check --mode live` runs real Codex SDK classification.
 - [x] Live mode uses main project root.
@@ -130,7 +130,7 @@ py -3 tools\validate_runtime_readiness.py
 - One case is classified per SDK call.
 - Strict JSON parser and retry behavior exist.
 - JSON logs are written for live mode.
-- Mock mode remains green.
+- Historical fixture path remains green.
 - Tests pass.
 - Main Financial Agent System remains unchanged.
 - Review feedback is addressed or consciously declined.

@@ -267,7 +267,7 @@ def _source_note(evidence_pack: dict[str, Any]) -> str:
     sources = [
         str(source)
         for source in (evidence_pack.get("sources") or [])
-        if "dry-run" not in str(source).casefold() and "synthetic" not in str(source).casefold()
+        if "synthetic" not in str(source).casefold()
     ]
     if not sources:
         return "No live source list is shown in this reader report. Detailed source and verification records are kept with the saved materials."
@@ -281,7 +281,7 @@ def _source_note_ru(evidence_pack: dict[str, Any]) -> str:
     sources = [
         str(source)
         for source in (evidence_pack.get("sources") or [])
-        if "dry-run" not in str(source).casefold() and "synthetic" not in str(source).casefold()
+        if "synthetic" not in str(source).casefold()
     ]
     if not sources:
         return "Актуальный список источников не показан в этом читательском отчёте. Подробные источники и проверки сохранены вместе с материалами отчёта."
@@ -302,7 +302,7 @@ def _run_metadata(state: dict[str, Any]) -> str:
         "",
         f"Run ID: {state.get('run_id', '')}",
         f"Thread ID: {state.get('thread_id', '')}",
-        f"Mode: {state.get('mode', 'dry_run')}",
+        f"Mode: {state.get('mode', 'live')}",
         f"Route: {state.get('route', '')}",
         f"Decision mode: {state.get('decision_mode', '')}",
         f"Portfolio Fit Level: {state.get('portfolio_fit_level', 0)}",

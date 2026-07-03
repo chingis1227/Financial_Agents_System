@@ -36,12 +36,12 @@ Add `langgraph_runtime/` as a Python LangGraph runtime that can execute the exis
 - Create `langgraph_runtime/state.py` for typed graph state.
 - Create `langgraph_runtime/config.py` for `.env` and model/runtime settings.
 - Create `langgraph_runtime/openai_adapter.py` for live OpenAI API calls with no hardcoded key.
-- Create `langgraph_runtime/routing.py` for deterministic dry-run routing and live structured-router fallback.
+- Create `langgraph_runtime/routing.py` for deterministic live production routing and structured-router fallback.
 - Create `langgraph_runtime/artifacts.py` for idempotent reader-facing report and technical audit writing.
-- Create `langgraph_runtime/nodes.py` for required graph nodes and dry-run MVP behavior.
+- Create `langgraph_runtime/nodes.py` for required graph nodes and live production MVP behavior.
 - Create `langgraph_runtime/financial_agent_graph.py` for StateGraph construction, conditional edges, subgraph wiring, checkpointer, interrupts, streaming helper, and CLI.
 - Create `.env.example` with `OPENAI_API_KEY`, `OPENAI_MODEL`, and `OPENAI_REASONING_EFFORT`.
-- Add `tests/langgraph_runtime/test_financial_agent_graph.py` for routing, dry-run, interrupts, gates, and artifact creation.
+- Add `tests/langgraph_runtime/test_financial_agent_graph.py` for routing, live execution, interrupts, gates, and artifact creation.
 - Update `README.md`, `PROJECT_STATE.md`, `AGENTS.md`, `implementation/13-codex-runtime-architecture.md`, and `implementation/15-documentation-sync-contract.md` to document the additive LangGraph runtime while keeping Codex-native behavior intact.
 
 ## Runtime shape

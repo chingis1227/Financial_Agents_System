@@ -18,12 +18,12 @@ This task turns QUICK from an intake-only launch into a safe two-step workflow:
 - Financial Agent System remains the source of truth for QUICK boundaries.
 - Existing `quick-run` behavior from TASK-004/TASK-005.
 - Public data only; no API keys are required.
-- Mock fixtures for stable tests.
+- Historical fixture fixtures for stable tests.
 
 ## Scope
 
 - Add `quick-answer`.
-- Support `--mode mock` and `--mode live`.
+- Support `--mode live` and `--mode live`.
 - Use MSFT/equity as the first pilot.
 - Save `source_snapshot.json`, `data_quality.json`, and `quick_answer.json` under `data_runs/quick/[timestamp]-MSFT/`.
 - Save a run log under `runs/quick/`.
@@ -46,7 +46,7 @@ This task turns QUICK from an intake-only launch into a safe two-step workflow:
 
 1. Add data-run and fixture directories.
 2. Detect MSFT/Microsoft identity.
-3. Build mock data collection from fixtures.
+3. Build historical fixture data collection from fixtures.
 4. Build live/public best-effort collection from SEC submissions and public price source.
 5. Assess status as `Preliminary`, `Limited`, or `Blocked`.
 6. Generate the required Quick Take sections.
@@ -59,7 +59,7 @@ This task turns QUICK from an intake-only launch into a safe two-step workflow:
 - Prompt normalization.
 - Three answers required.
 - Empty answers rejected.
-- Mock snapshot schema.
+- Historical fixture snapshot schema.
 - Data-quality schema.
 - Quick-answer JSON schema.
 - Missing price or recent events downgrades to `Limited`.
@@ -71,7 +71,7 @@ This task turns QUICK from an intake-only launch into a safe two-step workflow:
 - No exact sizing.
 - Required sections exist.
 - CLI creates one data-run folder and one run log.
-- Validator passes for the mock happy path.
+- Validator passes for the historical fixture happy path.
 
 Live/public smoke is intentionally best-effort and should not be a brittle unit test. If public sources are unavailable, the command should not crash; it should return `Limited` or `Blocked` with missing-data explanation.
 
@@ -83,7 +83,7 @@ README and ROADMAP were updated. The Financial Agent System project was not chan
 
 - `quick-run` still asks exactly three questions.
 - `quick-answer` accepts prompt plus exactly three answers.
-- Mock MSFT scenario is stable.
+- Historical fixture MSFT scenario is stable.
 - Live/public mode requires no API keys.
 - Snapshot files are created.
 - Run log is created.
@@ -95,4 +95,4 @@ README and ROADMAP were updated. The Financial Agent System project was not chan
 
 ## Definition of Done
 
-TASK-007 is done only when tests pass, documentation is synchronized, `validate-quick-answer` passes for the mock scenario, and the main Financial Agent System repository remains unchanged unless a source-rule conflict requires a separate validated change.
+TASK-007 is done only when tests pass, documentation is synchronized, `validate-quick-answer` passes for the historical fixture scenario, and the main Financial Agent System repository remains unchanged unless a source-rule conflict requires a separate validated change.

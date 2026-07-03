@@ -24,7 +24,7 @@ This task proves the automation shell before connecting real Codex SDK execution
 - Initialize Git in Automation Lab.
 - Create `.venv` without installing `openai-codex`.
 - Add `fa_automation.py` CLI.
-- Add mock route-check mode.
+- Add historical fixture route-check mode.
 - Add live placeholder mode.
 - Add route cases JSON.
 - Add JSON run logs.
@@ -59,7 +59,7 @@ This task proves the automation shell before connecting real Codex SDK execution
 3. Create `.venv`.
 4. Add route cases JSON with six first cases.
 5. Implement CLI route-check command.
-6. Implement mock route resolver.
+6. Implement historical fixture route resolver.
 7. Implement live placeholder error path.
 8. Write JSON run log.
 9. Add unittest for CLI and JSON log.
@@ -70,13 +70,13 @@ This task proves the automation shell before connecting real Codex SDK execution
 Run:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py route-check --mode mock
+.\.venv\Scripts\python.exe fa_automation.py route-check --mode live
 .\.venv\Scripts\python.exe -m unittest discover -s tests
 ```
 
 Expected:
 
-- mock CLI exits with code 0;
+- historical fixture CLI exits with code 0;
 - JSON run log is created;
 - log contains 6 cases;
 - all cases pass;
@@ -96,7 +96,7 @@ py -3 tools\validate_runtime_readiness.py
 
 ## Review Checklist
 
-- [x] Mock route check passes.
+- [x] Historical fixture route check passes.
 - [x] JSON run log exists and has expected fields.
 - [x] Unit tests pass.
 - [x] Main project Git status remains clean.
@@ -115,7 +115,7 @@ py -3 tools\validate_runtime_readiness.py
 - Route cases JSON exists.
 - CLI exists.
 - unittest exists.
-- Mock route check works.
+- Historical fixture route check works.
 - Live mode returns a clear placeholder error.
 - JSON run log is created.
 - Tests pass.

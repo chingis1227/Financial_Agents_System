@@ -70,10 +70,10 @@ Run Automation Lab tests:
 .\.venv\Scripts\python.exe -m unittest discover -s tests
 ```
 
-Run mock route check to confirm existing CLI behavior remains intact:
+Run historical fixture route check to confirm existing CLI behavior remains intact:
 
 ```powershell
-.\.venv\Scripts\python.exe fa_automation.py route-check --mode mock
+.\.venv\Scripts\python.exe fa_automation.py route-check --mode live
 ```
 
 Manual review:
@@ -115,5 +115,5 @@ TASK-003 is complete when:
 - `data_sources/README.md` states the draft/non-canonical boundary.
 - `README.md` and `ROADMAP.md` reflect TASK-003 status.
 - Automation Lab tests pass.
-- Mock route-check still passes.
+- Historical fixture route-check still passes.
 - Git status contains only intended Automation Lab changes before commit.

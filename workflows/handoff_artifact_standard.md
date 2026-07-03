@@ -8,7 +8,7 @@ version: 1.0
 authority_level: Subordinate to canonical implementation documents
 owner: Codex Runtime Architecture / Investment Committee Agent
 used_by:
-  - Non-delegated audit fallback workflows
+  - Production Blocked - subagents unavailable workflows
   - Agent workflow with spawned subagents runs
   - Equity large-workflow workflow
 produces:
@@ -29,7 +29,7 @@ Authority: this runtime standard is assembled from `implementation/00-master-rul
 
 Every internal full workflow or spawned-subagent workflow module must leave an auditable `.md` handoff artifact or artifact-equivalent `.md` handoff summary before downstream synthesis uses it. The Investment Committee may synthesize only from validated handoff artifacts, artifact-equivalent handoff summaries, the runtime execution plan, and the pre-IC evidence lock. Unstructured agent-to-agent chat is not valid IC input.
 
-In `Non-delegated audit fallback`, the main Codex session may create artifact-equivalent handoff summaries instead of spawned-agent files, but each included module must still be saved under `audit\` as its own clearly named `.md` handoff/report or module handoff file with the controlled artifact name and required fields below. If an `AGENT:` request cannot actually spawn relevant subagents, the user-facing saved report or chat output must be marked `Limited` and must not claim agent workflow execution. In `Agent workflow with spawned subagents`, spawned subagents must return separate structured handoff artifacts or clearly labeled artifact-equivalent summaries with the same fields, saved into the audit package before IC synthesis consumes them.
+In `Production Blocked - subagents unavailable`, the main Codex session may create artifact-equivalent handoff summaries instead of spawned-agent files, but each included module must still be saved under `audit\` as its own clearly named `.md` handoff/report or module handoff file with the controlled artifact name and required fields below. If an `AGENT:` request cannot actually spawn relevant subagents, the user-facing saved report or chat output must be marked `Limited` and must not claim agent workflow execution. In `Agent workflow with spawned subagents`, spawned subagents must return separate structured handoff artifacts or clearly labeled artifact-equivalent summaries with the same fields, saved into the audit package before IC synthesis consumes them.
 
 ## Universal required fields
 
@@ -78,8 +78,8 @@ C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-d
 Required package contents:
 
 - `investment_report.md` — the exact reader-facing report reproduced in chat.
-- `audit\run_metadata.md` — execution mode, runtime plan, included/excluded modules, actually spawned agents, fallback reason if no subagents were spawned, canonical internal artifact type, module statuses, and gate status.
-- `audit\sources.md` — full source list and source/freshness notes when available.
+- `audit\run_metadata.md` — execution mode, runtime plan, included/excluded modules, actually spawned agents, fallback reason if route-relevant subagents cannot run, canonical internal artifact type, module statuses, and gate status.
+- `audit\sources.md` — full source list and source/freshness notes by default.
 - `audit\intake.md` — questions, answers, unanswered questions, and approved baseline assumptions used.
 - one `.md` handoff/report for every actually run subagent or module.
 

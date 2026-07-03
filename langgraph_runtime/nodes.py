@@ -66,7 +66,7 @@ def evidence_planner_node(state: FinancialAgentState) -> dict[str, Any]:
         ],
         "freshness_required": bool(state.get("user_context", {}).get("freshness_required")),
         "source_hierarchy": ["company filings or issuer material", "official market/economic data", "reputable financial news", "specialist reference layer"],
-        "mode": state.get("mode", "dry_run"),
+        "mode": state.get("mode", "live"),
     }
     return _with_node(state, "evidence_planner_node", {"evidence_plan": plan})
 
@@ -88,20 +88,17 @@ def evidence_collector_node(state: FinancialAgentState) -> dict[str, Any]:
     prompt = state["original_user_request"].casefold()
     wants_no_evidence = "without evidence" in prompt or "без доказ" in prompt or "no evidence" in prompt
     freshness_required = bool(state.get("user_context", {}).get("freshness_required"))
-    mode = state.get("mode", "dry_run")
+    mode = state.get("mode", "live")
     pack: dict[str, Any] = {
-        "status": "Blocked" if wants_no_evidence else ("Limited" if mode == "dry_run" else "Collected"),
+        "status": "Blocked" if wants_no_evidence else "Collected",
         "as_of": datetime.now(timezone.utc).isoformat(),
         "sources": [],
-        "claims_supported": [] if wants_no_evidence else ["identity", "workflow scope", "dry-run module contract coverage"],
+        "claims_supported": [] if wants_no_evidence else ["identity", "workflow scope", "live production module contract coverage"],
         "freshness_required": freshness_required,
     }
     limitations = list(state.get("limitations") or [])
     if wants_no_evidence:
         limitations.append("User requested output without evidence; evidence readiness gate must fail.")
-    elif mode == "dry_run":
-        pack["sources"] = ["Dry-run synthetic source placeholder; no live market facts collected."]
-        limitations.append("Dry-run mode does not collect live market evidence; conclusions are Limited and not a final IC Action.")
     else:
         settings = get_settings(require_api_key=True)
         adapter = OpenAIAdapter(settings)
@@ -154,7 +151,7 @@ def equity_analysis_node(state: FinancialAgentState) -> dict[str, Any]:
     entry_view = {"status": "Needs source-backed review", "summary": "Entry setup depends on valuation, catalysts, positioning, and risk asymmetry."}
     update = _specialist(state, "equity_analysis_node", "equity_company_analysis", [
         f"Asset: {state.get('asset_identity')}",
-        "Business-quality view is dry-run scaffolded from the equity-company-analysis skill contract.",
+        "Business-quality view follows the equity-company-analysis skill contract and requires live evidence for final action.",
         "Thesis Spine created; Quality vs Entry are separated.",
         "No live company facts are invented.",
     ])
@@ -178,8 +175,8 @@ def financial_statement_node(state: FinancialAgentState) -> dict[str, Any]:
 
 def valuation_node(state: FinancialAgentState) -> dict[str, Any]:
     gates = dict(state.get("gate_statuses") or {})
-    gates["valuation"] = {"status": "Limited", "reason": "No live valuation dataset in dry-run mode."}
-    update = _specialist(state, "valuation_node", "valuation_expectations", ["Valuation/expectations module ran in Limited dry-run mode.", "No positive action can pass without live valuation evidence."])
+    gates["valuation"] = {"status": "Limited", "reason": "Live valuation dataset is required before a positive action can pass."}
+    update = _specialist(state, "valuation_node", "valuation_expectations", ["Valuation/expectations module requires live valuation evidence for a positive action.", "No positive action can pass without live valuation evidence."])
     update["gate_statuses"] = gates
     return update
 
@@ -197,7 +194,7 @@ def risk_red_team_node(state: FinancialAgentState) -> dict[str, Any]:
         gates["risk"]["human_resume"] = resume_value
     premortem = {
         "mode": "Risk Pre-Mortem",
-        "summary": "Early dry-run pre-mortem flags evidence, valuation, liquidity, and portfolio-concentration failure modes.",
+        "summary": "Early live pre-mortem flags evidence, valuation, liquidity, and portfolio-concentration failure modes.",
     }
     update = _specialist(state, "risk_red_team_node", "risk_red_team", ["Risk Pre-Mortem completed before Full Risk Gate scaffold.", "Risk red-team module ran and constrains any final action.", "Boundary: Not an IC Action."])
     update["gate_statuses"] = gates
@@ -422,7 +419,7 @@ def generic_asset_workflow_node(state: FinancialAgentState) -> dict[str, Any]:
         f"Route: {route}",
         f"Subject: {state.get('asset_identity', 'Unknown')}",
         "This asset-class full-workflow scaffold preserves the selected route and does not run the equity-only subgraph.",
-        "No live asset-class evidence is invented in dry-run mode.",
+        "No live asset-class evidence is invented without configured sources.",
     ])
     thesis = {
         "core thesis": f"Decision-preparation thesis for {state.get('asset_identity')}.",
@@ -444,7 +441,7 @@ def generic_asset_workflow_node(state: FinancialAgentState) -> dict[str, Any]:
     gates.setdefault("risk", {"status": "Limited", "reason": "Asset-class risk gate requires source-backed specialist evidence."})
     gates.setdefault("portfolio_fit", {"status": "Limited", "reason": "Portfolio Fit: Limited / not personalized; General Portfolio Role Mode because user portfolio context is missing or incomplete."})
     limitations = list(state.get("limitations") or [])
-    limitations.append(f"{route} currently uses a dry-run asset-class scaffold; no final IC Action is issued.")
+    limitations.append(f"{route} requires live asset-class evidence before any final IC Action is issued.")
     return _with_node(state, "generic_asset_workflow_node", {
         "specialist_outputs": outputs,
         "gate_statuses": gates,

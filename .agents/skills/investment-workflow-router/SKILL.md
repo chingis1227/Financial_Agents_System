@@ -70,7 +70,7 @@ Use this skill before answering when the user uses:
 1. Read `PROJECT_STATE.md`.
 2. Read `workflows/route_cards/investment_request_router.md`.
 3. Classify the prompt as `AGENT:`, `QUICK:`, specialist command, ordinary router flow, or truly unroutable identity/structure conflict. Ordinary concrete-asset horizon-analysis prompts are ordinary router flow; `AGENT:` is a shortcut, not a prerequisite.
-4. For `AGENT:`, load the selected asset/comparison route card, ask exactly 5 relevant questions, and use relevant spawned subagents when available.
+4. For `AGENT:`, load the selected asset/comparison route card, ask exactly 5 relevant questions, and use relevant spawned subagents by default.
 5. For `QUICK:`, load `quick_take.md`, ask exactly 3 relevant questions, and keep the later answer chat-only.
 6. For specialist commands, load `direct_specialist.md`, target exactly the mapped analyst, and keep the result scoped.
 7. If the prompt is freshness-dependent, require current timestamped sources or Limited / Blocked status.
@@ -93,7 +93,7 @@ Validation fixture: [golden prompt / routing case id if applicable]
 - `AGENT:` is the only user-facing command for the large agent workflow.
 - `AGENT:` must not claim agent workflow execution unless subagents were actually spawned.
 - Fabrinet identity normalization maps `Fabrinet`, `Fabrynet`, `Fabryns`, and `FN` to equity `FN`; numeric ranges such as `3-5` / `3–5` are horizons, not ticker candidates.
-- If subagents cannot be spawned after `AGENT:`, record fallback only in audit metadata and mark user-facing output Limited.
+- If subagents cannot be spawned after `AGENT:`, record blocked production issue in audit metadata and mark user-facing output Blocked.
 - `QUICK:` never issues final IC Action and never creates report/audit files.
 - Specialist commands, including `IC:`, route to one analyst and must not use `IC Action`, `Action Box`, or final buy/sell/hold/add/trim/exit labels.
 - Missing portfolio context limits Portfolio Fit / IC Action; it does not suppress a useful agent workflow when the asset and route are clear.

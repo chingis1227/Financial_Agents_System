@@ -146,3 +146,8 @@ The validator must reject generic untranslated investment jargon in Russian repo
 | P14-LANG-08 | Structured handoffs preserve precision and are not rewritten into reader-style prose when that would weaken status or constraints. |
 | P14-LANG-09 | Short answers use light style without dropping mandatory status, evidence, boundary, or gate information. |
 | P14-LANG-10 | Explicit language switches such as `English report`, `русский отчёт`, and `bilingual` override default language detection. |
+
+
+## Mandatory investment report presentation gate
+
+Every user-facing investment report, investment memo, saved `investment_report.md`, direct investment summary, and IC-facing reader memo must pass the presentation layer before completion. For Russian output this always means `.agents/skills/language-policy/SKILL.md`; for all investment report prose this always means `.agents/skills/investment-analytical-style/SKILL.md`. This requirement is unconditional and does not depend on route, asset class, workflow mode, report length, or whether the user explicitly asked for language cleanup.

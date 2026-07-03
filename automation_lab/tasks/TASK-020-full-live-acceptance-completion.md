@@ -2,7 +2,7 @@
 
 ## Goal
 
-Complete the supported production-like live runtime matrix for Financial Agent Automation Lab without pretending mock or partial runs are live.
+Complete the supported production-like live runtime matrix for Financial Agent Automation Lab without pretending historical fixture or partial runs are live.
 
 ## Value
 

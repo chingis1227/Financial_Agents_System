@@ -13,7 +13,7 @@ QUICK becomes a broader triage layer across major asset classes while preserving
 - Keep this as QUICK, not AGENT.
 - Keep `quick-run` as the first step with exactly three questions.
 - Keep `quick-answer` as the second step consuming prompt plus exactly three answers.
-- Mock fixtures are required and stable for tests.
+- Historical fixture fixtures are required and stable for tests.
 - Live mode is best-effort without API keys and may return Limited when public data is incomplete.
 - Do not build a provider registry in TASK-008; defer it to TASK-009.
 - Support only the comparison pilot `MSFT vs SPY vs BTC`, not arbitrary comparisons.
@@ -28,7 +28,7 @@ QUICK becomes a broader triage layer across major asset classes while preserving
 ## Scope
 
 - Add identity detection for SPY, BTC/Bitcoin, TLT, GLD/gold ETF, and `MSFT vs SPY vs BTC`.
-- Add mock fixtures for new pilots.
+- Add historical fixture fixtures for new pilots.
 - Add live best-effort public-data paths for new pilots.
 - Add asset-specific Quick Take context while preserving the common template.
 - Extend validator and tests for the new asset types.
@@ -48,7 +48,7 @@ QUICK becomes a broader triage layer across major asset classes while preserving
 
 1. Extend identity seeds and prompt detection for the five TASK-008 pilots.
 2. Add fixture loading support for comparison slugs.
-3. Add mock fixtures for SPY, BTC, TLT, GLD, and MSFT-SPY-BTC.
+3. Add historical fixture fixtures for SPY, BTC, TLT, GLD, and MSFT-SPY-BTC.
 4. Add static quick context for ETF, crypto, bond ETF, commodity ETF, and comparison outputs.
 5. Extend live snapshots to use static context plus best-effort public price retrieval.
 6. Keep missing public data as Limited/Blocked rather than crashing.
@@ -60,22 +60,22 @@ QUICK becomes a broader triage layer across major asset classes while preserving
 
 - Run all unit tests with `./.venv/Scripts/python.exe -m unittest discover -s tests`.
 - Test identity detection for each new pilot.
-- Test mock snapshots and generated answer sections for each new pilot.
+- Test historical fixture snapshots and generated answer sections for each new pilot.
 - Test missing context/price degrades to Limited.
-- Test CLI mock scenarios create snapshot folders with expected slugs.
+- Test CLI historical fixture scenarios create snapshot folders with expected slugs.
 - Validate each generated quick-answer run.
 - Run live smoke checks manually for SPY, BTC, TLT, GLD, and MSFT vs SPY vs BTC.
 
 ## Docs synchronization note
 
-README documents supported assets, mock vs live behavior, snapshot paths, and QUICK boundaries. ROADMAP records TASK-008 as complete and keeps TASK-009 provider registry as the next data-layer step.
+README documents supported assets, historical fixture vs live behavior, snapshot paths, and QUICK boundaries. ROADMAP records TASK-008 as complete and keeps TASK-009 provider registry as the next data-layer step.
 
 ## Review checklist
 
 - [ ] TASK-007 behavior still passes.
 - [ ] `quick-run` still works.
 - [ ] `quick-answer` works for MSFT, SPY, BTC, TLT, GLD, and MSFT-SPY-BTC.
-- [ ] Mock scenarios are stable and tested.
+- [ ] Historical fixture scenarios are stable and tested.
 - [ ] Live scenarios require no API keys and do not crash.
 - [ ] Missing public data gives Limited or Blocked.
 - [ ] No `investment_report.md` or `audit/` is created.
@@ -86,4 +86,4 @@ README documents supported assets, mock vs live behavior, snapshot paths, and QU
 
 ## Definition of Done
 
-TASK-008 is done when all tests pass, all five new pilot scenarios generate validated QUICK snapshots in mock mode, live smoke checks do not require API keys or crash, docs are updated, generated artifacts are ignored/cleaned, and the main Financial Agent System remains untouched.
+TASK-008 is done when all tests pass, all five new pilot scenarios generate validated QUICK snapshots in historical fixture path, live smoke checks do not require API keys or crash, docs are updated, generated artifacts are ignored/cleaned, and the main Financial Agent System remains untouched.

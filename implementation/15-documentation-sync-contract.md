@@ -62,7 +62,7 @@ After Codex SDK control-layer changes, also run:
 npm.cmd run build
 npm.cmd test
 npm.cmd run codex:doctor
-npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
+npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --live
 ```
 
 If validation fails, either fix the project state or report a source issue. Do not mark the task complete while validation fails.

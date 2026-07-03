@@ -9,9 +9,9 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 
 ## Current operating model
 
-- Runtime style: Codex-native first, with an additive Python `langgraph_runtime/` layer for LangGraph dry-run/live execution. The new layer uses the OpenAI API in explicit live mode only; it is not an OpenAI Agents SDK runtime.
-- Codex SDK v1 control layer present: TypeScript CLI wrapper for dry-run/live Codex thread execution, with live SDK logs outside the repository.
-- Python LangGraph runtime present: `langgraph_runtime/financial_agent_graph.py` exposes `run` and `chat`; dry-run mode is deterministic, and live mode requires `OPENAI_API_KEY`.
+- Runtime style: Codex-native first, with an additive Python `langgraph_runtime/` layer for LangGraph live/live execution. The new layer uses the OpenAI API in explicit live mode only; it is not an OpenAI Agents SDK runtime.
+- Codex SDK v1 control layer present: TypeScript CLI wrapper for live/live Codex thread execution, with live SDK logs outside the repository.
+- Python LangGraph runtime present: `langgraph_runtime/financial_agent_graph.py` exposes `run` and `chat`; live mode is the production path and requires `OPENAI_API_KEY`; live/historical fixture behavior is retained only for historical test fixtures and is not an operator workflow.
 - Daily runtime path: `PROJECT_STATE.md` -> `AGENTS.md` -> `workflows/route_cards/investment_request_router.md` -> selected route card -> validators.
 - User-facing command model: `AGENT:` for the large agent workflow, `QUICK:` for a short preliminary answer, and specialist prefixes for one analyst.
 - Ordinary investment-action prompts without a prefix are mandatory auto-dispatch inputs: buy/sell/hold/add/trim/exit, asset comparisons, and asset analysis for a stated horizon first route through the router. `AGENT:` remains a shortcut/override, not a prerequisite for the large workflow; explicit short/quick/preliminary wording still routes to `QUICK:`.
@@ -19,8 +19,8 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 - Fabrinet identity is recognized as public equity `FN` for `Fabrinet`, `Fabrynet`, `Fabryns`, and `FN`; numeric horizons such as `3-5` are horizon ranges and must not be resolved as ticker symbols.
 - Evidence Document Parser Layer is available as MVP local parser infrastructure under `automation_lab/agent_data/`: it converts accessible HTML/PDF/raw-text documents into claim-level evidence records for Evidence Pack support. It is not MCP, not an OpenAI Agents SDK runtime, and not a specialist agent.
 - Production Data Provider & Parsing Layer is available under `automation_lab/data_providers/` and `automation_lab/data_parsers/`: it provides a unified ProviderResult contract, route-aware provider registry, raw/normalized cache, freshness/source-tier helpers, official/market provider adapters, and provider-derived Evidence Pack claim inputs. It is data/evidence infrastructure only and does not redefine investment rules.
-- `AGENT:` asks exactly 5 relevant questions first, then uses relevant spawned subagents when available. Do not claim an agent workflow unless subagents were actually spawned.
-- If subagents cannot be spawned after `AGENT:`, record the fallback only in audit metadata and mark the user-facing output Limited; do not advertise the fallback as a selectable user mode.
+- `AGENT:` asks exactly 5 relevant questions first, then automatically spawns all route-relevant subagents without requiring the user to ask for agents, delegation, or parallel work. Do not claim an agent workflow unless subagents were actually spawned.
+- If subagent spawning is technically unavailable, the run is Blocked for production live workflow; do not replace it with historical fixture or non-delegated analysis.
 - `QUICK:` is chat-only, asks exactly 3 relevant questions first, and must not create `investment_report.md` or an `audit` folder.
 - Final IC Actions remain owned by Investment Committee synthesis only; specialist outputs are scoped handoffs and must not use final buy/sell/hold/add/trim/exit labels.
 - Parsed document evidence is supporting audit/evidence material only; it never produces an `IC Action` or investment recommendation by itself.
@@ -63,7 +63,7 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 | Specialist command | Ready with analyst boundary | `workflows/route_cards/direct_specialist.md` |
 | Automation Lab auto-dispatch | Ready as a thin CLI router over existing QUICK / AGENT / specialist flows | `automation_lab/fa_automation.py dispatch --prompt "<user request>"` |
 
-| Python LangGraph runtime | Available for dry-run routing, equity full-cycle artifacts, direct specialist/Quick Take boundaries, missing-context interrupts, evidence-gate blocking, and live OpenAI API adapter gated on `OPENAI_API_KEY` | `langgraph_runtime/financial_agent_graph.py` |
+| Python LangGraph runtime | Available for live routing, equity full-cycle artifacts, direct specialist/Quick Take boundaries, missing-context interrupts, evidence-gate blocking, and live OpenAI API adapter gated on `OPENAI_API_KEY` | `langgraph_runtime/financial_agent_graph.py` |
 | Evidence Document Parser Layer | MVP available; parses accessible HTML/PDF/raw text into normalized claim evidence and merges parsed claims into Evidence Pack rows for equity preflight first | `automation_lab/agent_data/document_parser.py` |
 | Data Provider & Parsing Layer | Available; ProviderResult registry/cache/parsers feed preflight snapshots and Evidence Pack inputs across equity, ETF, fixed income, macro, commodity/grain, crypto, and multi-asset workflows with graceful degradation for missing keys | `automation_lab/data_providers/` |
 
@@ -130,7 +130,7 @@ After changing the Codex SDK control layer, also run:
 npm.cmd run build
 npm.cmd test
 npm.cmd run codex:doctor
-npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
+npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --live
 ```
 
 ## Reader-facing memo policy
@@ -144,3 +144,10 @@ As of 2026-07-03, large-workflow `investment_report.md` output is a clean profes
 - Large workflows maintain a Thesis Spine and separate Asset / Business Quality from Entry Setup.
 - Structural Winners is discovery-only and returns candidate watchlists / review priority, not buy lists.
 - Saved reports now include Quality vs Entry, Key Internal Conflicts, What Would Change Our Mind, and Monitoring Triggers; audit records decision mode, materiality plan, skipped optional agents, thesis spine evolution, and portfolio fit level.
+
+
+## Current live-only operating override
+
+As of 2026-07-03, user-requested investment workflows are live-only. Historical fixture paths may remain only as archived provenance or test names; they are not valid production analysis paths. Concrete-asset investment prompts automatically spawn all route-relevant subagents after intake without requiring explicit user delegation wording. Russian investment reports must pass the language-policy layer; all investment memos/reports must pass investment-analytical-style before being saved or shown. Live workflow execution must not use fixed 300/600/900/1200/7200-second timeouts; it runs until the required agents finish or a true external failure blocks execution.
+
+Production audit metadata records spawned agents, handoffs, source state, presentation-skill validation, and any Blocked production issue.

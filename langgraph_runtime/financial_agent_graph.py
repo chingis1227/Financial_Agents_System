@@ -165,17 +165,16 @@ def _route_after_evidence_gate(state: FinancialAgentState) -> str:
 def run_financial_agent(
     prompt: str,
     *,
-    dry_run: bool = True,
-    live: bool = False,
+    dry_run: bool = False,
+    live: bool = True,
     output_dir: str = "",
     thread_id: str | None = None,
     allow_interrupts: bool = True,
 ) -> dict[str, Any]:
-    if live and dry_run:
-        dry_run = False
-    mode = "live" if live else "dry_run"
-    if live:
-        get_settings(require_api_key=True)
+    if dry_run or not live:
+        raise RuntimeError("LangGraph production runtime is live-only; dry-run execution is disabled.")
+    mode = "live"
+    get_settings(require_api_key=True)
     tid = thread_id or f"financial-agent-{uuid.uuid4()}"
     state = initial_state(prompt, mode=mode, output_dir=output_dir, thread_id=tid, allow_interrupts=allow_interrupts)
     state["run_id"] = str(uuid.uuid4())
@@ -185,9 +184,12 @@ def run_financial_agent(
     return result
 
 
-def stream_financial_agent(prompt: str, *, dry_run: bool = True, live: bool = False, thread_id: str | None = None) -> list[Any]:
+def stream_financial_agent(prompt: str, *, dry_run: bool = False, live: bool = True, thread_id: str | None = None) -> list[Any]:
+    if dry_run or not live:
+        raise RuntimeError("LangGraph production runtime is live-only; dry-run execution is disabled.")
+    get_settings(require_api_key=True)
     tid = thread_id or f"financial-agent-{uuid.uuid4()}"
-    state = initial_state(prompt, mode="live" if live else "dry_run", thread_id=tid)
+    state = initial_state(prompt, mode="live", thread_id=tid)
     graph = build_graph()
     events = []
     for event in graph.stream(state, config={"configurable": {"thread_id": tid}}, stream_mode="updates"):
@@ -201,8 +203,7 @@ def main(argv: list[str] | None = None) -> int:
 
     run = sub.add_parser("run", help="Run one financial-agent graph request")
     run.add_argument("--prompt", required=True)
-    run.add_argument("--dry-run", action="store_true", help="Run without OpenAI API calls")
-    run.add_argument("--live", action="store_true", help="Use OpenAI API-backed live mode")
+    run.add_argument("--live", action="store_true", help="Use OpenAI API-backed live mode (default; retained for clarity)")
     run.add_argument("--output-dir", default="")
     run.add_argument("--thread-id", default="")
     run.add_argument("--no-interrupts", action="store_true", help="Record Limited/Blocked statuses instead of pausing")
@@ -216,18 +217,14 @@ def main(argv: list[str] | None = None) -> int:
             prompt = input("> ").strip()
             if prompt.casefold() in {"exit", "quit"}:
                 return 0
-            result = run_financial_agent(prompt, dry_run=True, live=False, allow_interrupts=False)
+            result = run_financial_agent(prompt, live=True, allow_interrupts=False)
             _print_result(result)
         return 0
 
-    if args.live and args.dry_run:
-        print("Choose either --dry-run or --live, not both.", file=sys.stderr)
-        return 2
     try:
         result = run_financial_agent(
             args.prompt,
-            dry_run=not args.live,
-            live=args.live,
+            live=True,
             output_dir=args.output_dir,
             thread_id=args.thread_id or None,
             allow_interrupts=not args.no_interrupts,

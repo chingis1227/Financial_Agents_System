@@ -21,7 +21,7 @@ The system should not confuse deterministic smoke readiness with real live compl
 ## Out of scope
 
 - Running live investment analysis.
-- Treating mock outputs as live evidence.
+- Treating historical fixture outputs as live evidence.
 - Closing live gaps without real Codex SDK thread ids.
 
 ## Test plan

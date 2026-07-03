@@ -24,7 +24,7 @@ export function parseArgs(argv: string[]): ParsedCli {
 
   let prompt = "";
   let promptFile: string | undefined;
-  let live = false;
+  let live = true;
   let workspace: string | undefined;
   let sandbox: CodexSandbox | undefined;
   let threadId: string | undefined;
@@ -53,8 +53,7 @@ export function parseArgs(argv: string[]): ParsedCli {
         live = true;
         break;
       case "--dry-run":
-        live = false;
-        break;
+        throw new Error("--dry-run is disabled; production Codex SDK execution is live-only.");
       case "--workspace":
         if (!next) {
           throw new Error("--workspace requires a value.");
@@ -186,12 +185,12 @@ export function usage(): string {
     "Codex SDK control layer",
     "",
     "Examples:",
-    '  npm.cmd run codex:run -- --prompt "AGENT: Microsoft for 3 years, no current position" --dry-run',
+    '  npm.cmd run codex:run -- --prompt "AGENT: Microsoft for 3 years, no current position" --live',
     '  npm.cmd run codex:run -- --prompt-file ".\\prompt.txt" --live',
     '  npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --live',
     '  npm.cmd run codex:resume -- --thread-id "<id>" --prompt "continue" --live',
     "",
-    "Default mode is --dry-run. Live Codex SDK execution requires explicit --live.",
+    "Default mode is live-only production execution. --dry-run is disabled.",
   ].join("\n");
 }
 

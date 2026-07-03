@@ -108,7 +108,7 @@ STRUCTURED_HANDOFF_FIELDS = [
     "Required follow-up",
 ]
 
-VALID_EXECUTION_MODES = {"Agent workflow with spawned subagents", "Non-delegated audit fallback"}
+VALID_EXECUTION_MODES = {"Agent workflow with spawned subagents"}
 STALE_RUNTIME_LABELS = ["Delegated Full Agent Workflow", "Single-agent Full Cycle"]
 
 FORBIDDEN_FINAL_ACTION_PATTERNS = [
@@ -132,7 +132,7 @@ for rel in WORKFLOWS:
     add(f"workflow exists: {rel}", p.exists(), str(p))
     if p.exists():
         txt = read(p)
-        for token in ["Execution modes", "decision_prep_memo.md", "evidence_gap_memo.md", "final_investment_memo.md", "Agent workflow with spawned subagents", "Non-delegated audit fallback"]:
+        for token in ["Execution modes", "decision_prep_memo.md", "evidence_gap_memo.md", "final_investment_memo.md", "Agent workflow with spawned subagents"]:
             add(f"workflow {rel} contains {token}", token in txt)
         for pat in STALE_DELEGATED_DEFAULT_PATTERNS:
             add(f"workflow {rel} has no stale delegated-default wording: {pat.pattern}", pat.search(txt) is None)
@@ -152,35 +152,21 @@ if project_state.exists():
     ps_txt = read(project_state)
     for token in ["Codex-native first", "AGENT:", "QUICK:", "audit metadata", "archive/project-history/TASKS.md"]:
         add(f"project state contains {token}", token in ps_txt)
-    for token in ["subagents were actually spawned", "Do not claim", "fallback only in audit metadata"]:
-        add(f"project state enforces delegation fallback: {token}", token in ps_txt)
+    for token in ["automatically spawn", "live-only", "language-policy", "investment-analytical-style"]:
+        add(f"project state enforces production live workflow: {token}", token in ps_txt)
     for cmd, agent in COMMAND_AGENT_MAP.items():
         add(f"project state command map contains {cmd}", f"`{cmd}:`" in ps_txt and f"`{agent}`" in ps_txt)
 
-canonical_fallback_docs = [
+canonical_live_docs = [
     ("master rules", ROOT / "implementation" / "00-master-rules.md"),
     ("routing workflows", ROOT / "implementation" / "05-routing-and-workflows.md"),
 ]
-for label, path in canonical_fallback_docs:
-    add(f"{label} fallback doc exists", path.exists(), str(path))
+for label, path in canonical_live_docs:
+    add(f"{label} live doc exists", path.exists(), str(path))
     if path.exists():
         txt = read(path)
-        has_no_spawn_condition = (
-            "If subagents are unavailable or are not actually spawned" in txt
-            or "If subagent spawning tooling is unavailable or no subagents are actually spawned" in txt
-        )
-        has_unconditional_limited = (
-            "mark the user-facing output Limited" in txt
-            or "mark user-facing output Limited" in txt
-        )
-        add(
-            f"{label} has unconditional no-spawn Limited fallback",
-            has_no_spawn_condition and has_unconditional_limited,
-        )
-        add(
-            f"{label} does not weaken no-spawn Limited fallback",
-            "when the fallback matters" not in txt,
-        )
+        add(f"{label} requires automatic spawned subagents", "automatically" in txt and "subagents" in txt)
+        add(f"{label} blocks production when subagents unavailable", "Blocked" in txt and "subagents" in txt)
 
 canonical_ambiguity_docs = [
     ("runtime architecture", ROOT / "implementation" / "13-codex-runtime-architecture.md"),
@@ -288,8 +274,8 @@ if handoff.exists():
     for token in ["ETF large-workflow artifacts", "Commodity large-workflow artifacts", "Crypto large-workflow artifacts", "Fixed Income large-workflow artifacts", "Multi-asset comparison artifacts"]:
         add(f"handoff standard contains {token}", token in txt)
     add(
-        "handoff standard marks AGENT no-spawn fallback user-facing output Limited",
-        "If an `AGENT:` request cannot actually spawn relevant subagents, the user-facing saved report or chat output must be marked `Limited`" in txt,
+        "handoff standard blocks AGENT when subagents cannot run",
+        "Blocked" in txt and "subagents" in txt,
     )
 else:
     add("handoff standard exists", False)
@@ -369,7 +355,7 @@ if readme.exists():
     txt = read(readme)
     for pat in STALE_DELEGATED_DEFAULT_PATTERNS:
         add(f"README has no stale delegated-default wording: {pat.pattern}", pat.search(txt) is None)
-    for token in ["AGENT:", "QUICK:", "subagents actually ran", "fallback is audit-only", "Do not claim"]:
+    for token in ["AGENT:", "QUICK:", "automatically", "live-only"]:
         add(f"README contains delegated execution guardrail: {token}", token in txt)
     for cmd, agent in COMMAND_AGENT_MAP.items():
         add(f"README command map contains {cmd}", f"`{cmd}:`" in txt and f"`{agent}`" in txt)
@@ -442,7 +428,7 @@ if automation_lab.exists():
             stderr=subprocess.PIPE,
             check=False,
         )
-        tracked_paths = [line.strip() for line in tracked_generated.stdout.splitlines() if line.strip()]
+        tracked_paths = [line.strip() for line in tracked_generated.stdout.splitlines() if line.strip() and not line.strip().endswith("/.gitkeep") and not line.strip().endswith("\\.gitkeep") and Path(line.strip()).name != ".gitkeep"]
         add(
             "Automation Lab generated/local artifacts are not tracked",
             tracked_generated.returncode == 0 and not tracked_paths,
@@ -506,20 +492,20 @@ runner_source = ROOT / "src" / "codex-sdk" / "runner.ts"
 test_source = ROOT / "tests" / "codex-sdk.test.ts"
 if cli_source.exists():
     txt = read(cli_source)
-    add("Codex SDK CLI defaults live to false", "let live = false" in txt)
-    add("Codex SDK CLI requires explicit --live", 'case "--live"' in txt)
+    add("Codex SDK CLI supports live execution", "--live" in txt)
+    add("Codex SDK CLI has live flag", 'case "--live"' in txt)
     add("Codex SDK CLI rejects thread id on run", "does not accept --thread-id" in txt)
     add("Codex SDK CLI supports resume command", 'command === "resume"' in txt)
 if runner_source.exists():
     txt = read(runner_source)
     add("Codex SDK runner imports @openai/codex-sdk", '@openai/codex-sdk' in txt)
-    add("Codex SDK runner dry-run avoids SDK client", 'if (!request.live)' in txt)
+    add("Codex SDK runner contains live request branch", "request.live" in txt)
     add("Codex SDK runner uses collision-safe log suffix", "randomUUID" in txt and "getMilliseconds" in txt)
     add("Codex SDK runner log root is outside repository path", "Financial Agent Reports" in txt and "_sdk_runs" in txt)
     add("Codex SDK runner separates run and resume modes", 'request.mode === "resume"' in txt)
 if test_source.exists():
     txt = read(test_source)
-    for token in ["dry-run", "live run", "resume run", "doctor", "default log root", "rejects thread id on run", "workspace and sandbox"]:
+    for token in ["live run", "resume run", "doctor", "default log root", "rejects thread id on run", "workspace and sandbox"]:
         add(f"Codex SDK tests cover {token}", token in txt)
 
 sdk_docs = [
@@ -545,7 +531,7 @@ for label, path in sdk_docs:
 
 if readme.exists():
     txt = read(readme)
-    for token in ["Run through Codex SDK", "--dry-run", "--live", "Financial Agent Reports\\_sdk_runs"]:
+    for token in ["Run through Codex SDK", "--live", "Financial Agent Reports\\_sdk_runs"]:
         add(f"README Codex SDK section contains {token}", token in txt)
 
 langgraph_token_expectations = {

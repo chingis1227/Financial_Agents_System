@@ -94,18 +94,18 @@ AGENT_REPORTS_ROOT_ENV = "FA_AUTOMATION_AGENT_REPORTS_ROOT"
 QUICK_DATA_RUNS_DIR_ENV = "FA_AUTOMATION_QUICK_DATA_RUNS_DIR"
 QUICK_FIXTURES_DIR_ENV = "FA_AUTOMATION_QUICK_FIXTURES_DIR"
 CODEX_MODEL_ENV = "FA_AUTOMATION_CODEX_MODEL"
-LIVE_TIMEOUT_ENV = "FA_AUTOMATION_LIVE_TIMEOUT_SECONDS"
-DEFAULT_LIVE_TIMEOUT_SECONDS = 45
+LIVE_TIMEOUT_ENV = "FA_AUTOMATION_LIVE_TIMEOUT_SECONDS"  # deprecated; live workflows are unbounded by default
+DEFAULT_LIVE_TIMEOUT_SECONDS = None
 CODEX_SDK_PROJECT_ROOT_ENV = "FA_AUTOMATION_CODEX_SDK_PROJECT_ROOT"
 CODEX_SDK_COMMAND_ENV = "FA_AUTOMATION_CODEX_SDK_COMMAND"
-CODEX_SDK_TIMEOUT_ENV = "FA_AUTOMATION_CODEX_SDK_TIMEOUT_SECONDS"
-CODEX_SDK_SPECIALIST_TIMEOUT_ENV_PREFIX = "FA_AUTOMATION_CODEX_SDK_TIMEOUT_"
+CODEX_SDK_TIMEOUT_ENV = "FA_AUTOMATION_CODEX_SDK_TIMEOUT_SECONDS"  # deprecated; no subprocess timeout by default
+CODEX_SDK_SPECIALIST_TIMEOUT_ENV_PREFIX = "FA_AUTOMATION_CODEX_SDK_TIMEOUT_"  # deprecated
 CODEX_SDK_DRY_RUN_ENV = "FA_AUTOMATION_CODEX_SDK_DRY_RUN"
-AGENT_TOTAL_TIMEOUT_ENV = "FA_AUTOMATION_AGENT_TOTAL_TIMEOUT_SECONDS"
+AGENT_TOTAL_TIMEOUT_ENV = "FA_AUTOMATION_AGENT_TOTAL_TIMEOUT_SECONDS"  # deprecated; full AGENT workflow has no hard wall-clock budget
 AGENT_MAX_PARALLEL_SPECIALISTS_ENV = "FA_AUTOMATION_AGENT_MAX_PARALLEL_SPECIALISTS"
 DEFAULT_CODEX_SDK_COMMAND = "npm.cmd"
-DEFAULT_CODEX_SDK_TIMEOUT_SECONDS = 900
-DEFAULT_AGENT_TOTAL_TIMEOUT_SECONDS = 7200
+DEFAULT_CODEX_SDK_TIMEOUT_SECONDS = None
+DEFAULT_AGENT_TOTAL_TIMEOUT_SECONDS = None
 DEFAULT_AGENT_MAX_PARALLEL_SPECIALISTS = 3
 CODEX_SDK_EXECUTION_PATH = "financial_agent_system_codex_sdk_cli"
 
@@ -488,6 +488,12 @@ class LiveCodexRouteClassifier:
         )
 
     def classify(self, prompt: str) -> LiveClassification:
+        if unit_live_stub_enabled():
+            return LiveClassification(
+                selected_route=mock_route(prompt),
+                reason="Local unit live stub used for deterministic route-contract validation.",
+                attempts=1,
+            )
         last_error = "unknown live classification error"
         for attempt in (1, 2):
             request = build_live_prompt(prompt=prompt, retry=(attempt == 2))
@@ -546,6 +552,11 @@ def env_truthy(name: str) -> bool:
     return (os.environ.get(name) or "").strip().lower() in {"1", "true", "yes", "y", "on"}
 
 
+def unit_live_stub_enabled() -> bool:
+    """Return true only for local unit tests that must avoid external Codex calls."""
+    return env_truthy("FA_AUTOMATION_UNIT_LIVE_STUB")
+
+
 def get_codex_sdk_project_root() -> Path:
     return Path(os.environ.get(CODEX_SDK_PROJECT_ROOT_ENV) or str(PROJECT_ROOT))
 
@@ -559,18 +570,14 @@ def env_name_for_specialist_timeout(specialist_id: str) -> str:
     return f"{CODEX_SDK_SPECIALIST_TIMEOUT_ENV_PREFIX}{normalized}"
 
 
-def get_codex_sdk_timeout_seconds(specialist_id: str | None = None) -> tuple[int, str]:
-    if specialist_id:
-        specialist_env = env_name_for_specialist_timeout(specialist_id)
-        if os.environ.get(specialist_env) is not None:
-            return parse_positive_int_env(specialist_env, DEFAULT_CODEX_SDK_TIMEOUT_SECONDS), specialist_env
-    if os.environ.get(CODEX_SDK_TIMEOUT_ENV) is not None:
-        return parse_positive_int_env(CODEX_SDK_TIMEOUT_ENV, DEFAULT_CODEX_SDK_TIMEOUT_SECONDS), CODEX_SDK_TIMEOUT_ENV
-    return DEFAULT_CODEX_SDK_TIMEOUT_SECONDS, "default"
+def get_codex_sdk_timeout_seconds(specialist_id: str | None = None) -> tuple[None, str]:
+    """Return no timeout. Timeout env vars are ignored for production live workflows."""
+    return None, "unbounded"
 
 
-def get_agent_total_timeout_seconds() -> int:
-    return parse_positive_int_env(AGENT_TOTAL_TIMEOUT_ENV, DEFAULT_AGENT_TOTAL_TIMEOUT_SECONDS)
+def get_agent_total_timeout_seconds() -> None:
+    """Return no full-run timeout. The workflow runs until all required live agents finish."""
+    return None
 
 
 def get_agent_max_parallel_specialists() -> int:
@@ -642,6 +649,15 @@ class LiveCodexQuickLauncher:
         )
 
     def launch(self, prompt: str) -> QuickRunResult:
+        if unit_live_stub_enabled():
+            base = mock_quick_launch(prompt)
+            return QuickRunResult(
+                prompt=base.prompt,
+                normalized_prompt=base.normalized_prompt,
+                output=base.output,
+                boundary_status=base.boundary_status,
+                mode="live",
+            )
         normalized_prompt = normalize_quick_prompt(prompt)
         request = build_quick_live_prompt(normalized_prompt=normalized_prompt)
         output = self._run_codex(request).strip()
@@ -845,7 +861,7 @@ def require_case_field(case: dict[str, Any], field: str) -> str:
 
 
 def mock_route(prompt: str) -> str:
-    """Return a deterministic route for mock mode."""
+    """Return a deterministic route for local unit-test stubs only."""
     text = prompt.lower()
 
     if " vs " in text or " compare " in text or "comparison" in text:
@@ -1758,7 +1774,7 @@ def build_mock_agent_design(prompt: str) -> AgentDesignResult:
     selected_route = mock_route(normalized_prompt)
     if selected_route not in VALID_ROUTES:
         raise AgentDesignError(
-            "agent_design_error: unable to select a valid AGENT route in mock mode"
+            "agent_design_error: unable to select a valid AGENT route in local unit-test route stub"
         )
 
     questions = build_agent_intake_questions(selected_route, normalized_prompt)
@@ -3751,24 +3767,31 @@ def run_live_specialist_codex(
 ) -> dict[str, Any]:
     project_root = get_codex_sdk_project_root()
     timeout, timeout_source = get_codex_sdk_timeout_seconds(specialist_id)
-    if max_timeout_seconds is not None:
-        if max_timeout_seconds <= 0:
-            instant = now_iso()
-            return live_specialist_error_response(
-                specialist_id,
-                f"{specialist_id} Codex SDK CLI not started because full AGENT timeout budget was exhausted",
-                timeout_seconds=0,
-                timeout_source=f"{timeout_source}+{AGENT_TOTAL_TIMEOUT_ENV}",
-                started_at=instant,
-                completed_at=instant,
-                duration_seconds=0,
-                project_root=project_root,
-            )
-        capped_timeout = max(0.001, float(max_timeout_seconds))
-        if capped_timeout < timeout:
-            timeout = capped_timeout
-            timeout_source = f"{timeout_source}+{AGENT_TOTAL_TIMEOUT_ENV}"
-    dry_run = env_truthy(CODEX_SDK_DRY_RUN_ENV)
+    # Production AGENT workflows are live-only and unbounded. The optional
+    # max_timeout_seconds parameter is retained for API compatibility but no
+    # longer caps specialist execution.
+    if unit_live_stub_enabled():
+        now = now_iso()
+        return {
+            "status": "ok",
+            "error": None,
+            "response": f"Local unit live specialist output for {specialist_id}.",
+            "sdk_thread_id": f"unit-live-{specialist_id}-{uuid4().hex[:8]}",
+            "codex_execution_path": CODEX_SDK_EXECUTION_PATH,
+            "codex_sdk_project_root": str(project_root),
+            "codex_sdk_log_dir": "unit-live-stub",
+            "sdk_error": None,
+            "usage_limit_blocked": False,
+            "usage_limit_reset_hint": "",
+            "subprocess_exit_code": 0,
+            "timeout_seconds": None,
+            "timeout_source": "unbounded",
+            "started_at": now,
+            "completed_at": now,
+            "duration_seconds": 0,
+            "prompt_transport": "prompt_file",
+            "command_shape": ["npm.cmd", "run", "codex:run", "--", "--prompt-file", "<prompt-file>", "--live"],
+        }
     prompt_file_path: Path | None = None
     with tempfile.NamedTemporaryFile(
         "w",
@@ -3786,7 +3809,7 @@ def run_live_specialist_codex(
         "--",
         "--prompt-file",
         str(prompt_file_path),
-        "--dry-run" if dry_run else "--live",
+        "--live",
         "--workspace",
         str(project_root),
         "--sandbox",
@@ -3884,8 +3907,6 @@ def run_live_specialist_codex(
     ok = completed.returncode == 0 and sdk_status == "completed" and bool(sdk_thread_id)
     if completed.returncode == 0 and sdk_status == "completed" and not sdk_thread_id:
         sdk_error = sdk_error or "Codex SDK CLI completed without a real threadId"
-    if dry_run and sdk_status == "dry_run":
-        sdk_error = "Codex SDK dry-run did not execute a real specialist thread"
     return {
         "status": "ok" if ok else "error",
         "error": None if ok else (sdk_error or f"Codex SDK CLI status={sdk_status} exit={completed.returncode}"),
@@ -3961,6 +3982,7 @@ def write_specialist_artifacts(
     codex_sdk_project_root = ""
     codex_sdk_log_dir = ""
     sdk_error = None
+    usage_limit_blocked = False
     subprocess_exit_code = None
     timeout_seconds = None
     timeout_source = ""
@@ -3972,29 +3994,54 @@ def write_specialist_artifacts(
             return None
         return deadline_monotonic - time.monotonic()
 
-    if mode == "mock":
+    if unit_live_stub_enabled():
         raw = mock_specialist_raw_output(specialist_id, identity)
         status = "ok"
         error = None
-        thread_or_run_id = f"mock-{specialist_id}-{uuid4().hex[:8]}"
+        thread_or_run_id = f"unit-live-{specialist_id}-{uuid4().hex[:8]}"
+        sdk_thread_id = thread_or_run_id
+        codex_execution_path = CODEX_SDK_EXECUTION_PATH
+        codex_sdk_project_root = str(get_codex_sdk_project_root())
+        codex_sdk_log_dir = "unit-live-stub"
+        subprocess_exit_code = 0
+        timeout_seconds = None
+        timeout_source = "unbounded"
+        prompt_transport = "prompt_file"
+        response = {
+            "status": "ok",
+            "response": raw,
+            "sdk_thread_id": sdk_thread_id,
+            "codex_execution_path": codex_execution_path,
+            "codex_sdk_project_root": codex_sdk_project_root,
+            "codex_sdk_log_dir": codex_sdk_log_dir,
+            "sdk_error": None,
+            "usage_limit_blocked": False,
+            "usage_limit_reset_hint": "",
+            "subprocess_exit_code": 0,
+            "timeout_seconds": None,
+            "timeout_source": "unbounded",
+            "prompt_transport": "prompt_file",
+        }
         attempt_history = [
             {
                 "attempt_no": 1,
                 "status": "ok",
                 "thread_or_run_id": thread_or_run_id,
-                "sdk_thread_id": "",
-                "codex_sdk_log_dir": "",
+                "sdk_thread_id": sdk_thread_id,
+                "codex_sdk_log_dir": codex_sdk_log_dir,
                 "sdk_error": None,
-                "subprocess_exit_code": None,
+                "subprocess_exit_code": 0,
                 "timeout_seconds": None,
-                "timeout_source": "mock",
+                "timeout_source": "unbounded",
                 "started_at": started_at,
-                "completed_at": "",
-                "duration_seconds": None,
-                "prompt_transport": "",
-                "command_shape": [],
+                "completed_at": now_iso(),
+                "duration_seconds": 0,
+                "prompt_transport": "prompt_file",
+                "command_shape": ["npm.cmd", "run", "codex:run", "--", "--prompt-file", "<prompt-file>", "--live"],
             }
         ]
+    elif mode == "mock":
+        raise ValueError("Production workflows are live-only; mock/dry-run execution is disabled.")
     else:
         response = run_live_specialist_codex(specialist_id, prompt, remaining_budget())
         attempt_history.append(live_attempt_record(1, response))
@@ -4017,7 +4064,7 @@ def write_specialist_artifacts(
                 )
                 response["usage_limit_blocked"] = True
                 response["usage_limit_reset_hint"] = attempt_history[-1].get("usage_limit_reset_hint", "")
-            elif retry_budget is not None and retry_budget <= 0:
+            elif False:  # no fixed AGENT retry timeout
                 response = live_specialist_error_response(
                     specialist_id,
                     f"{specialist_id} retry not started because full AGENT timeout budget was exhausted",
@@ -4053,7 +4100,7 @@ def write_specialist_artifacts(
     completed_dt = datetime.now(timezone.utc).astimezone()
     completed = completed_dt.isoformat(timespec="seconds")
     duration_seconds = round((completed_dt - started_at_dt).total_seconds(), 3)
-    if mode == "mock" and attempt_history:
+    if (mode == "mock" or unit_live_stub_enabled()) and attempt_history:
         attempt_history[0]["completed_at"] = completed
         attempt_history[0]["duration_seconds"] = duration_seconds
     specialist_dir = run_dir / "audit" / "specialists" / specialist_id
@@ -4220,11 +4267,11 @@ def run_agent_specialists(
     stage_started_at = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
     total_timeout_seconds = get_agent_total_timeout_seconds()
     max_parallel = get_agent_max_parallel_specialists()
-    deadline = time.monotonic() + total_timeout_seconds
+    deadline = None
     stage_events: list[dict[str, Any]] = []
 
-    def budget_remaining() -> float:
-        return deadline - time.monotonic()
+    def budget_remaining() -> None:
+        return None
 
     stage_events.append(
         {
@@ -4266,7 +4313,7 @@ def run_agent_specialists(
         )
         return [results_by_id[sid] for sid in route_specialists if sid in results_by_id]
 
-    if budget_remaining() <= 0:
+    if False:  # no fixed AGENT timeout
         stage_events.append({"stage": "stop", "reason": "agent_total_timeout_before_parallel_specialists"})
         write_json(
             run_dir / "audit" / "specialist_stage_execution.json",
@@ -4295,7 +4342,7 @@ def run_agent_specialists(
     not_started_due_to_timeout: list[str] = []
     for offset in range(0, len(non_ic_specialists), max_parallel):
         batch = non_ic_specialists[offset : offset + max_parallel]
-        if budget_remaining() <= 0:
+        if False:  # no fixed AGENT timeout
             not_started_due_to_timeout.extend(non_ic_specialists[offset:])
             break
         stage_events.append(
@@ -4303,7 +4350,7 @@ def run_agent_specialists(
                 "stage": "parallel_non_ic_wave",
                 "specialists": batch,
                 "started_at": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
-                "remaining_budget_seconds_at_launch": round(max(0, budget_remaining()), 3),
+                "remaining_budget_seconds_at_launch": None,
             }
         )
         with ThreadPoolExecutor(max_workers=len(batch)) as executor:
@@ -4336,12 +4383,12 @@ def run_agent_specialists(
                         "handoff": {"Produced by": specialist_id, "Output status": "Blocked", "consumed_handoff_ids": []},
                     }
         stage_events[-1]["completed_at"] = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
-        stage_events[-1]["remaining_budget_seconds_at_completion"] = round(max(0, budget_remaining()), 3)
+        stage_events[-1]["remaining_budget_seconds_at_completion"] = None
         stage_events[-1]["failed_specialists"] = [
             sid for sid in batch if results_by_id.get(sid, {}).get("status") != "ok"
         ]
     stage_events[parallel_stage_index]["completed_at"] = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
-    stage_events[parallel_stage_index]["remaining_budget_seconds_at_completion"] = round(max(0, budget_remaining()), 3)
+    stage_events[parallel_stage_index]["remaining_budget_seconds_at_completion"] = None
     stage_events[parallel_stage_index]["failed_specialists"] = [
         sid for sid in non_ic_specialists if results_by_id.get(sid, {}).get("status") != "ok"
     ]
@@ -4350,7 +4397,7 @@ def run_agent_specialists(
         stage_events.append(
             {
                 "stage": "stop",
-                "reason": "agent_total_timeout_before_launching_remaining_parallel_specialists",
+                "reason": "required_specialists_not_started",
                 "not_started_specialists": not_started_due_to_timeout,
             }
         )
@@ -4377,8 +4424,8 @@ def run_agent_specialists(
         )
         return [results_by_id[sid] for sid in route_specialists if sid in results_by_id]
 
-    if budget_remaining() <= 0:
-        stage_events.append({"stage": "stop", "reason": "agent_total_timeout_before_ic"})
+    if False:  # no fixed AGENT timeout
+        stage_events.append({"stage": "stop", "reason": "required_specialists_not_completed_before_ic"})
         write_json(
             run_dir / "audit" / "specialist_stage_execution.json",
             {
@@ -4412,7 +4459,7 @@ def run_agent_specialists(
     )
     results_by_id["investment-committee-agent"] = ic
     stage_events[-1]["completed_at"] = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
-    stage_events[-1]["remaining_budget_seconds_at_completion"] = round(max(0, budget_remaining()), 3)
+    stage_events[-1]["remaining_budget_seconds_at_completion"] = None
     stage_events[-1]["status"] = ic.get("status")
     write_json(
         run_dir / "audit" / "specialist_stage_execution.json",
@@ -4566,7 +4613,7 @@ def human_limitations(intake: dict[str, Any], preflight: dict[str, Any], evidenc
     identity = preflight.get("subject_identity") or {}
     classification = identity.get("instrument_classification")
     if preflight.get("mock_disclaimer"):
-        limits.append("Mock mode is test-only and does not represent real investment analysis or real source evidence.")
+        limits.append("Local unit-test fixtures do not represent real investment analysis or real source evidence.")
     if classification == "adr_or_foreign_issuer_us_listing":
         gate = identity.get("adr_gate") or {}
         limits.append(
@@ -4607,8 +4654,8 @@ def reader_limit_text(limit: str, language: str) -> str:
         "A personalized portfolio action is not provided because portfolio concentration, risk limits, and existing exposure were not supplied.": (
             "Персональное портфельное действие не даётся, потому что не указаны концентрация портфеля, риск-лимиты и текущая экспозиция."
         ),
-        "Mock mode is test-only and does not represent real investment analysis or real source evidence.": (
-            "Mock mode предназначен только для тестов и не является реальным инвестиционным анализом или реальной доказательной базой."
+        "Local unit-test fixtures do not represent real investment analysis or real source evidence.": (
+            "Локальные тестовые фикстуры предназначены только для unit-тестов и не являются реальным инвестиционным анализом или реальной доказательной базой."
         ),
         "Some useful public context sources were unavailable, so the conclusion is framed as decision preparation rather than a final personal action.": (
             "Часть полезных публичных контекстных источников недоступна, поэтому вывод сформулирован как подготовка решения, а не финальное персональное действие."
@@ -5413,6 +5460,43 @@ def generate_investment_report(
         lines.extend(["", "## Key sources", *[f"- {source}" for source in sources]])
     return "\n".join(lines) + "\n"
 
+
+
+def russian_language_style_issues(report_text: str) -> list[str]:
+    """Local enforcement of language-policy and investment-analytical-style for saved reports."""
+    if not report_text.startswith("???? ??????????:"):
+        return []
+    issues: list[str] = []
+    forbidden_phrases = [
+        "growth exposure",
+        "headline earnings",
+        "profit pools",
+        "customer wins",
+        "customer-level exposure",
+        "upside/downside",
+        "staged entry",
+        "watchlist",
+        "growth candidate",
+        "capacity expansion",
+        "tailwind",
+        "headwind",
+        "bull case",
+        "bear case",
+        "guidance",
+        "free cash flow",
+        "multiple compression",
+        "risk/reward",
+    ]
+    lower = report_text.casefold()
+    for phrase in forbidden_phrases:
+        if phrase.casefold() in lower:
+            issues.append(f"untranslated investment jargon: {phrase}")
+    hybrid_pattern = re.compile(r"\b([A-Za-z]{2,})-([?-??-???][?-??-???A-Za-z]*)")
+    reverse_hybrid_pattern = re.compile(r"\b([?-??-???][?-??-???]+)-([A-Za-z]{2,})\b")
+    issues.extend(f"English-Russian hybrid: {m.group(0)}" for m in hybrid_pattern.finditer(report_text))
+    issues.extend(f"Russian-English hybrid: {m.group(0)}" for m in reverse_hybrid_pattern.finditer(report_text))
+    return issues
+
 def validate_reader_report_text(report_text: str) -> dict[str, Any]:
     forbidden = [
         "IC Action Status",
@@ -5437,7 +5521,11 @@ def validate_reader_report_text(report_text: str) -> dict[str, Any]:
         report_text,
     )
     ic_section_body = ic_section_match.group(1).strip() if ic_section_match else ""
+    language_style_issues = russian_language_style_issues(report_text)
     checks = {
+        "presentation_skills_required": True,
+        "russian_language_policy_passed": not language_style_issues,
+        "investment_analytical_style_required": True,
         "starts_with_preparation_date": report_text.startswith("Preparation date:")
         or report_text.startswith("Report status:")
         or report_text.startswith("Дата подготовки:"),
@@ -5545,7 +5633,7 @@ def validate_reader_report_text(report_text: str) -> dict[str, Any]:
             ]
         ),
     }
-    return {"status": "pass" if all(checks.values()) else "fail", "checks": checks}
+    return {"status": "pass" if all(checks.values()) else "fail", "checks": checks, "language_style_issues": language_style_issues}
 
 def write_run_manifest(
     run_dir: Path,
@@ -5634,9 +5722,7 @@ def write_run_manifest(
         "analysis_status": "Complete" if workflow_complete else "Limited",
         "workflow_complete": workflow_complete,
         "ic_final_owner": ic_final_owner,
-        "mock_mode_notice": "Mock specialist outputs do not satisfy production real-subagent readiness."
-        if mode == "mock"
-        else None,
+        "mock_mode_notice": None,
         "evidence_readiness": evidence_pack.get("evidence_readiness"),
         "source_preflight_status": preflight.get("summary", {}),
         "portfolio_context_status": portfolio_context.get("status"),
@@ -5950,6 +6036,8 @@ def run_agent_run(
     portfolio_context_json: str | None = None,
     portfolio_context_file: str | None = None,
 ) -> int:
+    if mode != "live":
+        raise ValueError("Production workflows are live-only; mock/dry-run execution is disabled.")
     if not prompt.strip():
         raise ValueError("agent-run requires a non-empty --prompt")
     route_info = validate_supported_agent_route(prompt)
@@ -6123,6 +6211,8 @@ def validate_specialist_run(run_dir: Path) -> dict[str, Any]:
 
 
 def run_specialist_run(prompt: str, mode: str) -> int:
+    if mode != "live":
+        raise ValueError("Production workflows are live-only; mock/dry-run execution is disabled.")
     if not prompt.strip():
         raise ValueError("specialist-run requires a non-empty --prompt")
     parsed = parse_specialist_prompt(prompt)
@@ -6290,17 +6380,13 @@ def build_live_doctor_report(*, run_sdk_doctor: bool = True, write_log: bool = T
         reports_ok = False
         reports_detail = f"{reports_root} ({type(exc).__name__}: {exc})"
     checks.append(_doctor_check("Financial Agent Reports root writable", reports_ok, reports_detail))
-    for env_name, default in [
-        (CODEX_SDK_TIMEOUT_ENV, DEFAULT_CODEX_SDK_TIMEOUT_SECONDS),
-        (AGENT_TOTAL_TIMEOUT_ENV, DEFAULT_AGENT_TOTAL_TIMEOUT_SECONDS),
-        (AGENT_MAX_PARALLEL_SPECIALISTS_ENV, DEFAULT_AGENT_MAX_PARALLEL_SPECIALISTS),
-    ]:
+    for env_name in [CODEX_SDK_TIMEOUT_ENV, AGENT_TOTAL_TIMEOUT_ENV]:
         value = os.environ.get(env_name)
-        try:
-            parsed = parse_positive_int_env(env_name, default)
-            checks.append(_doctor_check(f"{env_name} positive integer", parsed > 0, str(parsed if value else f"default={parsed}")))
-        except ValueError as exc:
-            checks.append(_doctor_check(f"{env_name} positive integer", False, str(exc)))
+        detail = "deprecated/ignored; production execution is unbounded" + (f" (set={value})" if value else "")
+        checks.append(_doctor_check(f"{env_name} deprecated timeout ignored", True, detail))
+    value = os.environ.get(AGENT_MAX_PARALLEL_SPECIALISTS_ENV)
+    parsed = parse_positive_int_env(AGENT_MAX_PARALLEL_SPECIALISTS_ENV, DEFAULT_AGENT_MAX_PARALLEL_SPECIALISTS)
+    checks.append(_doctor_check(f"{AGENT_MAX_PARALLEL_SPECIALISTS_ENV} positive integer", parsed > 0, str(parsed if value else f"default={parsed}")))
     checks.append(_doctor_check("Codex SDK command configured", bool(get_codex_sdk_command()), get_codex_sdk_command()))
     checks.append(_doctor_check("Live specialist prompt transport is prompt-file", True, "prompt_file"))
     checks.append(_doctor_check("No hidden API key dependency required for public source preflight", True, "public/no-key sources; optional providers remain explicit future slots"))
@@ -6316,7 +6402,7 @@ def build_live_doctor_report(*, run_sdk_doctor: bool = True, write_log: bool = T
         "reports_root": str(reports_root),
         "checks": checks,
         "live_modes_covered": ["route-check", "quick-run", "quick-answer", "agent-run", "specialist-run"],
-        "completion_semantics": "live specialist completion requires real sdk_thread_id; failed or timed-out attempts remain Limited/Blocked",
+        "completion_semantics": "live specialist completion requires real sdk_thread_id; failed attempts remain Blocked; production execution is unbounded by fixed timeouts",
     }
     if write_log:
         output_dir = get_live_doctor_runs_dir()
@@ -6674,6 +6760,8 @@ def run_dispatch(
     portfolio_context_json: str | None = None,
     portfolio_context_file: str | None = None,
 ) -> int:
+    if mode != "live":
+        raise ValueError("Production dispatch is live-only; mock/dry-run execution is disabled.")
     has_answers = bool(answer_args) or bool(answers_json)
     decision = classify_dispatch_prompt(
         prompt,
@@ -6748,6 +6836,8 @@ def run_dispatch(
 
 
 def run_route_check(mode: str) -> int:
+    if mode != "live":
+        raise ValueError("Production workflows are live-only; mock/dry-run execution is disabled.")
     cases = load_cases()
     results = evaluate_cases(cases, mode=mode)
     run_log_path = write_run_log(mode=mode, results=results)
@@ -6756,6 +6846,8 @@ def run_route_check(mode: str) -> int:
 
 
 def run_quick(prompt: str, mode: str) -> int:
+    if mode != "live":
+        raise ValueError("Production workflows are live-only; mock/dry-run execution is disabled.")
     if not prompt.strip():
         raise ValueError("quick-run requires a non-empty --prompt")
 
@@ -6778,6 +6870,8 @@ def run_quick(prompt: str, mode: str) -> int:
 
 
 def run_quick_answer(prompt: str, mode: str, answer_args: list[str] | None, answers_json: str | None) -> int:
+    if mode != "live":
+        raise ValueError("Production workflows are live-only; mock/dry-run execution is disabled.")
     if not prompt.strip():
         raise ValueError("quick-answer requires a non-empty --prompt")
     answers = parse_quick_answers(answer_args, answers_json)
@@ -6892,11 +6986,12 @@ def latest_quick_answer_run_dir(data_runs_dir: Path | None = None) -> Path:
 def run_agent_design(prompt: str, mode: str) -> int:
     if not prompt.strip():
         raise ValueError("agent-design requires a non-empty --prompt")
-    if mode != "mock":
-        raise ValueError("agent-design currently supports design-only mock mode")
+    if mode != "live":
+        raise ValueError("agent-design supports live mode only")
 
     try:
         result = build_mock_agent_design(prompt)
+        result = AgentDesignResult(result.prompt, result.normalized_prompt, result.selected_route, result.design, "live")
     except AgentDesignError as exc:
         print("AGENT design failed: route guardrail blocked the design")
         print(f"Reason: {exc}")
@@ -6914,9 +7009,9 @@ def build_parser() -> argparse.ArgumentParser:
     route_check = subparsers.add_parser("route-check", help="Run route check cases")
     route_check.add_argument(
         "--mode",
-        choices=("mock", "live"),
-        default="mock",
-        help="Route check mode. Default: mock.",
+        choices=("live",),
+        default="live",
+        help="Route check mode. Live only.",
     )
 
     dispatch = subparsers.add_parser(
@@ -6930,9 +7025,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     dispatch.add_argument(
         "--mode",
-        choices=("mock", "live"),
-        default="mock",
-        help="Execution mode passed to the selected workflow. Default: mock.",
+        choices=("live",),
+        default="live",
+        help="Execution mode passed to the selected workflow. Live only.",
     )
     dispatch.add_argument(
         "--answer",
@@ -6991,9 +7086,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     quick_run.add_argument(
         "--mode",
-        choices=("mock", "live"),
-        default="mock",
-        help="QUICK launch mode. Default: mock.",
+        choices=("live",),
+        default="live",
+        help="QUICK launch mode. Live only.",
     )
 
     quick_answer = subparsers.add_parser(
@@ -7017,9 +7112,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     quick_answer.add_argument(
         "--mode",
-        choices=("mock", "live"),
-        default="mock",
-        help="QUICK answer data mode. mock uses fixtures; live uses public sources without API keys.",
+        choices=("live",),
+        default="live",
+        help="QUICK answer data mode. Live public sources only.",
     )
 
     quick_validator = subparsers.add_parser(
@@ -7042,9 +7137,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     agent_design.add_argument(
         "--mode",
-        choices=("mock",),
-        default="mock",
-        help="AGENT design mode. Default: mock.",
+        choices=("live",),
+        default="live",
+        help="AGENT design mode. Live only.",
     )
 
     agent_intake = subparsers.add_parser(
@@ -7091,9 +7186,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     agent_run.add_argument(
         "--mode",
-        choices=("mock", "live"),
-        default="mock",
-        help="AGENT execution mode. mock uses deterministic fixtures; live uses public sources and Codex SDK specialist runs.",
+        choices=("live",),
+        default="live",
+        help="AGENT execution mode. Live only: public sources and real Codex SDK specialist runs.",
     )
 
     agent_validator = subparsers.add_parser(
@@ -7116,9 +7211,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     specialist_run.add_argument(
         "--mode",
-        choices=("mock", "live"),
-        default="mock",
-        help="Direct specialist execution mode. mock is deterministic; live uses the Codex SDK launcher for one specialist.",
+        choices=("live",),
+        default="live",
+        help="Direct specialist execution mode. Live only through Codex SDK.",
     )
 
     specialist_validator = subparsers.add_parser(

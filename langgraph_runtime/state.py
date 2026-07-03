@@ -62,7 +62,7 @@ class FinancialAgentState(TypedDict):
     errors: list[str]
 
     # Runtime-control fields. They are not part of the canonical minimum state, but make CLI/test execution explicit.
-    mode: NotRequired[Literal["dry_run", "live"]]
+    mode: NotRequired[Literal["live"]]
     output_dir: NotRequired[str]
     run_id: NotRequired[str]
     thread_id: NotRequired[str]
@@ -71,7 +71,7 @@ class FinancialAgentState(TypedDict):
     completed_nodes: NotRequired[list[str]]
 
 
-def initial_state(prompt: str, *, mode: str = "dry_run", output_dir: str = "", thread_id: str = "default", allow_interrupts: bool = True) -> FinancialAgentState:
+def initial_state(prompt: str, *, mode: str = "live", output_dir: str = "", thread_id: str = "default", allow_interrupts: bool = True) -> FinancialAgentState:
     return {
         "original_user_request": prompt,
         "normalized_request": " ".join(prompt.strip().split()),

@@ -151,9 +151,9 @@ export async function runCodex(request: CodexRunRequest, deps: RunCodexDeps = {}
 
   if (!request.live) {
     return {
-      status: "dry_run",
+      status: "failed",
       threadId: request.threadId,
-      finalResponse: `Dry run only. No Codex SDK thread was started.\n\nPrompt:\n${request.prompt}`,
+      error: "Production Codex SDK execution is live-only; non-live execution is disabled.",
     };
   }
 

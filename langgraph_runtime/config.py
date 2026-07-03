@@ -33,7 +33,7 @@ def get_settings(*, require_api_key: bool = False) -> RuntimeSettings:
     load_dotenv()
     key = os.environ.get("OPENAI_API_KEY", "").strip()
     if require_api_key and not key:
-        raise RuntimeError("OPENAI_API_KEY is required for --live mode. Dry-run mode does not call the API.")
+        raise RuntimeError("OPENAI_API_KEY is required for live production mode.")
     return RuntimeSettings(
         openai_api_key=key,
         openai_model=os.environ.get("OPENAI_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL,
