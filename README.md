@@ -149,6 +149,7 @@ Run these after changing docs, route cards, agents, skills, workflow behavior, t
 
 ```powershell
 py -3 tools\validate_project_consistency.py
+py -3 tools\validate_language_style.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
 cd automation_lab

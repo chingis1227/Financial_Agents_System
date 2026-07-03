@@ -477,7 +477,7 @@ if codex_config.exists():
         config = tomllib.loads(read(codex_config))
         agents_config = config.get("agents", {})
         add("Codex config has [agents]", isinstance(agents_config, dict))
-        add("Codex config has agents.max_threads", agents_config.get("max_threads") == 6)
+        add("Codex config has agents.max_threads", agents_config.get("max_threads") == 12)
         add("Codex config has agents.max_depth", agents_config.get("max_depth") == 1)
         add("Codex config has agents.job_max_runtime_seconds", agents_config.get("job_max_runtime_seconds") == 1800)
     except Exception as exc:

@@ -85,6 +85,7 @@ After changing project docs, route cards, agents, skills, workflow behavior, tes
 
 ```powershell
 py -3 tools\validate_project_consistency.py
+py -3 tools\validate_language_style.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
 py -3 -m unittest discover -s tests\langgraph_runtime -v

@@ -91,6 +91,10 @@ for rel in [
     "implementation/15-documentation-sync-contract.md",
     "workflows/route_cards/investment_request_router.md",
     ".agents/skills/investment-workflow-router/SKILL.md",
+    ".agents/skills/language-policy/SKILL.md",
+    ".agents/skills/investment-analytical-style/SKILL.md",
+    "tools/validate_language_style.py",
+    "tests/behavior/language_style_cases.yaml",
 ]:
     add(f"required active file exists: {rel}", exists(rel), rel)
 
@@ -149,6 +153,7 @@ for token in [
     "archive/project-history/TASKS.md",
     "implementation/non_equity_production_hardening_report.md",
     "tools\\validate_project_consistency.py",
+    "tools\\validate_language_style.py",
 ]:
     add(f"PROJECT_STATE contains {token}", token in state, token)
 for cmd, agent in COMMAND_AGENT_MAP.items():
@@ -160,7 +165,7 @@ add("AGENTS reads PROJECT_STATE first", "Read `PROJECT_STATE.md`" in agents)
 add("AGENTS points to route router", "workflows/route_cards/investment_request_router.md" in agents)
 for forbidden in ["Read `TASKS.md`", "Read `IMPLEMENTATION_BACKLOG.md`", "TASKS.md` for active work", "IMPLEMENTATION_BACKLOG.md` for phase"]:
     add(f"AGENTS has no archived active runtime instruction: {forbidden}", forbidden not in agents)
-for token in ["validate_project_consistency.py", "validate_behavior_contracts.py", "validate_runtime_readiness.py"]:
+for token in ["validate_project_consistency.py", "validate_language_style.py", "validate_behavior_contracts.py", "validate_runtime_readiness.py"]:
     add(f"AGENTS requires validator {token}", token in agents)
 for token in ["AGENT:", "QUICK:", "fallback only in audit metadata"]:
     add(f"AGENTS contains command/fallback rule {token}", token in agents, token)

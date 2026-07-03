@@ -68,5 +68,38 @@
       "Sell recommendation",
       "Hold recommendation"
     ]
+  },
+  {
+    "id": "russian_language_style_contract",
+    "scope": "Russian user-facing investment reports and chat answers",
+    "required_skills": [
+      ".agents/skills/language-policy/SKILL.md",
+      ".agents/skills/investment-analytical-style/SKILL.md"
+    ],
+    "required_validator": "tools\\validate_language_style.py",
+    "forbidden_phrases": [
+      "growth exposure",
+      "headline earnings",
+      "profit pools",
+      "customer wins",
+      "customer-level exposure",
+      "downside-модель",
+      "upside/downside",
+      "commodity-cycle",
+      "price fixing"
+    ],
+    "allowed_controlled_terms": [
+      "MU",
+      "HBM",
+      "EPS",
+      "GAAP",
+      "non-GAAP",
+      "SCA",
+      "ETF",
+      "Analysis Status",
+      "IC Action",
+      "Decision Confidence",
+      "Watchlist"
+    ]
   }
 ]

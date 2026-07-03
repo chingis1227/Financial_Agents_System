@@ -128,6 +128,10 @@ Before sending or saving Russian user-facing output, verify silently that:
 - the final text is concise, businesslike, investment-analytical when the subject is financial or market-related;
 - mandatory statuses, boundaries, source limits, evidence limits, and missing IC gates remain visible where required.
 
+For project validation, the same behavior is enforced by `tools\validate_language_style.py` and the fixture set `tests/behavior/language_style_cases.yaml`. Any change to Russian user-facing language policy, allowed English terms, forbidden Run-glish phrases, or investment-analytical presentation rules must update both the canonical rule and the validator fixtures.
+
+The validator must reject generic untranslated investment jargon in Russian reports when a natural Russian phrase exists. Examples that must not pass in Russian reader-facing investment output include `growth exposure`, `headline earnings`, `profit pools`, `customer wins`, `customer-level exposure`, `downside-модель`, `upside/downside`, and English-Russian hybrids such as `HBM-конкуренция` when the meaning can be written naturally as `конкуренция в HBM`.
+
 ## 8. Stable behavior IDs
 
 | Rule ID | Behavior |

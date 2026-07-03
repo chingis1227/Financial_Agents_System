@@ -88,3 +88,5 @@ Before sending, silently verify:
 - filler and generic AI phrasing were removed;
 - the text is concise, businesslike, investment-analytical, and readable;
 - structured handoff precision was not weakened by presentation editing.
+
+For Russian user-facing investment text, also verify that the output satisfies `.agents/skills/language-policy/SKILL.md` and can pass `tools\validate_language_style.py`. Investment-analytical style must not preserve English jargon when a natural Russian financial phrase exists.

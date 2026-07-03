@@ -40,6 +40,7 @@ After documentation, workflow, skill, agent, route-card, fixture, or validator c
 
 ```powershell
 py -3 tools\validate_project_consistency.py
+py -3 tools\validate_language_style.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
 py -3 -m unittest discover -s tests\langgraph_runtime -v
@@ -67,5 +68,6 @@ This contract is satisfied when:
 - `PROJECT_STATE.md` exists and reflects current operational state.
 - Active runtime route cards exist and are registered.
 - Behavior fixtures cover the golden prompts.
+- Russian user-facing investment output has a language/style validator and behavior fixtures that reject Run-glish such as `growth exposure`, `headline earnings`, and English-Russian hybrids.
 - Validators fail on stale registry, stale route, missing route card, missing workflow-router skill, or archived docs in active runtime order.
 - `AGENTS.md` remains concise and points to the current-state and route-card layer.

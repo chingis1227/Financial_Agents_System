@@ -45,5 +45,20 @@
       "Quick Take unless all gates pass",
       "Quick Take unless required gates pass"
     ]
+  },
+  {
+    "id": "russian_report_language_style_gate",
+    "scope": "Russian user-facing investment output",
+    "rule": "Russian investment reports must pass language-policy and investment-analytical-style validation before sending or saving",
+    "validator": "tools\\validate_language_style.py",
+    "forbidden_patterns": [
+      "growth exposure",
+      "headline earnings",
+      "profit pools",
+      "customer wins",
+      "customer-level exposure",
+      "downside-модель",
+      "English-Russian hybrid"
+    ]
   }
 ]

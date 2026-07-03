@@ -90,3 +90,7 @@ Before sending Russian output, silently verify:
 - no awkward English-Russian hybrids remain;
 - modality, uncertainty, causality, and evaluation strength were not shifted.
 - no facts, sources, caveats, conclusions, recommendations, investment calls, or risk warnings were added.
+
+## Validation gate
+
+Russian user-facing investment reports and financial answers must be able to pass `tools\validate_language_style.py`. If a Russian output contains generic untranslated investment jargon such as `growth exposure`, `headline earnings`, `profit pools`, `customer wins`, `customer-level exposure`, `downside-модель`, `upside/downside`, or an avoidable English-Russian hybrid such as `HBM-конкуренция`, rewrite it before sending or saving.

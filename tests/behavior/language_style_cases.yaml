@@ -1,0 +1,51 @@
+[
+  {
+    "id": "russian_report_rejects_growth_exposure",
+    "language": "Russian",
+    "text": "Для инвестора со средней терпимостью к риску MU может быть технологический циклический growth exposure.",
+    "should_pass": false,
+    "expected_issues": ["growth exposure"]
+  },
+  {
+    "id": "russian_report_rejects_headline_earnings",
+    "language": "Russian",
+    "text": "Акция не выглядит дорогой на headline earnings, но риск нормализации сохраняется.",
+    "should_pass": false,
+    "expected_issues": ["headline earnings"]
+  },
+  {
+    "id": "russian_report_rejects_customer_level_exposure",
+    "language": "Russian",
+    "text": "Перед добавлением позиции нужна проверка customer-level exposure и концентрации выручки.",
+    "should_pass": false,
+    "expected_issues": ["customer-level exposure"]
+  },
+  {
+    "id": "russian_report_rejects_hybrid",
+    "language": "Russian",
+    "text": "HBM-конкуренция и downside-модель должны быть проверены отдельно.",
+    "should_pass": false,
+    "expected_issues": ["English-Russian hybrid"]
+  },
+  {
+    "id": "russian_report_allows_controlled_labels",
+    "language": "Russian",
+    "text": "Analysis Status: Complete. IC Action: Watchlist. MU, HBM, EPS, GAAP, non-GAAP, SCA и ETF сохранены как контролируемые обозначения.",
+    "should_pass": true,
+    "expected_issues": []
+  },
+  {
+    "id": "russian_report_clean_investment_style",
+    "language": "Russian",
+    "text": "Для инвестора со средней терпимостью к риску MU может быть долей, завязанной на технологический рост, но не заменой широкого фонда полупроводников.",
+    "should_pass": true,
+    "expected_issues": []
+  },
+  {
+    "id": "russian_report_rejects_encoding_corruption",
+    "language": "Russian",
+    "text": "???????????????????????????????????????????????????????????????????????????????????????????????????? growth exposure",
+    "should_pass": false,
+    "expected_issues": ["possible Cyrillic encoding corruption"]
+  }
+]

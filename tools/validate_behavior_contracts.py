@@ -67,6 +67,7 @@ add("command map fixture has no duplicate commands", len(COMMAND_AGENT_MAP) == l
 routing = load("routing_cases.yaml")
 guardrails = load("guardrail_cases.yaml")
 reports = load("report_contract_cases.yaml")
+language_style = load("language_style_cases.yaml")
 golden = load("golden_prompts.yaml")
 all_prompt_cases = routing + golden
 
@@ -77,7 +78,14 @@ add("command map fixture matches command->skill map", fixture_command_skill_map 
 
 fixture_text = "\n".join(
     (BEHAVIOR / name).read_text(encoding="utf-8-sig")
-    for name in ["routing_cases.yaml", "guardrail_cases.yaml", "report_contract_cases.yaml", "golden_prompts.yaml", "command_map.yaml"]
+    for name in [
+        "routing_cases.yaml",
+        "guardrail_cases.yaml",
+        "report_contract_cases.yaml",
+        "language_style_cases.yaml",
+        "golden_prompts.yaml",
+        "command_map.yaml",
+    ]
     if (BEHAVIOR / name).exists()
 )
 fixture_text_without_controlled_label = fixture_text.replace("Non-delegated audit fallback", "CONTROLLED_FALLBACK_LABEL")
@@ -157,13 +165,14 @@ required_guardrails = {
     "freshness_requires_timestamp_or_limited",
     "missing_context_not_hard_avoid",
     "quick_take_no_final_action_escape_hatch",
+    "russian_report_language_style_gate",
 }
 seen_guardrails = {c.get("id") for c in guardrails}
 for rid in sorted(required_guardrails):
     add(f"guardrail covered: {rid}", rid in seen_guardrails, rid)
 
 # Report contract fixture coverage.
-required_contracts = {"quick_contract", "agent_workflow_contract", "specialist_contract"}
+required_contracts = {"quick_contract", "agent_workflow_contract", "specialist_contract", "russian_language_style_contract"}
 seen_contracts = {c.get("id") for c in reports}
 for rid in sorted(required_contracts):
     add(f"report contract covered: {rid}", rid in seen_contracts, rid)
@@ -180,6 +189,26 @@ add("specialist contract boundary line prefix exact", specialist_contract.get("r
 ic_shortcut_forbidden = set(specialist_contract.get("ic_shortcut_forbidden", []))
 for token in ["Action Box", "IC Action: Buy", "IC Action: Sell", "IC Action: Hold", "Buy recommendation", "Sell recommendation", "Hold recommendation"]:
     add(f"IC shortcut specialist contract forbids {token}", token in ic_shortcut_forbidden, token)
+russian_language_contract = next((c for c in reports if c.get("id") == "russian_language_style_contract"), {})
+add("Russian language contract requires language-policy skill", ".agents/skills/language-policy/SKILL.md" in russian_language_contract.get("required_skills", []))
+add("Russian language contract requires investment-analytical-style skill", ".agents/skills/investment-analytical-style/SKILL.md" in russian_language_contract.get("required_skills", []))
+for token in ["growth exposure", "headline earnings", "profit pools", "customer wins", "downside-модель"]:
+    add(
+        f"Russian language contract forbids Run-glish phrase: {token}",
+        token in set(russian_language_contract.get("forbidden_phrases", [])),
+        token,
+    )
+
+seen_language_cases = {c.get("id") for c in language_style}
+for rid in [
+    "russian_report_rejects_growth_exposure",
+    "russian_report_rejects_headline_earnings",
+    "russian_report_rejects_hybrid",
+    "russian_report_allows_controlled_labels",
+    "russian_report_clean_investment_style",
+    "russian_report_rejects_encoding_corruption",
+]:
+    add(f"language style fixture covered: {rid}", rid in seen_language_cases, rid)
 
 # Strict QUICK source checks.
 strict_quick_sources = [
