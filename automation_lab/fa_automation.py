@@ -73,6 +73,7 @@ DEFAULT_QUICK_RUNS_DIR = LAB_ROOT / "runs" / "quick"
 DEFAULT_AGENT_DESIGN_RUNS_DIR = LAB_ROOT / "runs" / "agent-design"
 DEFAULT_AGENT_RUNS_DIR = LAB_ROOT / "runs" / "agent"
 DEFAULT_SPECIALIST_RUNS_DIR = LAB_ROOT / "runs" / "specialist"
+DEFAULT_DISPATCH_RUNS_DIR = LAB_ROOT / "runs" / "dispatch"
 DEFAULT_LIVE_DOCTOR_RUNS_DIR = LAB_ROOT / "runs" / "live-doctor"
 DEFAULT_LIVE_ACCEPTANCE_RUNS_DIR = LAB_ROOT / "runs" / "live-acceptance"
 DEFAULT_QUICK_DATA_RUNS_DIR = LAB_ROOT / "data_runs" / "quick"
@@ -82,6 +83,7 @@ QUICK_RUNS_DIR_ENV = "FA_AUTOMATION_QUICK_RUNS_DIR"
 AGENT_DESIGN_RUNS_DIR_ENV = "FA_AUTOMATION_AGENT_DESIGN_RUNS_DIR"
 AGENT_RUNS_DIR_ENV = "FA_AUTOMATION_AGENT_RUNS_DIR"
 SPECIALIST_RUNS_DIR_ENV = "FA_AUTOMATION_SPECIALIST_RUNS_DIR"
+DISPATCH_RUNS_DIR_ENV = "FA_AUTOMATION_DISPATCH_RUNS_DIR"
 LIVE_DOCTOR_RUNS_DIR_ENV = "FA_AUTOMATION_LIVE_DOCTOR_RUNS_DIR"
 LIVE_ACCEPTANCE_RUNS_DIR_ENV = "FA_AUTOMATION_LIVE_ACCEPTANCE_RUNS_DIR"
 AGENT_REPORTS_ROOT_ENV = "FA_AUTOMATION_AGENT_REPORTS_ROOT"
@@ -447,6 +449,16 @@ class AgentDesignValidation:
     quality_checks: dict[str, bool]
 
 
+@dataclass(frozen=True)
+class DispatchDecision:
+    selected_dispatch: str
+    selected_route: str
+    target_command: str
+    normalized_prompt: str
+    target_prompt: str
+    reason: str
+
+
 class LiveRouteError(RuntimeError):
     """Raised when a live route classification cannot produce valid route JSON."""
 
@@ -768,6 +780,13 @@ def get_specialist_runs_dir() -> Path:
     if override:
         return Path(override)
     return DEFAULT_SPECIALIST_RUNS_DIR
+
+
+def get_dispatch_runs_dir() -> Path:
+    override = os.environ.get(DISPATCH_RUNS_DIR_ENV)
+    if override:
+        return Path(override)
+    return DEFAULT_DISPATCH_RUNS_DIR
 
 
 def get_live_doctor_runs_dir() -> Path:
@@ -2522,6 +2541,220 @@ def validate_supported_agent_route(prompt: str) -> dict[str, Any]:
     elif identity.get("ticker") in {"UNRESOLVED", "", None}:
         raise AgentRunError(f"agent_run_error: no supported {AGENT_ROUTE_LABELS.get(route, route)} identity was resolved")
     return {"route": route, "identity": identity, "ticker": str(identity.get("ticker"))}
+
+
+QUICK_DISPATCH_TERMS = (
+    "quick",
+    "short",
+    "fast",
+    "preliminary",
+    "brief",
+    "быстро",
+    "кратко",
+    "глянь",
+    "коротко",
+)
+
+RISK_DISPATCH_TERMS = (
+    "risk",
+    "risks",
+    "downside",
+    "drawdown",
+    "red team",
+    "риск",
+    "риски",
+    "рисков",
+    "рискован",
+)
+
+ACTION_DISPATCH_TERMS = (
+    "buy",
+    "invest",
+    "investment",
+    "hold",
+    "sell",
+    "add",
+    "trim",
+    "exit",
+    "compare",
+    "comparison",
+    "analyze",
+    "analyse",
+    "evaluate",
+    "rank",
+    "allocate",
+    "купить",
+    "покупать",
+    "инвестировать",
+    "инвестир",
+    "держать",
+    "удерживать",
+    "продать",
+    "продавать",
+    "добавить",
+    "докуп",
+    "сравнить",
+    "сравни",
+    "проанализ",
+    "анализ",
+    "оценить",
+    "оценка",
+)
+
+HORIZON_DISPATCH_PATTERN = re.compile(
+    r"(?i)\b(?:\d+\s*(?:year|years|yr|yrs|y|год|года|лет)|"
+    r"horizon|time horizon|long[- ]?term|долгосрок|горизонт)\b"
+)
+
+
+def dispatch_command_prefix(prompt: str) -> str | None:
+    match = re.match(r"^\s*([A-Za-z]+)\s*:", prompt)
+    if not match:
+        return None
+    return match.group(1).upper()
+
+
+def dispatch_has_any_term(prompt: str, terms: tuple[str, ...]) -> bool:
+    text = prompt.casefold()
+    return any(term.casefold() in text for term in terms)
+
+
+def dispatch_has_horizon(prompt: str) -> bool:
+    return HORIZON_DISPATCH_PATTERN.search(prompt) is not None
+
+
+def dispatch_has_supported_identity(prompt: str) -> bool:
+    if detect_supported_equity_tickers(prompt):
+        return True
+    text = prompt.casefold()
+    non_equity_markers = {
+        "SPY": ("spy", "s&p 500", "s&p500"),
+        "QQQ": ("qqq", "nasdaq 100", "nasdaq-100"),
+        "SCHG": ("schg",),
+        "TLT": ("tlt", "20+ year treasury"),
+        "BTC": ("btc", "bitcoin"),
+        "GLD": ("gld", "gold", "золото"),
+    }
+    return any(any(marker in text for marker in markers) for markers in non_equity_markers.values())
+
+
+def dispatch_supported_agent_route(prompt: str) -> dict[str, Any] | None:
+    if not dispatch_has_supported_identity(prompt):
+        return None
+    try:
+        return validate_supported_agent_route(prompt)
+    except AgentRunError:
+        return None
+
+
+def classify_dispatch_prompt(
+    prompt: str,
+    *,
+    execute: bool = False,
+    has_answers: bool = False,
+    continue_with_baseline: bool = False,
+) -> DispatchDecision:
+    stripped = prompt.strip()
+    if not stripped:
+        raise ValueError("dispatch requires a non-empty --prompt")
+
+    prefix = dispatch_command_prefix(stripped)
+    if prefix == "QUICK":
+        normalized = normalize_quick_prompt(stripped)
+        target = "quick-answer" if has_answers else "quick-run"
+        return DispatchDecision(
+            selected_dispatch="QUICK",
+            selected_route="quick_take",
+            target_command=target,
+            normalized_prompt=normalized,
+            target_prompt=normalized,
+            reason="explicit QUICK prefix",
+        )
+    if prefix == "AGENT":
+        route_info = validate_supported_agent_route(stripped)
+        target = "agent-run" if execute and (has_answers or continue_with_baseline) else "agent-intake"
+        normalized = normalize_agent_prompt(stripped)
+        return DispatchDecision(
+            selected_dispatch="AGENT",
+            selected_route=route_info["route"],
+            target_command=target,
+            normalized_prompt=normalized,
+            target_prompt=normalized,
+            reason="explicit AGENT prefix",
+        )
+    if prefix in SPECIALIST_COMMANDS:
+        parsed = parse_specialist_prompt(stripped)
+        return DispatchDecision(
+            selected_dispatch="SPECIALIST",
+            selected_route="direct_specialist",
+            target_command="specialist-run",
+            normalized_prompt=stripped,
+            target_prompt=stripped,
+            reason=f"explicit {parsed['prefix']} specialist prefix",
+        )
+    if prefix is not None:
+        return DispatchDecision(
+            selected_dispatch="NEEDS_CLARIFICATION",
+            selected_route="needs_clarification",
+            target_command="needs-clarification",
+            normalized_prompt=stripped,
+            target_prompt=stripped,
+            reason=f"unsupported command prefix: {prefix}",
+        )
+
+    route_info = dispatch_supported_agent_route(stripped)
+    if route_info is None:
+        return DispatchDecision(
+            selected_dispatch="NEEDS_CLARIFICATION",
+            selected_route="needs_clarification",
+            target_command="needs-clarification",
+            normalized_prompt=stripped,
+            target_prompt=stripped,
+            reason="asset identity was not recognized; no workflow launched",
+        )
+
+    if dispatch_has_any_term(stripped, QUICK_DISPATCH_TERMS):
+        normalized = normalize_quick_prompt(stripped)
+        target = "quick-answer" if has_answers else "quick-run"
+        return DispatchDecision(
+            selected_dispatch="QUICK",
+            selected_route="quick_take",
+            target_command=target,
+            normalized_prompt=normalized,
+            target_prompt=normalized,
+            reason="ordinary prompt with explicit quick/short intent",
+        )
+
+    has_risk = dispatch_has_any_term(stripped, RISK_DISPATCH_TERMS)
+    has_action = dispatch_has_any_term(stripped, ACTION_DISPATCH_TERMS)
+    if has_risk and not has_action:
+        target_prompt = f"RISK: {stripped}"
+        return DispatchDecision(
+            selected_dispatch="SPECIALIST",
+            selected_route="direct_specialist",
+            target_command="specialist-run",
+            normalized_prompt=target_prompt,
+            target_prompt=target_prompt,
+            reason="ordinary risk-only prompt for a recognized asset",
+        )
+
+    target = "agent-run" if execute and (has_answers or continue_with_baseline) else "agent-intake"
+    normalized = normalize_agent_prompt(stripped)
+    reason = (
+        "ordinary investment-action prompt"
+        if has_action
+        else "ordinary concrete-asset prompt with recognized asset/horizon"
+        if dispatch_has_horizon(stripped)
+        else "ordinary concrete-asset prompt with recognized asset"
+    )
+    return DispatchDecision(
+        selected_dispatch="AGENT",
+        selected_route=route_info["route"],
+        target_command=target,
+        normalized_prompt=normalized,
+        target_prompt=normalized,
+        reason=reason,
+    )
 
 
 def non_equity_agent_intake_questions(normalized_prompt: str, route: str, identity: dict[str, Any]) -> list[str]:
@@ -6332,6 +6565,141 @@ def run_live_acceptance(require_live: bool = False) -> int:
         print(f"Log: {report['log_path']}")
     return 0 if report["status"] == "pass" else 1
 
+
+def latest_new_json_file(directory: Path, before: set[str]) -> Path | None:
+    if not directory.is_dir():
+        return None
+    candidates = [path for path in directory.glob("*.json") if str(path) not in before]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda path: path.stat().st_mtime)
+
+
+def maybe_report_path_from_agent_log(path: Path | None) -> str | None:
+    if not path or not path.is_file():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    report_path = payload.get("report_path")
+    return str(report_path) if report_path else None
+
+
+def write_dispatch_run_log(
+    *,
+    decision: DispatchDecision,
+    prompt: str,
+    mode: str,
+    executed: bool,
+    validation_status: str,
+    report_path: str | None = None,
+) -> Path:
+    output_dir = get_dispatch_runs_dir()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    created_at = datetime.now(timezone.utc).astimezone().isoformat(timespec="microseconds")
+    path = output_dir / f"{safe_timestamp_for_path(created_at)}-{mode}-dispatch-{uuid4().hex[:8]}.json"
+    payload = {
+        "prompt": prompt,
+        "selected_dispatch": decision.selected_dispatch,
+        "selected_route": decision.selected_route,
+        "target_command": decision.target_command,
+        "mode": mode,
+        "normalized_prompt": decision.normalized_prompt,
+        "executed": executed,
+        "report_path": report_path,
+        "validation_status": validation_status,
+        "created_at": created_at,
+        "reason": decision.reason,
+    }
+    write_json(path, payload)
+    return path
+
+
+def run_dispatch(
+    *,
+    prompt: str,
+    mode: str,
+    answer_args: list[str] | None,
+    answers_json: str | None,
+    continue_with_baseline: bool,
+    execute: bool,
+    portfolio_context_json: str | None = None,
+    portfolio_context_file: str | None = None,
+) -> int:
+    has_answers = bool(answer_args) or bool(answers_json)
+    decision = classify_dispatch_prompt(
+        prompt,
+        execute=execute,
+        has_answers=has_answers,
+        continue_with_baseline=continue_with_baseline,
+    )
+
+    if decision.target_command == "needs-clarification":
+        log_path = write_dispatch_run_log(
+            decision=decision,
+            prompt=prompt,
+            mode=mode,
+            executed=False,
+            validation_status="needs_clarification",
+        )
+        print("Dispatch result: needs_clarification")
+        print(f"Reason: {decision.reason}")
+        print("No workflow was launched. Provide a supported ticker, asset name, listing, or instrument.")
+        print(f"Dispatch log: {log_path}")
+        return 1
+
+    before_agent_logs = {
+        str(path)
+        for path in get_agent_runs_dir().glob("*.json")
+    } if get_agent_runs_dir().is_dir() else set()
+
+    if decision.target_command == "quick-run":
+        exit_code = run_quick(prompt=decision.target_prompt, mode=mode)
+    elif decision.target_command == "quick-answer":
+        exit_code = run_quick_answer(
+            prompt=decision.target_prompt,
+            mode=mode,
+            answer_args=answer_args,
+            answers_json=answers_json,
+        )
+    elif decision.target_command == "agent-intake":
+        exit_code = run_agent_intake(prompt=decision.target_prompt)
+    elif decision.target_command == "agent-run":
+        exit_code = run_agent_run(
+            prompt=decision.target_prompt,
+            mode=mode,
+            answer_args=answer_args,
+            answers_json=answers_json,
+            continue_with_baseline=continue_with_baseline,
+            portfolio_context_json=portfolio_context_json,
+            portfolio_context_file=portfolio_context_file,
+        )
+    elif decision.target_command == "specialist-run":
+        exit_code = run_specialist_run(prompt=decision.target_prompt, mode=mode)
+    else:
+        raise ValueError(f"unsupported dispatch target: {decision.target_command}")
+
+    report_path = None
+    if decision.target_command == "agent-run":
+        report_path = maybe_report_path_from_agent_log(
+            latest_new_json_file(get_agent_runs_dir(), before_agent_logs)
+        )
+    validation_status = "pass" if exit_code == 0 else "fail"
+    log_path = write_dispatch_run_log(
+        decision=decision,
+        prompt=prompt,
+        mode=mode,
+        executed=decision.target_command != "agent-intake",
+        validation_status=validation_status,
+        report_path=report_path,
+    )
+    print(f"Dispatch: {decision.selected_dispatch} -> {decision.target_command}")
+    print(f"Dispatch route: {decision.selected_route}")
+    print(f"Dispatch log: {log_path}")
+    return exit_code
+
+
 def run_route_check(mode: str) -> int:
     cases = load_cases()
     results = evaluate_cases(cases, mode=mode)
@@ -6502,6 +6870,50 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("mock", "live"),
         default="mock",
         help="Route check mode. Default: mock.",
+    )
+
+    dispatch = subparsers.add_parser(
+        "dispatch",
+        help="Auto-route an ordinary or prefixed investment request to the correct existing workflow",
+    )
+    dispatch.add_argument(
+        "--prompt",
+        required=True,
+        help="User investment request. Prefixes are optional; dispatch selects QUICK, AGENT, specialist, or clarification.",
+    )
+    dispatch.add_argument(
+        "--mode",
+        choices=("mock", "live"),
+        default="mock",
+        help="Execution mode passed to the selected workflow. Default: mock.",
+    )
+    dispatch.add_argument(
+        "--answer",
+        action="append",
+        dest="answers",
+        help="One intake answer. May be repeated. For AGENT, provide 1-5; for QUICK answer mode, provide exactly three.",
+    )
+    dispatch.add_argument(
+        "--answers-json",
+        help="Alternative to --answer: JSON array of intake answers.",
+    )
+    dispatch.add_argument(
+        "--portfolio-context-json",
+        help="Structured portfolio context JSON object for AGENT execution.",
+    )
+    dispatch.add_argument(
+        "--portfolio-context-file",
+        help="Path to a JSON file containing structured portfolio context for AGENT execution.",
+    )
+    dispatch.add_argument(
+        "--continue-with-baseline",
+        action="store_true",
+        help="For AGENT execution, proceed with approved baseline assumptions when answers are not supplied.",
+    )
+    dispatch.add_argument(
+        "--execute",
+        action="store_true",
+        help="For AGENT routes, run the full workflow only when answers or --continue-with-baseline are also supplied.",
     )
 
     live_doctor = subparsers.add_parser(
@@ -6680,6 +7092,17 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "route-check":
             return run_route_check(mode=args.mode)
+        if args.command == "dispatch":
+            return run_dispatch(
+                prompt=args.prompt,
+                mode=args.mode,
+                answer_args=args.answers,
+                answers_json=args.answers_json,
+                continue_with_baseline=args.continue_with_baseline,
+                execute=args.execute,
+                portfolio_context_json=args.portfolio_context_json,
+                portfolio_context_file=args.portfolio_context_file,
+            )
         if args.command == "live-doctor":
             return run_live_doctor(skip_sdk_doctor=args.skip_sdk_doctor)
         if args.command == "live-acceptance":

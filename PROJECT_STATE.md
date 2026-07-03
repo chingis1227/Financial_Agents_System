@@ -15,6 +15,7 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 - Daily runtime path: `PROJECT_STATE.md` -> `AGENTS.md` -> `workflows/route_cards/investment_request_router.md` -> selected route card -> validators.
 - User-facing command model: `AGENT:` for the large agent workflow, `QUICK:` for a short preliminary answer, and specialist prefixes for one analyst.
 - Ordinary investment-action prompts without a prefix still route through the router, but recommended UX is `AGENT:` or `QUICK:`.
+- Automation Lab also exposes a thin auto-dispatch entrypoint, `automation_lab/fa_automation.py dispatch --prompt "<user request>"`, which classifies prefixed and ordinary requests and then calls the existing QUICK, AGENT, or direct-specialist flow. It does not redefine canonical investment rules.
 - `AGENT:` asks exactly 5 relevant questions first, then uses relevant spawned subagents when available. Do not claim an agent workflow unless subagents were actually spawned.
 - If subagents cannot be spawned after `AGENT:`, record the fallback only in audit metadata and mark the user-facing output Limited; do not advertise the fallback as a selectable user mode.
 - `QUICK:` is chat-only, asks exactly 3 relevant questions first, and must not create `investment_report.md` or an `audit` folder.
@@ -55,6 +56,7 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 | `AGENT:` fixed-income workflow | Ready; Level 2 hardening complete | `workflows/route_cards/fixed_income_full_cycle.md` |
 | `AGENT:` multi-asset comparison | Ready; Level 2 hardening complete | `workflows/route_cards/multi_asset_comparison.md` |
 | Specialist command | Ready with analyst boundary | `workflows/route_cards/direct_specialist.md` |
+| Automation Lab auto-dispatch | Ready as a thin CLI router over existing QUICK / AGENT / specialist flows | `automation_lab/fa_automation.py dispatch --prompt "<user request>"` |
 
 | Python LangGraph runtime | Available for dry-run routing, equity full-cycle artifacts, direct specialist/Quick Take boundaries, missing-context interrupts, evidence-gate blocking, and live OpenAI API adapter gated on `OPENAI_API_KEY` | `langgraph_runtime/financial_agent_graph.py` |
 

@@ -37,6 +37,7 @@ This lab can automate and test workflows, but it must not redefine investment lo
 - TASK-018: structured portfolio-context input is implemented for `agent-run` through `--portfolio-context-json` and `--portfolio-context-file`; the context is written to audit, propagated to Portfolio Fit/report text, and does not unlock final action or exact sizing without gated IC conditions.
 - TASK-019: live usage-limit handling is implemented; AGENT live retries stop when the Codex SDK reports a usage limit, audit records the reset hint, and `live-acceptance` reports `usage_limit_gaps` separately from smoke gaps.
 - TASK-020: live acceptance is complete for the supported runtime matrix. QUICK live/public validation, full AGENT live packages for equity, ETF/fund, fixed income, crypto, commodity, and multi-asset comparison, and all direct specialist prefixes have real `sdk_thread_id` evidence; `live-acceptance --require-live` passes with no smoke, live, or usage-limit gaps.
+- TASK-021: thin auto-dispatch is implemented as `dispatch`. It accepts ordinary or prefixed user prompts, chooses the existing QUICK, AGENT, direct-specialist, or clarification path, and writes dispatch logs under `runs/dispatch/` without redefining investment rules.
 
 
 
@@ -144,6 +145,17 @@ Live timeout controls:
 `Complete` means `workflow_complete=true`, `analysis_status=Complete`, `ic_final_owner=true`, all equity specialists completed, every completed live specialist has a real `sdk_thread_id`, IC consumed every upstream handoff, source/evidence preflight is not Blocked, and the report validator passes. Any failed, missing, or timed-out specialist keeps `workflow_complete=false`, `analysis_status=Limited`, explains `stop_reason`, and makes the first report line start with `Report status: Limited`.
 
 ## Commands
+
+Auto-dispatch an ordinary or prefixed user request:
+
+```powershell
+..\.venv\Scripts\python.exe fa_automation.py dispatch --prompt "Проанализируй Microsoft на 3 года" --mode mock
+..\.venv\Scripts\python.exe fa_automation.py dispatch --prompt "Быстро глянь Microsoft" --mode mock
+..\.venv\Scripts\python.exe fa_automation.py dispatch --prompt "Какие риски у Microsoft?" --mode mock
+..\.venv\Scripts\python.exe fa_automation.py dispatch --prompt "Microsoft на 3 года" --mode mock --execute --continue-with-baseline
+```
+
+`dispatch` is a router only. Explicit `QUICK:`, `AGENT:`, and specialist prefixes are preserved. Ordinary quick wording routes to `quick-run` / `quick-answer`; ordinary risk-only prompts route to one `RISK:` specialist; ordinary concrete-asset investment/action/horizon prompts route to AGENT intake by default or to AGENT execution only with `--execute` plus answers or `--continue-with-baseline`. If the asset is not recognized, dispatch returns `needs_clarification` and does not launch a workflow.
 
 Run mock route check:
 
@@ -327,6 +339,14 @@ Run tests:
 ```
 
 ## Run logs
+
+Dispatch logs are JSON files stored under:
+
+```text
+runs/dispatch/
+```
+
+Each dispatch log records the original prompt, selected dispatch, selected route, target command, mode, normalized prompt, whether execution proceeded, report path if created, validation status, and timestamp.
 
 Route-check logs are JSON files stored under:
 

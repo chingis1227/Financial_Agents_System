@@ -23,6 +23,14 @@ Classify command and intent before analysis:
 | Specialist command | `direct_specialist.md` |
 | Ordinary concrete-asset investment-action request | Select the appropriate asset/comparison route; recommended UX is `AGENT:` |
 
+Automation Lab CLI auto-dispatch is a thin runtime wrapper over this table:
+
+```powershell
+automation_lab/fa_automation.py dispatch --prompt "<user request>"
+```
+
+It may add the appropriate internal `AGENT:`, `QUICK:`, or specialist prefix before calling the existing flow, but it must not add new investment rules or bypass the route-card and canonical-document boundaries.
+
 ## Specialist command mapping
 
 | Prefix | Target agent |

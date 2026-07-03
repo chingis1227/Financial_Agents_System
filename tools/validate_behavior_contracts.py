@@ -113,7 +113,25 @@ for case in all_prompt_cases:
     if command == "QUICK" or route == "quick_take":
         add(f"{cid} QUICK command asks 3 questions", rq == 3, str(rq))
         add(f"{cid} QUICK command uses canonical quick_take route", route == "quick_take", str(route))
-        add(f"{cid} QUICK prompt has prefix or explicit quick trigger", prompt_raw.upper().startswith("QUICK:") or any(t in prompt for t in ["quick", "short", "fast", "preliminary", "brief"]), prompt_raw)
+        add(
+            f"{cid} QUICK prompt has prefix or explicit quick trigger",
+            prompt_raw.upper().startswith("QUICK:")
+            or any(
+                t in prompt
+                for t in [
+                    "quick",
+                    "short",
+                    "fast",
+                    "preliminary",
+                    "brief",
+                    "быстро",
+                    "кратко",
+                    "глянь",
+                    "коротко",
+                ]
+            ),
+            prompt_raw,
+        )
     if command in COMMAND_AGENT_MAP:
         add(f"{cid} specialist command routes direct", route == "direct_specialist", str(route))
         add(f"{cid} specialist command target agent", case.get("expected_agent") == COMMAND_AGENT_MAP[command], str(case.get("expected_agent")))

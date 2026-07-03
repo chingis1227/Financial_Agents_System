@@ -23,6 +23,31 @@
     "required_questions": 5
   },
   {
+    "id": "ordinary_russian_microsoft_agent_dispatch",
+    "prompt": "Проанализируй Microsoft на 3 года",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5
+  },
+  {
+    "id": "ordinary_russian_quick_microsoft_dispatch",
+    "prompt": "Быстро глянь Microsoft",
+    "command": "QUICK",
+    "expected_route": "quick_take",
+    "required_questions": 3,
+    "explicit_quick": true
+  },
+  {
+    "id": "ordinary_russian_risk_microsoft_dispatch",
+    "prompt": "Какие риски у Microsoft?",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "direct_specialist",
+    "expected_agent": "risk-red-team-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action"
+  },
+  {
     "id": "agent_btc_three_year",
     "prompt": "AGENT: BTC for 3 years, should I invest?",
     "command": "AGENT",
