@@ -64,6 +64,10 @@ from agent_data import (
     supported_equity_identity,
     supported_equity_metadata,
 )
+try:
+    from data_providers import run_provider_registry_for_preflight
+except ImportError:  # pragma: no cover - package import path fallback
+    from automation_lab.data_providers import run_provider_registry_for_preflight
 
 LAB_ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = Path(os.environ.get("FA_AUTOMATION_PROJECT_ROOT") or LAB_ROOT.parent)
@@ -2461,7 +2465,7 @@ def resolve_agent_request(prompt: str, mode: str = "mock") -> dict[str, Any]:
     text = normalized.lower()
     if route == "multi_asset_comparison":
         components: list[dict[str, Any]] = []
-        for ticker in ("MSFT", "GOOGL", "GOOG", "AAPL", "NVDA"):
+        for ticker in ("MSFT", "GOOGL", "GOOG", "AAPL", "NVDA", "FN"):
             if re.search(rf"\b{re.escape(ticker.lower())}\b", text):
                 try:
                     equity_identity = supported_equity_identity(ticker)
@@ -2858,6 +2862,21 @@ def build_non_equity_source_preflight(
             snapshot = build_quick_source_snapshot(prompt, quick_answers, "live" if mode == "live" else "mock")
         except Exception as exc:  # pragma: no cover - provider failures should degrade through source records
             snapshot = {"provider_results": [], "provider_errors": [{"error": f"{type(exc).__name__}: {exc}"}], "components": {}}
+    try:
+        provider_registry_run = run_provider_registry_for_preflight(
+            route=route,
+            identity=identity,
+            mode=mode,
+            persist=False,
+        )
+    except Exception as exc:  # pragma: no cover - provider registry must not break existing route contracts
+        provider_registry_run = {
+            "provider_registry": [],
+            "provider_plan": [],
+            "provider_results": [],
+            "data_run_artifacts": {},
+            "error": str(exc),
+        }
     components = snapshot.get("components") if isinstance(snapshot.get("components"), dict) else {}
     price = components.get("price") if isinstance(components.get("price"), dict) else {}
     recent_events = components.get("recent_events") if isinstance(components.get("recent_events"), list) else []
@@ -2938,6 +2957,29 @@ def build_non_equity_source_preflight(
                 agent_source_record(source_id="comparison_framework", name="Role-based comparison framework", category="analysis_framework", importance="required", data={"criteria": ["return role", "risk", "diversification", "liquidity", "portfolio fit"]}, primary="Financial Agent System route cards"),
             ]
         )
+    for result in provider_registry_run.get("provider_results") or []:
+        provider_id = str(result.get("provider_id") or "provider")
+        status = str(result.get("status") or "missing")
+        records.append(
+            agent_source_record(
+                source_id=f"provider_{provider_id}",
+                name=str(result.get("provider_name") or provider_id),
+                category=str(result.get("source_type") or "provider"),
+                importance="important",
+                status="ok" if status == "ok" else "partial" if status in {"partial", "disabled"} else status,
+                data={
+                    "provider_status": status,
+                    "freshness_status": result.get("freshness_status"),
+                    "limitations": result.get("limitations") or [],
+                    "errors": result.get("errors") or [],
+                },
+                url=result.get("url"),
+                primary=str(result.get("provider_name") or provider_id),
+                source_date=result.get("source_date") or retrieved_at[:10],
+                source_tier=str(result.get("source_tier") or "Tier 4"),
+                error="; ".join((result.get("limitations") or []) + (result.get("errors") or [])),
+            )
+        )
     preflight = {
         "schema_version": "agent_source_preflight.v1",
         "mode": mode,
@@ -2949,6 +2991,10 @@ def build_non_equity_source_preflight(
         "source_records": records,
         "provider_results": snapshot.get("provider_results") or [{"provider_id": "automation_lab_public_seed", "status": "ok", "component": "agent_preflight", "quality": "limited_public"}],
         "provider_errors": snapshot.get("provider_errors") or [],
+        "data_provider_registry": provider_registry_run.get("provider_registry", []),
+        "data_provider_plan": provider_registry_run.get("provider_plan", []),
+        "data_provider_results": provider_registry_run.get("provider_results", []),
+        "data_run_artifacts": provider_registry_run.get("data_run_artifacts", {}),
     }
     preflight["summary"] = _summary_from_agent_records(records)
     return preflight

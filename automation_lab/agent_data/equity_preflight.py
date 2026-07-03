@@ -17,6 +17,11 @@ from .source_registry import (
     supported_equity_metadata,
 )
 
+try:
+    from data_providers import run_provider_registry_for_preflight
+except ImportError:  # pragma: no cover - package import path fallback
+    from automation_lab.data_providers import run_provider_registry_for_preflight
+
 LAB_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_AGENT_FIXTURES = {
     "MSFT": LAB_ROOT / "fixtures" / "agent" / "msft_deep_equity_pack.json",
@@ -128,6 +133,25 @@ def attach_provider_results(preflight: dict[str, Any], extra_results: list[dict[
     offset = len(results)
     results.extend(provider_result(record, order=offset + index + 1) for index, record in enumerate(preflight.get("source_records", [])))
     preflight["provider_results"] = results
+    return preflight
+
+
+def attach_data_provider_registry(preflight: dict[str, Any], *, route: str = "equity_full_cycle") -> dict[str, Any]:
+    """Attach production provider-layer attempts without disturbing legacy preflight fields."""
+
+    try:
+        registry_run = run_provider_registry_for_preflight(
+            route=route,
+            identity=preflight.get("subject_identity") or {},
+            mode=str(preflight.get("mode") or "mock"),
+            persist=False,
+        )
+    except Exception as exc:  # pragma: no cover - registry must never break legacy preflight
+        registry_run = {"provider_registry": [], "provider_plan": [], "provider_results": [], "data_run_artifacts": {}, "error": str(exc)}
+    preflight["data_provider_registry"] = registry_run.get("provider_registry", [])
+    preflight["data_provider_plan"] = registry_run.get("provider_plan", [])
+    preflight["data_provider_results"] = registry_run.get("provider_results", [])
+    preflight["data_run_artifacts"] = registry_run.get("data_run_artifacts", {})
     return preflight
 
 
@@ -409,6 +433,7 @@ def build_equity_source_preflight(prompt: str, answers: list[str], mode: str, ti
     else:
         raise ValueError(f"Unsupported AGENT preflight mode: {mode}")
     preflight["summary"] = summarize_preflight(preflight)
+    attach_data_provider_registry(preflight)
     if mode == "live":
         attach_parsed_documents(preflight)
     return preflight

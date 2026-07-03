@@ -21,7 +21,7 @@ Classify command and intent before analysis:
 | `AGENT:` plus bond, bond ETF, yield, duration, credit, or rates exposure | `fixed_income_full_cycle.md` |
 | `AGENT:` plus cross-asset comparison | `multi_asset_comparison.md` |
 | Specialist command | `direct_specialist.md` |
-| Ordinary concrete-asset investment-action request | Select the appropriate asset/comparison route; recommended UX is `AGENT:` |
+| Ordinary concrete-asset investment-action or horizon-analysis request | Mandatory auto-dispatch to the appropriate asset/comparison route; `AGENT:` is a shortcut, not a prerequisite |
 
 Automation Lab CLI auto-dispatch is a thin runtime wrapper over this table:
 
@@ -30,6 +30,18 @@ automation_lab/fa_automation.py dispatch --prompt "<user request>"
 ```
 
 It may add the appropriate internal `AGENT:`, `QUICK:`, or specialist prefix before calling the existing flow, but it must not add new investment rules or bypass the route-card and canonical-document boundaries.
+
+## Ordinary request auto-dispatch contract
+
+Any user prompt about an investment decision, buy, sell, hold, add, trim, exit, asset comparison, or analysis of a concrete asset for a time horizon must first record a routing decision through this router. Do not provide ordinary chat-only investment analysis before that decision.
+
+Known equity identity normalization includes:
+
+| User wording | Canonical identity | Route |
+|---|---|---|
+| `Fabrinet`, `Fabrynet`, `Fabryns`, `FN` | `Fabrinet` / `FN` | `equity_full_cycle.md` |
+
+Numeric horizon ranges such as `3-5 years` / `3–5 лет` are horizon context, not ticker candidates.
 
 ## Specialist command mapping
 
@@ -73,7 +85,7 @@ If required spawned subagents, evidence, freshness, valuation, risk, or portfoli
 
 ## Validation expectations
 
-Golden prompts for `AGENT:`, `QUICK:`, every specialist command, Microsoft, BTC, QQQ vs SCHG, gold, TLT, freshness, direct risk, and premature final memo must map to expected routes and target agents in `tests/behavior/golden_prompts.yaml`.
+Golden prompts for `AGENT:`, `QUICK:`, every specialist command, Microsoft, Fabrinet/Fabrynet/Fabryns/FN, BTC, QQQ vs SCHG, gold, TLT, freshness, direct risk, unknown-asset clarification, `3-5` horizon parsing, and premature final memo must map to expected routes and target agents in `tests/behavior/golden_prompts.yaml` and runtime tests.
 
 
 ## Decision Mode / Horizon Gate

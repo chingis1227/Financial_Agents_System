@@ -53,6 +53,7 @@ This project follows official OpenAI / Codex best practices: keep `AGENTS.md` pr
 ## Non-negotiable runtime rules
 
 - Do not use archive files as active source of truth.
+- Any ordinary user request about an investment decision, buy/sell/hold/add/trim/exit, asset comparison, or asset analysis for a stated horizon must enter auto-dispatch first; do not answer with chat-only analysis in bypass of the router.
 - `AGENT:` is the user-facing command for the large agent workflow. It asks exactly 5 relevant questions first, then uses relevant spawned subagents when available.
 - Do not claim an agent workflow unless subagents were actually spawned. If subagents cannot be spawned, record fallback only in audit metadata and mark the user-facing output Limited.
 - `QUICK:` is only Preliminary or Limited, asks exactly 3 relevant questions first, stays chat-only, and never creates report/audit files.
@@ -69,7 +70,8 @@ This project follows official OpenAI / Codex best practices: keep `AGENTS.md` pr
 |---|---|
 | `QUICK:` or explicit short / quick / fast / preliminary | `workflows/route_cards/quick_take.md` |
 | `AGENT:` with a concrete asset or comparison | `workflows/route_cards/investment_request_router.md` -> selected asset/comparison route card |
-| buy / invest / hold / sell / add concrete asset without prefix | route through router; recommended UX is `AGENT:` |
+| buy / invest / hold / sell / add / analyze concrete asset without prefix | auto-dispatch through router; `AGENT:` is a shortcut, not a prerequisite |
+| Fabrinet / Fabrynet / Fabryns / FN with investment horizon | equity full-cycle workflow (`FN`); do not treat `3-5` as a ticker |
 | specialist command | `workflows/route_cards/direct_specialist.md`; one analyst only; no final IC Action |
 | docs/runtime maintenance | `implementation/15-documentation-sync-contract.md` |
 

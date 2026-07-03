@@ -70,7 +70,9 @@ Asset routes:
 
 Positive action requires evidence readiness plus valuation/risk review when capital allocation is decision-relevant.
 
-`AGENT:` is the recommended user-facing command for concrete-asset capital-decision wording such as whether to invest, buy, add, hold, sell, start exposure, no current position, multi-year horizon, `should I invest`, `should I buy`, and `worth buying`. Ordinary unprefixed requests still route through the router. `QUICK:` is allowed only when the user explicitly asks for `QUICK:` / short / fast / quick take / preliminary output. Existing `full_cycle` route IDs are internal compatibility names, not selectable user modes.
+`AGENT:` is the recommended shortcut for concrete-asset capital-decision wording such as whether to invest, buy, add, hold, sell, start exposure, no current position, multi-year horizon, `should I invest`, `should I buy`, and `worth buying`. Ordinary unprefixed investment-action or horizon-analysis requests are not a lesser chat mode: they must enter auto-dispatch and route through the same selected large workflow unless the user explicitly asks for `QUICK:` / short / fast / quick take / preliminary output. Existing `full_cycle` route IDs are internal compatibility names, not selectable user modes.
+
+Identity-resolution examples: `Fabrinet`, `Fabrynet`, `Fabryns`, and `FN` resolve to public equity `Fabrinet / FN`; horizon ranges such as `3-5` / `3–5` are parsed as time horizon, not as ticker symbols.
 
 Execution-mode routing rule:
 - `AGENT:` and ordinary concrete-asset investment-action requests route to the large workflow, using only relevant subagents/modules for the selected workflow.

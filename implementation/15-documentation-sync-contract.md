@@ -18,6 +18,7 @@ This contract follows official OpenAI / Codex best practices: keep `AGENTS.md` p
 |---|---|
 | New or changed current runtime behavior | Update `PROJECT_STATE.md`, affected route card, behavior fixtures, and validators. |
 | New or changed canonical rule | Update the canonical document, registry if status changes, route cards if runtime-facing, and behavior fixtures if behavior changes. |
+| New or changed investment auto-dispatch or identity-resolution behavior | Update `AGENTS.md`, `PROJECT_STATE.md`, `implementation/00-master-rules.md`, `workflows/route_cards/investment_request_router.md`, Automation Lab dispatch tests, LangGraph routing tests, and behavior fixtures. |
 | New workflow runbook or route card | Register it in `implementation/01-documentation-control.md`, update `PROJECT_STATE.md`, and update runtime readiness validation. |
 | New skill or material skill trigger change | Update the skill description, related route card, and skill validation checks. |
 | New evidence parser behavior | Update `PROJECT_STATE.md`, `implementation/04-evidence-layer.md`, affected route card or evidence skill, parser fixtures/tests, and Automation Lab validation commands. |
@@ -77,6 +78,7 @@ This contract is satisfied when:
 - `PROJECT_STATE.md` exists and reflects current operational state.
 - Active runtime route cards exist and are registered.
 - Behavior fixtures cover the golden prompts.
+- Ordinary investment-action and horizon-analysis prompts cannot bypass auto-dispatch, and identity fixtures cover alias normalization such as `Fabrinet` / `Fabrynet` / `Fabryns` / `FN` plus horizon parsing such as `3-5` not being treated as a ticker.
 - Russian user-facing investment output has a language/style validator and behavior fixtures that reject Run-glish such as `growth exposure`, `headline earnings`, and English-Russian hybrids.
 - Validators fail on stale registry, stale route, missing route card, missing workflow-router skill, or archived docs in active runtime order.
 - `AGENTS.md` remains concise and points to the current-state and route-card layer.

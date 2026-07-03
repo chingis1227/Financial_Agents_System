@@ -277,5 +277,93 @@
     "specialist_only": true,
     "required_boundary": "Boundary: Not an IC Action",
     "freshness_required": false
+  },
+  {
+    "id": "golden_ordinary_fabrinet_three_to_five_years",
+    "prompt": "Проанализируй Fabrinet на 3-5 лет",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "chat_only_bypass",
+      "ticker_3_5_resolution"
+    ]
+  },
+  {
+    "id": "golden_ordinary_fabrynet_alias_three_to_five_years",
+    "prompt": "Проанализируй Fabrynet на 3-5 лет",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "expected_ticker": "FN",
+    "required_questions": 5,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "chat_only_bypass",
+      "ticker_3_5_resolution"
+    ]
+  },
+  {
+    "id": "golden_ordinary_fabryns_alias_investment_three_to_five_years",
+    "prompt": "Проанализируй Fabryns для инвестиций на 3-5 лет",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "expected_ticker": "FN",
+    "required_questions": 5,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "chat_only_bypass",
+      "ticker_3_5_resolution"
+    ]
+  },
+  {
+    "id": "golden_ordinary_fn_invest_three_to_five_years",
+    "prompt": "Should I invest in FN for 3-5 years?",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "expected_ticker": "FN",
+    "required_questions": 5,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "chat_only_bypass",
+      "ticker_3_5_resolution"
+    ]
+  },
+  {
+    "id": "golden_ordinary_microsoft_horizon_only_router",
+    "prompt": "Microsoft for 3-5 years",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "chat_only_bypass",
+      "ticker_3_5_resolution"
+    ]
+  },
+  {
+    "id": "golden_ordinary_analyze_microsoft_horizon_router",
+    "prompt": "Analyze Microsoft for 3-5 years",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "chat_only_bypass",
+      "ticker_3_5_resolution"
+    ]
+  },
+  {
+    "id": "golden_ordinary_fabrinet_horizon_only_router",
+    "prompt": "Fabrinet for 3-5 years",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "expected_ticker": "FN",
+    "required_questions": 5,
+    "forbidden": [
+      "quick_take_without_explicit_request",
+      "chat_only_bypass",
+      "ticker_3_5_resolution"
+    ]
   }
 ]

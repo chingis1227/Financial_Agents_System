@@ -38,6 +38,7 @@ This lab can automate and test workflows, but it must not redefine investment lo
 - TASK-019: live usage-limit handling is implemented; AGENT live retries stop when the Codex SDK reports a usage limit, audit records the reset hint, and `live-acceptance` reports `usage_limit_gaps` separately from smoke gaps.
 - TASK-020: live acceptance is complete for the supported runtime matrix. QUICK live/public validation, full AGENT live packages for equity, ETF/fund, fixed income, crypto, commodity, and multi-asset comparison, and all direct specialist prefixes have real `sdk_thread_id` evidence; `live-acceptance --require-live` passes with no smoke, live, or usage-limit gaps.
 - TASK-021: thin auto-dispatch is implemented as `dispatch`. It accepts ordinary or prefixed user prompts, chooses the existing QUICK, AGENT, direct-specialist, or clarification path, and writes dispatch logs under `runs/dispatch/` without redefining investment rules.
+- TASK-022: production data provider/parsing layer is implemented under `data_providers/` and `data_parsers/`. It adds a unified ProviderResult contract, route-aware provider registry, raw/normalized run cache, freshness/source-tier helpers, SEC/FRED/Treasury/CFTC/USDA/ETF issuer/public price/search/EODHD provider adapters, parser tests, and Evidence Pack integration without changing canonical investment rules.
 
 
 
@@ -57,6 +58,29 @@ cd "C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent System\automation_lab
 ```
 
 Keep generated `runs/` and `data_runs/` local/ignored. Reader-facing AGENT reports remain outside the repo under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\`.
+
+## Data provider/parsing layer
+
+Automation Lab now has a production-oriented provider layer under:
+
+```text
+data_providers/
+data_parsers/
+data_runs/
+```
+
+The layer fetches, parses, normalizes, caches, and passes provider-derived claims into Evidence Pack inputs. Agents still analyze; providers fetch; parsers extract; normalizers standardize; Evidence Pack validates support. Search/Perplexity-style discovery remains Pointer-Only and cannot support material claims until the underlying source is fetched and parsed.
+
+Optional live keys:
+
+```powershell
+$env:FRED_API_KEY="..."
+$env:USDA_NASS_API_KEY="..."
+$env:PERPLEXITY_API_KEY="..."
+$env:EODHD_API_KEY="..."
+```
+
+If a key is missing, the provider records `disabled` or `partial` and workflows degrade instead of crashing.
 
 ## Data source map draft
 

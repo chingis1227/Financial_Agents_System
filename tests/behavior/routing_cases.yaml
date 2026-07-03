@@ -312,5 +312,36 @@
     "required_questions": 5,
     "requires_spawned_subagents": true,
     "required_output": "scenario winners, not universal winner"
+  },
+  {
+    "id": "ordinary_fabrinet_alias_router",
+    "prompt": "Проанализируй Fabryns для инвестиций на 3-5 лет",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "expected_ticker": "FN",
+    "required_questions": 5
+  },
+  {
+    "id": "ordinary_fn_english_router",
+    "prompt": "Should I invest in FN for 3-5 years?",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "expected_ticker": "FN",
+    "required_questions": 5
+  },
+  {
+    "id": "ordinary_microsoft_horizon_only_router",
+    "prompt": "Microsoft for 3-5 years",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5
+  },
+  {
+    "id": "ordinary_fabrinet_horizon_only_router",
+    "prompt": "Fabrinet for 3-5 years",
+    "command": "ORDINARY_ROUTER",
+    "expected_route": "equity_full_cycle",
+    "expected_ticker": "FN",
+    "required_questions": 5
   }
 ]

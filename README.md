@@ -4,6 +4,8 @@ The Financial Agent System is a Codex-native, agents-first financial analysis pr
 
 The current state is summarized in `PROJECT_STATE.md`. Historical build trackers are archived under `archive/project-history/` and do not control daily runtime behavior.
 
+Automation Lab includes a production-oriented data provider/parsing layer under `automation_lab/data_providers/` and `automation_lab/data_parsers/`. It centralizes source access, normalization, freshness/source-tier status, raw/normalized caching, and Evidence Pack claim inputs for equity, ETF, fixed income, macro, commodity/grain, crypto, and multi-asset workflows. It is infrastructure only; canonical investment rules remain in `implementation/` and `workflows/route_cards/`.
+
 ## How to use it
 
 Start Codex from the project root. For investment requests, Codex should route through `workflows/route_cards/investment_request_router.md` before answering.

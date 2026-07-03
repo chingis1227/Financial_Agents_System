@@ -15,6 +15,7 @@ Evidence Collector is the system's evidence control tower. It does not make valu
 | Evidence Collector Agent | Coordinates evidence collection, evidence pack, readiness, and evidence lock. |
 | Evidence Collection Skill | Repeatable method for collecting, classifying, and validating evidence. |
 | Evidence Pack | Structured repository of sources, claims, support status, freshness, limitations, and handoffs. |
+| Data Provider & Parsing Layer | On-demand provider registry, raw/normalized cache, parsers, freshness/source-tier metadata, and ProviderResult claim inputs for Evidence Pack support. |
 | Evidence Document Parser Layer | Local HTML/PDF/raw-text evidence supplier that extracts text/table-like content and normalized financial claims for Evidence Pack rows. |
 | Evidence Request Protocol | Method for specialists and IC to request missing evidence or challenge readiness. |
 | Source Registry | Central source hierarchy and source-quality policy. |
@@ -79,6 +80,8 @@ Default hierarchy:
 5. Pointer-only - AI summaries, SEO pages, unsourced aggregators; may help find leads but must not support material claims.
 
 Domain source frameworks may add asset-specific detail but cannot weaken this hierarchy. Domain overlays may classify asset-specific direct evidence, such as verified on-chain data for crypto network activity or exchange inventory data for commodities, but weak sources cannot become support for decision-critical claims merely because a domain prefers them.
+
+Automation Lab provider outputs follow the same hierarchy. Official SEC, FRED, U.S. Treasury, CFTC, USDA, issuer fund pages/holdings, and equivalent regulator/exchange documents are Tier 1 when directly fetched and parsed. Public market-data fallbacks such as Stooq/Yahoo and optional EODHD are Tier 2 unless superseded by an official source. Search/Perplexity/search snippets are Pointer-Only and cannot support material claims without fetching/parsing the underlying source.
 
 ## 5. Readiness statuses
 

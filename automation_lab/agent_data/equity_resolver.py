@@ -59,6 +59,18 @@ STATIC_EQUITY_IDENTITIES: dict[str, dict[str, Any]] = {
         "aliases": ["nvidia", "nvidia corporation"],
         "ir_url": "https://investor.nvidia.com/",
     },
+    "FN": {
+        "ticker": "FN",
+        "company_name": "Fabrinet",
+        "cik": "0001408710",
+        "exchange": "NYSE",
+        "country": "Cayman Islands / Thailand operations",
+        "currency": "USD",
+        "instrument_classification": "us_common_equity",
+        "security_type": "equity",
+        "aliases": ["fabrinet", "fabrynet", "fabryns"],
+        "ir_url": "https://investor.fabrinet.com/",
+    },
     "GOOGL": {
         "ticker": "GOOGL",
         "company_name": "Alphabet Inc.",
@@ -321,6 +333,10 @@ def resolve_equity_request(prompt: str, mode: str = "mock") -> dict[str, Any]:
         blocked_tokens = {"AGENT", "QUICK", "ETF", "BTC", "USD", "SEC", "API", "10", "10K", "10Q", "20F", "6K"}
         for candidate in raw_candidates:
             upper = candidate.upper()
+            if upper.isdigit():
+                continue
+            if re.fullmatch(r"\d+\s*[-.]\s*\d+", candidate):
+                continue
             ticker_like = any(ch.isdigit() for ch in candidate) or candidate == upper
             has_listing_suffix = "." in candidate or "-" in candidate
             if upper not in blocked_tokens and (ticker_like or has_listing_suffix):

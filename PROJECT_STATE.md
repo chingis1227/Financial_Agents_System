@@ -14,9 +14,11 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 - Python LangGraph runtime present: `langgraph_runtime/financial_agent_graph.py` exposes `run` and `chat`; dry-run mode is deterministic, and live mode requires `OPENAI_API_KEY`.
 - Daily runtime path: `PROJECT_STATE.md` -> `AGENTS.md` -> `workflows/route_cards/investment_request_router.md` -> selected route card -> validators.
 - User-facing command model: `AGENT:` for the large agent workflow, `QUICK:` for a short preliminary answer, and specialist prefixes for one analyst.
-- Ordinary investment-action prompts without a prefix still route through the router, but recommended UX is `AGENT:` or `QUICK:`.
+- Ordinary investment-action prompts without a prefix are mandatory auto-dispatch inputs: buy/sell/hold/add/trim/exit, asset comparisons, and asset analysis for a stated horizon first route through the router. `AGENT:` remains a shortcut/override, not a prerequisite for the large workflow; explicit short/quick/preliminary wording still routes to `QUICK:`.
 - Automation Lab also exposes a thin auto-dispatch entrypoint, `automation_lab/fa_automation.py dispatch --prompt "<user request>"`, which classifies prefixed and ordinary requests and then calls the existing QUICK, AGENT, or direct-specialist flow. It does not redefine canonical investment rules.
+- Fabrinet identity is recognized as public equity `FN` for `Fabrinet`, `Fabrynet`, `Fabryns`, and `FN`; numeric horizons such as `3-5` are horizon ranges and must not be resolved as ticker symbols.
 - Evidence Document Parser Layer is available as MVP local parser infrastructure under `automation_lab/agent_data/`: it converts accessible HTML/PDF/raw-text documents into claim-level evidence records for Evidence Pack support. It is not MCP, not an OpenAI Agents SDK runtime, and not a specialist agent.
+- Production Data Provider & Parsing Layer is available under `automation_lab/data_providers/` and `automation_lab/data_parsers/`: it provides a unified ProviderResult contract, route-aware provider registry, raw/normalized cache, freshness/source-tier helpers, official/market provider adapters, and provider-derived Evidence Pack claim inputs. It is data/evidence infrastructure only and does not redefine investment rules.
 - `AGENT:` asks exactly 5 relevant questions first, then uses relevant spawned subagents when available. Do not claim an agent workflow unless subagents were actually spawned.
 - If subagents cannot be spawned after `AGENT:`, record the fallback only in audit metadata and mark the user-facing output Limited; do not advertise the fallback as a selectable user mode.
 - `QUICK:` is chat-only, asks exactly 3 relevant questions first, and must not create `investment_report.md` or an `audit` folder.
@@ -63,6 +65,7 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 
 | Python LangGraph runtime | Available for dry-run routing, equity full-cycle artifacts, direct specialist/Quick Take boundaries, missing-context interrupts, evidence-gate blocking, and live OpenAI API adapter gated on `OPENAI_API_KEY` | `langgraph_runtime/financial_agent_graph.py` |
 | Evidence Document Parser Layer | MVP available; parses accessible HTML/PDF/raw text into normalized claim evidence and merges parsed claims into Evidence Pack rows for equity preflight first | `automation_lab/agent_data/document_parser.py` |
+| Data Provider & Parsing Layer | Available; ProviderResult registry/cache/parsers feed preflight snapshots and Evidence Pack inputs across equity, ETF, fixed income, macro, commodity/grain, crypto, and multi-asset workflows with graceful degradation for missing keys | `automation_lab/data_providers/` |
 
 ## Integrated Automation Lab live acceptance
 
@@ -100,8 +103,9 @@ Latest Automation Lab acceptance status: `live-acceptance --require-live` passes
 ## Current limitations
 
 - No OpenAI Agents SDK orchestrator is implemented; Codex SDK is only a control-plane wrapper around Codex, while `langgraph_runtime/` is an additive LangGraph/OpenAI API runtime.
-- No persistent external market-data pipeline or real-time monitor is guaranteed unless a specific automation is configured.
+- No persistent real-time monitor is guaranteed unless a specific automation is configured; the provider layer is on-demand and cache-backed.
 - Evidence Document Parser Layer is MVP-grade deterministic local infrastructure. HTML uses Python standard library parsing; PDF extraction requires `automation_lab/requirements-parser.txt` (`pypdf`) and image-only/scanned PDFs remain `Unsupported` or `Partial`.
+- Optional providers requiring `FRED_API_KEY`, `USDA_NASS_API_KEY`, `PERPLEXITY_API_KEY`, or `EODHD_API_KEY` degrade to disabled/partial when keys are missing; official/no-key providers and public price fallbacks are still attempted where routed.
 - When the user does not provide portfolio context, audit records Portfolio Fit as Limited / not personalized and General Portfolio Role Mode; reader-facing `investment_report.md` presents this as a general Portfolio role section rather than failure wording.
 - Freshness-dependent claims require current sources with timestamps; otherwise the output must be Limited or Blocked.
 

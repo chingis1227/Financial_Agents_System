@@ -369,6 +369,14 @@ Status: MVP runtime layer present.
 
 `langgraph_runtime/` is an additive Python runtime that maps the existing route-card and skill contracts into a LangGraph `StateGraph`. It does not replace root `AGENTS.md`, route cards, repo skills, custom agents, validators, or the Codex SDK control layer. It also must not claim OpenAI Agents SDK runtime behavior.
 
+## Automation Lab data provider layer
+
+Status: Available data/evidence infrastructure.
+
+`automation_lab/data_providers/` and `automation_lab/data_parsers/` provide the on-demand provider/parsing layer used by Automation Lab preflight and snapshot flows. The layer owns source fetching, parsing, normalization, raw/normalized cache files, source-tier/freshness metadata, ProviderResult schema validation, and conversion of provider claims into Evidence Pack inputs.
+
+This layer is not an agent runtime and must not redefine route cards, evidence gates, IC actions, report language, or canonical investment rules. Search/discovery outputs remain Pointer-Only until the underlying official/accessible source is fetched and parsed.
+
 Runtime files:
 
 - `langgraph_runtime/IMPLEMENTATION_MAP.md` records the inventory-to-runtime mapping and exact created files.

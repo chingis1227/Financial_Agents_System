@@ -26,6 +26,8 @@ SPECIALIST_PREFIXES: dict[str, str] = {
 
 ASSET_ALIASES: list[tuple[str, str, str]] = [
     ("microsoft", "Microsoft", "equity"), ("msft", "Microsoft", "equity"),
+    ("fabrinet", "Fabrinet", "equity"), ("fabrynet", "Fabrinet", "equity"),
+    ("fabryns", "Fabrinet", "equity"), ("fn", "Fabrinet", "equity"),
     ("nvidia", "Nvidia", "equity"), ("nvda", "Nvidia", "equity"),
     ("apple", "Apple", "equity"), ("aapl", "Apple", "equity"),
     ("tesla", "Tesla", "equity"), ("tsla", "Tesla", "equity"),
@@ -40,7 +42,7 @@ QUICK_WORDS = ("quick", "short", "fast", "brief", "preliminary", "быстро",
 NEWS_WORDS = ("today", "latest", "now", "earnings", "guidance", "regulation", "m&a", "why did", "rise", "fell", "fall", "упал", "упала", "вырос", "сегодня", "почему", "новост", "отчет", "отчёт")
 POSITIONING_WORDS = ("positioning", "crowded", "crowding", "flows", "sentiment", "futures", "позициони", "переполн", "настроен")
 MARKET_SENSE_WORDS = ("why did", "price action", "market reaction", "key drivers", "driver dominance", "moved", "rise", "fell", "fall", "почему", "движени", "драйвер")
-BUY_WORDS = ("buy", "invest", "hold", "sell", "add", "trim", "exit", "purchase", "покуп", "инвест", "держ", "продав", "стоит ли", "проанализ")
+BUY_WORDS = ("buy", "invest", "hold", "sell", "add", "trim", "exit", "purchase", "analyze", "analyse", "evaluate", "покуп", "инвест", "держ", "продав", "стоит ли", "проанализ")
 RISK_WORDS = ("risk", "risks", "red team", "риск", "риски")
 THEME_WORDS = ("theme", "beneficiaries", "winners", "structural winners", "тема", "бенефициар", "победител")
 COMPARISON_WORDS = (" vs ", " versus ", " or ", " compare", "which is better", "или", "сравни", "лучше")
@@ -110,6 +112,9 @@ def classify_request(prompt: str) -> RouteDecision:
         return RouteDecision("market_news_update", "market_news_update", asset_identity, asset_class, horizon, position_context, decision_mode, materiality_plan, [], freshness_required=True, route_card="workflows/route_cards/direct_specialist.md")
     if any(word in lower for word in THEME_WORDS) and asset_identity == "Unknown":
         return RouteDecision("theme_discovery", "theme_discovery", "Theme", "theme", horizon, position_context, decision_mode, materiality_plan, [], required_questions=5, freshness_required=freshness_required, route_card="workflows/route_cards/multi_asset_comparison.md")
+    if asset_identity != "Unknown" and horizon != "Unknown":
+        route = _full_route_for_asset(asset_class, assets, lower)
+        return RouteDecision("full_agent_workflow", route, asset_identity, _route_asset_class(route, asset_class), horizon, position_context, decision_mode, materiality_plan, _missing_context_for_full(horizon, position_context, strict=False), required_questions=5, freshness_required=freshness_required, route_card=f"workflows/route_cards/{route}.md")
     if asset_identity != "Unknown" and any(word in lower for word in BUY_WORDS):
         route = _full_route_for_asset(asset_class, assets, lower)
         # Ordinary buy/investment prompts should route by default, but ambiguous missing context pauses later.

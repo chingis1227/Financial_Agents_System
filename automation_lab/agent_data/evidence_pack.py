@@ -31,6 +31,22 @@ def build_evidence_pack(preflight: dict[str, Any], freshness_required: bool) -> 
             "access": record.get("access_status"),
             "limitation": record.get("error") or "",
         })
+    for result in preflight.get("data_provider_results") or []:
+        for provider_claim in result.get("claims") or []:
+            claims.append(
+                {
+                    "claim": provider_claim.get("claim"),
+                    "claim_type": provider_claim.get("claim_type") or "Reported Fact",
+                    "materiality": provider_claim.get("materiality") or "Important",
+                    "source": provider_claim.get("source") or result.get("url"),
+                    "source_tier": provider_claim.get("source_tier") or result.get("source_tier"),
+                    "source_date": provider_claim.get("source_date") or result.get("source_date"),
+                    "freshness": provider_claim.get("freshness") or result.get("freshness_status"),
+                    "support_status": provider_claim.get("support_status") or ("Supported" if result.get("status") == "ok" else "Partially Supported"),
+                    "access": provider_claim.get("access") or result.get("access_status"),
+                    "limitation": provider_claim.get("limitation") or "; ".join(result.get("limitations") or []),
+                }
+            )
     missing = [record for record in records if record.get("status") != "ok"]
     conflicts: list[dict[str, Any]] = []
     summary = preflight.get("summary", {})
@@ -45,6 +61,23 @@ def build_evidence_pack(preflight: dict[str, Any], freshness_required: bool) -> 
         "freshness_required": freshness_required,
         "evidence_readiness": readiness,
         "claim_support_matrix": claims,
+        "provider_results": preflight.get("data_provider_results") or [],
+        "source_inventory": [
+            {
+                "provider_id": result.get("provider_id"),
+                "provider_name": result.get("provider_name"),
+                "source_tier": result.get("source_tier"),
+                "source_type": result.get("source_type"),
+                "url": result.get("url"),
+                "status": result.get("status"),
+                "access_status": result.get("access_status"),
+                "source_date": result.get("source_date"),
+                "freshness_status": result.get("freshness_status"),
+                "raw_path": result.get("raw_path"),
+                "normalized_path": result.get("normalized_path"),
+            }
+            for result in (preflight.get("data_provider_results") or [])
+        ],
         "conflict_register": conflicts,
         "missing_weak_evidence_register": [
             {

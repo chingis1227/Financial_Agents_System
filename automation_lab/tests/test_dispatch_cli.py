@@ -12,6 +12,7 @@ LAB_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(LAB_ROOT))
 
 import fa_automation
+from agent_data.equity_resolver import resolve_equity_request
 
 
 RU_ANALYZE_MSFT = "\u041f\u0440\u043e\u0430\u043d\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u0439 Microsoft \u043d\u0430 3 \u0433\u043e\u0434\u0430"
@@ -20,6 +21,8 @@ RU_INVEST_MSFT = "\u0441\u0442\u043e\u0438\u0442 \u043b\u0438 \u0438\u043d\u0432
 RU_RISK_MSFT = "\u043a\u0430\u043a\u0438\u0435 \u0440\u0438\u0441\u043a\u0438 \u0443 Microsoft"
 RU_QUICK_MSFT = "\u0431\u044b\u0441\u0442\u0440\u043e \u0433\u043b\u044f\u043d\u044c Microsoft"
 RU_MSFT_3Y = "Microsoft \u043d\u0430 3 \u0433\u043e\u0434\u0430"
+RU_FABRYNET_3_5Y = "\u041f\u0440\u043e\u0430\u043d\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u0439 Fabrynet \u043d\u0430 3-5 \u043b\u0435\u0442"
+RU_FABRYNS_INVEST_3_5Y = "\u041f\u0440\u043e\u0430\u043d\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u0439 Fabryns \u043a\u0430\u043a \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u044e \u043d\u0430 3-5 \u043b\u0435\u0442"
 
 
 class DispatchClassificationTests(unittest.TestCase):
@@ -37,6 +40,27 @@ class DispatchClassificationTests(unittest.TestCase):
         self.assertEqual(decision.selected_dispatch, "AGENT")
         self.assertEqual(decision.selected_route, "equity_full_cycle")
         self.assertEqual(decision.target_command, "agent-intake")
+
+    def test_dispatch_routes_fabrinet_aliases_to_equity_agent(self) -> None:
+        for prompt in [
+            "Проанализируй Fabrinet на 3-5 лет",
+            RU_FABRYNET_3_5Y,
+            RU_FABRYNS_INVEST_3_5Y,
+            "Should I invest in FN for 3-5 years?",
+        ]:
+            with self.subTest(prompt=prompt):
+                decision = fa_automation.classify_dispatch_prompt(prompt)
+                self.assertEqual(decision.selected_dispatch, "AGENT")
+                self.assertEqual(decision.selected_route, "equity_full_cycle")
+                self.assertEqual(decision.target_command, "agent-intake")
+                self.assertEqual(decision.normalized_prompt, f"AGENT: {prompt}")
+
+    def test_equity_resolver_does_not_treat_horizon_range_as_ticker(self) -> None:
+        for prompt in ["AGENT: Проанализируй на 3-5 лет", "AGENT: Analyze on 3–5 years"]:
+            with self.subTest(prompt=prompt):
+                resolved = resolve_equity_request(prompt, mode="mock")
+                self.assertEqual(resolved["ticker"], "UNRESOLVED")
+                self.assertNotIn(resolved["ticker"], {"3-5", "3", "5"})
 
     def test_dispatch_routes_quick_russian_and_english_prompts_to_quick(self) -> None:
         for prompt in [RU_QUICK_MSFT, "quick look at Microsoft"]:
@@ -70,10 +94,15 @@ class DispatchClassificationTests(unittest.TestCase):
         self.assertEqual(decision.target_prompt, "SENSE: why did BTC fall today?")
 
     def test_dispatch_unknown_asset_needs_clarification_without_fake_workflow(self) -> None:
-        decision = fa_automation.classify_dispatch_prompt("Should I buy UnknownAssetXYZ for 3 years?")
-        self.assertEqual(decision.selected_dispatch, "NEEDS_CLARIFICATION")
-        self.assertEqual(decision.selected_route, "needs_clarification")
-        self.assertEqual(decision.target_command, "needs-clarification")
+        for prompt in [
+            "Should I buy UnknownAssetXYZ for 3 years?",
+            "Проанализируй непонятную компанию XZYZZ",
+        ]:
+            with self.subTest(prompt=prompt):
+                decision = fa_automation.classify_dispatch_prompt(prompt)
+                self.assertEqual(decision.selected_dispatch, "NEEDS_CLARIFICATION")
+                self.assertEqual(decision.selected_route, "needs_clarification")
+                self.assertEqual(decision.target_command, "needs-clarification")
 
 
 class DispatchCliTests(unittest.TestCase):

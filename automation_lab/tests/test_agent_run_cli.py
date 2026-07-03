@@ -340,6 +340,7 @@ MSFT выглядит качественной компанией.
     def test_dynamic_us_equities_mock_validate(self) -> None:
         for ticker, expected_classification in [
             ("NVDA", "us_common_equity"),
+            ("FN", "us_common_equity"),
             ("GOOGL", "us_share_class"),
             ("GOOG", "us_share_class"),
             ("BRK.B", "us_share_class"),

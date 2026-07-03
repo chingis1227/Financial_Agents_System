@@ -13,6 +13,12 @@ class LangGraphRuntimeTests(unittest.TestCase):
     def test_natural_language_intake_routing_examples(self) -> None:
         cases = [
             ("Проанализируй Microsoft на 3 года, позиции нет", "full_agent_workflow", "equity_full_cycle", "Microsoft", "equity"),
+            ("Microsoft for 3-5 years", "full_agent_workflow", "equity_full_cycle", "Microsoft", "equity"),
+            ("Analyze Microsoft for 3-5 years", "full_agent_workflow", "equity_full_cycle", "Microsoft", "equity"),
+            ("Проанализируй Fabrynet на 3-5 лет", "full_agent_workflow", "equity_full_cycle", "Fabrinet", "equity"),
+            ("Fabrinet for 3-5 years", "full_agent_workflow", "equity_full_cycle", "Fabrinet", "equity"),
+            ("Проанализируй Fabryns как инвестицию на 3-5 лет", "full_agent_workflow", "equity_full_cycle", "Fabrinet", "equity"),
+            ("Should I invest in FN for 3-5 years?", "full_agent_workflow", "equity_full_cycle", "Fabrinet", "equity"),
             ("Стоит ли покупать Nvidia?", "full_agent_workflow", "equity_full_cycle", "Nvidia", "equity"),
             ("Быстро глянь Apple", "quick_take", "quick_take", "Apple", "equity"),
             ("Оцени риски Tesla", "direct_specialist", "direct_specialist", "Tesla", "equity"),

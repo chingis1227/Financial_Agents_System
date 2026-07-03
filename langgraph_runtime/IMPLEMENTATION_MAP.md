@@ -47,3 +47,5 @@ Add `langgraph_runtime/` as a Python LangGraph runtime that can execute the exis
 ## Runtime shape
 
 The graph uses `StateGraph(FinancialAgentState)`, conditional routing after intake and evidence readiness, an equity specialist subgraph, an in-memory checkpointer for resumable local runs, and dynamic interrupts for missing decision-critical context and failed gates. Dry-run mode is deterministic and does not call OpenAI. Live mode calls the OpenAI API only when `--live` is selected and `OPENAI_API_KEY` is present.
+
+Routing parity note: ordinary investment-action and horizon-analysis prompts must route through the same auto-dispatch logic as explicit `AGENT:` shortcuts. Alias coverage includes `Fabrinet` / `Fabrynet` / `Fabryns` / `FN` -> equity `Fabrinet / FN`, and horizon ranges such as `3-5` are not ticker candidates.

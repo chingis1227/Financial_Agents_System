@@ -14,6 +14,11 @@ from .providers import ProviderResult, provider_result_from_disabled, run_price_
 from .quality import answers_require_freshness
 from .registry import all_providers, disabled_api_slots, provider_snapshot, providers_for, static_context_for_ticker
 
+try:
+    from data_providers import provider_plan_for_route, provider_registry_snapshot
+except ImportError:  # pragma: no cover - package import path fallback
+    from automation_lab.data_providers import provider_plan_for_route, provider_registry_snapshot
+
 LAB_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_QUICK_DATA_RUNS_DIR = LAB_ROOT / "data_runs" / "quick"
 DEFAULT_QUICK_FIXTURES_DIR = LAB_ROOT / "fixtures" / "quick"
@@ -70,11 +75,30 @@ def _base_snapshot_fields() -> dict[str, Any]:
     return {
         "schema_version": SNAPSHOT_SCHEMA_VERSION,
         "providers": provider_snapshot(),
+        "data_provider_registry": provider_registry_snapshot(),
+        "data_provider_plan": [],
         "provider_results": [],
         "provider_errors": [],
         "source_scope": SOURCE_SCOPE,
         "evidence_alignment": EVIDENCE_ALIGNMENT,
     }
+
+
+def _route_for_quick_identity(identity: dict[str, Any] | None) -> str | None:
+    security_type = (identity or {}).get("security_type")
+    return {
+        "equity": "equity_full_cycle",
+        "etf": "etf_full_cycle",
+        "bond_etf": "fixed_income_full_cycle",
+        "commodity_etf": "commodity_full_cycle",
+        "crypto": "crypto_full_cycle",
+        "multi_asset_comparison": "multi_asset_comparison",
+    }.get(str(security_type))
+
+
+def _data_provider_plan_for_identity(identity: dict[str, Any] | None) -> list[dict[str, Any]]:
+    route = _route_for_quick_identity(identity)
+    return provider_plan_for_route(route) if route else []
 
 
 def provider_results_to_sources(results: list[ProviderResult]) -> list[dict[str, Any]]:
@@ -178,6 +202,7 @@ def empty_quick_snapshot(
     provider_results = [result, *disabled_api_results()]
     return {
         **_base_snapshot_fields(),
+        "data_provider_plan": _data_provider_plan_for_identity(identity),
         "prompt": prompt,
         "normalized_prompt": normalized_prompt,
         "user_answers": answers,
@@ -271,6 +296,7 @@ def build_mock_source_snapshot(prompt: str, normalized_prompt: str, answers: lis
     sources = fixture_sources or provider_results_to_sources(provider_results)
     return {
         **_base_snapshot_fields(),
+        "data_provider_plan": _data_provider_plan_for_identity(identity),
         "prompt": prompt,
         "normalized_prompt": normalized_prompt,
         "user_answers": answers,
@@ -410,6 +436,7 @@ def build_live_source_snapshot(prompt: str, normalized_prompt: str, answers: lis
     missing = quick_component_missing(components, identity)
     return {
         **_base_snapshot_fields(),
+        "data_provider_plan": _data_provider_plan_for_identity(identity),
         "prompt": prompt,
         "normalized_prompt": normalized_prompt,
         "user_answers": answers,
@@ -488,6 +515,7 @@ def build_live_comparison_snapshot(
     missing = list(dict.fromkeys([*component_missing, *explicit_missing]))
     return {
         **_base_snapshot_fields(),
+        "data_provider_plan": _data_provider_plan_for_identity(identity),
         "prompt": prompt,
         "normalized_prompt": normalized_prompt,
         "user_answers": answers,
