@@ -16,6 +16,7 @@ This runtime skill executes the reusable method contract without overriding agen
 ## When to use
 
 - Evidence plan is required for any workflow or specialist output.
+- Accessible document evidence is supplied or discovered, including earnings releases, filings, IR documents, PDFs, public articles, transcripts, or raw text that should be parsed into claim-level Evidence Pack rows.
 
 Use only after reading `AGENTS.md` and the canonical documents needed for the task.
 
@@ -60,10 +61,11 @@ If inputs are missing, continue only when a safe Preliminary or Limited scoped m
 1. Define claim universe and materiality
 2. Select source hierarchy and domain overlays
 3. Collect and timestamp sources
-4. Classify claim/source/freshness/access/support
-5. Identify missing data, contradictions, and proxy evidence
-6. Produce evidence pack, readiness matrix, and evidence requests
-7. Perform pre-IC evidence lock where needed
+4. When accessible documents/articles/PDFs/raw text are supplied or discovered, use the Evidence Document Parser Layer as an evidence supplier to extract text, table-like content, and normalized financial claims
+5. Classify claim/source/freshness/access/support
+6. Identify missing data, contradictions, and proxy evidence
+7. Produce evidence pack, readiness matrix, and evidence requests
+8. Perform pre-IC evidence lock where needed
 
 Keep the method output scoped to the owning agent or workflow.
 
@@ -98,6 +100,7 @@ Boundary wording: `Boundary: Not an IC Action. Method output only.`
 ## Skill-specific guardrails
 
 - Do not make investment, valuation, risk, or portfolio conclusions.
+- Do not treat parsed-document output as analysis; it is source evidence only and cannot issue `IC Action` or investment recommendations.
 
 ## Failure states
 

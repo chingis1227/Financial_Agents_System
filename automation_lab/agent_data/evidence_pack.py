@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from .evidence_pack_merge import merge_parsed_documents_into_evidence_pack
+
 
 def _support_status(record: dict[str, Any]) -> str:
     if record.get("status") == "ok":
@@ -33,7 +35,7 @@ def build_evidence_pack(preflight: dict[str, Any], freshness_required: bool) -> 
     conflicts: list[dict[str, Any]] = []
     summary = preflight.get("summary", {})
     readiness = "Complete" if summary.get("hard_gate_passed") and not summary.get("limitation_needed") else "Limited" if summary.get("hard_gate_passed") else "Blocked"
-    return {
+    pack = {
         "schema_version": "agent_evidence_pack.v1",
         "artifact_type": "Supporting Evidence Pack",
         "owner": "Evidence Collector",
@@ -71,6 +73,10 @@ def build_evidence_pack(preflight: dict[str, Any], freshness_required: bool) -> 
             "missing_important_inputs": summary.get("missing_important", []),
         },
     }
+    parsed_documents = preflight.get("parsed_documents") or []
+    if parsed_documents:
+        merge_parsed_documents_into_evidence_pack(pack, parsed_documents, materiality="Important")
+    return pack
 
 
 def render_evidence_pack_markdown(pack: dict[str, Any]) -> str:
@@ -92,12 +98,12 @@ def render_evidence_pack_markdown(pack: dict[str, Any]) -> str:
         "See `source_inventory.json` for the full source register.",
         "",
         "## Claim support matrix",
-        "| Claim | Claim type | Materiality | Source / tier | Source date | Freshness | Support status | Access | Limitation |",
-        "|---|---|---|---|---|---|---|---|---|",
+        "| Claim | Claim type | Materiality | Source / tier | Source date | Freshness | Support status | Access | Location | Limitation |",
+        "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for claim in pack.get("claim_support_matrix", []):
         lines.append(
-            f"| {claim.get('claim')} | {claim.get('claim_type')} | {claim.get('materiality')} | {claim.get('source_tier')} | {claim.get('source_date') or ''} | {claim.get('freshness')} | {claim.get('support_status')} | {claim.get('access')} | {claim.get('limitation') or ''} |"
+            f"| {claim.get('claim')} | {claim.get('claim_type')} | {claim.get('materiality')} | {claim.get('source_tier')} | {claim.get('source_date') or ''} | {claim.get('freshness')} | {claim.get('support_status')} | {claim.get('access')} | {claim.get('location') or ''} | {claim.get('limitation') or ''} |"
         )
     lines.extend(["", "## Conflict register", "No material source conflicts identified in preflight." if not pack.get("conflict_register") else "Material conflicts recorded in JSON evidence pack.", "", "## Missing / weak evidence register"])
     missing = pack.get("missing_weak_evidence_register", [])

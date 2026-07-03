@@ -15,6 +15,7 @@ Evidence Collector is the system's evidence control tower. It does not make valu
 | Evidence Collector Agent | Coordinates evidence collection, evidence pack, readiness, and evidence lock. |
 | Evidence Collection Skill | Repeatable method for collecting, classifying, and validating evidence. |
 | Evidence Pack | Structured repository of sources, claims, support status, freshness, limitations, and handoffs. |
+| Evidence Document Parser Layer | Local HTML/PDF/raw-text evidence supplier that extracts text/table-like content and normalized financial claims for Evidence Pack rows. |
 | Evidence Request Protocol | Method for specialists and IC to request missing evidence or challenge readiness. |
 | Source Registry | Central source hierarchy and source-quality policy. |
 | Domain overlays | Asset-specific source rules; they supplement Source Registry but do not replace it. |
@@ -44,6 +45,28 @@ Each material claim should be mapped to these fields:
 | Limitation | Missing/stale/proxy/conflicting/paywalled/scope/numeric caveat. |
 
 Evidence fields should be complete for decision-critical and important claims. Contextual claims may be grouped when they do not affect the decision.
+
+## 3.1 Evidence Document Parser Layer
+
+The Evidence Document Parser Layer is supporting infrastructure, not an analyst, specialist agent, MCP server, or OpenAI Agents SDK runtime. It may be used when an accessible issuer document, SEC filing HTML, public article, PDF fact sheet, transcript, or raw text is supplied or discovered by the workflow.
+
+Parser responsibilities:
+
+- record source metadata, access status, retrieval time, and source location;
+- extract HTML text, table-like rows, PDF page text, or raw text;
+- identify financial numeric claims;
+- normalize value, currency, scale, percentage, period, comparison basis, source tier, source location, support status, confidence, and limitations where visible;
+- merge parsed claims into the Evidence Pack claim-support matrix, source inventory, missing/weak evidence register, and conflict register.
+
+Parser boundaries:
+
+- it does not issue `IC Action`, buy/sell/hold/add/trim/exit recommendations, valuation conclusions, risk conclusions, or portfolio conclusions;
+- it does not upgrade source tiers beyond the source hierarchy in this contract;
+- it does not use paywalled or inaccessible snippets as proof;
+- it does not infer missing values, units, or periods; ambiguous claims must be `Low`/`Medium` confidence, `Not Found`, `Partial`, `Unsupported`, or carry explicit limitations;
+- GAAP/non-GAAP or adjusted metrics must be labeled when visible and must not be silently mixed.
+
+Initial integration scope: public-equity AGENT preflight and Evidence Pack support. Other asset classes may reuse the infrastructure later, but the parser itself remains a source/evidence supplier.
 
 ## 4. Source hierarchy
 

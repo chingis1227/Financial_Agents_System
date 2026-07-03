@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from .source_fetchers import now_iso, sec_company_facts, sec_submissions, stooq_history, stooq_quote, yahoo_chart
+from .document_parser import parse_document
 from .equity_resolver import clean_resolved_identity, resolve_equity_request
 from .source_registry import (
     SOURCE_REGISTRY,
@@ -351,6 +352,53 @@ def summarize_preflight(preflight: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def attach_parsed_documents(preflight: dict[str, Any], *, max_documents: int = 2, max_attempts: int = 2) -> dict[str, Any]:
+    """Parse first safe equity filing/company-document candidates into claim-level evidence.
+
+    Parser failures are recorded as parser warnings and never fail preflight.
+    Mock and synthetic URLs are intentionally skipped to keep tests deterministic.
+    """
+
+    parsed_documents: list[dict[str, Any]] = []
+    parser_warnings: list[str] = []
+    attempts = 0
+    candidate_ids = {"filing_text", "latest_10k", "latest_10q", "recent_8k", "ir_news", "public_news"}
+    for record in preflight.get("source_records", []):
+        if len(parsed_documents) >= max_documents or attempts >= max_attempts:
+            break
+        if record.get("source_id") not in candidate_ids or record.get("status") not in {"ok", "partial"}:
+            continue
+        data = record.get("data") if isinstance(record.get("data"), dict) else {}
+        url = record.get("url") or data.get("document_url")
+        if not isinstance(url, str) or not url.startswith(("http://", "https://")):
+            continue
+        if "google.com/search" in url or url.startswith("mock://"):
+            continue
+        attempts += 1
+        source_tier = record.get("source_tier") or ("Tier 1" if record.get("category") in {"filings", "fundamentals", "company_materials"} else "Tier 3")
+        parsed = parse_document(
+            url,
+            source_tier=source_tier,
+            default_claim_type="Reported Fact" if source_tier == "Tier 1" else "News Report",
+            company=(preflight.get("subject_identity") or {}).get("company_name"),
+            timeout=12,
+        )
+        parsed["preflight_source_id"] = record.get("source_id")
+        if parsed.get("source", {}).get("access_status") in {"Available", "Partial", "Unsupported"}:
+            parsed_documents.append(parsed)
+        if parsed.get("warnings"):
+            parser_warnings.extend(f"{record.get('source_id')}: {warning}" for warning in parsed["warnings"])
+    preflight["parsed_documents"] = parsed_documents
+    preflight["document_parser"] = {
+        "schema_version": "equity_preflight_document_parser.v1",
+        "status": "available" if parsed_documents else "no_parseable_document",
+        "parsed_document_count": len(parsed_documents),
+        "warnings": parser_warnings,
+        "boundary": "Evidence supplier only; no IC Action or recommendation.",
+    }
+    return preflight
+
+
 def build_equity_source_preflight(prompt: str, answers: list[str], mode: str, ticker: str = "MSFT") -> dict[str, Any]:
     resolved = resolve_equity_request(prompt if prompt else ticker, mode=mode)
     normalized_ticker = str(resolved.get("ticker") or ticker).upper()
@@ -361,6 +409,8 @@ def build_equity_source_preflight(prompt: str, answers: list[str], mode: str, ti
     else:
         raise ValueError(f"Unsupported AGENT preflight mode: {mode}")
     preflight["summary"] = summarize_preflight(preflight)
+    if mode == "live":
+        attach_parsed_documents(preflight)
     return preflight
 
 

@@ -15,6 +15,7 @@ Ask exactly 5 relevant equity questions in one block and wait. If the user says 
 
 - request intake and asset identity check
 - evidence collection and freshness check
+- document evidence parsing for accessible SEC filings, issuer releases, public articles, PDFs, or raw text when supplied/discovered; parsed claims feed the Evidence Pack only
 - macro context
 - sector / industry context
 - equity company analysis

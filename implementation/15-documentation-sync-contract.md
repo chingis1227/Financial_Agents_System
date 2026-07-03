@@ -20,6 +20,7 @@ This contract follows official OpenAI / Codex best practices: keep `AGENTS.md` p
 | New or changed canonical rule | Update the canonical document, registry if status changes, route cards if runtime-facing, and behavior fixtures if behavior changes. |
 | New workflow runbook or route card | Register it in `implementation/01-documentation-control.md`, update `PROJECT_STATE.md`, and update runtime readiness validation. |
 | New skill or material skill trigger change | Update the skill description, related route card, and skill validation checks. |
+| New evidence parser behavior | Update `PROJECT_STATE.md`, `implementation/04-evidence-layer.md`, affected route card or evidence skill, parser fixtures/tests, and Automation Lab validation commands. |
 | New custom agent or material agent behavior change | Update canonical agent contract, runtime agent file, handoff expectations, and validation checks. |
 | New or changed Codex SDK control layer | Update `PROJECT_STATE.md`, `README.md`, `AGENTS.md`, runtime architecture, package scripts, SDK tests, and runtime readiness validation. |
 | New or changed Python LangGraph runtime | Update `PROJECT_STATE.md`, `README.md`, `AGENTS.md`, `implementation/13-codex-runtime-architecture.md`, `langgraph_runtime/IMPLEMENTATION_MAP.md`, and Python runtime tests. Keep the layer additive and preserve Codex-native route-card boundaries. |
@@ -44,6 +45,14 @@ py -3 tools\validate_language_style.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
 py -3 -m unittest discover -s tests\langgraph_runtime -v
+```
+
+After changing the Evidence Document Parser Layer, also run parser-specific Automation Lab checks:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r automation_lab\requirements-parser.txt
+.\.venv\Scripts\python.exe -m unittest discover -s automation_lab\tests -p "test_*parser*.py" -v
+.\.venv\Scripts\python.exe -m unittest automation_lab.tests.test_evidence_pack_merge -v
 ```
 
 After Codex SDK control-layer changes, also run:

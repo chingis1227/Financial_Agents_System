@@ -146,6 +146,13 @@ class LangGraphRuntimeTests(unittest.TestCase):
             self.assertIn("## Портфельная роль", report_text)
             self.assertIn("в общем виде", report_text)
             self.assertIn("контекст не указан", report_text)
+            self.assertIn("## \u0418\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u0432\u0437\u0433\u043b\u044f\u0434", report_text)
+            self.assertIn("## \u041a\u0430\u0447\u0435\u0441\u0442\u0432\u043e \u043f\u0440\u043e\u0442\u0438\u0432 \u0442\u043e\u0447\u043a\u0438 \u0432\u0445\u043e\u0434\u0430", report_text)
+            self.assertIn("## \u041a\u043b\u044e\u0447\u0435\u0432\u044b\u0435 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0435 \u043f\u0440\u043e\u0442\u0438\u0432\u043e\u0440\u0435\u0447\u0438\u044f", report_text)
+            self.assertIn("## \u0427\u0442\u043e \u0438\u0437\u043c\u0435\u043d\u0438\u0442 \u0432\u0437\u0433\u043b\u044f\u0434", report_text)
+            self.assertIn("## \u0427\u0442\u043e \u043e\u0442\u0441\u043b\u0435\u0436\u0438\u0432\u0430\u0442\u044c", report_text)
+            self.assertNotIn("???", report_text)
+            self.assertNotRegex(report_text, r"\?{3,}")
             self.assertNotIn("## Portfolio role", report_text)
             for forbidden in [
                 "Artifact Type",

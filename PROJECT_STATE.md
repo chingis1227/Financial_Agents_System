@@ -16,10 +16,12 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 - User-facing command model: `AGENT:` for the large agent workflow, `QUICK:` for a short preliminary answer, and specialist prefixes for one analyst.
 - Ordinary investment-action prompts without a prefix still route through the router, but recommended UX is `AGENT:` or `QUICK:`.
 - Automation Lab also exposes a thin auto-dispatch entrypoint, `automation_lab/fa_automation.py dispatch --prompt "<user request>"`, which classifies prefixed and ordinary requests and then calls the existing QUICK, AGENT, or direct-specialist flow. It does not redefine canonical investment rules.
+- Evidence Document Parser Layer is available as MVP local parser infrastructure under `automation_lab/agent_data/`: it converts accessible HTML/PDF/raw-text documents into claim-level evidence records for Evidence Pack support. It is not MCP, not an OpenAI Agents SDK runtime, and not a specialist agent.
 - `AGENT:` asks exactly 5 relevant questions first, then uses relevant spawned subagents when available. Do not claim an agent workflow unless subagents were actually spawned.
 - If subagents cannot be spawned after `AGENT:`, record the fallback only in audit metadata and mark the user-facing output Limited; do not advertise the fallback as a selectable user mode.
 - `QUICK:` is chat-only, asks exactly 3 relevant questions first, and must not create `investment_report.md` or an `audit` folder.
 - Final IC Actions remain owned by Investment Committee synthesis only; specialist outputs are scoped handoffs and must not use final buy/sell/hold/add/trim/exit labels.
+- Parsed document evidence is supporting audit/evidence material only; it never produces an `IC Action` or investment recommendation by itself.
 
 ## Command shortcuts
 
@@ -60,6 +62,7 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 | Automation Lab auto-dispatch | Ready as a thin CLI router over existing QUICK / AGENT / specialist flows | `automation_lab/fa_automation.py dispatch --prompt "<user request>"` |
 
 | Python LangGraph runtime | Available for dry-run routing, equity full-cycle artifacts, direct specialist/Quick Take boundaries, missing-context interrupts, evidence-gate blocking, and live OpenAI API adapter gated on `OPENAI_API_KEY` | `langgraph_runtime/financial_agent_graph.py` |
+| Evidence Document Parser Layer | MVP available; parses accessible HTML/PDF/raw text into normalized claim evidence and merges parsed claims into Evidence Pack rows for equity preflight first | `automation_lab/agent_data/document_parser.py` |
 
 ## Integrated Automation Lab live acceptance
 
@@ -79,6 +82,7 @@ Latest Automation Lab acceptance status: `live-acceptance --require-live` passes
 - Documentation registry: `implementation/01-documentation-control.md`.
 - Master gates/statuses: `implementation/00-master-rules.md`.
 - Evidence rules: `implementation/04-evidence-layer.md`.
+- Document evidence parsing skill: `.agents/skills/evidence-document-parser/SKILL.md`.
 - Routing and workflows: `implementation/05-routing-and-workflows.md`.
 - IC and report schemas: `implementation/07-investment-committee-and-report-schemas.md`.
 - Runtime architecture: `implementation/13-codex-runtime-architecture.md`.
@@ -97,6 +101,7 @@ Latest Automation Lab acceptance status: `live-acceptance --require-live` passes
 
 - No OpenAI Agents SDK orchestrator is implemented; Codex SDK is only a control-plane wrapper around Codex, while `langgraph_runtime/` is an additive LangGraph/OpenAI API runtime.
 - No persistent external market-data pipeline or real-time monitor is guaranteed unless a specific automation is configured.
+- Evidence Document Parser Layer is MVP-grade deterministic local infrastructure. HTML uses Python standard library parsing; PDF extraction requires `automation_lab/requirements-parser.txt` (`pypdf`) and image-only/scanned PDFs remain `Unsupported` or `Partial`.
 - When the user does not provide portfolio context, audit records Portfolio Fit as Limited / not personalized and General Portfolio Role Mode; reader-facing `investment_report.md` presents this as a general Portfolio role section rather than failure wording.
 - Freshness-dependent claims require current sources with timestamps; otherwise the output must be Limited or Blocked.
 
