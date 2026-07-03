@@ -13,6 +13,8 @@ This project follows official OpenAI / Codex best practices: keep `AGENTS.md` pr
 3. For investment requests, read `workflows/route_cards/investment_request_router.md` before answering.
 4. For source authority or conflicts, use `implementation/01-documentation-control.md` and `implementation/00-master-rules.md`.
 5. For documentation/runtime changes, use `implementation/15-documentation-sync-contract.md` and run validators.
+6. For Codex SDK control-layer changes, also run the Node checks listed under Required validation after changes.
+7. For Python LangGraph runtime changes, keep `langgraph_runtime/` additive, preserve route-card boundaries, and run the LangGraph runtime unittest suite.
 
 ## Active authority order
 
@@ -57,6 +59,7 @@ This project follows official OpenAI / Codex best practices: keep `AGENTS.md` pr
 - Do not issue final `IC Action` outside Investment Committee synthesis.
 - Freshness-dependent requests such as today, now, latest, earnings, price action, or news require current timestamped sources or must be Limited / Blocked.
 - Large workflow reports are saved outside the repo under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-dd hhmm\` as `investment_report.md` plus `audit/`.
+- The Codex SDK TypeScript layer is a control-plane wrapper only. It must not duplicate financial workflow rules, replace route cards, or claim OpenAI Agents SDK runtime behavior.
 - Ordinary chat after a saved workflow should show the reader-facing report and saved-report path, not runtime/debug tables, unless explicitly requested.
 
 ## Runtime route map
@@ -84,6 +87,16 @@ After changing project docs, route cards, agents, skills, workflow behavior, tes
 py -3 tools\validate_project_consistency.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
+py -3 -m unittest discover -s tests\langgraph_runtime -v
+```
+
+After changing the Codex SDK control layer, also run:
+
+```powershell
+npm.cmd run build
+npm.cmd test
+npm.cmd run codex:doctor
+npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
 ```
 
 Do not mark work complete if validation fails. Fix the inconsistency or report it as a source issue.

@@ -8,11 +8,14 @@ This document defines how the Financial Agent System should be packaged for Open
 
 It does not replace the financial-agent architecture. It maps the canonical implementation layer into Codex-native operating surfaces so Codex can work reliably without reading the whole legacy PRD corpus on every task.
 
+The Codex SDK v1 layer is a control-plane wrapper for starting, resuming, and logging local Codex threads. It must not duplicate financial workflow rules, replace route cards, or be described as an OpenAI Agents SDK runtime. Codex SDK owns launch/control/logging; `AGENTS.md`, route cards, skills, custom agents, handoff artifacts, and validators own financial behavior.
+
 Official OpenAI references:
 
 - Codex `AGENTS.md`: <https://developers.openai.com/codex/guides/agents-md>
 - Codex skills: <https://developers.openai.com/codex/skills>
 - Codex subagents and custom agents: <https://developers.openai.com/codex/subagents>
+- Codex SDK: <https://developers.openai.com/codex/sdk>
 
 ## 2. Runtime design principle
 
@@ -358,3 +361,27 @@ The generated Codex runtime package is ready when:
 - legacy PRDs are accessed only through the registry and traceability matrix;
 - route cards and workflow runbooks explain how routers, evidence, agents, skills, handoffs, and IC synthesis connect;
 - QA scenarios can verify routing, evidence, specialist output, skill activation, and IC gates.
+
+
+## Additive Python LangGraph runtime
+
+Status: MVP runtime layer present.
+
+`langgraph_runtime/` is an additive Python runtime that maps the existing route-card and skill contracts into a LangGraph `StateGraph`. It does not replace root `AGENTS.md`, route cards, repo skills, custom agents, validators, or the Codex SDK control layer. It also must not claim OpenAI Agents SDK runtime behavior.
+
+Runtime files:
+
+- `langgraph_runtime/IMPLEMENTATION_MAP.md` records the inventory-to-runtime mapping and exact created files.
+- `langgraph_runtime/state.py` defines the typed graph state fields required by the runtime objective.
+- `langgraph_runtime/routing.py` implements natural-language and explicit-prefix routing.
+- `langgraph_runtime/nodes.py` implements required graph node functions, dry-run module outputs, gates, interrupts, and artifact handoff boundaries.
+- `langgraph_runtime/financial_agent_graph.py` builds the `StateGraph`, conditional edges, equity subgraph, checkpointer, streaming helper, and CLI.
+- `.env.example` documents `OPENAI_API_KEY`, `OPENAI_MODEL`, and `OPENAI_REASONING_EFFORT`.
+
+Runtime rules:
+
+- Dry-run mode must not call the OpenAI API.
+- Live mode must require `OPENAI_API_KEY` and must not hardcode secrets.
+- Ordinary natural-language investment requests route through `intake_router_node`; explicit prefixes remain shortcuts.
+- Missing decision-critical context, evidence readiness failure, risk gate failure, and final IC confirmation points use LangGraph interrupt-capable nodes where applicable.
+- Reports are idempotently written as `investment_report.md` plus `audit/` only for full workflows. Quick Take and direct specialist routes remain Preliminary / Not an IC Action and do not create full report/audit artifacts.

@@ -1,7 +1,7 @@
 # Project State
 
 Status: Current runtime state
-Last updated: 2026-06-30
+Last updated: 2026-07-02
 
 ## Purpose
 
@@ -9,7 +9,9 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 
 ## Current operating model
 
-- Runtime style: Codex-native first; no OpenAI API / Agents SDK orchestrator is required for the current version.
+- Runtime style: Codex-native first, with an additive Python `langgraph_runtime/` layer for LangGraph dry-run/live execution. The new layer uses the OpenAI API in explicit live mode only; it is not an OpenAI Agents SDK runtime.
+- Codex SDK v1 control layer present: TypeScript CLI wrapper for dry-run/live Codex thread execution, with live SDK logs outside the repository.
+- Python LangGraph runtime present: `langgraph_runtime/financial_agent_graph.py` exposes `run` and `chat`; dry-run mode is deterministic, and live mode requires `OPENAI_API_KEY`.
 - Daily runtime path: `PROJECT_STATE.md` -> `AGENTS.md` -> `workflows/route_cards/investment_request_router.md` -> selected route card -> validators.
 - User-facing command model: `AGENT:` for the large agent workflow, `QUICK:` for a short preliminary answer, and specialist prefixes for one analyst.
 - Ordinary investment-action prompts without a prefix still route through the router, but recommended UX is `AGENT:` or `QUICK:`.
@@ -54,6 +56,18 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 | `AGENT:` multi-asset comparison | Ready; Level 2 hardening complete | `workflows/route_cards/multi_asset_comparison.md` |
 | Specialist command | Ready with analyst boundary | `workflows/route_cards/direct_specialist.md` |
 
+| Python LangGraph runtime | Available for dry-run routing, equity full-cycle artifacts, direct specialist/Quick Take boundaries, missing-context interrupts, evidence-gate blocking, and live OpenAI API adapter gated on `OPENAI_API_KEY` | `langgraph_runtime/financial_agent_graph.py` |
+
+## External Automation Lab live acceptance
+
+Financial Agent Automation Lab is the execution/orchestration layer, not the canonical investment-rule source. As of 2026-07-03, its supported live acceptance matrix has passed with real Codex SDK `sdk_thread_id` evidence for:
+
+- QUICK live/public validation;
+- full AGENT live packages for equity, ETF/fund, fixed income, crypto, commodity, and multi-asset comparison;
+- all direct specialist prefixes: RISK, VAL, MACRO, NEWS, PORTFOLIO, SECTOR, EVIDENCE, POSITIONING, INTEL, EQUITY, ETF, COMMODITY, CRYPTO, FI, WINNERS, and IC.
+
+Latest Automation Lab acceptance status: `live-acceptance --require-live` passes with no smoke gaps, no live gaps, and no usage-limit gaps. Detailed execution artifacts remain outside this repository under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\`.
+
 ## Active documents
 
 - Runtime navigator: `AGENTS.md`.
@@ -78,7 +92,7 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 
 ## Current limitations
 
-- No fully automated OpenAI Agents SDK orchestrator is implemented in this phase.
+- No OpenAI Agents SDK orchestrator is implemented; Codex SDK is only a control-plane wrapper around Codex, while `langgraph_runtime/` is an additive LangGraph/OpenAI API runtime.
 - No persistent external market-data pipeline or real-time monitor is guaranteed unless a specific automation is configured.
 - Portfolio Fit remains Limited / not personalized when the user does not provide portfolio context.
 - Freshness-dependent claims require current sources with timestamps; otherwise the output must be Limited or Blocked.
@@ -91,4 +105,14 @@ Run these checks after changing docs, route cards, agents, skills, validators, o
 py -3 tools\validate_project_consistency.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
+py -3 -m unittest discover -s tests\langgraph_runtime -v
+```
+
+After changing the Codex SDK control layer, also run:
+
+```powershell
+npm.cmd run build
+npm.cmd test
+npm.cmd run codex:doctor
+npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
 ```

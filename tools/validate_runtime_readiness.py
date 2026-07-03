@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import re
 import sys
 import tomllib
@@ -377,6 +378,90 @@ if report.exists():
     txt = read(report)
     for token in ["ETF", "Commodity", "Crypto", "Fixed Income", "Final readiness statement", "0 blocking issues"]:
         add(f"hardening report contains {token}", token in txt)
+
+# Codex SDK control layer
+package_json = ROOT / "package.json"
+add("Codex SDK package.json exists", package_json.exists(), str(package_json))
+if package_json.exists():
+    try:
+        package = json.loads(read(package_json))
+        dependencies = package.get("dependencies", {})
+        scripts = package.get("scripts", {})
+        add("Codex SDK dependency declared", "@openai/codex-sdk" in dependencies)
+        for script in ["build", "test", "codex:run", "codex:resume", "codex:doctor"]:
+            add(f"package script exists: {script}", script in scripts)
+    except Exception as exc:
+        add("package.json parses as JSON", False, str(exc))
+
+codex_config = ROOT / ".codex" / "config.toml"
+add("Codex repo config exists", codex_config.exists(), str(codex_config))
+if codex_config.exists():
+    try:
+        config = tomllib.loads(read(codex_config))
+        agents_config = config.get("agents", {})
+        add("Codex config has [agents]", isinstance(agents_config, dict))
+        add("Codex config has agents.max_threads", agents_config.get("max_threads") == 6)
+        add("Codex config has agents.max_depth", agents_config.get("max_depth") == 1)
+        add("Codex config has agents.job_max_runtime_seconds", agents_config.get("job_max_runtime_seconds") == 1800)
+    except Exception as exc:
+        add("Codex config parses as TOML", False, str(exc))
+
+sdk_files = [
+    "src/codex-sdk/cli.ts",
+    "src/codex-sdk/runner.ts",
+    "src/codex-sdk/types.ts",
+    "tests/codex-sdk.test.ts",
+    "tsconfig.json",
+]
+for rel in sdk_files:
+    add(f"Codex SDK source file exists: {rel}", (ROOT / rel).exists(), rel)
+
+cli_source = ROOT / "src" / "codex-sdk" / "cli.ts"
+runner_source = ROOT / "src" / "codex-sdk" / "runner.ts"
+test_source = ROOT / "tests" / "codex-sdk.test.ts"
+if cli_source.exists():
+    txt = read(cli_source)
+    add("Codex SDK CLI defaults live to false", "let live = false" in txt)
+    add("Codex SDK CLI requires explicit --live", 'case "--live"' in txt)
+    add("Codex SDK CLI rejects thread id on run", "does not accept --thread-id" in txt)
+    add("Codex SDK CLI supports resume command", 'command === "resume"' in txt)
+if runner_source.exists():
+    txt = read(runner_source)
+    add("Codex SDK runner imports @openai/codex-sdk", '@openai/codex-sdk' in txt)
+    add("Codex SDK runner dry-run avoids SDK client", 'if (!request.live)' in txt)
+    add("Codex SDK runner uses collision-safe log suffix", "randomUUID" in txt and "getMilliseconds" in txt)
+    add("Codex SDK runner log root is outside repository path", "Financial Agent Reports" in txt and "_sdk_runs" in txt)
+    add("Codex SDK runner separates run and resume modes", 'request.mode === "resume"' in txt)
+if test_source.exists():
+    txt = read(test_source)
+    for token in ["dry-run", "live run", "resume run", "doctor", "default log root", "rejects thread id on run", "workspace and sandbox"]:
+        add(f"Codex SDK tests cover {token}", token in txt)
+
+sdk_docs = [
+    ("README", ROOT / "README.md"),
+    ("PROJECT_STATE", ROOT / "PROJECT_STATE.md"),
+    ("AGENTS", ROOT / "AGENTS.md"),
+    ("sync contract", ROOT / "implementation" / "15-documentation-sync-contract.md"),
+    ("runtime architecture", ROOT / "implementation" / "13-codex-runtime-architecture.md"),
+]
+false_runtime_claims = [
+    re.compile(r"(?i)\buses\s+OpenAI Agents SDK\b"),
+    re.compile(r"(?i)\bOpenAI Agents SDK runtime\s+(?:is\s+)?(?:present|implemented|active)\b"),
+]
+for label, path in sdk_docs:
+    add(f"{label} exists for Codex SDK docs", path.exists(), str(path))
+    if path.exists():
+        txt = read(path)
+        add(f"{label} mentions Codex SDK", "Codex SDK" in txt)
+        if label != "runtime architecture":
+            add(f"{label} documents npm.cmd for SDK checks", "npm.cmd" in txt)
+        for pat in false_runtime_claims:
+            add(f"{label} has no false OpenAI Agents SDK runtime claim: {pat.pattern}", pat.search(txt) is None)
+
+if readme.exists():
+    txt = read(readme)
+    for token in ["Run through Codex SDK", "--dry-run", "--live", "Financial Agent Reports\\_sdk_runs"]:
+        add(f"README Codex SDK section contains {token}", token in txt)
 
 failed = [c for c in checks if not c[1]]
 for name, ok, detail in checks:

@@ -10,7 +10,7 @@ It implements the project's TDD-like documentation behavior: rules must map to f
 
 ## OpenAI / Codex practice basis
 
-This contract follows official OpenAI / Codex best practices: keep `AGENTS.md` practical, make repeated workflows into skills, use validation and done criteria, keep custom agents narrow, and treat subagents as real only when actually spawned. Future API-backed orchestration may use OpenAI Agents SDK manager/handoff/tool patterns, guardrails, and traces.
+This contract follows official OpenAI / Codex best practices: keep `AGENTS.md` practical, make repeated workflows into skills, use validation and done criteria, keep custom agents narrow, treat subagents as real only when actually spawned, and keep Codex SDK as a control-plane wrapper rather than an OpenAI Agents SDK runtime.
 
 ## Required sync behavior
 
@@ -21,6 +21,8 @@ This contract follows official OpenAI / Codex best practices: keep `AGENTS.md` p
 | New workflow runbook or route card | Register it in `implementation/01-documentation-control.md`, update `PROJECT_STATE.md`, and update runtime readiness validation. |
 | New skill or material skill trigger change | Update the skill description, related route card, and skill validation checks. |
 | New custom agent or material agent behavior change | Update canonical agent contract, runtime agent file, handoff expectations, and validation checks. |
+| New or changed Codex SDK control layer | Update `PROJECT_STATE.md`, `README.md`, `AGENTS.md`, runtime architecture, package scripts, SDK tests, and runtime readiness validation. |
+| New or changed Python LangGraph runtime | Update `PROJECT_STATE.md`, `README.md`, `AGENTS.md`, `implementation/13-codex-runtime-architecture.md`, `langgraph_runtime/IMPLEMENTATION_MAP.md`, and Python runtime tests. Keep the layer additive and preserve Codex-native route-card boundaries. |
 | New operational report | Register it as supporting, historical, superseded, or current evidence; do not let it silently override `PROJECT_STATE.md`. |
 | Archived or moved document | Update registry, `PROJECT_STATE.md`, and validators so archived files are not used as daily runtime sources. |
 
@@ -40,6 +42,16 @@ After documentation, workflow, skill, agent, route-card, fixture, or validator c
 py -3 tools\validate_project_consistency.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
+py -3 -m unittest discover -s tests\langgraph_runtime -v
+```
+
+After Codex SDK control-layer changes, also run:
+
+```powershell
+npm.cmd run build
+npm.cmd test
+npm.cmd run codex:doctor
+npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
 ```
 
 If validation fails, either fix the project state or report a source issue. Do not mark the task complete while validation fails.

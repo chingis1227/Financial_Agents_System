@@ -1,0 +1,24 @@
+{
+  "name": "financial-agent-system",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Codex-native financial analysis runtime with a Codex SDK control layer.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test dist/tests/*.test.js",
+    "codex:run": "node dist/src/codex-sdk/cli.js run",
+    "codex:resume": "node dist/src/codex-sdk/cli.js resume",
+    "codex:doctor": "node dist/src/codex-sdk/cli.js doctor"
+  },
+  "dependencies": {
+    "@openai/codex-sdk": "^0.142.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
