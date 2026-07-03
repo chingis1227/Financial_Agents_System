@@ -40,6 +40,11 @@
     "skill": "market-positioning"
   },
   {
+    "command": "SENSE",
+    "agent": "market-sense-agent",
+    "skill": "market-sense-hypothesis-engine"
+  },
+  {
     "command": "INTEL",
     "agent": "market-intelligence-agent",
     "skill": "market-intelligence-briefing"

@@ -2102,3 +2102,7 @@ P5-AGT-01 is complete when:
 - Hybrid instrument lead/contributor ownership is explicit.
 - Runtime custom-agent TOML adapters remain thin and synchronized to these canonical contracts.
 - QA coverage in `implementation/09-system-acceptance-qa.md` covers P5-AGT-01 structural and scenario checks.
+
+## Institutional agent responsibility update
+
+Asset lead agents create or update the Thesis Spine, separate Asset Quality View from Entry / Expectations View, identify top drivers, and identify thesis breakers. News & Catalysts states whether an event changes thesis, timing, or only noise and separates confirmed facts, unconfirmed claims, and market-implied interpretation. Market Positioning states whether positioning affects entry setup, risk asymmetry, or only monitoring. Market Sense consumes evidence/news/positioning/macro when available, separates dominant, supporting, opposing, and unsupported drivers, and returns Low confidence / Limited rather than causal certainty without evidence. Structural Winners is discovery-only and outputs candidate watchlist / review priority, not buy list. Risk Red Team supports Risk Pre-Mortem and Full Risk Gate. Investment Committee resolves conflicts, separates Quality vs Entry, and provides monitoring triggers.

@@ -50,3 +50,5 @@ Do not override Evidence Collector readiness or Investment Committee boundaries.
 
 Return status, key findings, evidence limits, missing gates, structured handoff, and next required step. Use Limited or Blocked when the canonical contract or evidence gates require it.
 """
+
+# institutional_update = "Discovery-only: outputs candidate watchlist / review priority, not buy list; selected candidates hand off to asset-first workflow."

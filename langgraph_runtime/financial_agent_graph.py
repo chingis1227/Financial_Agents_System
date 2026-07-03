@@ -23,8 +23,11 @@ from .nodes import (
     generic_asset_workflow_node,
     investment_committee_node,
     macro_node,
+    materiality_planner_node,
+    market_intelligence_node,
     market_news_node,
     market_positioning_node,
+    market_sense_node,
     news_catalysts_node,
     portfolio_fit_node,
     quick_take_node,
@@ -52,6 +55,8 @@ def build_equity_subgraph() -> Any:
     builder.add_node("risk_red_team_node", risk_red_team_node)
     builder.add_node("news_catalysts_node", news_catalysts_node)
     builder.add_node("market_positioning_node", market_positioning_node)
+    builder.add_node("market_sense_node", market_sense_node)
+    builder.add_node("market_intelligence_node", market_intelligence_node)
     builder.add_node("portfolio_fit_node", portfolio_fit_node)
     builder.add_edge(START, "equity_analysis_node")
     builder.add_edge("equity_analysis_node", "macro_node")
@@ -61,7 +66,9 @@ def build_equity_subgraph() -> Any:
     builder.add_edge("valuation_node", "risk_red_team_node")
     builder.add_edge("risk_red_team_node", "news_catalysts_node")
     builder.add_edge("news_catalysts_node", "market_positioning_node")
-    builder.add_edge("market_positioning_node", "portfolio_fit_node")
+    builder.add_edge("market_positioning_node", "market_sense_node")
+    builder.add_edge("market_sense_node", "market_intelligence_node")
+    builder.add_edge("market_intelligence_node", "portfolio_fit_node")
     builder.add_edge("portfolio_fit_node", END)
     return builder.compile()
 
@@ -73,6 +80,7 @@ def build_graph(*, checkpointer: InMemorySaver | None = None) -> Any:
     builder.add_node("evidence_planner_node", evidence_planner_node)
     builder.add_node("evidence_collector_node", evidence_collector_node)
     builder.add_node("evidence_readiness_gate_node", evidence_readiness_gate_node)
+    builder.add_node("materiality_planner_node", materiality_planner_node)
     builder.add_node("equity_workflow_subgraph", build_equity_subgraph())
     builder.add_node("generic_asset_workflow_node", generic_asset_workflow_node)
     builder.add_node("direct_specialist_node", direct_specialist_node)
@@ -100,7 +108,8 @@ def build_graph(*, checkpointer: InMemorySaver | None = None) -> Any:
     )
     builder.add_edge("clarification_node", "evidence_planner_node")
     builder.add_edge("evidence_planner_node", "evidence_collector_node")
-    builder.add_edge("evidence_collector_node", "evidence_readiness_gate_node")
+    builder.add_edge("evidence_collector_node", "materiality_planner_node")
+    builder.add_edge("materiality_planner_node", "evidence_readiness_gate_node")
     builder.add_conditional_edges(
         "evidence_readiness_gate_node",
         _route_after_evidence_gate,

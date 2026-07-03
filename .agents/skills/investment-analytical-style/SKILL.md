@@ -90,3 +90,7 @@ Before sending, silently verify:
 - structured handoff precision was not weakened by presentation editing.
 
 For Russian user-facing investment text, also verify that the output satisfies `.agents/skills/language-policy/SKILL.md` and can pass `tools\validate_language_style.py`. Investment-analytical style must not preserve English jargon when a natural Russian financial phrase exists.
+
+## Clean memo style
+
+Final reader-facing memos must read as professional investment analysis. They may be conservative, but not like a runtime log. Replace technical limitations with investment implications and keep debug/source-access details in audit.

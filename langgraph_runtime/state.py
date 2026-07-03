@@ -39,6 +39,15 @@ class FinancialAgentState(TypedDict):
     asset_class: AssetClass
     horizon: str
     position_context: str
+    decision_mode: str
+    materiality_plan: dict[str, Any]
+    thesis_spine: dict[str, Any]
+    portfolio_fit_level: int
+    risk_premortem: dict[str, Any]
+    ic_conflicts: dict[str, Any]
+    monitoring_triggers: dict[str, Any]
+    quality_view: dict[str, Any]
+    entry_view: dict[str, Any]
     user_context: dict[str, Any]
     missing_context: list[str]
     evidence_plan: dict[str, Any]
@@ -72,6 +81,15 @@ def initial_state(prompt: str, *, mode: str = "dry_run", output_dir: str = "", t
         "asset_class": "unknown",
         "horizon": "Unknown",
         "position_context": "Unknown",
+        "decision_mode": "Unknown",
+        "materiality_plan": {},
+        "thesis_spine": {},
+        "portfolio_fit_level": 0,
+        "risk_premortem": {},
+        "ic_conflicts": {},
+        "monitoring_triggers": {},
+        "quality_view": {},
+        "entry_view": {},
         "user_context": {},
         "missing_context": [],
         "evidence_plan": {},

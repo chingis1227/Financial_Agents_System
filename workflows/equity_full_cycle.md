@@ -253,3 +253,6 @@ This runbook is ready when:
 - Evidence/freshness gaps route to `evidence_gap_memo.md`, not to a false final memo.
 - Non-IC modules remain scoped and cannot issue final IC Action.
 
+## Runtime Execution Plan update
+
+The Runtime Execution Plan must show decision mode, Materiality Gate table, included modules, skipped modules with reason, Thesis Spine owner, and IC conflict-resolution requirement. The handoff must carry `thesis_spine_impact`, `materiality_status`, `quality_view_impact`, `entry_view_impact`, `monitoring_triggers`, and `what_would_change_view`. Optional market agents are materiality-triggered, not always-required, unless the prompt explicitly requests them or the decision mode makes them material.

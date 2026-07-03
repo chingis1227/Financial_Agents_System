@@ -55,3 +55,5 @@ Equity AGENT workflow obligations:
 - May fail a risk gate, but must not issue buy/sell/hold/add/trim/exit language, IC Action, Action Box, exact trade instructions, or exact sizing.
 
 """
+
+# institutional_update = "Supports two modes: Risk Pre-Mortem and Full Risk Gate."

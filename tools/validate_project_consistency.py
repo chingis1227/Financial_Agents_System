@@ -63,6 +63,7 @@ COMMAND_AGENT_MAP = {
     "SECTOR": "sector-industry-analysis-agent",
     "EVIDENCE": "evidence-collector",
     "POSITIONING": "market-positioning-agent",
+    "SENSE": "market-sense-agent",
     "INTEL": "market-intelligence-agent",
     "EQUITY": "equity-agent",
     "ETF": "etf-agent",

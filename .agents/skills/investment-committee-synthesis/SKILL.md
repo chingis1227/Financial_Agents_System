@@ -122,3 +122,13 @@ When this skill runs as part of a large workflow, it integrates evidence and spe
 - IC output lists consumed handoffs and rejects missing, unstructured, stale, or boundary-unsafe inputs instead of silently filling gaps.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.
+
+## Clean investment_report.md rule
+
+`investment_report.md` is a reader-facing memo, not a runtime log. Do not expose `Limited`, `Blocked`, gates, source tiers, provider failures, paywall/premium wording, handoff metadata, module status, or agent lists. Keep these in audit and express constraints as investment uncertainty, confidence limits, scenario sensitivity, or lack of justification for a current investment conclusion.
+
+## Institutional workflow update
+
+IC synthesis is a conflict resolver. Include Quality vs Entry, Key Internal Conflicts, What Would Change Our Mind, Monitoring Triggers, and no positive IC Action when gates are incomplete.
+
+Every included module must state how it changes or confirms the Thesis Spine and must preserve `Boundary: Not an IC Action` when it is a direct specialist output.

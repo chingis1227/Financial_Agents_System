@@ -104,3 +104,7 @@ A normalized comparison that combines common criteria with asset-specific criter
 - Each asset class is analyzed by its correct lead route.
 - Common comparison criteria and asset-specific criteria are both visible.
 - The final output does not turn a context-dependent comparison into an unconditional buy list.
+
+## Runtime Execution Plan update
+
+The Runtime Execution Plan must show decision mode, Materiality Gate table, included modules, skipped modules with reason, Thesis Spine owner, and IC conflict-resolution requirement. The handoff must carry `thesis_spine_impact`, `materiality_status`, `quality_view_impact`, `entry_view_impact`, `monitoring_triggers`, and `what_would_change_view`. Optional market agents are materiality-triggered, not always-required, unless the prompt explicitly requests them or the decision mode makes them material.

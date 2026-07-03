@@ -61,6 +61,14 @@ class DispatchClassificationTests(unittest.TestCase):
         self.assertEqual(decision.target_command, "specialist-run")
         self.assertEqual(decision.target_prompt, "RISK: Microsoft")
 
+
+    def test_dispatch_preserves_sense_specialist_prefix(self) -> None:
+        decision = fa_automation.classify_dispatch_prompt("SENSE: why did BTC fall today?")
+        self.assertEqual(decision.selected_dispatch, "SPECIALIST")
+        self.assertEqual(decision.selected_route, "direct_specialist")
+        self.assertEqual(decision.target_command, "specialist-run")
+        self.assertEqual(decision.target_prompt, "SENSE: why did BTC fall today?")
+
     def test_dispatch_unknown_asset_needs_clarification_without_fake_workflow(self) -> None:
         decision = fa_automation.classify_dispatch_prompt("Should I buy UnknownAssetXYZ for 3 years?")
         self.assertEqual(decision.selected_dispatch, "NEEDS_CLARIFICATION")

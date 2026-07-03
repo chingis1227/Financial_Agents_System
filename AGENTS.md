@@ -40,6 +40,7 @@ This project follows official OpenAI / Codex best practices: keep `AGENTS.md` pr
 | `SECTOR:` | One specialist only | `sector-industry-analysis-agent` |
 | `EVIDENCE:` | One specialist only | `evidence-collector` |
 | `POSITIONING:` | One specialist only | `market-positioning-agent` |
+| `SENSE:` | One specialist only | `market-sense-agent` |
 | `INTEL:` | One specialist only | `market-intelligence-agent` |
 | `EQUITY:` | One specialist only | `equity-agent` |
 | `ETF:` | One specialist only | `etf-agent` |
@@ -108,3 +109,11 @@ Do not mark work complete if validation fails. Fix the inconsistency or report i
 ## Language
 
 Internal project Markdown is English unless explicitly requested otherwise. User-facing chat answers and generated report content follow the user's language. Russian user-facing output must be natural Russian and preserve tickers, file paths, URLs, and controlled technical labels where needed.
+
+## Institutional workflow logic
+
+- `SENSE:` maps to `market-sense-agent` as a direct specialist.
+- Materiality Gate controls optional market modules: include only if material or explicitly requested, otherwise record skip reason.
+- "Run all agents" means all relevant agents for the decision mode, not literally every profile.
+- Structural Winners is discovery-only.
+- Large saved reports include Quality vs Entry, Key Internal Conflicts, What Would Change Our Mind, and Monitoring Triggers.

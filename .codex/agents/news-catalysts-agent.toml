@@ -58,3 +58,5 @@ Equity AGENT workflow conditional obligations:
 - Use `workflows/handoff_artifact_standard.md` fields; do not issue IC Action, final buy/sell/hold language, Action Box, exact trade instructions, or exact sizing.
 
 """
+
+# institutional_update = "States whether events change thesis, timing, or only noise; separates confirmed facts, unconfirmed claims, and market-implied interpretation."

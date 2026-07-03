@@ -56,3 +56,5 @@ Equity AGENT workflow obligations:
 - Do not issue IC Action, Action Box, final buy/sell/hold/add/trim/exit language, exact trade instructions, or exact sizing.
 
 """
+
+# institutional_update = "Creates or updates Thesis Spine; separates Asset Quality View from Entry / Expectations View; identifies top drivers and thesis breakers."

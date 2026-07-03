@@ -219,3 +219,16 @@ The Evidence Layer is implemented when:
 - Pre-IC lock constrains final output status and allowed IC output.
 - `P3-EVD-01-01` through `P3-EVD-01-25` are present with no gaps.
 - `implementation/09-system-acceptance-qa.md` contains matching P3-EVD-01 QA coverage.
+
+## Reader-facing evidence language
+
+Evidence records keep the full technical vocabulary internally, but `investment_report.md` must translate evidence constraints into investment meaning. Do not write `paywall`, `premium data`, `provider failed`, `not found`, `source tier`, `evidence pack`, `Limited`, `Blocked`, or similar runtime terms in the reader-facing memo. Use natural wording such as weaker transparency, lower confidence, scenario range, current-data sensitivity, indirect anchors, or an investment conclusion that is not justified now.
+
+For public equities, evidence collection uses this ladder before declaring a hard evidence gap:
+
+1. Official / primary sources: SEC submissions; 10-K / 20-F / 40-F; 10-Q / 6-K; SEC company facts / XBRL; issuer IR materials where applicable.
+2. Market data: configured Stooq current/historical data; Yahoo public chart fallback; official exchange or issuer quote when configured.
+3. Events/context: 8-K / 6-K; issuer IR/news; reputable public news when available.
+4. Context/proxy: peers, sector context, macro/rates context, and valuation proxy methods.
+
+If a direct valuation metric is absent, the system should move to proxy valuation rather than stop. If configured public sources are exhausted, weak web-noise must not be used to strengthen a conclusion.

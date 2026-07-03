@@ -118,3 +118,9 @@ Boundary wording: `Boundary: Not an IC Action. Method output only.`
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.
+
+## Institutional workflow update
+
+Discovery-only: output candidate watchlist and review priority, not buy/sell/hold list.
+
+Every included module must state how it changes or confirms the Thesis Spine and must preserve `Boundary: Not an IC Action` when it is a direct specialist output.

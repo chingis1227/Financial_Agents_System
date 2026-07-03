@@ -120,3 +120,7 @@ When this skill runs as part of a concrete-asset investment action large workflo
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.
+
+## Clean memo handoff
+
+Evidence collection retains full internal source records, access labels, source tiers, provider attempts, negative-evidence states, and proxy distance in audit. When evidence constraints are summarized into `investment_report.md`, translate them into investment language: lower confidence, current-data sensitivity, indirect anchors, scenario range, or a conclusion that is not justified now.

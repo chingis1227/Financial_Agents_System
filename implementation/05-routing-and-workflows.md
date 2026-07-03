@@ -264,3 +264,11 @@ Manual verification checklist:
 - Routers do not issue final investment views or `IC Action`.
 - Direct specialist, discovery, market reaction, and portfolio-fit routes preserve `Boundary: Not an IC Action` where relevant.
 - Final action routes preserve evidence, valuation/expectations, risk, implementation, and IC gates.
+
+## Institutional workflow logic update
+
+Decision Mode / Horizon Gate is required for every large workflow: Tactical setup, Medium-term thesis, Long-term ownership, Portfolio role, Discovery / opportunities, or Market reaction. The selected mode drives the Materiality Gate.
+
+Materiality Gate records Include / Skip plus a reason for News & Catalysts, Market Positioning, Market Intelligence, Market Sense / Driver Dominance, and Structural Winners. Optional market agents are not always-required; they run only when material or explicitly requested, and skipped optional agents are recorded with reasons.
+
+Every large workflow creates a Thesis Spine covering core thesis, top value drivers, top risk drivers, what must be true, what would change the view, horizon, key decision variable, and current quality / valuation / entry / portfolio-role status. Portfolio Fit uses Level 0-4: Level 0 no portfolio context; Level 1 current position known; Level 2 approximate weight / overlap known; Level 3 objectives and constraints known; Level 4 full portfolio-aware fit. Risk uses two passes when useful: early Risk Pre-Mortem and later Full Risk Gate. `SENSE:` maps to `market-sense-agent` as a direct specialist shortcut.

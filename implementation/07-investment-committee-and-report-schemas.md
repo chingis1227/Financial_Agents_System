@@ -989,3 +989,13 @@ All report schemas inherit these standards from `implementation/00-master-rules.
 - Freshness must be stated for market-sensitive conclusions.
 - Reports must use professional investment-writing style and avoid internal agent transcripts.
 - Exact trade instructions and exact position sizing are prohibited.
+
+## 1B. Humanized constraint layer
+
+The reader-facing `investment_report.md` is a clean investment memo. Internal artifact names, status labels, gates, source-access details, provider attempts, source tiers, handoff metadata, and module tables remain in `audit/` and must not appear in the main memo unless the user explicitly asks for audit/debug detail.
+
+If internal status is `Blocked`, the memo does not print `Blocked`; it states that the investment conclusion is not justified now and explains the investment reason. If internal status is `Limited`, the memo does not print `Limited`; it gives a normal investment view with a section such as `What limits confidence` / `??? ???????????? ???????????` using plain investment language. Paywall, premium-data, provider, and not-found wording is audit-only.
+
+## IC synthesis and report schema update
+
+Investment Committee output must act as conflict resolver, not a section compiler. It includes Investment View with Asset / Business Quality, Valuation / Expectations Support, Entry Setup, Risk Asymmetry, Portfolio Role, Confidence, and IC Action Status. It must include Key Internal Conflicts: Quality vs Valuation, Catalyst vs Crowding, Long-term thesis vs Current setup, Macro tailwind/headwind vs Asset-specific risk, and Standalone attractiveness vs Portfolio fit. It must include What Would Change Our Mind with positive triggers, negative triggers, and a monitoring checklist. Reader-facing reports include Quality vs Entry and Monitoring Triggers; audit includes decision mode, materiality plan, skipped optional agents and reasons, thesis spine evolution, and portfolio fit level.

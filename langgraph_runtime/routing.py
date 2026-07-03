@@ -13,6 +13,7 @@ SPECIALIST_PREFIXES: dict[str, str] = {
     "SECTOR": "sector-industry-analysis-agent",
     "EVIDENCE": "evidence-collector",
     "POSITIONING": "market-positioning-agent",
+    "SENSE": "market-sense-agent",
     "INTEL": "market-intelligence-agent",
     "EQUITY": "equity-agent",
     "ETF": "etf-agent",
@@ -36,7 +37,9 @@ ASSET_ALIASES: list[tuple[str, str, str]] = [
 ]
 
 QUICK_WORDS = ("quick", "short", "fast", "brief", "preliminary", "быстро", "коротко", "глянь", "кратко")
-NEWS_WORDS = ("today", "latest", "now", "why did", "rise", "fell", "fall", "упал", "упала", "вырос", "сегодня", "почему", "новост")
+NEWS_WORDS = ("today", "latest", "now", "earnings", "guidance", "regulation", "m&a", "why did", "rise", "fell", "fall", "упал", "упала", "вырос", "сегодня", "почему", "новост", "отчет", "отчёт")
+POSITIONING_WORDS = ("positioning", "crowded", "crowding", "flows", "sentiment", "futures", "позициони", "переполн", "настроен")
+MARKET_SENSE_WORDS = ("why did", "price action", "market reaction", "key drivers", "driver dominance", "moved", "rise", "fell", "fall", "почему", "движени", "драйвер")
 BUY_WORDS = ("buy", "invest", "hold", "sell", "add", "trim", "exit", "purchase", "покуп", "инвест", "держ", "продав", "стоит ли", "проанализ")
 RISK_WORDS = ("risk", "risks", "red team", "риск", "риски")
 THEME_WORDS = ("theme", "beneficiaries", "winners", "structural winners", "тема", "бенефициар", "победител")
@@ -50,6 +53,8 @@ class RouteDecision:
     asset_class: str
     horizon: str
     position_context: str
+    decision_mode: str
+    materiality_plan: dict[str, Any]
     missing_context: list[str]
     target_agent: str = ""
     required_questions: int = 0
@@ -74,44 +79,46 @@ def classify_request(prompt: str) -> RouteDecision:
     body_lower = body.casefold()
 
     if prefix == "BLOCKED" or "unroutable" in lower or "cannot route" in lower:
-        return RouteDecision("blocked", "blocked", "Unknown", "unknown", "Unknown", "Unknown", ["blocked_or_unroutable_request"], route_card="workflows/route_cards/investment_request_router.md")
+        return RouteDecision("blocked", "blocked", "Unknown", "unknown", "Unknown", "Unknown", "Unknown", {}, ["blocked_or_unroutable_request"], route_card="workflows/route_cards/investment_request_router.md")
 
     assets = _detect_assets(body_lower if prefix else lower)
     asset_identity, asset_class = _asset_identity_and_class(assets)
     horizon = _detect_horizon(lower)
     position_context = _detect_position_context(lower)
+    decision_mode = _detect_decision_mode(lower, horizon)
+    materiality_plan = _materiality_plan(lower, decision_mode)
     freshness_required = any(word in lower for word in NEWS_WORDS)
 
     if prefix == "QUICK":
-        return RouteDecision("quick_take", "quick_take", asset_identity, asset_class, horizon, position_context, [], required_questions=3, freshness_required=freshness_required, route_card="workflows/route_cards/quick_take.md")
+        return RouteDecision("quick_take", "quick_take", asset_identity, asset_class, horizon, position_context, decision_mode, materiality_plan, [], required_questions=3, freshness_required=freshness_required, route_card="workflows/route_cards/quick_take.md")
     if prefix == "AGENT":
         route = _full_route_for_asset(asset_class, assets, body_lower)
-        return RouteDecision("full_agent_workflow", route, asset_identity, _route_asset_class(route, asset_class), horizon, position_context, _missing_context_for_full(horizon, position_context, strict=False), required_questions=5, freshness_required=freshness_required, route_card=f"workflows/route_cards/{route}.md")
+        return RouteDecision("full_agent_workflow", route, asset_identity, _route_asset_class(route, asset_class), horizon, position_context, decision_mode, materiality_plan, _missing_context_for_full(horizon, position_context, strict=False), required_questions=5, freshness_required=freshness_required, route_card=f"workflows/route_cards/{route}.md")
     if prefix in SPECIALIST_PREFIXES:
         specialist_class = _prefix_asset_class(prefix, asset_class)
-        return RouteDecision("direct_specialist", "direct_specialist", asset_identity, specialist_class, horizon, position_context, [], target_agent=SPECIALIST_PREFIXES[prefix], freshness_required=freshness_required, route_card="workflows/route_cards/direct_specialist.md")
+        return RouteDecision("direct_specialist", "direct_specialist", asset_identity, specialist_class, horizon, position_context, decision_mode, materiality_plan, [], target_agent=SPECIALIST_PREFIXES[prefix], freshness_required=freshness_required, route_card="workflows/route_cards/direct_specialist.md")
     if prefix:
-        return RouteDecision("needs_clarification", "needs_clarification", asset_identity, asset_class, horizon, position_context, [f"Unknown command prefix: {prefix}"], route_card="workflows/route_cards/investment_request_router.md")
+        return RouteDecision("needs_clarification", "needs_clarification", asset_identity, asset_class, horizon, position_context, decision_mode, materiality_plan, [f"Unknown command prefix: {prefix}"], route_card="workflows/route_cards/investment_request_router.md")
 
     if any(word in lower for word in QUICK_WORDS):
-        return RouteDecision("quick_take", "quick_take", asset_identity, asset_class, horizon, position_context, [], required_questions=3, freshness_required=freshness_required, route_card="workflows/route_cards/quick_take.md")
+        return RouteDecision("quick_take", "quick_take", asset_identity, asset_class, horizon, position_context, decision_mode, materiality_plan, [], required_questions=3, freshness_required=freshness_required, route_card="workflows/route_cards/quick_take.md")
     if any(word in lower for word in RISK_WORDS) and asset_identity != "Unknown" and not any(word in lower for word in BUY_WORDS):
-        return RouteDecision("direct_specialist", "direct_specialist", asset_identity, asset_class, horizon, position_context, [], target_agent="risk-red-team-agent", freshness_required=freshness_required, route_card="workflows/route_cards/direct_specialist.md")
+        return RouteDecision("direct_specialist", "direct_specialist", asset_identity, asset_class, horizon, position_context, decision_mode, materiality_plan, [], target_agent="risk-red-team-agent", freshness_required=freshness_required, route_card="workflows/route_cards/direct_specialist.md")
     if any(word in lower for word in COMPARISON_WORDS) and len(assets) >= 2:
-        return RouteDecision("comparison", _comparison_route(assets), asset_identity, "multi_asset" if len({a[2] for a in assets}) > 1 else asset_class, horizon, position_context, _missing_context_for_comparison(horizon, position_context), required_questions=5, freshness_required=freshness_required, route_card="workflows/route_cards/multi_asset_comparison.md")
+        return RouteDecision("comparison", _comparison_route(assets), asset_identity, "multi_asset" if len({a[2] for a in assets}) > 1 else asset_class, horizon, position_context, decision_mode, materiality_plan, _missing_context_for_comparison(horizon, position_context), required_questions=5, freshness_required=freshness_required, route_card="workflows/route_cards/multi_asset_comparison.md")
     if freshness_required and asset_identity != "Unknown" and not any(word in lower for word in BUY_WORDS):
-        return RouteDecision("market_news_update", "market_news_update", asset_identity, asset_class, horizon, position_context, [], freshness_required=True, route_card="workflows/route_cards/direct_specialist.md")
+        return RouteDecision("market_news_update", "market_news_update", asset_identity, asset_class, horizon, position_context, decision_mode, materiality_plan, [], freshness_required=True, route_card="workflows/route_cards/direct_specialist.md")
     if any(word in lower for word in THEME_WORDS) and asset_identity == "Unknown":
-        return RouteDecision("theme_discovery", "theme_discovery", "Theme", "theme", horizon, position_context, [], required_questions=5, freshness_required=freshness_required, route_card="workflows/route_cards/multi_asset_comparison.md")
+        return RouteDecision("theme_discovery", "theme_discovery", "Theme", "theme", horizon, position_context, decision_mode, materiality_plan, [], required_questions=5, freshness_required=freshness_required, route_card="workflows/route_cards/multi_asset_comparison.md")
     if asset_identity != "Unknown" and any(word in lower for word in BUY_WORDS):
         route = _full_route_for_asset(asset_class, assets, lower)
         # Ordinary buy/investment prompts should route by default, but ambiguous missing context pauses later.
         strict_missing = "стоит ли" in lower or "should i buy" in lower or "should i invest" in lower
-        return RouteDecision("full_agent_workflow", route, asset_identity, _route_asset_class(route, asset_class), horizon, position_context, _missing_context_for_full(horizon, position_context, strict=strict_missing), required_questions=5, freshness_required=freshness_required, route_card=f"workflows/route_cards/{route}.md")
+        return RouteDecision("full_agent_workflow", route, asset_identity, _route_asset_class(route, asset_class), horizon, position_context, decision_mode, materiality_plan, _missing_context_for_full(horizon, position_context, strict=strict_missing), required_questions=5, freshness_required=freshness_required, route_card=f"workflows/route_cards/{route}.md")
 
     if asset_identity == "Unknown":
-        return RouteDecision("needs_clarification", "needs_clarification", asset_identity, asset_class, horizon, position_context, ["asset_identity"], route_card="workflows/route_cards/investment_request_router.md")
-    return RouteDecision("quick_take", "quick_take", asset_identity, asset_class, horizon, position_context, [], required_questions=3, freshness_required=freshness_required, route_card="workflows/route_cards/quick_take.md")
+        return RouteDecision("needs_clarification", "needs_clarification", asset_identity, asset_class, horizon, position_context, decision_mode, materiality_plan, ["asset_identity"], route_card="workflows/route_cards/investment_request_router.md")
+    return RouteDecision("quick_take", "quick_take", asset_identity, asset_class, horizon, position_context, decision_mode, materiality_plan, [], required_questions=3, freshness_required=freshness_required, route_card="workflows/route_cards/quick_take.md")
 
 
 def _detect_assets(text: str) -> list[tuple[str, str, str]]:
@@ -137,6 +144,9 @@ def _asset_identity_and_class(assets: list[tuple[str, str, str]]) -> tuple[str, 
 
 
 def _detect_horizon(text: str) -> str:
+    range_match = re.search(r"(\d+)\s*[-–]\s*(\d+)\s*(?:\+?\s*)?(year|years|yr|yrs|года|год|лет)", text, re.I)
+    if range_match:
+        return f"{range_match.group(1)}-{range_match.group(2)} years"
     m = re.search(r"(\d+)\s*(?:\+?\s*)?(year|years|yr|yrs|года|год|лет)", text, re.I)
     if m:
         return f"{m.group(1)} years"
@@ -213,3 +223,40 @@ def _missing_context_for_comparison(horizon: str, position_context: str) -> list
     if position_context == "Unknown":
         missing.append("portfolio_role_or_current_holdings")
     return missing
+
+
+def _detect_decision_mode(text: str, horizon: str) -> str:
+    if any(word in text for word in MARKET_SENSE_WORDS) and any(word in text for word in ("why", "почему", "moved", "движ", "fall", "rise", "упал", "вырос")):
+        return "Market reaction"
+    if any(word in text for word in ("today", "latest", "now", "entry", "price action", "сегодня", "сейчас", "вход")):
+        return "Tactical setup"
+    if any(word in text for word in ("portfolio", "allocation", "hedge", "income", "портф", "аллокац")):
+        return "Portfolio role"
+    if any(word in text for word in THEME_WORDS):
+        return "Discovery / opportunities"
+    if horizon != "Unknown":
+        m = re.match(r"(\d+)", horizon)
+        years = int(m.group(1)) if m else 0
+        if years >= 3:
+            return "Long-term ownership"
+        if 1 <= years < 3:
+            return "Medium-term thesis"
+    if "long term" in text or "долгоср" in text:
+        return "Long-term ownership"
+    return "Medium-term thesis"
+
+
+def _materiality_plan(text: str, decision_mode: str) -> dict[str, Any]:
+    tactical = decision_mode in {"Tactical setup", "Market reaction"}
+    news = tactical or any(word in text for word in NEWS_WORDS)
+    positioning = tactical or any(word in text for word in POSITIONING_WORDS)
+    sense = tactical or any(word in text for word in MARKET_SENSE_WORDS)
+    intelligence = any(word in text for word in ("market briefing", "cross-market", "broad market", "macro briefing", "рынок в целом"))
+    winners = decision_mode == "Discovery / opportunities" or any(word in text for word in THEME_WORDS)
+    return {
+        "News & Catalysts": {"status": "Include" if news else "Skip", "reason": "Fresh/tactical/catalyst-sensitive prompt." if news else "No current event or catalyst dependency in prompt."},
+        "Market Positioning": {"status": "Include" if positioning else "Skip", "reason": "Entry/crowding/flows/sentiment are decision-relevant." if positioning else "No positioning or crowding dependency in prompt."},
+        "Market Intelligence": {"status": "Include" if intelligence else "Skip", "reason": "Broad cross-market context explicitly requested." if intelligence else "No broad market briefing requested."},
+        "Market Sense / Driver Dominance": {"status": "Include" if sense else "Skip", "reason": "Why-moved, price-action, or driver-dominance prompt." if sense else "No market-reaction question in prompt."},
+        "Structural Winners": {"status": "Include" if winners else "Skip", "reason": "Discovery / opportunities prompt." if winners else "Not a theme-candidate discovery request."},
+    }

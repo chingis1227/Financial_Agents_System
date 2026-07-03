@@ -43,6 +43,7 @@ It may add the appropriate internal `AGENT:`, `QUICK:`, or specialist prefix bef
 | `SECTOR:` | `sector-industry-analysis-agent` |
 | `EVIDENCE:` | `evidence-collector` |
 | `POSITIONING:` | `market-positioning-agent` |
+| `SENSE:` | `market-sense-agent` |
 | `INTEL:` | `market-intelligence-agent` |
 | `EQUITY:` | `equity-agent` |
 | `ETF:` | `etf-agent` |
@@ -73,3 +74,16 @@ If required spawned subagents, evidence, freshness, valuation, risk, or portfoli
 ## Validation expectations
 
 Golden prompts for `AGENT:`, `QUICK:`, every specialist command, Microsoft, BTC, QQQ vs SCHG, gold, TLT, freshness, direct risk, and premature final memo must map to expected routes and target agents in `tests/behavior/golden_prompts.yaml`.
+
+
+## Decision Mode / Horizon Gate
+
+Every `AGENT:` workflow classifies one decision mode before modules run: Tactical setup, Medium-term thesis, Long-term ownership, Portfolio role, Discovery / opportunities, or Market reaction. The mode changes which optional modules are material.
+
+## Materiality Gate
+
+Before optional market modules run, record Include / Skip with a reason for News & Catalysts, Market Positioning, Market Intelligence, Market Sense / Driver Dominance, and Structural Winners. News is included for earnings, guidance, regulation, M&A, recent events, latest/today/now. Positioning is included for flows, crowding, sentiment, futures/ETF positioning, or event-bar questions. Market Sense is included for why-moved, price-action, market-reaction, and driver-dominance prompts. Structural Winners is included only for discovery / opportunities / theme-candidate work. Skipped optional agents must be recorded with reasons.
+
+## Thesis Spine
+
+Every large workflow creates and updates one Thesis Spine: core thesis; top 3 value drivers; top 3 risk drivers; what must be true; what would change the view; time horizon; key decision variable; current Asset / business quality, Valuation support, Entry setup, and Portfolio role status. Each included module states how it changes or confirms the Thesis Spine.

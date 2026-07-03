@@ -12,7 +12,7 @@ checks: list[tuple[str, bool, str]] = []
 EXACT_SPECIALIST_BOUNDARY = "Boundary: Not an IC Action"
 EXPECTED_COMMANDS = {
     "RISK", "VAL", "MACRO", "NEWS", "PORTFOLIO", "SECTOR", "EVIDENCE", "POSITIONING",
-    "INTEL", "EQUITY", "ETF", "COMMODITY", "CRYPTO", "FI", "WINNERS", "IC",
+    "SENSE", "INTEL", "EQUITY", "ETF", "COMMODITY", "CRYPTO", "FI", "WINNERS", "IC",
 }
 
 valid_routes = {
@@ -202,7 +202,7 @@ agent_contract = next((c for c in reports if c.get("id") == "agent_workflow_cont
 add("AGENT contract requires spawned subagents or Limited fallback", agent_contract.get("requires_spawned_subagents_or_limited_fallback") is True)
 reader_report_contract = next((c for c in reports if c.get("id") == "reader_facing_report_contract"), {})
 reader_forbidden = set(reader_report_contract.get("investment_report_forbidden", []))
-for token in ["Artifact Type", "Analysis Status", "IC Action Status", "Gate status", "Mode:", "Route:", "Boundary: Not an IC Action", "Portfolio Fit is Limited", "Missing gates", "Limited", "Blocked", "module status", "handoff", "gate failed", "not personalized gate"]:
+for token in ["Artifact Type", "Analysis Status", "IC Action Status", "Gate status", "Mode:", "Route:", "Boundary: Not an IC Action", "Portfolio Fit is Limited", "Missing gates", "Limited", "Blocked", "module status", "handoff", "gate failed", "not personalized gate", "agent", "evidence pack", "source tier", "provider failed", "not found", "paywall", "premium data", "runtime"]:
     add(f"reader-facing report forbids technical token: {token}", token in reader_forbidden, token)
 reader_required = set(reader_report_contract.get("investment_report_required", []))
 for token in ["Portfolio role", "general terms", "not provided"]:
@@ -210,6 +210,11 @@ for token in ["Portfolio role", "general terms", "not provided"]:
 reader_required_ru = set(reader_report_contract.get("investment_report_required_ru", []))
 for token in ["Портфельная роль", "в общем виде", "контекст не указан"]:
     add(f"reader-facing report requires Russian Portfolio role wording: {token}", token in reader_required_ru, token)
+
+humanized = {item.get("id") for item in reader_report_contract.get("humanized_constraint_cases", [])}
+for rid in ["mega_cap_rich_data", "small_cap_weak_disclosure", "missing_direct_valuation_metric", "missing_portfolio_context", "freshness_sensitive_prompt", "conflicting_numeric_data", "paywall_unavailable", "hard_evidence_gap"]:
+    add(f"reader-facing report covers humanized constraint case: {rid}", rid in humanized, rid)
+
 audit_required = set(reader_report_contract.get("audit_required", []))
 for token in ["Portfolio Fit: Limited / not personalized", "General Portfolio Role Mode"]:
     add(f"audit contract retains Portfolio Fit technical status: {token}", token in audit_required, token)
@@ -324,6 +329,10 @@ add(
 )
 for token in ["AGENT:", "QUICK:", "Do not claim agent workflow", "subagents were actually spawned"]:
     add(f"investment route card contains {token}", token in route_router, token)
+for token in ["Decision Mode / Horizon Gate", "Materiality Gate", "Thesis Spine", "SENSE:"]:
+    add(f"investment route card contains institutional token {token}", token in route_router, token)
+for token in ["Market Sense specialist", "Boundary: Not an IC Action"]:
+    add(f"direct specialist card contains {token}", token in direct_card, token)
 add(
     "investment router counts ambiguity inside required 5/3 question block where possible",
     "count the clarification inside the required 5-question `AGENT:` block or 3-question `QUICK:` block" in route_router,

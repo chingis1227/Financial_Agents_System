@@ -38,7 +38,12 @@
       "Execution mode",
       "Included modules",
       "Module status table",
-      "Spawn record or fallback note"
+      "Spawn record or fallback note",
+      "Decision Mode",
+      "Materiality Gate",
+      "Thesis Spine",
+      "Skipped optional agents",
+      "IC Conflict Resolution"
     ]
   },
   {
@@ -64,12 +69,25 @@
       "module status",
       "handoff",
       "gate failed",
-      "not personalized gate"
+      "not personalized gate",
+      "agent",
+      "evidence pack",
+      "source tier",
+      "provider failed",
+      "provider failure",
+      "not found",
+      "paywall",
+      "premium data",
+      "runtime"
     ],
     "investment_report_required": [
       "Portfolio role",
       "general terms",
-      "not provided"
+      "not provided",
+      "Quality vs Entry",
+      "Key Internal Conflicts",
+      "What Would Change Our Mind",
+      "Monitoring Triggers"
     ],
     "investment_report_required_ru": [
       "Портфельная роль",
@@ -78,7 +96,46 @@
     ],
     "audit_required": [
       "Portfolio Fit: Limited / not personalized",
-      "General Portfolio Role Mode"
+      "General Portfolio Role Mode",
+      "decision mode",
+      "materiality plan",
+      "skipped optional agents",
+      "thesis spine",
+      "Portfolio Fit Level 0"
+    ],
+    "humanized_constraint_cases": [
+      {
+        "id": "mega_cap_rich_data",
+        "memo": "full investment memo without technical terms"
+      },
+      {
+        "id": "small_cap_weak_disclosure",
+        "memo": "cautious professional memo without Limited/Blocked"
+      },
+      {
+        "id": "missing_direct_valuation_metric",
+        "memo": "uses proxy valuation"
+      },
+      {
+        "id": "missing_portfolio_context",
+        "memo": "general portfolio role without technical status"
+      },
+      {
+        "id": "freshness_sensitive_prompt",
+        "memo": "current-data caution in human wording"
+      },
+      {
+        "id": "conflicting_numeric_data",
+        "memo": "scenario/range language"
+      },
+      {
+        "id": "paywall_unavailable",
+        "memo": "no paywall mention in memo; audit only"
+      },
+      {
+        "id": "hard_evidence_gap",
+        "memo": "investment conclusion not justified now"
+      }
     ]
   },
   {

@@ -32,6 +32,7 @@ class LangGraphRuntimeTests(unittest.TestCase):
             ("AGENT: Microsoft for 3 years, no current position", "full_agent_workflow", "equity_full_cycle", ""),
             ("QUICK: Apple", "quick_take", "quick_take", ""),
             ("RISK: Tesla", "direct_specialist", "direct_specialist", "risk-red-team-agent"),
+            ("SENSE: why did BTC fall today?", "direct_specialist", "direct_specialist", "market-sense-agent"),
         ]
         for prompt, intent, route, target_agent in cases:
             with self.subTest(prompt=prompt):
@@ -40,6 +41,14 @@ class LangGraphRuntimeTests(unittest.TestCase):
                 self.assertEqual(decision.route, route)
                 if target_agent:
                     self.assertEqual(decision.target_agent, target_agent)
+
+    def test_russian_tactical_prompt_sets_material_market_modules(self) -> None:
+        decision = classify_request("AGENT: Nvidia стоит покупать сегодня после движения цены?")
+        self.assertEqual(decision.route, "equity_full_cycle")
+        self.assertIn(decision.decision_mode, {"Tactical setup", "Market reaction"})
+        self.assertEqual(decision.materiality_plan["News & Catalysts"]["status"], "Include")
+        self.assertEqual(decision.materiality_plan["Market Positioning"]["status"], "Include")
+        self.assertEqual(decision.materiality_plan["Market Sense / Driver Dominance"]["status"], "Include")
 
 
     def test_blocked_intake_category_exists(self) -> None:
@@ -92,6 +101,14 @@ class LangGraphRuntimeTests(unittest.TestCase):
                 "handoff",
                 "gate failed",
                 "not personalized gate",
+                "agent",
+                "evidence pack",
+                "source tier",
+                "provider failed",
+                "not found",
+                "paywall",
+                "premium data",
+                "runtime",
             ]:
                 self.assertNotIn(forbidden, report_text)
             self.assertIn("## Portfolio role", report_text)
@@ -165,7 +182,13 @@ class LangGraphRuntimeTests(unittest.TestCase):
             )
             self.assertEqual(result["final_status"], "Blocked")
             self.assertEqual(result["gate_statuses"]["evidence_readiness"]["status"], "Blocked")
+            report_text = Path(result["report_path"]).read_text(encoding="utf-8-sig")
             self.assertTrue(Path(result["report_path"]).exists())
+            self.assertNotIn("Blocked", report_text)
+            self.assertNotIn("Limited", report_text)
+            self.assertIn("not enough for a decision-oriented conclusion", report_text)
+            audit = Path(result["audit_path"])
+            self.assertIn("status: Blocked", (audit / "gates.md").read_text(encoding="utf-8-sig"))
 
 
     def test_risk_gate_interrupt_when_enabled(self) -> None:

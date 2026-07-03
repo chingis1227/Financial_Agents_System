@@ -160,3 +160,7 @@ Fixed-income analysis must separate wrapper analysis from underlying rate/credit
 - `decision_prep_memo.md` is used by default for smoke tests when portfolio context is missing.
 - `final_investment_memo.md` appears only when all required IC gates pass.
 - Non-IC artifacts preserve `Boundary: Not an IC Action` and do not contain final action wording.
+
+## Runtime Execution Plan update
+
+The Runtime Execution Plan must show decision mode, Materiality Gate table, included modules, skipped modules with reason, Thesis Spine owner, and IC conflict-resolution requirement. The handoff must carry `thesis_spine_impact`, `materiality_status`, `quality_view_impact`, `entry_view_impact`, `monitoring_triggers`, and `what_would_change_view`. Optional market agents are materiality-triggered, not always-required, unless the prompt explicitly requests them or the decision mode makes them material.

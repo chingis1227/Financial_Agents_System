@@ -28,6 +28,7 @@ Start Codex from the project root. For investment requests, Codex should route t
 | `SECTOR:` | One specialist only | `sector-industry-analysis-agent` |
 | `EVIDENCE:` | One specialist only | `evidence-collector` |
 | `POSITIONING:` | One specialist only | `market-positioning-agent` |
+| `SENSE:` | One specialist only | `market-sense-agent` |
 | `INTEL:` | One specialist only | `market-intelligence-agent` |
 | `EQUITY:` | One specialist only | `equity-agent` |
 | `ETF:` | One specialist only | `etf-agent` |
@@ -180,3 +181,16 @@ Validation is the TDD-like gate for this documentation-driven system: behavior r
 ## OpenAI / Codex best-practice alignment
 
 This project follows OpenAI / Codex guidance by keeping `AGENTS.md` concise, turning repeated workflows into skills, using explicit validation, keeping custom agents narrow, treating subagents as real only when actually spawned, and using Codex SDK only as a control plane. It does not implement an OpenAI Agents SDK runtime.
+
+## Reader-facing investment memo behavior
+
+Saved large-workflow output uses `investment_report.md` for the clean reader-facing memo and `audit/` for technical detail. The memo should read like professional investment analysis: it does not show internal status labels, gates, source-tier tables, provider/access errors, handoff metadata, or module-status logs. When evidence is weak, stale, indirect, or contradictory, the memo expresses that as investment uncertainty, scenario range, current-data sensitivity, or a view that is not justified yet.
+
+
+## Current workflow logic
+
+- `Materiality Gate` means optional market modules run when they can change the decision, not just because they exist. "Run all agents" means all relevant agents for the request.
+- `Thesis Spine` is the shared decision thread for large workflows: core thesis, key drivers, risks, horizon, and decision variable.
+- Structural Winners is discovery-only: it returns candidates and review priority, not a buy list.
+- Saved large-workflow reports include Quality vs Entry, Key Internal Conflicts, What Would Change Our Mind, and Monitoring Triggers.
+- Example: `SENSE: why did BTC fall today?` routes to `market-sense-agent` as a scoped specialist handoff.

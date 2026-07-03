@@ -120,3 +120,9 @@ The main `investment_report.md` must present missing portfolio context as a gene
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.
+
+## Institutional workflow update
+
+Use Portfolio Fit Level 0-4: 0 no portfolio context, 1 current position known, 2 weight/overlap known, 3 objectives/constraints known, 4 full portfolio-aware fit.
+
+Every included module must state how it changes or confirms the Thesis Spine and must preserve `Boundary: Not an IC Action` when it is a direct specialist output.

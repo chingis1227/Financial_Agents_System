@@ -313,3 +313,10 @@ The multi-asset handoff must use common criteria and asset-specific criteria. It
 
 A spawned-subagent smoke test is not passed if a required agent was unavailable, a required artifact is missing, or an IC-stage artifact consumes unstructured chat instead of validated handoffs.
 
+## Reader-facing cleanup boundary
+
+Handoff artifacts intentionally retain technical status, source, provider, access, gate, and module detail. `investment_report.md` is different: it is the clean reader-facing memo and must translate those details into investment uncertainty. The saved package therefore has a clean memo plus complete audit trail: all `Limited` / `Blocked` labels, gates, source tiers, provider failures, paywall/access states, negative-evidence labels, proxy distance, and handoff metadata stay in `audit/`.
+
+## Institutional handoff fields
+
+Large-workflow handoffs must include: `thesis_spine_impact`, `materiality_status`, `quality_view_impact`, `entry_view_impact`, `monitoring_triggers`, and `what_would_change_view`. Audit packages must preserve decision mode, materiality plan, skipped optional agents and reasons, thesis spine evolution, and portfolio fit level.

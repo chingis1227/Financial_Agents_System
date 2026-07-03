@@ -23,6 +23,7 @@ Map the prefix to exactly one target agent. Confirm scope only if ambiguous. Do 
 | `SECTOR:` | `sector-industry-analysis-agent` |
 | `EVIDENCE:` | `evidence-collector` |
 | `POSITIONING:` | `market-positioning-agent` |
+| `SENSE:` | `market-sense-agent` |
 | `INTEL:` | `market-intelligence-agent` |
 | `EQUITY:` | `equity-agent` |
 | `ETF:` | `etf-agent` |
@@ -58,3 +59,12 @@ If the specialist cannot support the requested conclusion, return Limited / Bloc
 ## Validation expectations
 
 Every specialist command prefix must map to exactly one target agent, remain specialist-scoped, and forbid final action language, including for `IC:`.
+
+## Reader-facing boundary
+
+Direct specialist outputs keep their required `Boundary: Not an IC Action` because they are specialist handoffs, not saved full-workflow `investment_report.md` files. If their content is later summarized into `investment_report.md`, the summary must remove runtime/debug labels and translate constraints into investment uncertainty while keeping full technical detail in `audit/`.
+
+
+## Market Sense specialist
+
+`SENSE:` routes to exactly one analyst: `market-sense-agent`. It is for driver-dominance, why-moved, price-action, and market-reaction hypotheses. It must show the visible boundary line that begins exactly `Boundary: Not an IC Action`; including `IC:`, no specialist shortcut may issue final buy/sell/hold/add/trim/exit language or final `IC Action`.

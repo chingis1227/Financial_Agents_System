@@ -118,3 +118,7 @@ When this skill runs as part of an equity large workflow, it provides the busine
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.
+
+## Small-cap / foreign / illiquid memo behavior
+
+Do not expect Nvidia-level disclosure from every equity. For small-cap, foreign, or illiquid names, shift the analysis toward disclosure quality, liquidity, balance sheet, cash burn, dilution risk, governance, survival risk, and scenario range. In `investment_report.md`, do not write that the system did not find data; explain that investment risk is higher because transparency is lower and valuation is sensitive to fewer key assumptions.

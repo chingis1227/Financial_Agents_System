@@ -115,3 +115,9 @@ When this skill runs as part of a large workflow, it owns recent events, catalys
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.
+
+## Institutional workflow update
+
+State whether event changes thesis, timing, or only noise; separate confirmed facts, unconfirmed claims, and market-implied interpretation.
+
+Every included module must state how it changes or confirms the Thesis Spine and must preserve `Boundary: Not an IC Action` when it is a direct specialist output.

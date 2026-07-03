@@ -35,6 +35,7 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 | `SECTOR:` | One specialist only | `sector-industry-analysis-agent` |
 | `EVIDENCE:` | One specialist only | `evidence-collector` |
 | `POSITIONING:` | One specialist only | `market-positioning-agent` |
+| `SENSE:` | One specialist only | `market-sense-agent` |
 | `INTEL:` | One specialist only | `market-intelligence-agent` |
 | `EQUITY:` | One specialist only | `equity-agent` |
 | `ETF:` | One specialist only | `etf-agent` |
@@ -122,3 +123,15 @@ npm.cmd test
 npm.cmd run codex:doctor
 npm.cmd run codex:run -- --prompt "QUICK: Microsoft" --dry-run
 ```
+
+## Reader-facing memo policy
+
+As of 2026-07-03, large-workflow `investment_report.md` output is a clean professional investment memo. Internal statuses, gates, source tiers, provider/access failures, handoff metadata, and module-status language remain in `audit/` and validators, while the reader-facing memo describes constraints as investment uncertainty, scenario sensitivity, current-data dependence, or a conclusion that is not justified now.
+
+## Institutional workflow logic
+
+- `SENSE:` is a direct specialist shortcut to `market-sense-agent`.
+- Materiality Gate means optional market modules run only when decision-relevant or explicitly requested; ?run all agents? means all relevant agents.
+- Large workflows maintain a Thesis Spine and separate Asset / Business Quality from Entry Setup.
+- Structural Winners is discovery-only and returns candidate watchlists / review priority, not buy lists.
+- Saved reports now include Quality vs Entry, Key Internal Conflicts, What Would Change Our Mind, and Monitoring Triggers; audit records decision mode, materiality plan, skipped optional agents, thesis spine evolution, and portfolio fit level.

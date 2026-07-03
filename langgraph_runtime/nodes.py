@@ -71,6 +71,19 @@ def evidence_planner_node(state: FinancialAgentState) -> dict[str, Any]:
     return _with_node(state, "evidence_planner_node", {"evidence_plan": plan})
 
 
+def materiality_planner_node(state: FinancialAgentState) -> dict[str, Any]:
+    plan = dict(state.get("materiality_plan") or {})
+    gates = dict(state.get("gate_statuses") or {})
+    gates["materiality"] = {
+        "status": "Pass",
+        "decision mode": state.get("decision_mode", "Unknown"),
+        "skipped optional agents": [
+            name for name, item in plan.items() if isinstance(item, dict) and item.get("status") == "Skip"
+        ],
+    }
+    return _with_node(state, "materiality_planner_node", {"materiality_plan": plan, "gate_statuses": gates})
+
+
 def evidence_collector_node(state: FinancialAgentState) -> dict[str, Any]:
     prompt = state["original_user_request"].casefold()
     wants_no_evidence = "without evidence" in prompt or "без доказ" in prompt or "no evidence" in prompt
@@ -122,11 +135,33 @@ def evidence_readiness_gate_node(state: FinancialAgentState) -> dict[str, Any]:
 
 
 def equity_analysis_node(state: FinancialAgentState) -> dict[str, Any]:
-    return _specialist(state, "equity_analysis_node", "equity_company_analysis", [
+    thesis = {
+        "core thesis": f"Decision-preparation thesis for {state.get('asset_identity')}.",
+        "top 3 value drivers": ["business/asset fundamentals", "valuation expectations", "portfolio role"],
+        "top 3 risk drivers": ["evidence gaps", "valuation risk", "portfolio concentration"],
+        "what must be true": "Evidence, valuation, risk, and portfolio gates must support the same view.",
+        "what would change the view": "Material evidence, valuation, risk, or portfolio-role contradiction.",
+        "time horizon": state.get("horizon", "Unknown"),
+        "key decision variable": state.get("decision_mode", "Medium-term thesis"),
+        "current status": {
+            "Asset / business quality": "Scaffolded; needs source-backed review.",
+            "Valuation support": "Pending valuation evidence.",
+            "Entry setup": "Pending materiality and market setup review.",
+            "Portfolio role": "Pending portfolio context.",
+        },
+    }
+    quality_view = {"status": "Needs source-backed review", "summary": "Asset quality is evaluated separately from price/entry."}
+    entry_view = {"status": "Needs source-backed review", "summary": "Entry setup depends on valuation, catalysts, positioning, and risk asymmetry."}
+    update = _specialist(state, "equity_analysis_node", "equity_company_analysis", [
         f"Asset: {state.get('asset_identity')}",
         "Business-quality view is dry-run scaffolded from the equity-company-analysis skill contract.",
+        "Thesis Spine created; Quality vs Entry are separated.",
         "No live company facts are invented.",
     ])
+    update["thesis_spine"] = thesis
+    update["quality_view"] = quality_view
+    update["entry_view"] = entry_view
+    return update
 
 
 def macro_node(state: FinancialAgentState) -> dict[str, Any]:
@@ -160,17 +195,44 @@ def risk_red_team_node(state: FinancialAgentState) -> dict[str, Any]:
             "required_follow_up": "Provide or collect source-backed risk evidence before any final IC action.",
         })
         gates["risk"]["human_resume"] = resume_value
-    update = _specialist(state, "risk_red_team_node", "risk_red_team", ["Risk red-team module ran and constrains any final action.", "Boundary: Not an IC Action."])
+    premortem = {
+        "mode": "Risk Pre-Mortem",
+        "summary": "Early dry-run pre-mortem flags evidence, valuation, liquidity, and portfolio-concentration failure modes.",
+    }
+    update = _specialist(state, "risk_red_team_node", "risk_red_team", ["Risk Pre-Mortem completed before Full Risk Gate scaffold.", "Risk red-team module ran and constrains any final action.", "Boundary: Not an IC Action."])
     update["gate_statuses"] = gates
+    update["risk_premortem"] = premortem
     return update
 
 
 def news_catalysts_node(state: FinancialAgentState) -> dict[str, Any]:
+    if _materiality_status(state, "News & Catalysts") == "Skip":
+        return _with_node(state, "news_catalysts_node", {})
     return _specialist(state, "news_catalysts_node", "news_catalysts", ["News/catalyst module is present.", "Freshness-sensitive conclusions require current timestamped sources."])
 
 
 def market_positioning_node(state: FinancialAgentState) -> dict[str, Any]:
+    if _materiality_status(state, "Market Positioning") == "Skip":
+        return _with_node(state, "market_positioning_node", {})
     return _specialist(state, "market_positioning_node", "market_positioning", ["Market positioning module is present.", "Dry-run output does not claim current positioning data."])
+
+
+def market_sense_node(state: FinancialAgentState) -> dict[str, Any]:
+    if _materiality_status(state, "Market Sense / Driver Dominance") == "Skip":
+        return _with_node(state, "market_sense_node", {})
+    return _specialist(state, "market_sense_node", "market_sense_hypothesis_engine", [
+        "Market Sense / Driver Dominance module is material for this prompt.",
+        "Dominant, supporting, opposing, and unsupported drivers require evidence-backed confidence.",
+    ])
+
+
+def market_intelligence_node(state: FinancialAgentState) -> dict[str, Any]:
+    if _materiality_status(state, "Market Intelligence") == "Skip":
+        return _with_node(state, "market_intelligence_node", {})
+    return _specialist(state, "market_intelligence_node", "market_intelligence_briefing", [
+        "Broad market intelligence module is material for this prompt.",
+        "Dry-run output does not claim current cross-market data.",
+    ])
 
 
 def portfolio_fit_node(state: FinancialAgentState) -> dict[str, Any]:
@@ -183,9 +245,11 @@ def portfolio_fit_node(state: FinancialAgentState) -> dict[str, Any]:
     limitations = list(state.get("limitations") or [])
     if missing:
         limitations.append("Portfolio Fit: Limited / not personalized; General Portfolio Role Mode.")
-    update = _specialist(state, "portfolio_fit_node", "portfolio_fit", ["Portfolio fit module ran.", gates["portfolio_fit"]["reason"], "No exact allocation instruction is issued."])
+    level = 0 if missing else 4
+    update = _specialist(state, "portfolio_fit_node", "portfolio_fit", ["Portfolio fit module ran.", f"Portfolio Fit Level {level}.", gates["portfolio_fit"]["reason"], "No exact allocation instruction is issued."])
     update["gate_statuses"] = gates
     update["limitations"] = limitations
+    update["portfolio_fit_level"] = level
     return update
 
 
@@ -267,8 +331,34 @@ def investment_committee_node(state: FinancialAgentState) -> dict[str, Any]:
         "summary": summary,
         "consumed_modules": sorted((state.get("specialist_outputs") or {}).keys()),
         "gate_summary": {"evidence": evidence_status, "valuation": valuation_status, "risk": risk_status, "portfolio_fit": portfolio_status},
+        "investment_view": {
+            "Asset / Business Quality": (state.get("quality_view") or {}).get("status", "Needs review"),
+            "Valuation / Expectations Support": valuation_status,
+            "Entry Setup": (state.get("entry_view") or {}).get("status", "Needs review"),
+            "Risk Asymmetry": risk_status,
+            "Portfolio Role": f"Portfolio Fit Level {state.get('portfolio_fit_level', 0)}",
+            "Confidence": "Limited until gates pass",
+            "IC Action Status": action_status,
+        },
+        "Key Internal Conflicts": [
+            "Quality vs Valuation",
+            "Catalyst vs Crowding",
+            "Long-term thesis vs Current setup",
+            "Macro tailwind/headwind vs Asset-specific risk",
+            "Standalone attractiveness vs Portfolio fit",
+        ],
+        "What Would Change Our Mind": {
+            "Positive triggers": ["Source-backed evidence that improves valuation support, risk asymmetry, or thesis durability."],
+            "Negative triggers": ["Evidence, valuation, risk, or portfolio-fit contradiction."],
+            "Monitoring checklist": ["Evidence refresh", "valuation update", "risk trigger review", "portfolio overlap review"],
+        },
     }
-    return _with_node(state, "investment_committee_node", {"ic_synthesis": synthesis, "final_status": final_status})
+    return _with_node(state, "investment_committee_node", {
+        "ic_synthesis": synthesis,
+        "ic_conflicts": {"Key Internal Conflicts": synthesis["Key Internal Conflicts"]},
+        "monitoring_triggers": synthesis["What Would Change Our Mind"],
+        "final_status": final_status,
+    })
 
 
 def report_writer_node(state: FinancialAgentState) -> dict[str, Any]:
@@ -334,10 +424,38 @@ def generic_asset_workflow_node(state: FinancialAgentState) -> dict[str, Any]:
         "This asset-class full-workflow scaffold preserves the selected route and does not run the equity-only subgraph.",
         "No live asset-class evidence is invented in dry-run mode.",
     ])
+    thesis = {
+        "core thesis": f"Decision-preparation thesis for {state.get('asset_identity')}.",
+        "top 3 value drivers": ["asset-class fundamentals", "valuation/expectations equivalent", "portfolio role"],
+        "top 3 risk drivers": ["evidence gaps", "valuation/rates/liquidity risk", "portfolio concentration"],
+        "what must be true": "Evidence, valuation-equivalent, risk, and portfolio gates must support the same view.",
+        "what would change the view": "Material evidence, valuation, risk, or portfolio-role contradiction.",
+        "time horizon": state.get("horizon", "Unknown"),
+        "key decision variable": state.get("decision_mode", "Medium-term thesis"),
+        "current status": {
+            "Asset / business quality": "Scaffolded; needs source-backed review.",
+            "Valuation support": "Pending valuation-equivalent evidence.",
+            "Entry setup": "Pending materiality and market setup review.",
+            "Portfolio role": "Portfolio Fit Level 0 unless context is provided.",
+        },
+    }
     gates = dict(state.get("gate_statuses") or {})
     gates.setdefault("valuation", {"status": "Limited", "reason": "Asset-class valuation/expectations equivalent requires live evidence."})
     gates.setdefault("risk", {"status": "Limited", "reason": "Asset-class risk gate requires source-backed specialist evidence."})
     gates.setdefault("portfolio_fit", {"status": "Limited", "reason": "Portfolio Fit: Limited / not personalized; General Portfolio Role Mode because user portfolio context is missing or incomplete."})
     limitations = list(state.get("limitations") or [])
     limitations.append(f"{route} currently uses a dry-run asset-class scaffold; no final IC Action is issued.")
-    return _with_node(state, "generic_asset_workflow_node", {"specialist_outputs": outputs, "gate_statuses": gates, "limitations": limitations})
+    return _with_node(state, "generic_asset_workflow_node", {
+        "specialist_outputs": outputs,
+        "gate_statuses": gates,
+        "limitations": limitations,
+        "thesis_spine": thesis,
+        "quality_view": {"status": "Needs source-backed review"},
+        "entry_view": {"status": "Needs source-backed review"},
+        "portfolio_fit_level": 0,
+    })
+
+
+def _materiality_status(state: FinancialAgentState, module: str) -> str:
+    item = (state.get("materiality_plan") or {}).get(module) or {}
+    return item.get("status", "Skip")

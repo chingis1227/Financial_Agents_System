@@ -1807,3 +1807,7 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 - `Complete` for a skill means `Complete for scoped method` and does not imply Complete IC Action.
 - Runtime `.agents/skills/*/SKILL.md` adapters remain concise and synchronized to this canonical document.
 - QA coverage in `implementation/09-system-acceptance-qa.md` covers P5-SKL-01 structural and scenario checks.
+
+## Institutional skill logic update
+
+Reusable investment skills must support the shared Thesis Spine and must state how the module changes or confirms it. Router skill includes Decision Mode and Materiality Gate. IC skill includes conflict resolution and monitoring triggers. Risk skill supports Risk Pre-Mortem and Full Risk Gate. Valuation separates valuation support from asset quality. Portfolio Fit supports Level 0-4. Market Sense / Driver Dominance requires evidence-backed confidence. `SENSE:` is a direct specialist shortcut to `market-sense-agent` and remains Boundary: Not an IC Action.

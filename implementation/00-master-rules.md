@@ -641,3 +641,23 @@ Stable IDs in this table are used for QA traceability. If a rule changes, update
 | P1-RULE-01-28 | 28 | Paid/private data unavailable | Provide Public-data view plus checklist; constrain confidence/status when material. |
 | P1-RULE-01-29 | 29 | Many artifacts confuse final output | `final_investment_memo.md` is the internal canonical final IC artifact; saved user-facing large-workflow output remains `investment_report.md`; supporting artifacts need metadata. |
 | P1-RULE-01-30 | 30 | Legacy/draft/backup used as source of truth | Canonical docs win; legacy is supporting/excluded by registry. |
+
+## Reader-facing memo cleanliness policy
+
+`investment_report.md` must not expose technical runtime/data-quality labels. It should express constraints as investment uncertainty, not system limitation.
+
+Internal status language such as `Limited`, `Blocked`, gates, source tiers, provider attempts, source-access labels, handoff metadata, module status, and audit/debug wording remains valid only for runtime control, validators, and files under `audit/`. The reader-facing memo uses professional investment language: entry may look premature, valuation may be sensitive to assumptions, the idea may require monitoring, or the investment conclusion may not yet be justified. Final reports can be conservative, but must not look like runtime logs.
+
+Reader-facing constraint mapping:
+
+| Internal condition | Reader-facing memo wording |
+|---|---|
+| Limited valuation | Valuation is sensitive to assumptions for growth, margin, and capital structure. |
+| Blocked valuation | The investment conclusion on price is not justified now; a stronger valuation base is needed. |
+| Missing portfolio context | The personal decision depends on current portfolio, horizon, and acceptable drawdown. |
+| Freshness gap | Current entry depends on fresh market data and event background. |
+| Proxy evidence | The view is built through indirect anchors such as peers, revenue profile, margins, and cash flow. |
+| Conflicting data | The conclusion should be read as a scenario range rather than a point estimate. |
+| No public direct metric | Direct valuation support is weak; analysis shifts to business quality, balance sheet, and scenarios. |
+
+The audit pack must still preserve the full internal trail, including statuses, gates, source records, source tiers, provider attempts, access status, negative-evidence labels, fallback use, proxy distance, missing gates, and conflict registers.

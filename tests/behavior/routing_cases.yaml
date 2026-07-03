@@ -161,6 +161,17 @@
     "freshness_required": false
   },
   {
+    "id": "command_sense",
+    "prompt": "SENSE: why did BTC fall today?",
+    "command": "SENSE",
+    "expected_route": "direct_specialist",
+    "expected_agent": "market-sense-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": true
+  },
+  {
     "id": "command_intel",
     "prompt": "INTEL: semiconductor market",
     "command": "INTEL",
@@ -239,5 +250,67 @@
     "required_questions": 0,
     "specialist_only": true,
     "freshness_required": false
+  },
+  {
+    "id": "agent_long_term_equity_materiality",
+    "prompt": "AGENT: Microsoft for 3-5 years, no current position",
+    "command": "AGENT",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "requires_spawned_subagents": true,
+    "expected_decision_mode": "Long-term ownership",
+    "expected_optional_skips": [
+      "News & Catalysts",
+      "Market Positioning",
+      "Market Sense / Driver Dominance"
+    ],
+    "required_fields": [
+      "Thesis Spine",
+      "Quality vs Entry"
+    ]
+  },
+  {
+    "id": "agent_tactical_equity_materiality",
+    "prompt": "AGENT: Nvidia should I buy today after the price move?",
+    "command": "AGENT",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "requires_spawned_subagents": true,
+    "freshness_required": true,
+    "expected_decision_mode": "Tactical setup",
+    "expected_optional_includes": [
+      "News & Catalysts",
+      "Market Positioning",
+      "Market Sense / Driver Dominance"
+    ]
+  },
+  {
+    "id": "winners_discovery_watchlist",
+    "prompt": "WINNERS: who benefits from AI power demand?",
+    "command": "WINNERS",
+    "expected_route": "direct_specialist",
+    "expected_agent": "structural-winners-discovery-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "required_output": "candidate watchlist, not buy list"
+  },
+  {
+    "id": "portfolio_missing_context_level0",
+    "prompt": "AGENT: Microsoft for 3 years",
+    "command": "AGENT",
+    "expected_route": "equity_full_cycle",
+    "required_questions": 5,
+    "requires_spawned_subagents": true,
+    "expected_portfolio_fit_level": 0
+  },
+  {
+    "id": "multi_asset_scenario_winners",
+    "prompt": "AGENT: BTC vs gold vs QQQ vs TLT for 3 years",
+    "command": "AGENT",
+    "expected_route": "multi_asset_comparison",
+    "required_questions": 5,
+    "requires_spawned_subagents": true,
+    "required_output": "scenario winners, not universal winner"
   }
 ]

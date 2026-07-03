@@ -37,6 +37,7 @@ Use this skill before answering when the user uses:
 | `SECTOR:` | `sector-industry-analysis-agent` |
 | `EVIDENCE:` | `evidence-collector` |
 | `POSITIONING:` | `market-positioning-agent` |
+| `SENSE:` | `market-sense-agent` |
 | `INTEL:` | `market-intelligence-agent` |
 | `EQUITY:` | `equity-agent` |
 | `ETF:` | `etf-agent` |
@@ -110,3 +111,16 @@ Validation fixture: [golden prompt / routing case id if applicable]
 - QQQ vs SCHG routes to ETF / comparison.
 - Freshness prompts require timestamped sources or Limited / Blocked.
 - Direct risk review stays specialist-scoped with no IC Action.
+
+
+## Decision Mode / Horizon Gate
+
+For `AGENT:` classify the request as Tactical setup, Medium-term thesis, Long-term ownership, Portfolio role, Discovery / opportunities, or Market reaction before selecting included modules.
+
+## Materiality Gate
+
+For large workflows, plan optional modules before execution: News & Catalysts, Market Positioning, Market Intelligence, Market Sense / Driver Dominance, and Structural Winners each get Include / Skip plus a decision-relevance reason. Optional market agents are skipped when not material.
+
+## Thesis Spine handoff
+
+Large workflows must create a shared Thesis Spine and each included module must answer: How does this module change or confirm the Thesis Spine?

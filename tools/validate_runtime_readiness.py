@@ -54,6 +54,7 @@ COMMAND_AGENT_MAP = {
     "SECTOR": "sector-industry-analysis-agent",
     "EVIDENCE": "evidence-collector",
     "POSITIONING": "market-positioning-agent",
+    "SENSE": "market-sense-agent",
     "INTEL": "market-intelligence-agent",
     "EQUITY": "equity-agent",
     "ETF": "etf-agent",
@@ -200,6 +201,13 @@ for label, path in canonical_ambiguity_docs:
             f"{label} has no resolve-identity-before-questions rule",
             "resolve identity first, then ask the 5 or 3 questions" not in txt,
         )
+
+for rel in WORKFLOWS:
+    p = ROOT / rel
+    if p.exists():
+        txt = read(p)
+        for token in ["Runtime Execution Plan", "decision mode", "Materiality Gate", "Thesis Spine", "monitoring_triggers"]:
+            add(f"workflow {rel} contains institutional token {token}", token in txt, token)
 
 for rel in ROUTE_CARDS:
     p = ROOT / rel
@@ -539,6 +547,20 @@ if readme.exists():
     txt = read(readme)
     for token in ["Run through Codex SDK", "--dry-run", "--live", "Financial Agent Reports\\_sdk_runs"]:
         add(f"README Codex SDK section contains {token}", token in txt)
+
+langgraph_token_expectations = {
+    "langgraph_runtime/state.py": ["decision_mode", "materiality_plan", "thesis_spine", "portfolio_fit_level"],
+    "langgraph_runtime/routing.py": ["decision_mode", "materiality_plan", "SENSE"],
+    "langgraph_runtime/nodes.py": ["decision_mode", "materiality_plan", "thesis_spine", "portfolio_fit_level"],
+    "langgraph_runtime/artifacts.py": ["decision_mode", "materiality_plan", "thesis_spine", "portfolio_fit_level"],
+}
+for rel, tokens in langgraph_token_expectations.items():
+    p = ROOT / rel
+    add(f"LangGraph institutional file exists: {rel}", p.exists(), rel)
+    if p.exists():
+        txt = read(p)
+        for token in tokens:
+            add(f"{rel} contains {token}", token in txt, token)
 
 failed = [c for c in checks if not c[1]]
 for name, ok, detail in checks:

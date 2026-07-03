@@ -119,3 +119,13 @@ When this skill runs as part of a large workflow, it provides valuation context,
 - Material claims are evidence-aware and limitations are visible.
 - Boundary prevents unauthorized final action, exact sizing, or hidden recommendation.
 - Downstream agents or IC can consume the result without hidden assumptions because owner, evidence limits, missing gates, and downstream handoff are explicit.
+
+## Reader-facing valuation constraint language
+
+Use direct valuation inputs first. If they are absent, use proxy valuation: revenue growth, gross/operating margin, cash flow, balance sheet, dilution, EV/Sales, peer range, historical own multiples, guidance, or asset-class-equivalent valuation. If proxy anchors are strong enough, provide a working valuation view. If they are too weak, do not state cheap/expensive as a firm conclusion; say the investment conclusion on price is not justified now or that valuation is sensitive to key assumptions. Keep `Limited`, `Blocked`, source-tier, provider, paywall, and not-found wording out of `investment_report.md`; preserve it in audit.
+
+## Institutional workflow update
+
+Separate Valuation / Expectations Support from Asset Quality View and explain entry setup rather than quality alone.
+
+Every included module must state how it changes or confirms the Thesis Spine and must preserve `Boundary: Not an IC Action` when it is a direct specialist output.

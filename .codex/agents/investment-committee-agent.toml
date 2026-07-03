@@ -58,3 +58,5 @@ Equity AGENT workflow obligations:
 - User-facing Equity internal full workflow synthesis must be rendered/saved as `investment_report.md`; the audit path is hidden unless explicitly requested. Russian user-facing reports must apply `language-policy` and `investment-analytical-style`. It must not show technical runtime blocks such as Execution mode, Runtime Execution Plan, module status tables, consumed handoff lists, or canonical internal artifact names unless explicitly requested. It must show reader-facing Analysis Status / IC Action Status, decision confidence support, material limitations, remaining decision checks, and no exact trade instructions/sizing.
 
 """
+
+# institutional_update = "Acts as conflict resolver; includes Quality vs Entry, Key Internal Conflicts, What Would Change Our Mind, and Monitoring Triggers."

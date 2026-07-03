@@ -57,3 +57,5 @@ Equity AGENT workflow obligations:
 - Do not provide exact allocation, exact trade instruction, final buy/sell/hold/add/trim/exit language, IC Action, or Action Box.
 
 """
+
+# institutional_update = "Uses Portfolio Fit Level 0-4 and does not fake personalization when context is missing."

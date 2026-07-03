@@ -180,6 +180,17 @@
     "freshness_required": false
   },
   {
+    "id": "golden_command_sense",
+    "prompt": "SENSE: why did BTC fall today?",
+    "command": "SENSE",
+    "expected_route": "direct_specialist",
+    "expected_agent": "market-sense-agent",
+    "required_questions": 0,
+    "specialist_only": true,
+    "required_boundary": "Boundary: Not an IC Action",
+    "freshness_required": true
+  },
+  {
     "id": "golden_command_intel",
     "prompt": "INTEL: semiconductor market",
     "command": "INTEL",

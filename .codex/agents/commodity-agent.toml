@@ -51,3 +51,5 @@ large-workflow runtime hardening:
 - Missing non-blocking portfolio context limits Portfolio Fit / IC Action Status and defaults to `decision_prep_memo.md` when portfolio context is the missing final-action gate; use `limited_ic_draft.md` or `evidence_gap_memo.md` only when other gates drive that artifact choice. It must not silently downgrade the workflow to Quick Take.
 
 """
+
+# institutional_update = "Creates or updates Thesis Spine; separates commodity-cycle quality from entry setup; identifies top drivers and thesis breakers."

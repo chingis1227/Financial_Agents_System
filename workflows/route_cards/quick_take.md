@@ -36,3 +36,7 @@ If freshness, identity, or evidence is insufficient, use Limited / Blocked rathe
 ## Validation expectations
 
 `QUICK: Microsoft` prompt must map to `quick_take`, require 3 questions, and forbid saved report / audit.
+
+## Reader-facing wording
+
+Quick Take remains chat-only and may show Preliminary/Limited boundary language required for safety. It must not create `investment_report.md`. If Quick Take content later informs a saved workflow memo, technical status and runtime words are converted into clean investment wording.
