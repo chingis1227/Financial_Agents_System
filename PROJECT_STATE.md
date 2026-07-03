@@ -96,7 +96,7 @@ Latest Automation Lab acceptance status: `live-acceptance --require-live` passes
 
 - No OpenAI Agents SDK orchestrator is implemented; Codex SDK is only a control-plane wrapper around Codex, while `langgraph_runtime/` is an additive LangGraph/OpenAI API runtime.
 - No persistent external market-data pipeline or real-time monitor is guaranteed unless a specific automation is configured.
-- Portfolio Fit remains Limited / not personalized when the user does not provide portfolio context.
+- When the user does not provide portfolio context, audit records Portfolio Fit as Limited / not personalized and General Portfolio Role Mode; reader-facing `investment_report.md` presents this as a general Portfolio role section rather than failure wording.
 - Freshness-dependent claims require current sources with timestamps; otherwise the output must be Limited or Blocked.
 
 ## Required validation after project changes

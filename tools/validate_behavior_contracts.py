@@ -190,7 +190,7 @@ for rid in sorted(required_guardrails):
     add(f"guardrail covered: {rid}", rid in seen_guardrails, rid)
 
 # Report contract fixture coverage.
-required_contracts = {"quick_contract", "agent_workflow_contract", "specialist_contract", "russian_language_style_contract"}
+required_contracts = {"quick_contract", "agent_workflow_contract", "reader_facing_report_contract", "specialist_contract", "russian_language_style_contract"}
 seen_contracts = {c.get("id") for c in reports}
 for rid in sorted(required_contracts):
     add(f"report contract covered: {rid}", rid in seen_contracts, rid)
@@ -200,6 +200,19 @@ for token in ["Action Box", "IC Action: Buy", "IC Action: Sell", "IC Action: Hol
     add(f"QUICK contract forbids final action artifact/wording: {token}", token in quick_forbidden, token)
 agent_contract = next((c for c in reports if c.get("id") == "agent_workflow_contract"), {})
 add("AGENT contract requires spawned subagents or Limited fallback", agent_contract.get("requires_spawned_subagents_or_limited_fallback") is True)
+reader_report_contract = next((c for c in reports if c.get("id") == "reader_facing_report_contract"), {})
+reader_forbidden = set(reader_report_contract.get("investment_report_forbidden", []))
+for token in ["Artifact Type", "Analysis Status", "IC Action Status", "Gate status", "Mode:", "Route:", "Boundary: Not an IC Action", "Portfolio Fit is Limited", "Missing gates", "Limited", "Blocked", "module status", "handoff", "gate failed", "not personalized gate"]:
+    add(f"reader-facing report forbids technical token: {token}", token in reader_forbidden, token)
+reader_required = set(reader_report_contract.get("investment_report_required", []))
+for token in ["Portfolio role", "general terms", "not provided"]:
+    add(f"reader-facing report requires Portfolio role wording: {token}", token in reader_required, token)
+reader_required_ru = set(reader_report_contract.get("investment_report_required_ru", []))
+for token in ["Портфельная роль", "в общем виде", "контекст не указан"]:
+    add(f"reader-facing report requires Russian Portfolio role wording: {token}", token in reader_required_ru, token)
+audit_required = set(reader_report_contract.get("audit_required", []))
+for token in ["Portfolio Fit: Limited / not personalized", "General Portfolio Role Mode"]:
+    add(f"audit contract retains Portfolio Fit technical status: {token}", token in audit_required, token)
 specialist_contract = next((c for c in reports if c.get("id") == "specialist_contract"), {})
 add("specialist contract requires exact boundary label", specialist_contract.get("required_boundary") == EXACT_SPECIALIST_BOUNDARY)
 add("specialist contract requires visible boundary line", specialist_contract.get("required_visible_boundary_line") is True)

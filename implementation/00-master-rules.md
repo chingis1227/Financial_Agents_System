@@ -281,6 +281,12 @@ The full reader-facing report should follow the applicable IC report structure f
 
 `investment_report.md` must start with a short preparation date. In Russian reports, reader-facing headings must be Russian and the report must apply `language-policy` and `investment-analytical-style`. Status of the conclusion, missing items for a final personalized decision, and a short list of key sources belong at the bottom of the report. Full source lists, technical metadata, agent lists, module status tables, technical gate tables, runtime gate metadata, and canonical artifact names belong in `audit` unless explicitly requested. Reader-facing reports still show conclusion status, material limitations, and missing checks needed for a final personalized decision in plain language.
 
+Reader-facing `investment_report.md` must not expose audit-only gate/status/debug labels such as `Artifact Type`, `Analysis Status`, `IC Action Status`, `Gate status`, `Mode`, `Route`, `Missing gates`, module-status tables, handoff metadata, `Boundary: Not an IC Action`, or Portfolio Fit failure/gate wording unless the user explicitly asks for audit/debug/runtime details. These labels remain valid in `audit`.
+
+When portfolio composition, risk tolerance, objective, or overlap is not provided, Portfolio Fit is not treated as a failed analytical module. The audit may record `Portfolio Fit: Limited / not personalized` and `General Portfolio Role Mode`; the reader-facing report must instead include `## Portfolio role` (or `## Портфельная роль` in Russian) and plain wording such as `Portfolio role is described in general terms because personal portfolio context was not provided.` / `Портфельная роль дана в общем виде, так как персональный портфельный контекст не указан.`
+
+The Portfolio role section should explain the potential role of the asset, whether it is best thought of as core, satellite, hedge, income, cyclical, or defensive exposure, what it is not, portfolio-relevant risks, and what information is needed for a personalized final decision.
+
 After a full workflow, save outputs outside the project repository under:
 
 ```text
@@ -323,7 +329,7 @@ When intent is ambiguous, use the safer level if the wording could reasonably be
 |---|---|---|
 | Asset identity, ticker/listing, instrument, wrapper, currency, maturity, or structure is materially ambiguous | Ask the minimum clarifying question before analysis | Block or limit until identity is resolved |
 | User asks exact sizing, exact trade, or what to do with an existing personal position and position context is required | Ask the minimum personal context before personalized final action | No personalized final action until answered |
-| Portfolio composition, risk tolerance, objective, or overlap is missing but the asset and route are clear | Continue `AGENT:` workflow / internal full workflow | Portfolio Fit is Limited / not personalized; IC Action Status remains Limited or Blocked |
+| Portfolio composition, risk tolerance, objective, or overlap is missing but the asset and route are clear | Continue `AGENT:` workflow / internal full workflow | Audit records Portfolio Fit as Limited / not personalized and General Portfolio Role Mode; reader-facing report shows a general Portfolio role section; final personalized action remains unavailable |
 | User explicitly requests `QUICK:` / short / fast / Quick Take | Provide Preliminary / Limited Quick Take | No final IC Action; if final gates are being completed, route to the gated large workflow / IC synthesis |
 
 ### Fast action requests
@@ -342,7 +348,7 @@ Needed for final IC Action:
 
 ### Missing personal context
 
-If a user asks for exact personal buy/sell/hold/add/trim/exit guidance, existing-position handling, or sizing without decision-critical personal context, ask for only the minimum missing context needed before giving that personal action-oriented conclusion. If the same prompt is a concrete-asset investment-action request with clear identity and route, do not stop the asset work solely because portfolio context is missing: continue the `AGENT:` workflow / internal full workflow, mark Portfolio Fit / IC Action `Limited`, and withhold final `IC Action` until the personal gates are closed.
+If a user asks for exact personal buy/sell/hold/add/trim/exit guidance, existing-position handling, or sizing without decision-critical personal context, ask for only the minimum missing context needed before giving that personal action-oriented conclusion. If the same prompt is a concrete-asset investment-action request with clear identity and route, do not stop the asset work solely because portfolio context is missing: continue the `AGENT:` workflow / internal full workflow, record Portfolio Fit / final-action limits in audit, show the reader a general Portfolio role section, and withhold final `IC Action` until the personal gates are closed.
 
 If the request is market action / investment attractiveness rather than personal action, first classify whether it is a concrete-asset investment-action request. For a concrete asset with capital-decision intent, route through the `AGENT:` workflow / internal full workflow by default and mark Portfolio Fit / IC Action `Limited` when non-blocking personal context is missing. Use a `Preliminary` or `Limited` scenario-based answer only for non-concrete setup questions, explicitly requested Quick Takes, or cases where the user explicitly asks for short / fast output.
 

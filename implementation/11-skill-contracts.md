@@ -1310,7 +1310,7 @@ It will not exceed the owning agent/workflow boundary, bypass evidence readiness
 
 - Asset/thesis
 - User portfolio context where available
-- Risk/valuation/asset reports where available
+- Risk/valuation/asset reports where available, including source-backed risk/performance metrics produced or verified by their owning modules
 
 If required inputs are missing, continue only when a safe Preliminary or Limited scoped output is allowed; otherwise return Blocked with the missing inputs.
 
@@ -1336,18 +1336,21 @@ Keep the method output scoped to the owning agent or selected workflow; IC may c
 
 - Do not give exact allocation or final buy/sell action.
 - Follow statuses, confidence, evidence display, source-scope, freshness, conflict, and writing rules in `implementation/00-master-rules.md`.
+- If user portfolio context is missing, use General Portfolio Role Mode for the reader-facing layer: audit may record `Portfolio Fit: Limited / not personalized`, but `investment_report.md` must describe general Portfolio role rather than Portfolio Fit failure.
+- Evidence Collector owns sources, dates, quotes, benchmark identity, and historical prices. Risk / Market Positioning / Market Sense own calculation or verification of beta, trailing return, volatility, max drawdown, correlation, and relative performance versus benchmark / sector / peers. Portfolio Fit uses those metrics to interpret portfolio role, concentration, overlap, risk contribution, drawdown tolerance, suitability constraints, and monitoring burden, but is not the primary data/evidence owner.
 - Follow evidence readiness, provenance, source hierarchy, and pre-IC lock rules in `implementation/04-evidence-layer.md`.
 
 ### Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
 - Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in internal full workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
-- Limited when: user portfolio context is missing.
+- Limited when: user portfolio context is missing for personalized fit; this maps to General Portfolio Role Mode in reader-facing reports.
 - Blocked when: user-specific answer is required but context is unavailable.
 
 ### Quality checks
 
 - Generic and user-specific fit are separated.
+- Missing portfolio context is presented to readers as general Portfolio role, while technical Portfolio Fit status remains in audit.
 - Output does not exceed the owning agent boundary.
 - Material claims are evidence-aware.
 - Required Template v2 metadata and UX blocks are present.

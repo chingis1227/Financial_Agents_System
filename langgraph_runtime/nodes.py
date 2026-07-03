@@ -176,10 +176,13 @@ def market_positioning_node(state: FinancialAgentState) -> dict[str, Any]:
 def portfolio_fit_node(state: FinancialAgentState) -> dict[str, Any]:
     gates = dict(state.get("gate_statuses") or {})
     missing = state.get("position_context") == "Unknown" or not state.get("user_context", {}).get("portfolio_context")
-    gates["portfolio_fit"] = {"status": "Limited" if missing else "Pass", "reason": "User portfolio context is missing; portfolio fit is not personalized." if missing else "Portfolio context present."}
+    gates["portfolio_fit"] = {
+        "status": "Limited" if missing else "Pass",
+        "reason": "Portfolio Fit: Limited / not personalized; General Portfolio Role Mode because user portfolio context is missing." if missing else "Portfolio context present.",
+    }
     limitations = list(state.get("limitations") or [])
     if missing:
-        limitations.append("Portfolio Fit is Limited because user portfolio context is missing.")
+        limitations.append("Portfolio Fit: Limited / not personalized; General Portfolio Role Mode.")
     update = _specialist(state, "portfolio_fit_node", "portfolio_fit", ["Portfolio fit module ran.", gates["portfolio_fit"]["reason"], "No exact allocation instruction is issued."])
     update["gate_statuses"] = gates
     update["limitations"] = limitations
@@ -334,7 +337,7 @@ def generic_asset_workflow_node(state: FinancialAgentState) -> dict[str, Any]:
     gates = dict(state.get("gate_statuses") or {})
     gates.setdefault("valuation", {"status": "Limited", "reason": "Asset-class valuation/expectations equivalent requires live evidence."})
     gates.setdefault("risk", {"status": "Limited", "reason": "Asset-class risk gate requires source-backed specialist evidence."})
-    gates.setdefault("portfolio_fit", {"status": "Limited", "reason": "User portfolio context is missing or incomplete."})
+    gates.setdefault("portfolio_fit", {"status": "Limited", "reason": "Portfolio Fit: Limited / not personalized; General Portfolio Role Mode because user portfolio context is missing or incomplete."})
     limitations = list(state.get("limitations") or [])
     limitations.append(f"{route} currently uses a dry-run asset-class scaffold; no final IC Action is issued.")
     return _with_node(state, "generic_asset_workflow_node", {"specialist_outputs": outputs, "gate_statuses": gates, "limitations": limitations})

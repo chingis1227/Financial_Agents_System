@@ -49,7 +49,7 @@ Conditional references:
 
 - Asset/thesis
 - User portfolio context where available
-- Risk/valuation/asset reports where available
+- Risk/valuation/asset reports where available, including source-backed risk/performance metrics when another owner has produced or verified them
 
 If inputs are missing, continue only when a safe Preliminary or Limited scoped method output is allowed; otherwise return Blocked with missing inputs.
 
@@ -94,12 +94,14 @@ Boundary wording: `Boundary: Not an IC Action. Method output only.`
 ## Skill-specific guardrails
 
 - Do not give exact allocation or final buy/sell action.
+- If user portfolio context is missing, do not frame Portfolio Fit as a failed module in the reader-facing report. Use General Portfolio Role Mode: audit may record `Portfolio Fit: Limited / not personalized`, while `investment_report.md` shows only a plain Portfolio role / `Портфельная роль` section.
+- Evidence Collector owns sources, dates, quotes, benchmark selection, and historical prices. Risk / Market Positioning / Market Sense own calculation or verification of beta, trailing return, volatility, max drawdown, correlation, and relative performance versus benchmark / sector / peers. Portfolio Fit may use those metrics to interpret core vs satellite role, concentration risk, overlap, risk contribution, drawdown tolerance, suitability constraints, and monitoring burden, but it is not the primary data/evidence owner.
 
 ## Failure states
 
 - Complete when: Required inputs, evidence, boundary conditions, and domain checks are sufficient for `Complete for scoped method`; this does not imply Complete IC Action.
 - Preliminary when: The skill can provide an explicit Quick Take or direct scoped method output before all method inputs are complete; in large workflow, return a structured handoff with `Limited` or `Blocked` module status instead of downgrading the workflow.
-- Limited when: user portfolio context is missing.
+- Limited when: user portfolio context is missing for personalized fit; in reader-facing reports this is General Portfolio Role Mode, not failure wording.
 - Blocked when: user-specific answer is required but context is unavailable.
 
 
@@ -108,6 +110,8 @@ Boundary wording: `Boundary: Not an IC Action. Method output only.`
 Expected large-workflow artifact: `portfolio_fit.md`. The skill remains the method layer; the owning agent or workflow owns role, boundary, status, and handoff publication.
 
 When this skill runs as part of a large workflow, it provides generic role fit and user-specific portfolio-fit method output when context exists. Missing portfolio data must not stop asset analysis, but it makes Portfolio Fit `Limited / not personalized` and prevents personalized final IC Action. Exact allocation instructions remain prohibited.
+
+The main `investment_report.md` must present missing portfolio context as a general Portfolio role explanation. Technical labels such as `Portfolio Fit: Limited / not personalized`, missing gates, handoff metadata, and module status belong in `audit`.
 
 ## Quality checks
 

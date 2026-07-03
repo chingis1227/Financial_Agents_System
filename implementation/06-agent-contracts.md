@@ -428,6 +428,7 @@ All workflows requiring factual support, freshness, source quality, conflict con
 - classify sources
 - map material claims to support status
 - track freshness, missing data, proxy evidence, contradictions, and provenance.
+- Own source records for quotes, source dates, benchmark identity, historical prices, and other raw inputs used by risk/performance metrics.
 
 ### Non-responsibilities
 
@@ -1129,6 +1130,7 @@ Asset, theme, direct risk, and IC workflows where thesis risk, downside, or fina
 
 - Extract thesis
 - identify failure paths, counter-evidence, bear case, risk gates, downside, and monitoring triggers.
+- Calculate or verify risk/performance metrics when material and source inputs are available, including beta, trailing return, volatility, max drawdown, correlation, and relative performance versus benchmark / sector / peers.
 
 ### Non-responsibilities
 
@@ -1324,6 +1326,7 @@ Assets, sectors, themes, events, and setup analysis where expectations or crowdi
 ### Responsibilities
 
 - Analyze priced-in narrative, expectation bar, crowding/neglect, revision momentum, event bar, and positioning risk.
+- Calculate or verify relative performance, volatility, drawdown, beta, correlation, and benchmark/peer comparison metrics when these are used to support positioning conclusions.
 
 ### Non-responsibilities
 
@@ -1520,10 +1523,13 @@ Generic role analysis and user-specific fit when portfolio context exists.
 
 - Separate generic from personalized fit
 - assess overlap, concentration, volatility, drawdown, liquidity, FX, tax caveats, implementation burden, and monitoring burden.
+- Use source-backed risk/performance metrics from Evidence Collector, Risk, Market Positioning, or Market Sense to interpret portfolio role, concentration risk, overlap, risk contribution, drawdown tolerance, suitability constraints, and monitoring burden.
+- If user portfolio context is missing, use General Portfolio Role Mode: audit records `Portfolio Fit: Limited / not personalized`, while reader-facing `investment_report.md` describes general Portfolio role rather than Portfolio Fit failure.
 
 ### Non-responsibilities
 
 - No exact allocation, execution plan, or final buy/sell action.
+- Not the primary owner for source records, quotes, benchmark selection, historical prices, or calculation/verification of beta, trailing return, volatility, max drawdown, correlation, or benchmark/peer relative performance.
 
 ### Required inputs
 
@@ -1556,7 +1562,7 @@ Use only structured handoff blocks. Do not use uncontrolled agent-to-agent chat.
 
 - Complete when: Required inputs, evidence, boundaries, and handoff needs are sufficient for the stated agent scope.
 - Preliminary when: A useful early or narrow output is possible before full workflow gates are complete.
-- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, or workflow exclusions constrain conclusion strength.
+- Limited when: The output can proceed, but evidence, source scope, freshness, missing upstream inputs, missing user portfolio context, or workflow exclusions constrain conclusion strength. Missing user portfolio context is General Portfolio Role Mode for reader-facing reports, not a failed module.
 - Blocked when: A decision-critical input, identity, evidence item, thesis, or gate is missing or unreliable enough that the requested conclusion must not be made.
 
 ### Category-specific add-on
@@ -1620,6 +1626,7 @@ Market reaction, driver dominance, expected-vs-actual reaction, narrative shift,
 - identify dominant/supporting/opposing/ignored drivers
 - check surprise and cross-asset confirmation
 - generate hypotheses and disconfirming evidence.
+- Calculate or verify trailing return, volatility, drawdown, beta, correlation, and benchmark/peer relative performance when these metrics are used to explain market moves or driver dominance.
 
 ### Non-responsibilities
 

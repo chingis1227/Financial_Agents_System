@@ -75,6 +75,32 @@ class LangGraphRuntimeTests(unittest.TestCase):
                 "specialists/portfolio_fit.md",
             ]:
                 self.assertTrue((audit / rel).exists(), rel)
+            report_text = report.read_text(encoding="utf-8-sig")
+            for forbidden in [
+                "Artifact Type",
+                "Analysis Status",
+                "IC Action Status",
+                "Gate status",
+                "Mode:",
+                "Route:",
+                "Boundary: Not an IC Action",
+                "Portfolio Fit is Limited",
+                "Missing gates",
+                "Limited",
+                "Blocked",
+                "module status",
+                "handoff",
+                "gate failed",
+                "not personalized gate",
+            ]:
+                self.assertNotIn(forbidden, report_text)
+            self.assertIn("## Portfolio role", report_text)
+            self.assertIn("Portfolio role is described in general terms because personal portfolio context was not provided.", report_text)
+            gates_text = (audit / "gates.md").read_text(encoding="utf-8-sig")
+            portfolio_text = (audit / "specialists/portfolio_fit.md").read_text(encoding="utf-8-sig")
+            self.assertIn("Portfolio Fit: Limited / not personalized", gates_text)
+            self.assertIn("General Portfolio Role Mode", gates_text)
+            self.assertIn("Analysis Status: Limited", portfolio_text)
 
 
     def test_non_equity_full_routes_do_not_run_equity_subgraph(self) -> None:
@@ -89,6 +115,37 @@ class LangGraphRuntimeTests(unittest.TestCase):
                 self.assertIn(expected_key, result["specialist_outputs"])
                 self.assertNotIn("equity_company_analysis", result["specialist_outputs"])
                 self.assertTrue(Path(result["report_path"]).exists())
+
+    def test_russian_report_uses_portfolio_role_language(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_financial_agent(
+                "Проанализируй Microsoft на 3 года, позиции нет",
+                dry_run=True,
+                output_dir=tmp,
+                allow_interrupts=False,
+            )
+            report_text = Path(result["report_path"]).read_text(encoding="utf-8-sig")
+            self.assertIn("# Инвестиционный отчёт", report_text)
+            self.assertIn("## Портфельная роль", report_text)
+            self.assertIn("в общем виде", report_text)
+            self.assertIn("контекст не указан", report_text)
+            self.assertNotIn("## Portfolio role", report_text)
+            for forbidden in [
+                "Artifact Type",
+                "Analysis Status",
+                "IC Action Status",
+                "Gate status",
+                "Mode:",
+                "Route:",
+                "Boundary: Not an IC Action",
+                "Portfolio Fit is Limited",
+                "Missing gates",
+                "Limited",
+                "Blocked",
+                "module status",
+                "handoff",
+            ]:
+                self.assertNotIn(forbidden, report_text)
 
     def test_missing_context_interrupt(self) -> None:
         result = run_financial_agent("Стоит ли покупать Nvidia?", dry_run=True, allow_interrupts=True)
@@ -131,7 +188,7 @@ class LangGraphRuntimeTests(unittest.TestCase):
             )
             self.assertEqual(result["ic_synthesis"]["ic_action_status"], "Not an IC Action")
             report_text = Path(result["report_path"]).read_text(encoding="utf-8-sig")
-            self.assertIn("No positive final IC Action", report_text)
+            self.assertIn("final positive action is not available", report_text)
             self.assertNotIn("IC Action Status: Buy", report_text)
             self.assertNotIn("Action Box", report_text)
 

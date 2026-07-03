@@ -137,7 +137,7 @@ Artifact naming note: `sector_context.md` follows the routing and workflow contr
 8. **Run equity company analysis.** Equity Agent produces `equity_company_analysis.md` using the evidence pack plus macro, sector / industry, financial statement, and news context where available or explicitly Limited. Output is a scoped specialist handoff, not final decision support.
 9. **Run valuation and expectations.** Produce `valuation_expectations.md` for any investment-action, entry-point, expected-return, or valuation-sensitive request.
 10. **Run risk red team.** Produce `risk_red_team.md` for final action or decision-preparation workflows. A failed risk gate prevents positive IC Action until resolved.
-11. **Run portfolio fit.** Produce `portfolio_fit.md` when user-specific action, role, suitability, overlap, or sizing context matters. If portfolio context is missing, mark user-specific fit Limited and pass a general fit handoff to IC.
+11. **Run portfolio fit.** Produce `portfolio_fit.md` when user-specific action, role, suitability, overlap, or sizing context matters. If portfolio context is missing, record `Portfolio Fit: Limited / not personalized` and General Portfolio Role Mode in audit, then pass a general Portfolio role handoff to IC.
 12. **Perform pre-IC evidence lock.** Evidence Collector updates readiness, records unresolved gaps/conflicts, and states which IC artifact is allowed.
 13. **Synthesize through IC.** IC integrates evidence and specialist handoffs, applies positive-action gates, resolves conflicts, and produces the correct internal IC-stage artifact: `final_investment_memo.md`, `decision_prep_memo.md`, `limited_ic_draft.md`, or `evidence_gap_memo.md`; saved user-facing output remains `investment_report.md`.
 
@@ -185,7 +185,8 @@ If portfolio context is not closed, the workflow must not issue a personalized f
 Portfolio context is treated as closed only when the information needed for the requested decision is available, usually including current position state, approximate exposure or portfolio weight when relevant, time horizon, risk tolerance or objective, and any material constraints. If those inputs are missing but the equity identity and investment-action route are clear:
 
 - continue the Equity internal full workflow rather than downgrading silently to Quick Take;
-- mark Portfolio Fit as `Limited` or not personalized;
+- mark Portfolio Fit as `Limited` or not personalized in audit and use General Portfolio Role Mode;
+- show the reader a `Portfolio role` / `Портфельная роль` section instead of Portfolio Fit failure wording;
 - mark `IC Action Status` as `Limited` or `Blocked`;
 - use `decision_prep_memo.md` by default when this is the only remaining final-action gate;
 - do not use `final_investment_memo.md`, `Action Box`, or final `IC Action` language for the user-specific decision.
@@ -233,6 +234,7 @@ Before presenting an Equity large-workflow output, verify:
 - Macro, sector / industry, equity, financial statement analysis when material, valuation, risk, portfolio fit, and IC synthesis have handoff artifacts or audit-visible handoff summaries.
 - Non-IC outputs do not contain final `IC Action`, `Action Box`, final buy/sell/hold labels, or exact sizing.
 - If portfolio context is missing, Portfolio Fit and IC Action Status are Limited / not personalized, and `decision_prep_memo.md` is the default non-final artifact.
+- If portfolio context is missing, ordinary `investment_report.md` presents this as a general Portfolio role section; technical Portfolio Fit status remains in audit.
 - If evidence or freshness is the limiting gate, `evidence_gap_memo.md` is used.
 - `final_investment_memo.md` appears only when all required gates pass.
 

@@ -49,7 +49,9 @@ Return status, key findings, evidence limits, missing gates, structured handoff,
 
 Equity AGENT workflow obligations:
 - In `workflows/equity_full_cycle.md`, consume asset thesis, evidence, valuation, risk, and user portfolio context when available, then produce `portfolio_fit.md`.
-- Assess generic role, overlap, suitability constraints, risk contribution, and personalization status; if user context is missing, mark personalized fit `Limited` / not personalized.
+- Assess generic role, overlap, suitability constraints, risk contribution, and personalization status; if user context is missing, mark personalized fit `Limited` / not personalized in audit and use General Portfolio Role Mode for reader-facing output.
+- If portfolio context is absent, do not describe the reader-facing report as a Portfolio Fit failure. The saved `investment_report.md` should show a human-readable `Portfolio role` / `Портфельная роль` section, while technical status, missing gates, module status, route, mode, and handoff metadata remain in audit.
+- Evidence Collector owns sources, dates, quotes, benchmark selection, and historical prices. Risk / Market Positioning / Market Sense own calculation or verification of beta, trailing return, volatility, max drawdown, correlation, and relative performance versus benchmark / sector / peers. Portfolio Fit interprets those metrics for role, overlap, concentration, risk contribution, drawdown tolerance, suitability constraints, and monitoring burden; it is not the primary data/evidence owner.
 - Use `workflows/handoff_artifact_standard.md` fields and include `Boundary: Not an IC Action`.
 - Handoff portfolio-context limits to IC; missing portfolio context blocks personalized final IC Action and uses `decision_prep_memo.md` by default when portfolio context is the only remaining final-action gate.
 - Do not provide exact allocation, exact trade instruction, final buy/sell/hold/add/trim/exit language, IC Action, or Action Box.

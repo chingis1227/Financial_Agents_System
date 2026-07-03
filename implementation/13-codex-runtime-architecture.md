@@ -215,7 +215,7 @@ Subagents should be used for `AGENT:` concrete-asset investment workflows when r
 
 Before an `AGENT:` / full investment workflow starts, ask exactly 5 asset-specific questions in one block and wait for the user's next message. Before an explicit short / fast / Quick Take answer, ask exactly 3 relevant questions in one block and keep the answer chat-only. If asset identity, ticker, instrument, currency, maturity, or structure is ambiguous, count the clarification inside the required 5-question `AGENT:` block or 3-question `QUICK:` block wherever possible. Ask a separate blocking clarification only when the request is truly unroutable, such as an unresolved ticker/share-class/instrument conflict that prevents route selection.
 
-Full workflow packaging writes `investment_report.md` plus an `audit\` folder under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-dd hhmm\`. The chat response must reproduce `investment_report.md` exactly and end with only the saved report path. The audit path, agent list, execution mode, runtime plan, module statuses, canonical artifact type, full source list, and handoff metadata are shown only when explicitly requested.
+Full workflow packaging writes reader-facing `investment_report.md` plus an `audit\` folder under `C:\Users\ShumeikoYe\OneDrive\Documents\Financial Agent Reports\[ASSET] yyyy-mm-dd hhmm\`. The chat response must reproduce `investment_report.md` exactly and end with only the saved report path. The audit path, agent list, execution mode, runtime plan, module statuses, canonical artifact type, full source list, Portfolio Fit technical status, and handoff metadata are shown only when explicitly requested. When portfolio context is missing, the report shows general Portfolio role wording while audit records `Portfolio Fit: Limited / not personalized` and General Portfolio Role Mode.
 
 ## 9. Generation sequence
 
@@ -384,4 +384,4 @@ Runtime rules:
 - Live mode must require `OPENAI_API_KEY` and must not hardcode secrets.
 - Ordinary natural-language investment requests route through `intake_router_node`; explicit prefixes remain shortcuts.
 - Missing decision-critical context, evidence readiness failure, risk gate failure, and final IC confirmation points use LangGraph interrupt-capable nodes where applicable.
-- Reports are idempotently written as `investment_report.md` plus `audit/` only for full workflows. Quick Take and direct specialist routes remain Preliminary / Not an IC Action and do not create full report/audit artifacts.
+- Reports are idempotently written as reader-facing `investment_report.md` plus technical `audit/` only for full workflows. Quick Take and direct specialist routes remain Preliminary / Not an IC Action and do not create full report/audit artifacts. Portfolio Fit technical status stays in audit; missing portfolio context appears in the report as general Portfolio role.

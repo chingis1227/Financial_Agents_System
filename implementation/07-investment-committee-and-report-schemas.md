@@ -48,6 +48,9 @@ Required reader-facing behavior:
 - Store the full source list and detailed evidence registers in `audit`.
 - Show material source or specialist conflicts in the report using a concise reader-facing label such as `Конфликт данных`; non-material conflicts may remain only in `audit`.
 - Do not include a separate reader-facing block named `Принятые вводные и допущения`; record questions, answers, and assumptions in `audit` and reflect decision-critical assumptions only where they affect the analysis.
+- Do not show audit-only labels or sections such as `Artifact Type`, `Analysis Status`, `IC Action Status`, `Gate status`, `Mode`, `Route`, `Missing gates`, module-status tables, handoff metadata, or `Boundary: Not an IC Action`, unless the user explicitly asks for audit/debug/runtime detail.
+- Include a human-readable `## Portfolio role` section (`## Портфельная роль` for Russian reports) whenever portfolio role or portfolio context limits are material.
+- If personal portfolio context was not provided, do not present Portfolio Fit as a reader-facing failure. Use plain wording such as `Portfolio role is described in general terms because personal portfolio context was not provided.` / `Портфельная роль дана в общем виде, так как персональный портфельный контекст не указан.` Audit may still record `Portfolio Fit: Limited / not personalized` and `General Portfolio Role Mode`.
 
 ## 2. Final memo style rules
 
@@ -107,6 +110,8 @@ Included / Excluded Modules and Why:
 ```
 
 For large-workflow outputs, each internal IC artifact or audit handoff file must include a `## Structured handoff` block using the universal controlled fields from `workflows/handoff_artifact_standard.md`. The ordinary reader-facing `investment_report.md` must not show this technical block unless the user explicitly asks for audit/debug detail.
+
+Reader-facing Portfolio role content should explain the asset's possible role in a portfolio, whether it is core, satellite, hedge, income, cyclical, or defensive exposure, what it is not, key portfolio risks, and what data is needed to make the report personal or final. Technical Portfolio Fit status remains in `audit`.
 
 ### Freshness top block
 
@@ -407,10 +412,12 @@ Artifact: `portfolio_fit.md`
 
 Required sections:
 1. Generic role fit.
-2. User-specific fit, if portfolio context exists.
+2. General Portfolio Role Mode when user portfolio context is absent; user-specific fit only when portfolio context exists.
 3. Existing exposure / overlap.
 4. Risk, liquidity, volatility, concentration, FX, tax caveats where relevant.
 5. Monitoring burden.
+
+When user portfolio context is absent, `portfolio_fit.md` may record `Portfolio Fit: Limited / not personalized` in audit, but the reader-facing report must summarize this as general Portfolio role rather than as a failed gate.
 6. Handoff to IC.
 
 ### Sector and discovery reports
@@ -634,7 +641,7 @@ It will not use Action Box, issue positive final IC Action, hide excluded workfl
 6. Evidence, freshness, and source limitations.
 7. Conflicts or unresolved decision-critical assumptions that materially affect the working view; full assumptions stay in audit.
 8. Scenario matrix when decision mode or user context is missing.
-9. Needed for final IC Action.
+9. Needed for final IC Action; if portfolio context is absent, explain this in reader-facing Portfolio role language and keep technical Portfolio Fit status in audit.
 10. Follow-up requests; structured handoff stays in audit.
 
 #### Optional sections
@@ -955,7 +962,7 @@ Threshold basis: explicit metric / directional / qualitative
 | P8-IC-01-04 | Request depends on today / now / latest / earnings / price action and fresh data are missing. | Separate structural view from current-action view; current IC Action Status is Limited or Blocked. |
 | P8-IC-01-05 | Evidence or specialists conflict on a material claim. | Show `Evidence / Specialist Conflict` in the main memo and constrain status if decision-critical. |
 | P8-IC-01-06 | Decision mode is unspecified. | Use scenario matrix; do not assume new buy. |
-| P8-IC-01-07 | User asks for personal decision without portfolio context. | Continue asset `AGENT:` / internal full workflow when identity and route are clear, provide general scenario-based Portfolio Fit, mark personal fit Limited/not personalized, request minimum context, and use `decision_prep_memo.md` when portfolio context is the missing gate; reserve other gate-aware non-final artifacts for other gate failures; no personalized final action. |
+| P8-IC-01-07 | User asks for personal decision without portfolio context. | Continue asset `AGENT:` / internal full workflow when identity and route are clear, provide reader-facing general Portfolio role, record `Portfolio Fit: Limited / not personalized` and General Portfolio Role Mode in audit, request minimum context, and use `decision_prep_memo.md` when portfolio context is the missing gate; reserve other gate-aware non-final artifacts for other gate failures; no personalized final action. |
 | P8-IC-01-08 | User wants a short readable final memo. | Use layered memo: decision summary, main memo, risks/triggers, appendices. |
 | P8-IC-01-09 | User restricts workflow or source scope. | Respect scope, label artifact as Limited / source-scope constrained, and list prohibited conclusions. |
 | P8-IC-01-10 | Strong disqualifying evidence appears before all positive gates. | IC may issue `Hard Avoid` only with strong disqualifier; missing data alone uses `Defer / Not Actionable`. |

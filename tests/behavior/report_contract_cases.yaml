@@ -42,6 +42,46 @@
     ]
   },
   {
+    "id": "reader_facing_report_contract",
+    "route": "agent_workflow",
+    "must_create": [
+      "investment_report.md",
+      "audit/gates.md",
+      "audit/specialists/portfolio_fit.md"
+    ],
+    "investment_report_forbidden": [
+      "Artifact Type",
+      "Analysis Status",
+      "IC Action Status",
+      "Gate status",
+      "Mode:",
+      "Route:",
+      "Boundary: Not an IC Action",
+      "Portfolio Fit is Limited",
+      "Missing gates",
+      "Limited",
+      "Blocked",
+      "module status",
+      "handoff",
+      "gate failed",
+      "not personalized gate"
+    ],
+    "investment_report_required": [
+      "Portfolio role",
+      "general terms",
+      "not provided"
+    ],
+    "investment_report_required_ru": [
+      "Портфельная роль",
+      "в общем виде",
+      "контекст не указан"
+    ],
+    "audit_required": [
+      "Portfolio Fit: Limited / not personalized",
+      "General Portfolio Role Mode"
+    ]
+  },
+  {
     "id": "specialist_contract",
     "route": "direct_specialist",
     "required_boundary": "Boundary: Not an IC Action",

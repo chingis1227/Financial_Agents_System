@@ -23,7 +23,7 @@ Add `langgraph_runtime/` as a Python LangGraph runtime that can execute the exis
 | `.agents/skills/risk-red-team/SKILL.md` | risk gate and red-team specialist prompt/reference layer |
 | `.agents/skills/news-catalysts/SKILL.md` | news/catalyst specialist prompt/reference layer |
 | `.agents/skills/market-positioning/SKILL.md` | positioning specialist prompt/reference layer |
-| `.agents/skills/portfolio-fit/SKILL.md` | portfolio fit specialist prompt/reference layer and Limited status when portfolio context is missing |
+| `.agents/skills/portfolio-fit/SKILL.md` | portfolio fit specialist prompt/reference layer, audit-only Limited / not personalized status when portfolio context is missing, and reader-facing General Portfolio Role Mode |
 | `.agents/skills/investment-committee-synthesis/SKILL.md` | IC synthesis prompt/reference layer and positive-action gate |
 | `implementation/00-master-rules.md` | status, gates, source and final-action governance |
 | `implementation/04-evidence-layer.md` | evidence readiness gate policy |
@@ -37,7 +37,7 @@ Add `langgraph_runtime/` as a Python LangGraph runtime that can execute the exis
 - Create `langgraph_runtime/config.py` for `.env` and model/runtime settings.
 - Create `langgraph_runtime/openai_adapter.py` for live OpenAI API calls with no hardcoded key.
 - Create `langgraph_runtime/routing.py` for deterministic dry-run routing and live structured-router fallback.
-- Create `langgraph_runtime/artifacts.py` for idempotent report and audit writing.
+- Create `langgraph_runtime/artifacts.py` for idempotent reader-facing report and technical audit writing.
 - Create `langgraph_runtime/nodes.py` for required graph nodes and dry-run MVP behavior.
 - Create `langgraph_runtime/financial_agent_graph.py` for StateGraph construction, conditional edges, subgraph wiring, checkpointer, interrupts, streaming helper, and CLI.
 - Create `.env.example` with `OPENAI_API_KEY`, `OPENAI_MODEL`, and `OPENAI_REASONING_EFFORT`.

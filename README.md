@@ -86,7 +86,7 @@ Configurable settings:
 - `OPENAI_MODEL` (default: `gpt-5.3-codex`)
 - `OPENAI_REASONING_EFFORT` (default: `low`)
 
-Current LangGraph MVP routes natural-language and prefix prompts through `intake_router_node`, supports equity full-cycle dry-run artifacts, direct specialist and Quick Take boundaries, missing-context interrupts, evidence-readiness gate failure handling, and idempotent `investment_report.md` plus `audit/` artifact writing.
+Current LangGraph MVP routes natural-language and prefix prompts through `intake_router_node`, supports equity full-cycle dry-run artifacts, direct specialist and Quick Take boundaries, missing-context interrupts, evidence-readiness gate failure handling, and idempotent reader-facing `investment_report.md` plus technical `audit/` artifact writing. When portfolio context is missing, the saved report shows a general Portfolio role section while Portfolio Fit status remains in audit.
 
 ## Run through Codex SDK
 
