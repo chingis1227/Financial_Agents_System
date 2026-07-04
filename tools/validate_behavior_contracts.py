@@ -88,7 +88,7 @@ fixture_text = "\n".join(
     ]
     if (BEHAVIOR / name).exists()
 )
-fixture_text_without_controlled_label = fixture_text.replace("Non-delegated audit fallback", "CONTROLLED_FALLBACK_LABEL")
+fixture_text_without_controlled_label = fixture_text.replace("Production Blocked - subagents unavailable", "CONTROLLED_BLOCKED_LABEL")
 add("active behavior fixtures have no generic delegated wording", re.search(r"(?i)\bdelegated\b|delegated_", fixture_text_without_controlled_label) is None)
 
 for case in all_prompt_cases:

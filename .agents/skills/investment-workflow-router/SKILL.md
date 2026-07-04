@@ -25,7 +25,7 @@ Use this skill before answering when the user uses:
 
 | Prefix | Route |
 |---|---|
-| `AGENT:` | `investment_request_router.md` -> selected asset/comparison route card; requires relevant spawned subagents or Limited fallback in audit only |
+| `AGENT:` | `investment_request_router.md` -> selected asset/comparison route card; requires relevant spawned subagents; if required subagents cannot run or complete, production workflow is Blocked |
 | `QUICK:` | `quick_take.md` |
 
 | Prefix | Target agent |

@@ -18,13 +18,12 @@ This contract follows official OpenAI / Codex best practices: keep `AGENTS.md` p
 |---|---|
 | New or changed current runtime behavior | Update `PROJECT_STATE.md`, affected route card, behavior fixtures, and validators. |
 | New or changed canonical rule | Update the canonical document, registry if status changes, route cards if runtime-facing, and behavior fixtures if behavior changes. |
-| New or changed investment auto-dispatch or identity-resolution behavior | Update `AGENTS.md`, `PROJECT_STATE.md`, `implementation/00-master-rules.md`, `workflows/route_cards/investment_request_router.md`, Automation Lab dispatch tests, LangGraph routing tests, and behavior fixtures. |
+| New or changed investment auto-dispatch or identity-resolution behavior | Update `AGENTS.md`, `PROJECT_STATE.md`, `implementation/00-master-rules.md`, `workflows/route_cards/investment_request_router.md`, Automation Lab dispatch tests, and behavior fixtures. |
 | New workflow runbook or route card | Register it in `implementation/01-documentation-control.md`, update `PROJECT_STATE.md`, and update runtime readiness validation. |
 | New skill or material skill trigger change | Update the skill description, related route card, and skill validation checks. |
 | New evidence parser behavior | Update `PROJECT_STATE.md`, `implementation/04-evidence-layer.md`, affected route card or evidence skill, parser fixtures/tests, and Automation Lab validation commands. |
 | New custom agent or material agent behavior change | Update canonical agent contract, runtime agent file, handoff expectations, and validation checks. |
 | New or changed Codex SDK control layer | Update `PROJECT_STATE.md`, `README.md`, `AGENTS.md`, runtime architecture, package scripts, SDK tests, and runtime readiness validation. |
-| New or changed Python LangGraph runtime | Update `PROJECT_STATE.md`, `README.md`, `AGENTS.md`, `implementation/13-codex-runtime-architecture.md`, `langgraph_runtime/IMPLEMENTATION_MAP.md`, and Python runtime tests. Keep the layer additive and preserve Codex-native route-card boundaries. |
 | New operational report | Register it as supporting, historical, superseded, or current evidence; do not let it silently override `PROJECT_STATE.md`. |
 | Archived or moved document | Update registry, `PROJECT_STATE.md`, and validators so archived files are not used as daily runtime sources. |
 
@@ -45,7 +44,6 @@ py -3 tools\validate_project_consistency.py
 py -3 tools\validate_language_style.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
-py -3 -m unittest discover -s tests\langgraph_runtime -v
 ```
 
 After changing the Evidence Document Parser Layer, also run parser-specific Automation Lab checks:

@@ -104,7 +104,7 @@ Included modules:
 - IC synthesis
 Actually spawned subagents when spawned-subagent mode is used:
 - [agent name -> handoff artifact]
-Fallback reason when no subagents were spawned:
+Blocking reason when required subagents were not spawned:
 - [only if production blocked state when subagents are unavailable is used]
 Excluded modules:
 - [module -> reason]
@@ -160,7 +160,7 @@ For concrete-asset investment action requests, such as asking whether to invest,
 
 The audit pack must record `Execution mode` and a compact Runtime Execution Plan before analysis. The plan lists analytical modules executed by the main session and, only when spawned-subagent work actually occurred, the subagents spawned and the handoffs they must return. Non-spawned-subagent blocked production issue is audit-only and not a selectable user mode. Ordinary chat does not show this block unless explicitly requested:
 
-Runtime Execution Plan required fields are audit metadata: execution mode, subject / asset, included modules, excluded modules, reason for route, actually spawned subagents when spawned-subagent mode is used, fallback reason when no subagents were spawned, and module status for every included module using `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
+Runtime Execution Plan required fields are audit metadata: execution mode, subject / asset, included modules, excluded modules, reason for route, actually spawned subagents when spawned-subagent mode is used, blocking reason when required subagents were not spawned, and module status for every included module using `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
 
 ```text
 # audit\run_metadata.md snippet; not ordinary chat
@@ -182,7 +182,7 @@ Included modules:
 - IC synthesis
 Actually spawned subagents when spawned-subagent mode is used:
 - [agent name -> handoff artifact]
-Fallback reason when no subagents were spawned:
+Blocking reason when required subagents were not spawned:
 - [only if production blocked state when subagents are unavailable is used]
 Excluded modules:
 - [module -> reason]
@@ -363,12 +363,6 @@ The generated Codex runtime package is ready when:
 - QA scenarios can verify routing, evidence, specialist output, skill activation, and IC gates.
 
 
-## Additive Python LangGraph runtime
-
-Status: MVP runtime layer present.
-
-`langgraph_runtime/` is an additive Python runtime that maps the existing route-card and skill contracts into a LangGraph `StateGraph`. It does not replace root `AGENTS.md`, route cards, repo skills, custom agents, validators, or the Codex SDK control layer. It also must not claim OpenAI Agents SDK runtime behavior.
-
 ## Automation Lab data provider layer
 
 Status: Available data/evidence infrastructure.
@@ -377,24 +371,7 @@ Status: Available data/evidence infrastructure.
 
 This layer is not an agent runtime and must not redefine route cards, evidence gates, IC actions, report language, or canonical investment rules. Search/discovery outputs remain Pointer-Only until the underlying official/accessible source is fetched and parsed.
 
-Runtime files:
-
-- `langgraph_runtime/IMPLEMENTATION_MAP.md` records the inventory-to-runtime mapping and exact created files.
-- `langgraph_runtime/state.py` defines the typed graph state fields required by the runtime objective.
-- `langgraph_runtime/routing.py` implements natural-language and explicit-prefix routing.
-- `langgraph_runtime/nodes.py` implements required graph node functions, live module outputs, gates, interrupts, and artifact handoff boundaries.
-- `langgraph_runtime/financial_agent_graph.py` builds the `StateGraph`, conditional edges, equity subgraph, checkpointer, streaming helper, and CLI.
-- `.env.example` documents `OPENAI_API_KEY`, `OPENAI_MODEL`, and `OPENAI_REASONING_EFFORT`.
-
-Runtime rules:
-
-- Dry-run mode must not call the OpenAI API.
-- Live mode must require `OPENAI_API_KEY` and must not hardcode secrets.
-- Ordinary natural-language investment requests route through `intake_router_node`; explicit prefixes remain shortcuts.
-- Missing decision-critical context, evidence readiness failure, risk gate failure, and final IC confirmation points use LangGraph interrupt-capable nodes where applicable.
-- Reports are idempotently written as reader-facing `investment_report.md` plus technical `audit/` only for full workflows. Quick Take and direct specialist routes remain Preliminary / Not an IC Action and do not create full report/audit artifacts. Portfolio Fit technical status stays in audit; missing portfolio context appears in the report as general Portfolio role.
-
 
 ## Production live AGENT execution rule
 
-For user-requested investment analysis, the Codex-native runtime is live-first and agent-first. A prompt such as "analyze this company" is sufficient to trigger the route-relevant AGENT workflow; the user does not need to write "use agents", "delegate", or "run in parallel". The parent workflow must spawn all route-relevant custom agents, collect their structured handoffs, and only then perform IC synthesis. Historical fixture/non-production fixture/live paths are not production analysis paths. No fixed wall-clock timeout may stop a production live workflow; subprocess and full-run timeout environment variables are deprecated for production and must not cap specialist execution.
+For user-requested investment analysis, the Codex-native runtime is live-first and agent-first. A prompt such as "analyze this company" is sufficient to trigger the route-relevant AGENT workflow; the user does not need to write "use agents", "delegate", or "run in parallel". The parent workflow must spawn all route-relevant custom agents, collect their structured handoffs, and only then perform IC synthesis. Historical fixture/non-production fixture/live paths are not production analysis paths. No fixed wall-clock timeout may stop a production live workflow; subprocess and full-run timeout environment variables are deprecated for production and must not cap specialist execution. If required subagents cannot run or complete, the production workflow is Blocked rather than replaced with non-delegated substitute analysis.

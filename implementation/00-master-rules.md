@@ -307,7 +307,7 @@ Do not show the audit path unless the user explicitly asks for audit/debug detai
 
 User-facing runtime commands are `AGENT:`, `QUICK:`, and specialist prefixes. Existing file names, route IDs, smoke-test labels, and historical runbook terms may retain `full_cycle` / internal full workflow for compatibility, but internal full workflow is not a selectable user-facing mode.
 
-`AGENT:` is the large agent workflow. It uses relevant spawned subagents by default and must not claim agent workflow execution unless subagents were actually spawned. If subagents are unavailable or are not actually spawned, record a production blocked state when subagents are unavailable only in audit metadata, mark the user-facing output Blocked, and preserve all evidence, valuation, risk, portfolio, and IC gates. Do not advertise the fallback as a user-selectable mode. Ordinary concrete-asset investment-action prompts without a prefix are mandatory auto-dispatch inputs: buy/sell/hold/add/trim/exit, asset comparisons, and asset analysis for a stated horizon first route through the router. `AGENT:` is a shortcut, not a prerequisite; `QUICK:` is used only when the user explicitly asks for short / quick / fast / preliminary output.
+`AGENT:` is the large agent workflow. It uses relevant spawned subagents by default and must not claim agent workflow execution unless subagents were actually spawned. If subagents are unavailable or are not actually spawned, record a production blocked state in audit metadata, mark the user-facing output Blocked, and preserve all evidence, valuation, risk, portfolio, and IC gates. Do not advertise a non-delegated substitute workflow as a user-selectable mode. Ordinary concrete-asset investment-action prompts without a prefix are mandatory auto-dispatch inputs: buy/sell/hold/add/trim/exit, asset comparisons, and asset analysis for a stated horizon first route through the router. `AGENT:` is a shortcut, not a prerequisite; `QUICK:` is used only when the user explicitly asks for short / quick / fast / preliminary output.
 
 Identity parsing must separate time horizons from tickers. For example, `Fabrinet`, `Fabrynet`, `Fabryns`, and `FN` resolve to public equity `Fabrinet / FN`, while `3-5` / `3–5` in investment prompts is treated as a horizon range and must not be selected as an equity ticker.
 
@@ -662,7 +662,7 @@ Reader-facing constraint mapping:
 | Conflicting data | The conclusion should be read as a scenario range rather than a point estimate. |
 | No public direct metric | Direct valuation support is weak; analysis shifts to business quality, balance sheet, and scenarios. |
 
-The audit pack must still preserve the full internal trail, including statuses, gates, source records, source tiers, provider attempts, access status, negative-evidence labels, fallback use, proxy distance, missing gates, and conflict registers.
+The audit pack must still preserve the full internal trail, including statuses, gates, source records, source tiers, provider attempts, access status, negative-evidence labels, public-data fallback use, proxy distance, missing gates, and conflict registers.
 
 
 Production live workflow rule: ordinary concrete-asset investment prompts automatically spawn all route-relevant subagents after intake; no explicit user request for agents, delegation, or parallel work is required. If route-relevant subagents cannot run, the production workflow is Blocked.

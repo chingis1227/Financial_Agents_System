@@ -47,7 +47,7 @@ Do not override Evidence Collector readiness or Investment Committee boundaries.
 Return status, key findings, evidence limits, missing gates, structured handoff, and next required step. Use Limited or Blocked when the canonical contract or evidence gates require it.
 
 Concrete-asset AGENT workflow obligations:
-- Ordinary concrete-asset investment-action requests default to `Agent workflow with spawned subagents` with relevant subagents when available. Macro context is a default module for every full asset workflow. If subagent spawning tooling is unavailable or no subagents are actually spawned, record `Non-delegated audit fallback` in audit metadata and do not imply agent workflow execution.
+- Ordinary concrete-asset investment-action requests default to `Agent workflow with spawned subagents` with relevant subagents when available. Macro context is a default module for every full asset workflow. If required subagent spawning tooling is unavailable or required subagents are not actually spawned/completed, record `Production Blocked - subagents unavailable`, stop the production workflow, and do not imply agent workflow execution.
 - Before starting a full investment workflow, ask exactly 5 asset-specific questions in one block and wait for the user's next message. For explicit short / fast / `QUICK:` / quick take / preliminary mode, ask exactly 3 relevant questions, wait for the user's next message, and keep the answer chat-only with no `investment_report.md` or `audit`.
 
 Equity AGENT workflow obligations:

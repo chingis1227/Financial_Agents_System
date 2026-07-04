@@ -1,4 +1,4 @@
-﻿# OS / editor
+# OS / editor
 .DS_Store
 Thumbs.db
 .vscode/
@@ -7,7 +7,6 @@ Thumbs.db
 # Secrets / local config
 .env
 .env.*
-!.env.example
 *.pem
 *.key
 *.pfx

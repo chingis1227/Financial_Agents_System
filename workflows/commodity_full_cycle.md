@@ -36,7 +36,7 @@ Audit/run metadata must record exactly one controlled execution mode before the 
 
 | Execution mode | Meaning | Requirement |
 |---|---|---|
-| `Production Blocked - subagents unavailable` | The main Codex session executes the full workflow modules itself. | Do not claim that subagents ran. Use artifact-equivalent handoff summaries when separate files are not produced. |
+| `Production Blocked - subagents unavailable` | Required subagents cannot actually be spawned or completed. | Stop the production workflow and mark the user-facing output Blocked; do not replace the live agent workflow with non-delegated module analysis or substitute handoff summaries. |
 | `Agent workflow with spawned subagents` | Relevant subagents are actually spawned and return structured handoff artifacts or artifact-equivalent summaries. | List spawned agents, skipped agents with reasons, consumed handoffs, and spawn limitations. |
 
 An internal full workflow is the analytical route. `Agent workflow with spawned subagents` is the controlled execution mode when subagents actually run. They are not synonyms.

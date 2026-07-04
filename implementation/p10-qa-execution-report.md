@@ -111,7 +111,7 @@ Input:
 Expected runtime-opening shape:
 
 ```text
-Execution mode: Non-delegated audit fallback
+Execution mode: Production Blocked - subagents unavailable
 Runtime Execution Plan:
 
 Запускаю полный цикл анализа по Microsoft.
@@ -185,7 +185,7 @@ Session 09 hardening adds explicit runtime-behavior fixtures for the new Equity 
 | Runtime Workflow | S09-FAIL-04 | Premature `IC Action`, `Action Box`, final buy/sell/hold, exact trade, or exact allocation from non-IC output. | Rewrite as scoped specialist output with `Boundary: Not an IC Action`. | Master rules, handoff standard, and S09 row enforce the boundary. | Pass | Pass | None | None | Treat any future occurrence as a safety failure. |
 | Runtime Workflow | S09-FAIL-05 | Missing portfolio context not reflected in Portfolio Fit and IC Action Status. | Mark Portfolio Fit Limited/not personalized and default to `decision_prep_memo.md` when this is the remaining final-action gate. | Microsoft fixture and S09 row enforce the limitation. | Pass | Pass | None | None | Preserve the limitation in both Non-spawned-subagent and Spawned-subagent Microsoft fixtures. |
 | Runtime Workflow | S09-FAIL-06 | Stale evidence in freshness-dependent output without Limited/Blocked. | Add as-of/freshness status and limit/block current-action conclusions. | Master freshness rule, evidence layer, and S09 row enforce this. | Pass | Pass | None | None | Refresh evidence or route to evidence-gap treatment in live runs. |
-| Runtime Workflow | S09-FAIL-07 | Spawned-subagent workflow implied without actual spawned subagents or visible spawned-agent list. | Downgrade to `Non-delegated audit fallback` or run true spawned-subagent workflow and show spawned/skipped relevant agents plus handoffs. | Execution-mode rules and S09 row enforce this as a runtime failure. | Pass | Pass | None | None | Session 10 live smoke should record actual spawned-agent list. |
+| Runtime Workflow | S09-FAIL-07 | Spawned-subagent workflow implied without actual spawned subagents or visible spawned-agent list. | Mark as `Production Blocked - subagents unavailable` or run true spawned-subagent workflow and show spawned/skipped relevant agents plus handoffs. | Execution-mode rules and S09 row enforce this as a runtime failure. | Pass | Pass | None | None | Session 10 live smoke should record actual spawned-agent list. |
 
 Session 09 result: Pass structurally - runtime workflow QA now covers Non-spawned-subagent and Spawned-subagent modes, Microsoft golden fixture, QQQ vs SCHG, gold setup now, BTC 3-year, fixed-income ambiguity, mandatory handoffs, no premature IC Action, Portfolio Fit limitation, and stale-evidence handling. Live spawned-subagent Microsoft execution remains a separate Session 10 smoke test.
 
@@ -336,7 +336,7 @@ add("P10-PAR duplicate IDs", 0, par_duplicates, not par_duplicates)
 add("P10-LIVE fixtures", 4, len(live_fixtures), len(live_fixtures) >= 4)
 add("S09-RUNTIME fixtures", 6, len(s09_runtime_ids), len(s09_runtime_ids) == 6)
 add("S09-FAIL checks", 7, len(s09_fail_ids), len(s09_fail_ids) == 7)
-add("Scenario 1A execution mode", 1, int("`Execution mode: Non-delegated audit fallback` shown before the Runtime Execution Plan" in qa), "`Execution mode: Non-delegated audit fallback` shown before the Runtime Execution Plan" in qa)
+add("Scenario 1A execution mode", 1, int("`Execution mode: Production Blocked - subagents unavailable` shown before the Runtime Execution Plan" in qa), "`Execution mode: Production Blocked - subagents unavailable` shown before the Runtime Execution Plan" in qa)
 
 reg = (root / "implementation" / "01-documentation-control.md").read_text(encoding="utf-8-sig")
 tasks = (root / "archive" / "project-history" / "TASKS.md").read_text(encoding="utf-8-sig")
@@ -355,7 +355,7 @@ add("P10 live source basis", 1, int("## 7. Live-Smoke source basis" in report), 
 add("P10 validation appendix", 1, int("## 10. Validation commands / checks run" in report), "## 10. Validation commands / checks run" in report)
 add("S09 report evidence log", 1, int("## 5A. Session 09 runtime workflow QA evidence log" in report), "## 5A. Session 09 runtime workflow QA evidence log" in report)
 add("S09 report negative table required columns", 1, int("Source issues | Blocking issues | Remediation / next step" in report), "Source issues | Blocking issues | Remediation / next step" in report)
-add("Microsoft golden fixture execution mode", 1, int("Execution mode: Non-delegated audit fallback" in report), "Execution mode: Non-delegated audit fallback" in report)
+add("Microsoft golden fixture execution mode", 1, int("Execution mode: Production Blocked - subagents unavailable" in report), "Execution mode: Production Blocked - subagents unavailable" in report)
 add("Microsoft golden fixture runtime plan label", 1, int("Runtime Execution Plan:" in report), "Runtime Execution Plan:" in report)
 add("Microsoft golden fixture handoff stub", 1, int("Required handoff artifacts / summaries:" in report), "Required handoff artifacts / summaries:" in report)
 report_s09_runtime_ids = {m.group(0) for m in re.finditer(r"S09-RUNTIME-\d{2}", report)}

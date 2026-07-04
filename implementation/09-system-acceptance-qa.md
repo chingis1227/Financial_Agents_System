@@ -57,7 +57,7 @@ Expected route:
 
 Pass conditions:
 - The output is not silently downgraded to Quick Take.
-- The ordinary answer does not show technical runtime blocks; audit records spawned subagents only when they actually spawned, otherwise records a non-spawned-subagent fallback only in audit metadata without advertising it as a user mode.
+- The ordinary answer does not show technical runtime blocks; audit records spawned subagents only when they actually spawned; otherwise it records `Production Blocked - subagents unavailable`, marks user-facing output Blocked, and does not advertise a substitute mode.
 - MSFT identity is assumed as Microsoft common stock unless ambiguity appears.
 - Included / excluded modules and why are visible in `audit\run_metadata.md`, not ordinary chat unless requested.
 - A Module Status table is visible in audit and records every included module as `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
@@ -522,7 +522,7 @@ Manual verification checklist:
 
 - `implementation/05-routing-and-workflows.md` contains stable IDs `P4-RTE-01-01` through `P4-RTE-01-20` with no gaps.
 - Every P4-RTE-01 edge case has matching QA coverage in this section.
-- Each route has a safe fallback, status limit, and escalation path.
+- Each route has a safe blocked/limited status path and escalation path.
 - P4-RTE-01 does not normalize agent contracts, skill contracts, or IC report schemas; those remain later tasks.
 - Decision-log entry for P4-RTE-01 points to `implementation/05-routing-and-workflows.md` and remains a supporting record.
 
@@ -782,17 +782,17 @@ These checks are intentionally written as failure detectors. A generated answer 
 
 | Test ID | Failure condition | Required remediation |
 |---|---|---|
-| S09-FAIL-01 | Large-workflow audit lacks `Execution mode`. | Add controlled execution mode to `audit\run_metadata.md`: `Agent workflow with spawned subagents` or `Non-delegated audit fallback`. |
+| S09-FAIL-01 | Large-workflow audit lacks `Execution mode`. | Add controlled execution mode to `audit\run_metadata.md`: `Agent workflow with spawned subagents` or `Production Blocked - subagents unavailable`. |
 | S09-FAIL-02 | internal full workflow audit lacks Runtime Execution Plan, included/excluded modules, or module statuses. | Add route rationale, included modules, excluded modules with reasons, and valid status for every included module to audit. |
 | S09-FAIL-03 | Required handoff artifacts or artifact-equivalent summaries are missing, ownerless, or lack evidence limits / missing gates / downstream handoff. | Request corrected handoffs or downgrade IC output to a gate-aware Limited/Blocked artifact; do not mark the module Complete. |
 | S09-FAIL-04 | Non-IC output uses `Action Box`, `IC Action`, final buy/sell/hold/add/trim/exit wording, exact trade instructions, or exact allocation. | Rewrite as scoped specialist output with `Boundary: Not an IC Action`; reserve final action labels for valid IC artifacts only. |
 | S09-FAIL-05 | Missing user portfolio context is not reflected in Portfolio Fit and IC Action Status. | Mark Portfolio Fit as Limited / not personalized, list minimum portfolio context needed, and default to `decision_prep_memo.md` when this is the remaining final-action gate. |
 | S09-FAIL-06 | Freshness-dependent prompt such as `now`, `today`, latest news, current price, yields, spreads, crypto liquidity, or ETF holdings uses stale evidence without `Limited` or `Blocked`. | Add as-of timestamp/freshness status, limit or block current-action conclusions, and route to `evidence_gap_memo.md` when evidence/freshness is the primary limiting gate. |
-| S09-FAIL-07 | Output or audit says spawned-subagent workflow ran, but no subagents were actually spawned or no spawned-agent list exists in audit. | Change execution mode to `Non-delegated audit fallback`, or rerun as true spawned-subagent workflow and record spawned/skipped relevant agents plus handoffs in audit. |
+| S09-FAIL-07 | Output or audit says spawned-subagent workflow ran, but no subagents were actually spawned or no spawned-agent list exists in audit. | Change execution mode to `Production Blocked - subagents unavailable`, or rerun as true spawned-subagent workflow and record spawned/skipped relevant agents plus handoffs in audit. |
 
 ### Session 09 QA report requirements
 
-The execution report must include a Session 09 runtime workflow evidence log covering S09-RUNTIME-01 through S09-RUNTIME-07 and the negative checks S09-FAIL-01 through S09-FAIL-07. For each row, record expected behavior, observed structural assertion or live-smoke behavior, Safety Result, UX Result, source issues, blocking issues, and remediation / next step. Microsoft must remain the golden fixture for spawned-subagent workflow default behavior and Non-delegated audit fallback behavior.
+The execution report must include a Session 09 runtime workflow evidence log covering S09-RUNTIME-01 through S09-RUNTIME-07 and the negative checks S09-FAIL-01 through S09-FAIL-07. For each row, record expected behavior, observed structural assertion or live-smoke behavior, Safety Result, UX Result, source issues, blocking issues, and remediation / next step. Microsoft must remain the golden fixture for spawned-subagent workflow default behavior and required-subagent blocked behavior.
 
 ### P10 Full Regression families
 
@@ -851,7 +851,7 @@ P10-QA-01 may be marked Done when:
 - Pareto Gate has no safety failures;
 - Full Regression has no blocking failures;
 - Live-Smoke passes freshness behavior even if market data is stale, unavailable, or market-closed;
-- Session 09 runtime workflow QA rows cover spawned-subagent workflow default and Non-delegated audit fallback modes, Microsoft, QQQ vs SCHG, gold setup now, BTC 3-year, fixed-income ambiguity, mandatory handoffs, no premature IC Action, Portfolio Fit limitation, short mode, source conflicts, and stale-evidence handling;
+- Session 09 runtime workflow QA rows cover spawned-subagent workflow default and required-subagent blocked modes, Microsoft, QQQ vs SCHG, gold setup now, BTC 3-year, fixed-income ambiguity, mandatory handoffs, no premature IC Action, Portfolio Fit limitation, short mode, source conflicts, and stale-evidence handling;
 - structural runtime checks pass for custom agents, repo skills, report schemas, rule IDs, and IC boundaries;
 - any remaining warnings are documented as non-blocking;
 - `implementation/12-decision-log.md` records the P10 decision;

@@ -1,6 +1,8 @@
 ﻿from __future__ import annotations
 
 import json
+import contextlib
+import io
 import os
 import subprocess
 import sys
@@ -225,6 +227,33 @@ MSFT выглядит качественной компанией.
         self.assertFalse(validation["checks"]["has_financial_snapshot_table"])
         self.assertFalse(validation["checks"]["has_decision_prep_substance"])
         self.assertFalse(validation["checks"]["russian_language_policy_no_obvious_run_glish"])
+
+    def test_russian_language_policy_rejects_untranslated_jargon_and_hybrids(self) -> None:
+        report = """Дата подготовки: 2026-07-03
+Статус отчёта: Limited - подготовительный разбор, не финальное персональное инвестиционное решение.
+Свежесть и источники: источники требуют проверки.
+Уверенность вывода: ограниченная.
+
+# NVDA — инвестиционный разбор
+
+## Короткий вывод
+Текст содержит growth exposure и HBM-конкуренция, что должно нарушать language-policy.
+"""
+        issues = fa_automation.russian_language_style_issues(report)
+        self.assertTrue(any("growth exposure" in issue for issue in issues))
+        self.assertTrue(any("HBM-конкуренция" in issue for issue in issues))
+
+    def test_russian_language_policy_rejects_production_workflow_run_glish(self) -> None:
+        report = """Дата подготовки: 2026-07-03
+Статус отчёта: Blocked - обязательные live-специалисты не завершены; production AGENT workflow остановлен.
+Свежесть и источники: источники требуют проверки.
+Уверенность вывода: ограниченная.
+"""
+        validation = fa_automation.validate_reader_report_text(report)
+        self.assertFalse(validation["checks"]["russian_language_policy_passed"])
+        self.assertTrue(
+            any("production AGENT workflow" in issue for issue in validation["language_style_issues"])
+        )
 
     def test_failed_ic_attempt_does_not_emit_completed_ic_synthesis(self) -> None:
         specialists = [
@@ -912,7 +941,7 @@ MSFT выглядит качественной компанией.
             report = fa_automation.generate_investment_report("MSFT for 3 years", intake, preflight, evidence_pack, specialists)
             self.assertTrue(report.splitlines()[0].startswith("Report status: Complete"))
 
-    def test_required_specialist_timeout_stops_before_ic_and_stays_limited(self) -> None:
+    def test_required_specialist_timeout_stops_before_ic_and_is_blocked(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             run_dir = Path(temp_dir)
             (run_dir / "audit").mkdir()
@@ -938,12 +967,25 @@ MSFT выглядит качественной компанией.
             fa_automation.write_run_manifest(run_dir, "MSFT for 3 years", "live", intake, preflight, evidence_pack, results)
             manifest = json.loads((run_dir / "audit" / "run_manifest.json").read_text(encoding="utf-8"))
             self.assertFalse(manifest["workflow_complete"])
-            self.assertEqual(manifest["analysis_status"], "Limited")
+            self.assertEqual(manifest["analysis_status"], "Blocked")
+            self.assertEqual(manifest["workflow_status"], "blocked_required_specialist_gap")
             self.assertIn("financial-statement-analysis", manifest["failed_required_specialists"])
             self.assertIn("financial-statement-analysis", manifest["stop_reason"])
             self.assertNotIn("financial-statement-analysis", [item["specialist_id"] for item in manifest["actual_subagents_run"]])
             report = fa_automation.generate_investment_report("MSFT for 3 years", intake, preflight, evidence_pack, results)
-            self.assertTrue(report.splitlines()[0].startswith("Report status: Limited"))
+            self.assertTrue(report.splitlines()[0].startswith("Report status: Blocked"))
+            output = io.StringIO()
+            with mock.patch.object(
+                fa_automation,
+                "validate_agent_run",
+                return_value={
+                    "run_dir": str(run_dir),
+                    "full_agent_execution_status": "blocked_required_specialist_gap",
+                },
+            ), contextlib.redirect_stdout(output):
+                exit_code = fa_automation.run_validate_agent_run(str(run_dir))
+            self.assertEqual(exit_code, 1)
+            self.assertIn("validation blocked", output.getvalue())
 
     def test_live_specialist_success_and_failure_manifest_truthfulness(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1006,7 +1048,8 @@ MSFT выглядит качественной компанией.
             self.assertEqual([item["specialist_id"] for item in manifest["actual_subagents_run"]], ["evidence-collector"])
             self.assertEqual(manifest["attempted_subagents"][1]["thread_or_run_id"], "")
             self.assertEqual(manifest["attempted_subagents"][0]["thread_or_run_id"], "thread-ok")
-            self.assertEqual(manifest["analysis_status"], "Limited")
+            self.assertEqual(manifest["analysis_status"], "Blocked")
+            self.assertEqual(manifest["workflow_status"], "blocked_required_specialist_gap")
             self.assertFalse(manifest["workflow_complete"])
             self.assertIn("sdk failed", manifest["sdk_errors"])
             self.assertEqual(manifest["prompt_transports"], ["prompt_file"])
@@ -1017,7 +1060,7 @@ MSFT выглядит качественной компанией.
                 evidence_pack,
                 [success, failure],
             )
-            self.assertIn("Report status: Limited", report.splitlines()[0])
+            self.assertIn("Report status: Blocked", report.splitlines()[0])
 
     def test_live_retry_history_preserves_failed_first_attempt_when_second_succeeds(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

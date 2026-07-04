@@ -40,7 +40,7 @@ Authority: this is an executable runtime runbook assembled from `implementation/
 
 ## Trigger
 
-Use this workflow for a public listed equity when the user asks whether to invest, buy, add, hold, sell, start exposure, or evaluate the stock for a capital-allocation horizon, unless the user explicitly requests a short / fast / `QUICK:` / quick take / preliminary output. The default execution mode is `Agent workflow with spawned subagents` with relevant subagents by default. If subagents are unavailable or not actually spawned, record `Production Blocked - subagents unavailable` as the audit fallback and do not imply agent workflow execution.
+Use this workflow for a public listed equity when the user asks whether to invest, buy, add, hold, sell, start exposure, or evaluate the stock for a capital-allocation horizon, unless the user explicitly requests a short / fast / `QUICK:` / quick take / preliminary output. The default execution mode is `Agent workflow with spawned subagents` with relevant subagents by default. If required subagents are unavailable, fail, or are not actually spawned, record `Production Blocked - subagents unavailable`, mark the workflow Blocked, and do not imply agent workflow execution.
 
 Microsoft-like request routing example:
 
@@ -56,7 +56,7 @@ Use when the request requires IC-level decision preparation or final decision su
 
 ## What you get
 
-A controlled sequence from intake through evidence, macro, sector / industry, equity analysis, financial statement analysis, valuation, risk review, portfolio fit, and IC synthesis. The sequence can run in two modes: `Agent workflow with spawned subagents` when relevant subagents are actually spawned and return structured handoffs, or `Production Blocked - subagents unavailable` when the main session executes the modules itself as a fallback. The internal IC-stage artifact is selected by gate state; saved user-facing large-workflow output remains `investment_report.md`:
+A controlled sequence from intake through evidence, macro, sector / industry, equity analysis, financial statement analysis, valuation, risk review, portfolio fit, and IC synthesis. The sequence can run in two modes: `Agent workflow with spawned subagents` when relevant subagents are actually spawned and return structured handoffs, or `Production Blocked - subagents unavailable` when required subagents cannot actually be spawned or completed. The main session must not replace a blocked production run with non-delegated substitute analysis. The internal IC-stage artifact is selected by gate state; saved user-facing large-workflow output remains `investment_report.md`:
 
 - `final_investment_memo.md` only when evidence and all required gates are sufficient, or when canonical IC rules independently allow a supported final negative / cautionary action.
 - `decision_prep_memo.md` when the workflow is otherwise usable but user portfolio context is the missing final-action gate.
@@ -82,7 +82,7 @@ Every Equity internal full workflow records one of these controlled values in `a
 | Execution mode | Use when | Runtime behavior | Required visibility |
 |---|---|---|---|
 | `Agent workflow with spawned subagents` | Default for ordinary Microsoft-like or other public-equity investment-action requests when relevant subagents are available and actually spawned. | Spawn only relevant subagents/custom-agent sessions, collect structured handoff artifacts or summaries, then synthesize through IC. | Record spawned agents, skipped relevant agents with reasons, handoff artifacts/summaries, and any spawn limitations in audit. |
-| `Production Blocked - subagents unavailable` | Fallback when subagent spawning tooling is unavailable, blocked, or no subagents are actually spawned. | The main Codex session executes the workflow modules using canonical documents, repo skills, and structured handoff summaries. | Record fallback reason in audit; do not write as if Evidence Collector, Equity Agent, Valuation, Risk, Portfolio Fit, or IC ran as independent subagents. |
+| `Production Blocked - subagents unavailable` | Required when subagent spawning tooling is unavailable, blocked, required subagents fail, or no required subagents are actually spawned. | Stop the production workflow and report Blocked; do not synthesize non-delegated module analysis as a substitute for the live agent workflow. | Record the blocking reason in audit; do not write as if Evidence Collector, Equity Agent, Valuation, Risk, Portfolio Fit, or IC ran as independent subagents. |
 
 If the user says "run all agents", run only all relevant Equity internal full workflow agents/modules, not literally every configured agent. The mere presence of unrelated agent names in this runbook does not authorize spawning them.
 
@@ -100,7 +100,7 @@ If the user says "run all agents", run only all relevant Equity internal full wo
 |---|---|---|---|---|
 | Master Intake Router | Master Intake Router | Raw user request, user context if available, source-scope constraints | `intake_block`, selected route, missing context, evidence profile | Status must reflect route confidence. Handoff route, intent, horizon, source scope, and missing context to Asset Intake and Evidence Collector. |
 | Asset Intake Router | Asset Intake Router | `intake_block`, asset identifier, user intent, horizon, portfolio context by default | `asset_intake_block`, equity lead selection, required gate list | Must choose Equity route, identify required valuation/risk/portfolio gates, and not issue investment decisions. |
-| Execution mode | Orchestrating runtime / router | User request wording, selected route, subagent-spawning availability, actual spawned subagents or fallback reason | `Execution mode: Production Blocked - subagents unavailable` or `Execution mode: Agent workflow with spawned subagents` | Required in `audit\run_metadata.md`. Spawned-subagent mode is valid only when relevant subagents are actually spawned. |
+| Execution mode | Orchestrating runtime / router | User request wording, selected route, subagent-spawning availability, actual spawned subagents or blocking reason | `Execution mode: Production Blocked - subagents unavailable` or `Execution mode: Agent workflow with spawned subagents` | Required in `audit\run_metadata.md`. Spawned-subagent mode is valid only when relevant subagents are actually spawned. |
 | Runtime Execution Plan | Orchestrating runtime / router | Selected Equity large-workflow route, execution mode, and required gate list | Audit plan with included modules, excluded modules, rationale, and module status table | Required in audit before large-workflow analysis. Every included module must have `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`. |
 | Evidence Collector | Evidence Collector Agent / Evidence Collection skill | Intake, workflow plan, evidence profile, source scope, user materials | `evidence_pack.md`, readiness matrix, evidence requests, pre-IC evidence lock | Must classify claim support, source quality, freshness, conflicts, proxy evidence, and allowed IC artifact. No valuation, risk, portfolio, or IC conclusions. |
 | Equity Agent | Equity Agent / Equity Company Analysis skill | `asset_intake_block`, `evidence_pack.md`, financial statement output by default, macro context, sector / industry context, and news context when material | `equity_company_analysis.md`, equity structured handoff | Produces business-quality and company-thesis analysis only. Must include `Boundary: Not an IC Action` if action language could be inferred. |
@@ -130,7 +130,7 @@ Artifact naming note: `sector_context.md` follows the routing and workflow contr
 1. **Classify the request.** Master Intake identifies request family, subject, instrument, action intent, time horizon, evidence profile, freshness needs, and missing context.
 2. **Route the asset.** Asset Intake confirms the Equity route, the lead Equity Agent, required specialists, and any identity or implementation gates.
 3. **Ask workflow intake questions.** Before starting the full workflow, ask exactly 5 equity-specific questions in one block and wait for the user's next message. If the user explicitly requested short / fast / `QUICK:` / quick take / preliminary mode, ask exactly 3 relevant questions and stay chat-only with no `investment_report.md` or `audit`.
-4. **Record execution mode and the Runtime Execution Plan.** Before analysis, write `Execution mode`, included modules, excluded modules, route rationale, actual spawned subagents or fallback reason, and a module status table to `audit\run_metadata.md`. Ordinary chat hides this unless requested.
+4. **Record execution mode and the Runtime Execution Plan.** Before analysis, write `Execution mode`, included modules, excluded modules, route rationale, actual spawned subagents or blocking reason, and a module status table to `audit\run_metadata.md`. Ordinary chat hides this unless requested.
 5. **Open evidence collection.** Evidence Collector builds `evidence_pack.md`, including source inventory, material claim map, freshness map, conflicts, missing data, source-scope limits, and readiness matrix.
 6. **Run default context modules.** Run macro and sector / industry by default for equities after the evidence pack is opened. These modules may run in parallel with financial statement analysis, but Equity Agent must either consume their handoffs or record an audit-limited reason before relying on company-thesis conclusions.
 7. **Run financial statement analysis.** Produce `financial_statement_analysis.md` when financial quality is decision-relevant. This may run staged or in parallel with context modules, but it must be available or explicitly Limited before valuation, risk, and IC synthesis rely on financial claims.
@@ -206,7 +206,7 @@ For a request like `Should I invest in Microsoft, if I do not own it, horizon 3+
 
 1. Classify as a concrete public-equity investment-action request.
 2. Select Equity internal full workflow, not Quick Take, unless the user explicitly asks for a short or preliminary answer.
-3. Use `Agent workflow with spawned subagents` by default when relevant subagents are available and actually spawned; otherwise record `Production Blocked - subagents unavailable` fallback in audit and do not imply agent workflow execution.
+3. Use `Agent workflow with spawned subagents` by default when relevant subagents are available and actually spawned; otherwise record `Production Blocked - subagents unavailable`, stop the production workflow, and do not imply agent workflow execution.
 4. Include Master Intake, Asset Intake, Evidence Collector, Macro, Sector / Industry Analysis, Equity Agent, Financial Statement Analysis, Valuation, Risk Red Team, Portfolio Fit, and IC synthesis.
 5. Treat missing portfolio composition, risk tolerance, objective, and exposure limits as non-blocking for the analytical workflow but blocking for personalized final IC Action and any ordinary final positive IC Action.
 6. Produce `decision_prep_memo.md` by default if public evidence, valuation, risk, and lead analysis are sufficient but portfolio context is the remaining final-action gate.
@@ -226,7 +226,7 @@ For a request like `Should I invest in Microsoft, if I do not own it, horizon 3+
 Before presenting an Equity large-workflow output, verify:
 
 - `audit\run_metadata.md` records `Execution mode` as `Production Blocked - subagents unavailable` or `Agent workflow with spawned subagents`.
-- Spawned-subagent mode is the default if relevant subagents are available and actually spawned; otherwise audit records `Production Blocked - subagents unavailable` fallback.
+- Spawned-subagent mode is the default if relevant subagents are available and actually spawned; otherwise audit records `Production Blocked - subagents unavailable` and the workflow stops as Blocked.
 - Audit records the selected route and why Equity internal full workflow was chosen; ordinary chat hides this unless requested.
 - Included modules and excluded modules are listed in audit.
 - Every included module has one valid status: `Complete`, `Limited`, `Blocked`, `Not material`, or `Skipped with reason`.
@@ -243,8 +243,8 @@ Before presenting an Equity large-workflow output, verify:
 This runbook is ready when:
 
 - A Microsoft-like public-equity investment-action request routes into this workflow.
-- The workflow distinguishes audit-recorded `Production Blocked - subagents unavailable` fallback from actual `Agent workflow with spawned subagents`.
-- Ordinary Microsoft-like requests default to relevant spawned subagents by default; if no subagents ran, the workflow records `Production Blocked - subagents unavailable` fallback and does not pretend subagents ran.
+- The workflow distinguishes audit-recorded `Production Blocked - subagents unavailable` from actual `Agent workflow with spawned subagents`.
+- Ordinary Microsoft-like requests default to relevant spawned subagents by default; if required subagents did not run, the workflow records `Production Blocked - subagents unavailable`, stops as Blocked, and does not pretend subagents ran.
 - Spawned-subagent workflows spawn only relevant subagents by default for full equity workflows and expose structured handoffs in audit.
 - Module order is visible from Router to IC synthesis.
 - Each module declares inputs, outputs, status treatment, and handoff requirement.

@@ -83,7 +83,7 @@ For the requested Level 2 implementation scope, ETF, Commodity, Crypto, and Fixe
 
 After the first reviewer score of 8.2/10, the following fixes were applied:
 
-- README default-mode language was aligned with canonical rules: concrete-asset `AGENT:` workflow should use relevant spawned subagents when available; `Non-delegated audit fallback` is the fallback when subagents are unavailable or not actually spawned.
+- README default-mode language was aligned with canonical rules: concrete-asset `AGENT:` workflow should use relevant spawned subagents when available; `Production Blocked - subagents unavailable` is the blocked state when subagents are unavailable or not actually spawned.
 - Crypto and Fixed Income smoke-test audits were corrected so completed IC agents are no longer recorded as `Pending` while the smoke test is marked `Pass`.
 - `run_log.md` provenance files were added to all four smoke-test folders.
 - The validator was strengthened to fail unresolved required-agent statuses in passed audits and to require run-log provenance for each smoke test.

@@ -12,7 +12,7 @@ Start Codex from the project root. For investment requests, Codex should route t
 
 | Command | Use when | What happens | Boundary |
 |---|---|---|---|
-| `AGENT:` | You want the large agent workflow for an asset, comparison, or capital-allocation decision. | Codex asks exactly 5 relevant questions, then automatically spawns all route-relevant subagents without requiring the user to ask for agents, delegation, or parallel work and saves report/audit artifacts. | Do not claim an agent workflow unless subagents actually ran; if they cannot run, blocked production issue is audit-only and the user-facing output is Limited. |
+| `AGENT:` | You want the large agent workflow for an asset, comparison, or capital-allocation decision. | Codex asks exactly 5 relevant questions, then automatically spawns all route-relevant subagents without requiring the user to ask for agents, delegation, or parallel work and saves report/audit artifacts. | Do not claim an agent workflow unless required subagents actually ran; if they cannot run or complete, the production workflow is Blocked and must not be replaced with non-delegated substitute analysis. |
 | `QUICK:` | You want a short preliminary answer. | Codex asks exactly 3 relevant questions, then gives a chat-only Preliminary / Limited view. | No saved report, no audit, no final IC Action. |
 | Specialist command | You want one analyst only, such as risk, valuation, macro, news, portfolio fit, or committee-prep review. | Codex routes to one specialist agent/method and keeps the output scoped. | Boundary: Not an IC Action, including `IC:`. |
 
@@ -65,31 +65,6 @@ NEWS: why did Nvidia rise today?
 ```text
 ETF: QQQ vs SCHG
 ```
-
-## Run through Python LangGraph runtime
-
-The additive Python LangGraph runtime lives in `langgraph_runtime/`. It preserves the existing route cards, skills, evidence gates, validation rules, and report boundaries while providing a live/live graph entrypoint. It does not delete or replace the Codex-native layer, and it is not an OpenAI Agents SDK runtime.
-
-Dry-run mode never calls the OpenAI API and can be used for routing, gate, report, and audit validation:
-
-```powershell
-py -3 -m langgraph_runtime.financial_agent_graph run --prompt "????????????? Microsoft ?? 3 ????, ??????? ???" --live
-```
-
-Live mode requires `OPENAI_API_KEY` from the environment or `.env` and uses configurable model settings from `.env.example`:
-
-```powershell
-py -3 -m langgraph_runtime.financial_agent_graph run --prompt "AGENT: Microsoft for 3 years, no current position" --live
-py -3 -m langgraph_runtime.financial_agent_graph chat
-```
-
-Configurable settings:
-
-- `OPENAI_API_KEY`
-- `OPENAI_MODEL` (default: `gpt-5.3-codex`)
-- `OPENAI_REASONING_EFFORT` (default: `low`)
-
-Current LangGraph MVP routes natural-language and prefix prompts through `intake_router_node`, supports equity full-cycle live artifacts, direct specialist and Quick Take boundaries, missing-context interrupts, evidence-readiness gate failure handling, and idempotent reader-facing `investment_report.md` plus technical `audit/` artifact writing. When portfolio context is missing, the saved report shows a general Portfolio role section while Portfolio Fit status remains in audit.
 
 ## Run through Codex SDK
 

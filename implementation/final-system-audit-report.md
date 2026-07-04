@@ -26,8 +26,8 @@ Session 11 result:
 The system is ready for a new chat to run:
 
 - `Quick Take` when the user explicitly asks for short / fast / preliminary output.
-- `Non-delegated audit fallback` for ordinary concrete-asset investment-action requests.
-- Superseded runtime note: current state allows `Agent workflow with spawned subagents` when relevant subagents actually ran, either through Codex spawning or a real orchestrator; otherwise use `Non-delegated audit fallback` and do not claim subagent execution.
+- `Production Blocked - subagents unavailable` for ordinary concrete-asset investment-action requests.
+- Superseded runtime note: current state allows `Agent workflow with spawned subagents` when relevant subagents actually ran, either through Codex spawning or a real orchestrator; otherwise mark `Production Blocked - subagents unavailable`, stop as Blocked, and do not claim subagent execution.
 
 ## 2. Audit method
 
@@ -97,7 +97,7 @@ Result: Pass.
 
 - public listed equity action-intent routing;
 - Microsoft-like request handling;
-- `Execution mode: Non-delegated audit fallback`;
+- `Execution mode: Production Blocked - subagents unavailable`;
 - `Execution mode: Agent workflow with spawned subagents`;
 - Runtime Execution Plan requirement;
 - included/excluded module visibility;
@@ -160,8 +160,8 @@ Result: Pass.
 `README.md` now gives a user-readable operating model:
 
 - `Quick Take` for explicit short/preliminary output.
-- `internal full workflow` / ordinary action-intent requests as `Non-delegated audit fallback`.
-- Superseded runtime note: current state allows `Agent workflow with spawned subagents` when real relevant subagents actually ran; otherwise use `Non-delegated audit fallback` and do not claim subagent execution.
+- `internal full workflow` / ordinary action-intent requests as `Production Blocked - subagents unavailable`.
+- Superseded runtime note: current state allows `Agent workflow with spawned subagents` when real relevant subagents actually ran; otherwise mark `Production Blocked - subagents unavailable`, stop as Blocked, and do not claim subagent execution.
 
 Russian prompt templates are present for:
 
@@ -182,7 +182,7 @@ Result: Pass.
 
 QA coverage includes:
 
-- `Non-delegated audit fallback` and `Agent workflow with spawned subagents` runtime modes.
+- `Production Blocked - subagents unavailable` and `Agent workflow with spawned subagents` runtime modes.
 - Microsoft 3+ year no-current-position fixture.
 - QQQ vs SCHG.
 - Gold setup now.

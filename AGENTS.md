@@ -14,7 +14,6 @@ This project follows official OpenAI / Codex best practices: keep `AGENTS.md` pr
 4. For source authority or conflicts, use `implementation/01-documentation-control.md` and `implementation/00-master-rules.md`.
 5. For documentation/runtime changes, use `implementation/15-documentation-sync-contract.md` and run validators.
 6. For Codex SDK control-layer changes, also run the Node checks listed under Required validation after changes.
-7. For Python LangGraph runtime changes, keep `langgraph_runtime/` additive, preserve route-card boundaries, and run the LangGraph runtime unittest suite.
 
 ## Active authority order
 
@@ -91,7 +90,6 @@ py -3 tools\validate_project_consistency.py
 py -3 tools\validate_language_style.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
-py -3 -m unittest discover -s tests\langgraph_runtime -v
 cd automation_lab
 ..\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
 cd ..

@@ -4940,9 +4940,13 @@ def generate_generic_agent_report(
     specialist_takeaways = reader_specialist_takeaways(specialists, language)
     failed_specialists = [item.get("specialist_id") for item in specialists if item.get("status") != "ok"]
     route_specialists = set(agent_specialists_for_route(route))
+    required_specialists = set(agent_required_specialists_for_route(route))
     completed_ids = {item.get("specialist_id") for item in completed_specialists(specialists)}
+    failed_required_specialists = required_specialists.intersection(failed_specialists)
+    missing_required_specialists = required_specialists.difference(completed_ids).difference(failed_required_specialists)
     ic_final_owner = ic_completed_with_expected_handoffs(specialists)
     report_complete = ic_final_owner and completed_ids == route_specialists and not failed_specialists and evidence_pack.get("evidence_readiness") != "Blocked"
+    report_blocked = bool(evidence_pack.get("evidence_readiness") == "Blocked" or failed_required_specialists or missing_required_specialists)
     if failed_specialists:
         limits.append("required_specialists_incomplete")
     ic_synthesis = reader_ic_synthesis(specialists, language, identity, evidence_pack)
@@ -4965,7 +4969,14 @@ def generate_generic_agent_report(
         synthesis_heading = "## Итог IC-сборки" if ic_final_owner else "## Что нужно для IC-сборки"
         lines = [
             f"Дата подготовки: {today}",
-            "Статус отчёта: " + ("Complete - IC-сборка завершена; это не инструкция по размеру позиции." if report_complete else "Limited - подготовительный разбор, не финальное персональное инвестиционное решение."),
+            "Статус отчёта: "
+            + (
+                "Complete - IC-сборка завершена; это не инструкция по размеру позиции."
+                if report_complete
+                else "Blocked - обязательные live-специалисты или доказательные ворота не завершены; производственный AGENT-маршрут остановлен."
+                if report_blocked
+                else "Limited - подготовительный разбор, не финальное персональное инвестиционное решение."
+            ),
             "Свежесть и источники: использованы публичные источники без API-ключей; текущие выводы зависят от доступности свежей цены, состава, доходности, ликвидности и новостей.",
             f"Уверенность вывода: средняя для структурного {route_label}-анализа {ticker}, ниже для персонального действия, если портфельный контекст неполный.",
             "",
@@ -5028,7 +5039,11 @@ def generate_generic_agent_report(
         prep_heading = "## IC working view" if ic_final_owner else "## Preparatory view"
         synthesis_heading = "## IC synthesis" if ic_final_owner else "## What is still needed for final assembly"
         lines = [
-            "Report status: Complete - IC synthesis complete; not a personal position-sizing instruction." if report_complete else "Report status: Limited - preparation view only, not a final personal investment decision.",
+            "Report status: Complete - IC synthesis complete; not a personal position-sizing instruction."
+            if report_complete
+            else "Report status: Blocked - required live specialists or evidence gates did not complete; production AGENT workflow stopped."
+            if report_blocked
+            else "Report status: Limited - preparation view only, not a final personal investment decision.",
             f"Preparation date: {today}",
             "Freshness and source note: public/no-key sources were checked; current conclusions depend on latest price, holdings, yield/liquidity, and event data being available.",
             f"Decision confidence: medium for structural {route_label} analysis of {ticker}, lower for personal action if portfolio context is incomplete.",
@@ -5305,13 +5320,18 @@ def generate_investment_report(
     positive = profile_value(profile, "positive", ticker, language)
     negative = profile_value(profile, "negative", ticker, language)
     snapshot = financial_snapshot(preflight, language)
+    completed_ids = {item.get("specialist_id") for item in completed_specialists(specialists)}
+    required_specialists = agent_required_specialists_for_route("equity_full_cycle")
+    failed_required_specialists = required_specialists.intersection(failed_specialists)
+    missing_required_specialists = required_specialists.difference(completed_ids).difference(failed_required_specialists)
     ic_final_owner = ic_completed_with_expected_handoffs(specialists)
     report_complete = (
         ic_final_owner
-        and {item.get("specialist_id") for item in completed_specialists(specialists)} == set(AGENT_SPECIALISTS_EQUITY)
+        and completed_ids == set(AGENT_SPECIALISTS_EQUITY)
         and not failed_specialists
         and evidence_pack.get("evidence_readiness") != "Blocked"
     )
+    report_blocked = bool(evidence_pack.get("evidence_readiness") == "Blocked" or failed_required_specialists or missing_required_specialists)
     ic_synthesis = reader_ic_synthesis(specialists, language, identity, evidence_pack)
     if failed_specialists:
         limits.append("required_specialists_incomplete")
@@ -5320,7 +5340,11 @@ def generate_investment_report(
         synthesis_heading = "## Итог IC-сборки" if ic_final_owner else "## Что нужно для IC-сборки"
         lines = [
             f"\u0414\u0430\u0442\u0430 \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0438: {today}",
-            "\u0421\u0442\u0430\u0442\u0443\u0441 \u043e\u0442\u0447\u0451\u0442\u0430: \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u0440\u0430\u0437\u0431\u043e\u0440; \u044d\u0442\u043e \u043d\u0435 \u0444\u0438\u043d\u0430\u043b\u044c\u043d\u043e\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0435 \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u043e\u043d\u043d\u043e\u0435 \u0440\u0435\u0448\u0435\u043d\u0438\u0435.",
+            (
+                "\u0421\u0442\u0430\u0442\u0443\u0441 \u043e\u0442\u0447\u0451\u0442\u0430: Blocked - \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0435 live-\u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u044b \u0438\u043b\u0438 \u0434\u043e\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0432\u043e\u0440\u043e\u0442\u0430 \u043d\u0435 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u044b; \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0439 AGENT-\u043c\u0430\u0440\u0448\u0440\u0443\u0442 \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d."
+                if report_blocked
+                else "\u0421\u0442\u0430\u0442\u0443\u0441 \u043e\u0442\u0447\u0451\u0442\u0430: \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u0440\u0430\u0437\u0431\u043e\u0440; \u044d\u0442\u043e \u043d\u0435 \u0444\u0438\u043d\u0430\u043b\u044c\u043d\u043e\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0435 \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u043e\u043d\u043d\u043e\u0435 \u0440\u0435\u0448\u0435\u043d\u0438\u0435."
+            ),
             "\u0421\u0432\u0435\u0436\u0435\u0441\u0442\u044c \u0438 \u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0438: \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u044b \u043f\u0440\u043e\u0432\u0435\u0440\u0435\u043d\u043d\u044b\u0435 \u043f\u0443\u0431\u043b\u0438\u0447\u043d\u044b\u0435 \u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0438; \u0442\u0435\u043a\u0443\u0449\u0438\u0435 \u0440\u044b\u043d\u043e\u0447\u043d\u044b\u0435 \u0432\u044b\u0432\u043e\u0434\u044b \u0437\u0430\u0432\u0438\u0441\u044f\u0442 \u043e\u0442 \u043f\u043e\u0441\u043b\u0435\u0434\u043d\u0435\u0439 \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0439 \u0446\u0435\u043d\u044b \u0438 \u0441\u043e\u0431\u044b\u0442\u0438\u0439.",
             f"\u0423\u0432\u0435\u0440\u0435\u043d\u043d\u043e\u0441\u0442\u044c \u0432\u044b\u0432\u043e\u0434\u0430: \u0441\u0440\u0435\u0434\u043d\u044f\u044f \u0434\u043b\u044f \u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u043d\u043e\u0433\u043e \u0430\u043d\u0430\u043b\u0438\u0437\u0430 {ticker}, \u043d\u0438\u0436\u0435 \u0434\u043b\u044f \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f, \u0435\u0441\u043b\u0438 \u043f\u043e\u0440\u0442\u0444\u0435\u043b\u044c\u043d\u044b\u0439 \u043a\u043e\u043d\u0442\u0435\u043a\u0441\u0442 \u043d\u0435\u043f\u043e\u043b\u043d\u044b\u0439.",
             f"Статус процесса: доказательная база {reader_evidence_status_text(evidence_pack.get('evidence_readiness'), language)}; комитетская сборка {'завершена' if ic_final_owner else 'ограничена, потому что обязательные проверки специалистов не завершились'}.",
@@ -5386,6 +5410,8 @@ def generate_investment_report(
         lines = [
             "Report status: Complete - IC synthesis complete; not a personal position-sizing instruction."
             if report_complete
+            else "Report status: Blocked - required live specialists or evidence gates did not complete; production AGENT workflow stopped."
+            if report_blocked
             else "Report status: Limited - preparation view only, not a final personal investment decision.",
             f"Preparation date: {today}",
             "Freshness and source note: checked public sources were used; current market conclusions depend on the latest available price and events.",
@@ -5464,7 +5490,7 @@ def generate_investment_report(
 
 def russian_language_style_issues(report_text: str) -> list[str]:
     """Local enforcement of language-policy and investment-analytical-style for saved reports."""
-    if not report_text.startswith("???? ??????????:"):
+    if not report_text.startswith("Дата подготовки:"):
         return []
     issues: list[str] = []
     forbidden_phrases = [
@@ -5486,15 +5512,22 @@ def russian_language_style_issues(report_text: str) -> list[str]:
         "free cash flow",
         "multiple compression",
         "risk/reward",
+        "production AGENT workflow",
     ]
     lower = report_text.casefold()
     for phrase in forbidden_phrases:
         if phrase.casefold() in lower:
             issues.append(f"untranslated investment jargon: {phrase}")
-    hybrid_pattern = re.compile(r"\b([A-Za-z]{2,})-([?-??-???][?-??-???A-Za-z]*)")
-    reverse_hybrid_pattern = re.compile(r"\b([?-??-???][?-??-???]+)-([A-Za-z]{2,})\b")
-    issues.extend(f"English-Russian hybrid: {m.group(0)}" for m in hybrid_pattern.finditer(report_text))
-    issues.extend(f"Russian-English hybrid: {m.group(0)}" for m in reverse_hybrid_pattern.finditer(report_text))
+    allowed_hybrid_prefixes = {"AGENT", "IC", "API", "ETF", "LIVE", "XBRL"}
+    allowed_hybrid_suffixes = {"ETF"}
+    hybrid_pattern = re.compile(r"\b([A-Za-z]{2,})-([А-Яа-яЁё][А-Яа-яЁёA-Za-z]*)")
+    reverse_hybrid_pattern = re.compile(r"\b([А-Яа-яЁё][А-Яа-яЁё]+)-([A-Za-z]{2,})\b")
+    for match in hybrid_pattern.finditer(report_text):
+        if match.group(1).upper() not in allowed_hybrid_prefixes:
+            issues.append(f"English-Russian hybrid: {match.group(0)}")
+    for match in reverse_hybrid_pattern.finditer(report_text):
+        if match.group(2).upper() not in allowed_hybrid_suffixes:
+            issues.append(f"Russian-English hybrid: {match.group(0)}")
     return issues
 
 def validate_reader_report_text(report_text: str) -> dict[str, Any]:
@@ -5677,8 +5710,12 @@ def write_run_manifest(
         redact_live_manifest_value(preflight.get("resolver_result")) if mode == "live" else preflight.get("resolver_result")
     )
     portfolio_context = intake.get("portfolio_context") or normalize_portfolio_context({}, source="not_provided")
+    hard_blocked_required_specialists = bool(mode == "live" and (failed_required or missing_required))
     if workflow_complete:
         stop_reason = None
+    elif hard_blocked_required_specialists:
+        blocker_ids = sorted(set(failed_required + missing_required))
+        stop_reason = f"blocked_required_specialists_failed_or_missing:{','.join(blocker_ids)}"
     elif failed_specialists:
         stop_reason = f"stopped_before_ic_or_completion_due_to_failed_specialists:{','.join(failed_specialists)}"
     elif missing_specialists:
@@ -5718,8 +5755,8 @@ def write_run_manifest(
         "sdk_errors": [item.get("sdk_error") or item.get("error") for item in specialists if item.get("sdk_error") or item.get("error")],
         "prompt_transports": sorted({item.get("prompt_transport") for item in live_bridge_records if item.get("prompt_transport")}),
         "stop_reason": stop_reason,
-        "workflow_status": "completed" if workflow_complete else "controlled_specialist_gap",
-        "analysis_status": "Complete" if workflow_complete else "Limited",
+        "workflow_status": "completed" if workflow_complete else "blocked_required_specialist_gap" if hard_blocked_required_specialists else "controlled_specialist_gap",
+        "analysis_status": "Complete" if workflow_complete else "Blocked" if hard_blocked_required_specialists else "Limited",
         "workflow_complete": workflow_complete,
         "ic_final_owner": ic_final_owner,
         "mock_mode_notice": None,
@@ -5936,11 +5973,21 @@ def validate_agent_run(run_dir: Path) -> dict[str, Any]:
             "report_no_ic_owned_language_without_completed_ic": manifest_ic_final_owner or not report_has_ic_owned_language,
             "report_preparatory_language_when_ic_incomplete": manifest_ic_final_owner or report_has_preparatory_ic_gap,
             "report_limited_when_specialists_fail_or_missing": not (failed_specialists or missing_specialists)
-            or manifest.get("analysis_status") == "Limited"
-            and (
-                "limited" in report_status_line.lower()
-                or "огранич" in report_status_line.lower()
-                or "огранич" in report_text.lower()
+            or (
+                manifest.get("analysis_status") == "Limited"
+                and (
+                    "limited" in report_status_line.lower()
+                    or "огранич" in report_status_line.lower()
+                    or "огранич" in report_text.lower()
+                )
+            )
+            or (
+                manifest.get("analysis_status") == "Blocked"
+                and (
+                    "blocked" in report_status_line.lower()
+                    or "заблок" in report_status_line.lower()
+                    or "останов" in report_status_line.lower()
+                )
             ),
             "report_financial_values_present_when_sec_facts_ok": route != "equity_full_cycle" or not sec_facts_ok or financial_snapshot_has_values,
         }
@@ -5962,7 +6009,9 @@ def validate_agent_run(run_dir: Path) -> dict[str, Any]:
         "evidence_readiness": evidence_pack.get("evidence_readiness"),
         "workflow_status": manifest.get("workflow_status"),
         "analysis_status": manifest.get("analysis_status"),
-        "full_agent_execution_status": "controlled_specialist_gap"
+        "full_agent_execution_status": "blocked_required_specialist_gap"
+        if manifest.get("analysis_status") == "Blocked"
+        else "controlled_specialist_gap"
         if failed_specialists or missing_specialists or not manifest_workflow_complete
         else "complete",
     }
@@ -6101,20 +6150,25 @@ def run_agent_run(
     write_run_manifest(run_dir, prompt, mode, intake, preflight, evidence_pack, specialists)
     validation = validate_agent_run(run_dir)
     write_agent_run_log(run_dir, prompt, mode, validation)
+    workflow_status = validation.get("workflow_status")
     if reader_language(prompt) == "ru":
-        if validation.get("workflow_status") == "controlled_specialist_gap":
-            print(f"AGENT-пакет {ticker} создан с ограничением: часть live-специалистов не завершилась; детали в audit.")
+        if workflow_status == "blocked_required_specialist_gap":
+            print(f"AGENT-разбор {ticker} остановлен: обязательные live-специалисты не завершились; детали в audit.")
+        elif workflow_status == "controlled_specialist_gap":
+            print(f"AGENT-пакет {ticker} создан с ограничением: часть optional live-специалистов не завершилась; детали в audit.")
         else:
             print(f"AGENT-разбор {ticker} готов. Полный читательский отчёт сохранён отдельно.")
         suffix = "Отчёт сохранён"
     else:
-        if validation.get("workflow_status") == "controlled_specialist_gap":
-            print(f"{ticker} AGENT package saved with a controlled specialist gap; see audit for failed specialist details.")
+        if workflow_status == "blocked_required_specialist_gap":
+            print(f"{ticker} AGENT run stopped: required live specialists did not complete; see audit for blocked workflow details.")
+        elif workflow_status == "controlled_specialist_gap":
+            print(f"{ticker} AGENT package saved with a controlled optional specialist gap; see audit for failed specialist details.")
         else:
             print(f"{ticker} AGENT run completed. The reader-facing report was saved separately.")
         suffix = "Report saved"
     print(f"{suffix}: {run_dir / 'investment_report.md'}")
-    return 0
+    return 1 if workflow_status == "blocked_required_specialist_gap" else 0
 
 
 def run_validate_agent_run(run_dir: str | None) -> int:
@@ -6124,6 +6178,10 @@ def run_validate_agent_run(run_dir: str | None) -> int:
     except AgentRunError as exc:
         print("AGENT run validation failed")
         print(f"Reason: {exc}")
+        return 1
+    if validation.get("full_agent_execution_status") == "blocked_required_specialist_gap":
+        print("AGENT run validation blocked: required specialists did not complete")
+        print(f"Report: {Path(validation['run_dir']) / 'investment_report.md'}")
         return 1
     if validation.get("full_agent_execution_status") == "controlled_specialist_gap":
         print("AGENT package validation limited with controlled specialist gap")

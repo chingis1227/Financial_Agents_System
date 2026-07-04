@@ -534,20 +534,6 @@ if readme.exists():
     for token in ["Run through Codex SDK", "--live", "Financial Agent Reports\\_sdk_runs"]:
         add(f"README Codex SDK section contains {token}", token in txt)
 
-langgraph_token_expectations = {
-    "langgraph_runtime/state.py": ["decision_mode", "materiality_plan", "thesis_spine", "portfolio_fit_level"],
-    "langgraph_runtime/routing.py": ["decision_mode", "materiality_plan", "SENSE"],
-    "langgraph_runtime/nodes.py": ["decision_mode", "materiality_plan", "thesis_spine", "portfolio_fit_level"],
-    "langgraph_runtime/artifacts.py": ["decision_mode", "materiality_plan", "thesis_spine", "portfolio_fit_level"],
-}
-for rel, tokens in langgraph_token_expectations.items():
-    p = ROOT / rel
-    add(f"LangGraph institutional file exists: {rel}", p.exists(), rel)
-    if p.exists():
-        txt = read(p)
-        for token in tokens:
-            add(f"{rel} contains {token}", token in txt, token)
-
 failed = [c for c in checks if not c[1]]
 for name, ok, detail in checks:
     print(("PASS" if ok else "FAIL") + f" | {name}" + (f" | {detail}" if detail else ""))

@@ -77,7 +77,7 @@ Numeric horizon ranges such as `3-5 years` / `3–5 лет` are horizon context,
 - Do not answer a concrete-asset investment-action request as `QUICK:` unless the user explicitly asked for short / quick / fast / preliminary output.
 - Do not issue final `IC Action` before IC gates pass.
 - Do not claim agent workflow execution unless subagents were actually spawned.
-- Do not present fallback execution as a user-selectable mode; keep fallback as audit metadata only.
+- Do not present non-delegated substitute execution as a user-selectable mode; if required subagents cannot run or complete, mark the production workflow Blocked and record the blocking reason in audit metadata.
 
 ## Downgrade rules
 

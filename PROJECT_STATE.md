@@ -9,9 +9,8 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 
 ## Current operating model
 
-- Runtime style: Codex-native first, with an additive Python `langgraph_runtime/` layer for LangGraph live/live execution. The new layer uses the OpenAI API in explicit live mode only; it is not an OpenAI Agents SDK runtime.
+- Runtime style: Codex-native first. The active runtime is the Codex-native workflow layer plus the Automation Lab execution/orchestration layer; no separate graph runtime is active.
 - Codex SDK v1 control layer present: TypeScript CLI wrapper for live/live Codex thread execution, with live SDK logs outside the repository.
-- Python LangGraph runtime present: `langgraph_runtime/financial_agent_graph.py` exposes `run` and `chat`; live mode is the production path and requires `OPENAI_API_KEY`; live/historical fixture behavior is retained only for historical test fixtures and is not an operator workflow.
 - Daily runtime path: `PROJECT_STATE.md` -> `AGENTS.md` -> `workflows/route_cards/investment_request_router.md` -> selected route card -> validators.
 - User-facing command model: `AGENT:` for the large agent workflow, `QUICK:` for a short preliminary answer, and specialist prefixes for one analyst.
 - Ordinary investment-action prompts without a prefix are mandatory auto-dispatch inputs: buy/sell/hold/add/trim/exit, asset comparisons, and asset analysis for a stated horizon first route through the router. `AGENT:` remains a shortcut/override, not a prerequisite for the large workflow; explicit short/quick/preliminary wording still routes to `QUICK:`.
@@ -63,7 +62,6 @@ This file is the short current-state entrypoint for Codex runtime work in the Fi
 | Specialist command | Ready with analyst boundary | `workflows/route_cards/direct_specialist.md` |
 | Automation Lab auto-dispatch | Ready as a thin CLI router over existing QUICK / AGENT / specialist flows | `automation_lab/fa_automation.py dispatch --prompt "<user request>"` |
 
-| Python LangGraph runtime | Available for live routing, equity full-cycle artifacts, direct specialist/Quick Take boundaries, missing-context interrupts, evidence-gate blocking, and live OpenAI API adapter gated on `OPENAI_API_KEY` | `langgraph_runtime/financial_agent_graph.py` |
 | Evidence Document Parser Layer | MVP available; parses accessible HTML/PDF/raw text into normalized claim evidence and merges parsed claims into Evidence Pack rows for equity preflight first | `automation_lab/agent_data/document_parser.py` |
 | Data Provider & Parsing Layer | Available; ProviderResult registry/cache/parsers feed preflight snapshots and Evidence Pack inputs across equity, ETF, fixed income, macro, commodity/grain, crypto, and multi-asset workflows with graceful degradation for missing keys | `automation_lab/data_providers/` |
 
@@ -102,7 +100,7 @@ Latest Automation Lab acceptance status: `live-acceptance --require-live` passes
 
 ## Current limitations
 
-- No OpenAI Agents SDK orchestrator is implemented; Codex SDK is only a control-plane wrapper around Codex, while `langgraph_runtime/` is an additive LangGraph/OpenAI API runtime.
+- No OpenAI Agents SDK orchestrator is implemented; Codex SDK is only a control-plane wrapper around Codex.
 - No persistent real-time monitor is guaranteed unless a specific automation is configured; the provider layer is on-demand and cache-backed.
 - Evidence Document Parser Layer is MVP-grade deterministic local infrastructure. HTML uses Python standard library parsing; PDF extraction requires `automation_lab/requirements-parser.txt` (`pypdf`) and image-only/scanned PDFs remain `Unsupported` or `Partial`.
 - Optional providers requiring `FRED_API_KEY`, `USDA_NASS_API_KEY`, `PERPLEXITY_API_KEY`, or `EODHD_API_KEY` degrade to disabled/partial when keys are missing; official/no-key providers and public price fallbacks are still attempted where routed.
@@ -118,7 +116,6 @@ py -3 tools\validate_project_consistency.py
 py -3 tools\validate_language_style.py
 py -3 tools\validate_behavior_contracts.py
 py -3 tools\validate_runtime_readiness.py
-py -3 -m unittest discover -s tests\langgraph_runtime -v
 cd automation_lab
 ..\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
 cd ..
